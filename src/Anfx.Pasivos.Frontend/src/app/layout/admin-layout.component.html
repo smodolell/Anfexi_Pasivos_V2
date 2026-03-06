@@ -1,0 +1,200 @@
+<div id="main-wrapper">
+  <header class="topbar">
+      <nav class="navbar top-navbar navbar-expand-md navbar-dark">
+          <div class="navbar-header">
+              <a class="navbar-brand" href="javascript:void(0)">
+                <!-- Logo icon -->
+                <b><img src="assets/images/logo-light-icon.png" alt="homepage" class="light-logo" /></b>
+                <!--End Logo icon -->
+                <span class="hidden-xs"><span class="font-bold">Profuturo</span>&nbsp;Admin</span>
+              </a>
+          </div>
+          <div class="navbar-collapse">
+              <!-- ============================================================== -->
+              <!-- toggle and nav items -->
+              <!-- ============================================================== -->
+              <ul class="navbar-nav me-auto">
+                  <!-- This is  -->
+                  <li class="nav-item"> <a class="nav-link nav-toggler d-block d-md-none waves-effect waves-dark" href="javascript:void(0)"><i class="ti-menu"></i></a> </li>
+                  <li class="nav-item"> <a class="nav-link sidebartoggler d-none d-lg-block d-md-block waves-effect waves-dark" href="javascript:void(0)"><i class="icon-menu"></i></a> </li>
+              </ul>
+              <!-- ============================================================== -->
+              <!-- User profile and search -->
+              <!-- ============================================================== -->
+              <ul class="navbar-nav my-lg-0">
+                  <!-- ============================================================== -->
+                  <!-- User Profile -->
+                  <!-- ============================================================== -->
+                  <li class="nav-item dropdown u-pro">
+                      <a class="nav-link dropdown-toggle waves-effect waves-dark profile-pic" href="" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <img src="assets/images/users/1.jpg" alt="Usuario" class="">
+                            <span class="hidden-md-down">&nbsp;{{ currentUser?.nombreCompleto }}<i class="fa fa-angle-down"></i></span>
+                      </a>
+                      <div class="dropdown-menu dropdown-menu-end animated flipInY">
+                          <a routerLink="/admin/profile" class="dropdown-item"><i class="ti-user"></i> Mi Perfil</a>
+                          <a href="javascript:void(0)" class="dropdown-item" (click)="logout()">
+                            <i class="fa fa-power-off"></i> Salir
+                          </a>
+                      </div>
+                  </li>
+                  <!-- ============================================================== -->
+                  <!-- End User Profile -->
+                  <!-- ============================================================== -->
+              </ul>
+          </div>
+      </nav>
+  </header>
+  <!-- ============================================================== -->
+  <!-- End Topbar header -->
+  <!-- ============================================================== -->
+  <!-- ============================================================== -->
+  <!-- Left Sidebar - style you can find in sidebar.scss  -->
+  <!-- ============================================================== -->
+  <aside class="left-sidebar">
+      <!-- Sidebar scroll-->
+      <div class="scroll-sidebar">
+          <!-- Sidebar navigation-->
+          <nav class="sidebar-nav">
+              <ul id="sidebarnav">
+                <li>
+                    <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false">
+                        <i class="fa fa-bars"></i><span class="hide-menu">Cátalogos</span></a>
+                    <ul aria-expanded="false" class="collapse">
+                      <!--<li><a routerLink="/catalogos/personasjuridicas">Persona Jurídica</a></li>-->
+                      <li><a routerLink="/catalogos/tiposdirecciones">Tipo de Dirección</a></li>
+                      <li><a routerLink="/catalogos/colonias">Colonia</a></li>
+                      <!--<li><a routerLink="/catalogos/tipostelefonos">Tipo de Teléfono</a></li>
+  <li><a routerLink="/catalogos/unidadesnegocio">Unidad de Negocio</a></li>
+
+  <li><a routerLink="/catalogos/beneficiosadicionales">Beneficios Adicionales</a></li>
+  <li><a routerLink="/catalogos/periodicidades">Periodicidades</a></li>
+  <li><a routerLink="/catalogos/plazos">Plazos</a></li>
+  <li><a routerLink="/catalogos/tiposprestamos">Tipos de Préstamo</a></li>
+  <li><a routerLink="/catalogos/tiposseguros">Tipos de Seguro</a></li>
+  <li><a routerLink="/catalogos/tiposgeneracioncomprobantes">Tipos de Comprobantes</a></li>
+  <li><a routerLink="/catalogos/esquemasfinancieros">Esquemas Financieros</a></li>-->
+                    </ul>
+                </li>
+                <li>
+                  <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false">
+                      <i class="fa fa-bars"></i><span class="hide-menu">Configuración</span></a>
+                  <ul aria-expanded="false" class="collapse">
+                      <li><a routerLink="/admin/empresas">Empresas</a></li>
+                  </ul>
+                </li>
+                <li>
+                    <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false">
+                        <i class="fa fa-bars"></i><span class="hide-menu">Sistema</span></a>
+                    <ul aria-expanded="false" class="collapse">
+                        <li><a routerLink="/admin/usuarios">Usuarios</a></li>
+                        <li><a routerLink="/admin/roles">Roles</a></li>
+                        <!--<li><a routerLink="/admin/menus">Menú</a></li>
+                        <li><a routerLink="/admin/menuroles">Menú Rol</a></li>-->
+                    </ul>
+                </li>
+              </ul>
+          </nav>
+          <!-- End Sidebar navigation -->
+      </div>
+      <!-- End Sidebar scroll-->
+  </aside>
+  <!-- ============================================================== -->
+  <!-- End Left Sidebar - style you can find in sidebar.scss  -->
+  <!-- ============================================================== -->
+  <!-- ============================================================== -->
+  <!-- Page wrapper  -->
+  <!-- ============================================================== -->
+  <div class="page-wrapper">
+      <!-- ============================================================== -->
+      <!-- Container fluid  -->
+      <!-- ============================================================== -->
+      <div class="container-fluid">
+          <!-- ============================================================== -->
+          <!-- Bread crumb and right sidebar toggle -->
+          <!-- ============================================================== -->
+          <div class="row page-titles">
+              <div class="col-md-5 align-self-center">
+                  <h4 class="text-themecolor">{{ currentTitle }}</h4>
+              </div>
+          </div>
+          <!-- ============================================================== -->
+          <!-- End Bread crumb and right sidebar toggle -->
+          <!-- ============================================================== -->
+          <!-- ============================================================== -->
+          <!-- Start Page Content -->
+          <!-- ============================================================== -->
+          <main class="admin-main">
+            <router-outlet></router-outlet>
+          </main>
+          <!-- ============================================================== -->
+          <!-- End PAge Content -->
+          <!-- ============================================================== -->
+      </div>
+      <!-- ============================================================== -->
+      <!-- End Container fluid  -->
+      <!-- ============================================================== -->
+  </div>
+  <!-- ============================================================== -->
+  <!-- End Page wrapper  -->
+  <!-- ============================================================== -->
+  <footer class="footer">
+     <img src="assets/images/Logo_Anfexi_Sin_Letras.svg" alt="ANFEXI TECHNOLOGIES" style="float: left; height: 20px;">
+      Diseñado y programado por ANFEXI TECHNOLOGIES. Derechos reservados. 2025
+  </footer>
+</div>
+
+<!-- Modal de Confirmación de Logout -->
+@if (showLogoutModal) {
+  <div class="modal fade show d-block"
+       id="logoutModal"
+       tabindex="-1"
+       aria-labelledby="logoutModalLabel"
+       aria-modal="true"
+       role="dialog"
+       (keydown)="onModalKeydown($event)">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="logoutModalLabel">
+            <i class="fa fa-power-off text-warning me-2"></i>
+            Confirmar Cierre de Sesión
+          </h5>
+          <button type="button"
+                  class="btn-close"
+                  (click)="cancelLogout()"
+                  aria-label="Cerrar modal">
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="d-flex align-items-center">
+            <div class="me-3">
+              <i class="fa fa-question-circle text-warning" style="font-size: 2rem;"></i>
+            </div>
+            <div>
+              <p class="mb-1">¿Estás seguro de que quieres cerrar sesión?</p>
+              <small class="text-muted">Se cerrará tu sesión actual y tendrás que volver a iniciar sesión para acceder al sistema.</small>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button"
+                  class="btn btn-secondary"
+                  (click)="cancelLogout()"
+                  autofocus>
+            <i class="fa fa-times me-1"></i>
+            Cancelar
+          </button>
+          <button type="button"
+                  class="btn btn-danger"
+                  (click)="confirmLogout()">
+            <i class="fa fa-power-off me-1"></i>
+            Cerrar Sesión
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Backdrop del Modal -->
+  <div class="modal-backdrop fade show" (click)="cancelLogout()"></div>
+}

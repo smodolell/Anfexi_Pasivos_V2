@@ -1,0 +1,10 @@
+﻿global using Ardalis.Specification;
+global using Ardalis.Result;
+global using FluentValidation;
+global using LiteBus.Commands.Abstractions;
+global using LiteBus.Queries.Abstractions;
+global using Microsoft.AspNetCore.Mvc;
+global using Microsoft.EntityFrameworkCore;
+global using Anfx.Pasivos.Application.Common.DTOs;
+global using Anfx.Pasivos.ApiService.Infrastructure;
+global using Anfx.Pasivos.ApiService.Responces;

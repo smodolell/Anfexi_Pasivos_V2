@@ -1,0 +1,22 @@
+<div class="layout-container">
+  <!-- Header común -->
+  <header class="main-header">
+    <nav>
+      <ul>
+        <li><a routerLink="/">Inicio</a></li>
+        <li><a routerLink="/about">Acerca de</a></li>
+        <li><a routerLink="/contact">Contacto</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Contenido dinámico (como ContentPlaceHolder en Master Pages) -->
+  <main class="main-content">
+    <router-outlet></router-outlet>
+  </main>
+
+  <!-- Footer común -->
+  <footer class="main-footer">
+    <p>&copy; 2024 Mi Aplicación Angular</p>
+  </footer>
+</div>

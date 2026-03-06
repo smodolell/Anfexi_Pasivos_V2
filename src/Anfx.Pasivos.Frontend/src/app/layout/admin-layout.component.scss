@@ -1,0 +1,133 @@
+.table-list > thead > tr > th:first-child,
+.table-list > tbody > tr > td:first-child {
+    width: 40px;
+}
+
+.table-list > thead > tr > th:last-child,
+.table-list > tbody > tr > td:last-child {
+    width: 70px;
+}
+
+.skin-blue .topbar {
+    background: #004b8d;
+}
+
+.btn-primary {
+    background: #004b8d;
+    color: #fff;
+    border-color: #00325d;
+}
+
+.btn-primary:hover {
+    color: #000;
+    background: #015baa;
+    border-color: #015baa;
+}
+.btn-primary:focus {
+    color: #fff;
+    background: #015baa;
+    border-color: #015baa;
+    box-shadow: 0 0 0 0.25rem #007bff40;
+}
+.btn-primary.disabled,
+.btn-primary:disabled {
+    color: #cfcfcf;
+    background-color: #186bb4;
+    border-color: #186bb4;
+}
+
+/* Estilos para el modal de logout */
+#logoutModal {
+    z-index: 1055;
+}
+
+#logoutModal .modal-content {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+#logoutModal .modal-header {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-bottom: 1px solid #dee2e6;
+    border-radius: 10px 10px 0 0;
+}
+
+#logoutModal .modal-title {
+    font-weight: 600;
+    color: #495057;
+}
+
+#logoutModal .modal-body {
+    padding: 1.5rem;
+}
+
+#logoutModal .modal-footer {
+    border-top: 1px solid #dee2e6;
+    border-radius: 0 0 10px 10px;
+    padding: 1rem 1.5rem;
+}
+
+#logoutModal .btn-danger {
+    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+    border: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+#logoutModal .btn-danger:hover {
+    background: linear-gradient(135deg, #c82333 0%, #bd2130 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
+}
+
+.modal-backdrop {
+    z-index: 1050;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+/* Mejoras de accesibilidad para el modal */
+#logoutModal {
+    /* Asegurar que el modal esté en el top del stack */
+    z-index: 1055 !important;
+}
+
+#logoutModal .modal-dialog {
+    /* Centrar el modal correctamente */
+    margin: 1.75rem auto;
+}
+
+#logoutModal .btn:focus {
+    /* Mejorar la visibilidad del foco */
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    outline: none;
+}
+
+#logoutModal .btn-danger:focus {
+    box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25);
+}
+
+/* Asegurar que el modal sea completamente visible */
+#logoutModal.show {
+    display: block !important;
+}
+
+/* Mejorar la transición del modal */
+#logoutModal.fade {
+    transition: opacity 0.15s linear;
+}
+
+#logoutModal.fade.show {
+    opacity: 1;
+}
+
+/* Estilos para el backdrop */
+.modal-backdrop.show {
+    opacity: 0.5;
+}
+
+.border-info,
+.border-warning {
+    border-style: solid !important;
+    border-width: 1px !important;
+}

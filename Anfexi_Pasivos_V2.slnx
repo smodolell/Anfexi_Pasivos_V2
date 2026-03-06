@@ -1,0 +1,17 @@
+<Solution>
+  <Folder Name="/Backend/">
+    <Project Path="src/Anfx.Pasivos.ApiService/Anfx.Pasivos.ApiService.csproj" />
+    <Project Path="src/Anfx.Pasivos.Application/Anfx.Pasivos.Application.csproj" />
+    <Project Path="src/Anfx.Pasivos.Domain/Anfx.Pasivos.Domain.csproj" />
+    <Project Path="src/Anfx.Pasivos.Infrastructure/Anfx.Pasivos.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/Frontend/">
+    <Project Path="src/Anfx.Pasivos.Frontend/Anfx.Pasivos.Frontend.esproj">
+      <Build />
+      <Deploy />
+    </Project>
+  </Folder>
+  <Folder Name="/Infrastructure/">
+    <Project Path="src/Anfexi.AppHost/Anfexi.AppHost.csproj" />
+  </Folder>
+</Solution>

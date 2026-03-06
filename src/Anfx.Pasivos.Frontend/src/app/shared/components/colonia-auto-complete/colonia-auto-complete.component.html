@@ -1,0 +1,111 @@
+<div class="row">
+  <!-- Código Postal -->
+  <div class="col-md-3">
+    <div class="mb-3">
+      <label for="codigoPostal" class="form-label">
+        {{ labelCodigoPostal }}
+        @if (codigoPostalRequired) {
+          <span class="text-danger">*</span>
+        }
+      </label>
+      <div class="position-relative">
+        <input 
+          type="text" 
+          class="form-control" 
+          id="codigoPostal"
+          [value]="codigoPostal()"
+          (input)="onCodigoPostalInput($event)"
+          (focus)="onFocusCodigoPostal()"
+          (blur)="onCodigoPostalBlur()"
+          placeholder="Ingrese código postal"
+          maxlength="5"
+          autocomplete="off">
+        
+        @if (loadingCodigosPostales()) {
+          <div class="position-absolute top-50 end-0 translate-middle-y me-2">
+            <div class="spinner-border spinner-border-sm text-primary" role="status">
+              <span class="visually-hidden">Cargando...</span>
+            </div>
+          </div>
+        }
+        
+        <!-- Dropdown de códigos postales -->
+        @if (showCodigosPostales() && codigosPostales().length > 0) {
+          <div class="dropdown-menu show w-100" style="position: absolute; top: 100%; left: 0; z-index: 1000;">
+            @for (codigo of codigosPostales(); track codigo.value) {
+              <button 
+                type="button" 
+                class="dropdown-item" 
+                (click)="onCodigoPostalSelect(codigo)">
+                {{ codigo.text }}
+              </button>
+            }
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+
+  <!-- Estado -->
+  <div class="col-md-3">
+    <div class="mb-3">
+      <label for="estado" class="form-label">{{ labelEstado }}</label>
+      <input 
+        type="text" 
+        class="form-control" 
+        id="estado"
+        [value]="estado()"
+        readonly
+        placeholder="Estado">
+    </div>
+  </div>
+
+  <!-- Municipio -->
+  <div class="col-md-3">
+    <div class="mb-3">
+      <label for="municipio" class="form-label">{{ labelMunicipio }}</label>
+      <input 
+        type="text" 
+        class="form-control" 
+        id="municipio"
+        [value]="municipio()"
+        readonly
+        placeholder="Municipio">
+    </div>
+  </div>
+
+  <!-- Colonia -->
+  <div class="col-md-3">
+    <div class="mb-3">
+      <label for="coloniaId" class="form-label">
+        {{ labelColonia }}
+        @if (required) {
+          <span class="text-danger">*</span>
+        }
+      </label>
+      <div class="position-relative">
+        <select 
+          class="form-select" 
+          id="coloniaId"
+          [value]="coloniaId()"
+          (change)="onColoniaSelect($event)"
+          (focus)="onFocusColonia()"
+          (blur)="onBlurColonia()"
+          [disabled]="loadingColonias() || loadingById()">
+          <option [value]="null">{{ loadingColonias() || loadingById() ? 'Cargando...' : '[ SELECCIONE ]' }}</option>
+          @for (colonia of colonias(); track colonia.value) {
+            <option [value]="colonia.value">{{ colonia.text }}</option>
+          }
+        </select>
+        
+        @if (loadingColonias() || loadingById()) {
+          <div class="position-absolute top-50 end-0 translate-middle-y me-2">
+            <div class="spinner-border spinner-border-sm text-primary" role="status">
+              <span class="visually-hidden">Cargando...</span>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</div>

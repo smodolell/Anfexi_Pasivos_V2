@@ -1,0 +1,218 @@
+<div class="card">
+  <div class="card-header {{ usuario.id ? 'bg-warning' : 'bg-info' }} text-white">
+    <h4 class="card-title">
+      {{ usuario.id ? 'Editar' : 'Nuevo' }} Usuario
+    </h4>
+ </div>
+
+<div class="card-body {{ usuario.id ? 'border-warning' : 'border-info' }}">
+    <form [formGroup]="usuarioForm" (ngSubmit)="onSubmit()">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="nombreCompleto" class="form-label fw-bold">Nombre Completo *</label>
+            <input 
+              type="text" 
+              id="nombreCompleto" 
+              formControlName="nombreCompleto"
+              class="form-control" 
+              [class.is-invalid]="isFieldInvalid('nombreCompleto')">
+            @if (isFieldInvalid('nombreCompleto')) {
+              <div class="invalid-feedback">
+                {{ getFieldError('nombreCompleto') }}
+              </div>
+            }
+          </div>
+        </div>
+        
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="usuarioNombre" class="form-label fw-bold">Nombre de Usuario *</label>
+            <input 
+              type="text" 
+              id="usuarioNombre" 
+              formControlName="usuarioNombre"
+              class="form-control" 
+              [class.is-invalid]="isFieldInvalid('usuarioNombre')">
+            @if (isFieldInvalid('usuarioNombre')) {
+              <div class="invalid-feedback">
+                {{ getFieldError('usuarioNombre') }}
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="email" class="form-label fw-bold">Email *</label>
+            <input 
+              type="email" 
+              id="email" 
+              formControlName="email"
+              class="form-control" 
+              [class.is-invalid]="isFieldInvalid('email')">
+            @if (isFieldInvalid('email')) {
+              <div class="invalid-feedback">
+                {{ getFieldError('email') }}
+              </div>
+            }
+          </div>
+        </div>
+        
+        <!-- Campo de contraseña solo en creación -->
+        @if(!usuario.id) {
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="contrasena" class="form-label fw-bold">Contraseña *</label>
+            <input 
+              type="password" 
+              id="contrasenia" 
+              formControlName="contrasenia"
+              class="form-control" 
+              [class.is-invalid]="isFieldInvalid('contrasenia')">
+            @if (isFieldInvalid('contrasenia')) {
+              <div class="invalid-feedback">
+                {{ getFieldError('contrasenia') }}
+              </div>
+            }
+          </div>
+        </div>
+
+        <div class="offset-md-6 col-md-6">
+          <div class="mb-3">
+            <label for="confirma_contrasenia" class="form-label fw-bold">Confirmar Contraseña *</label>
+            <input 
+              type="password" 
+              id="confirma_contrasenia" 
+              formControlName="confirma_contrasenia"
+              class="form-control" 
+              [class.is-invalid]="isFieldInvalid('confirma_contrasenia')">
+            @if (isFieldInvalid('confirma_contrasenia')) {
+              <div class="invalid-feedback">
+                {{ getFieldError('confirma_contrasenia') }}
+              </div>
+            }
+          </div>
+        </div>      
+        }
+      </div>
+
+      <!-- Checkbox de permitir editar contraseña solo en edición -->
+      @if(usuario.id) {
+      <div class="row">
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label class="form-label fw-bold d-block">Edita Contraseña</label>
+            <div class="form-check">
+              <input 
+                class="form-check-input" 
+                type="checkbox" 
+                id="permiteEditarContrasenia" 
+                formControlName="permiteEditarContrasenia">
+              <label class="form-check-label" for="permiteEditarContrasenia">
+                Permitir al usuario cambiar su contraseña
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Campos de contraseña condicionales en edición -->
+        @if(usuarioForm.get('permiteEditarContrasenia')?.value) {
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="contrasenia" class="form-label fw-bold">Nueva Contraseña *</label>
+            <input 
+              type="password" 
+              id="contrasenia" 
+              formControlName="contrasenia"
+              class="form-control" 
+              [class.is-invalid]="isFieldInvalid('contrasenia')">
+            @if (isFieldInvalid('contrasenia')) {
+              <div class="invalid-feedback">
+                {{ getFieldError('contrasenia') }}
+              </div>
+            }
+          </div>
+        </div>
+
+        <div class="offset-md-6 col-md-6">
+          <div class="mb-3">
+            <label for="confirma_contrasenia" class="form-label fw-bold">Confirmar Nueva Contraseña *</label>
+            <input 
+              type="password" 
+              id="confirma_contrasenia" 
+              formControlName="confirma_contrasenia"
+              class="form-control" 
+              [class.is-invalid]="isFieldInvalid('confirma_contrasenia')">
+            @if (isFieldInvalid('confirma_contrasenia')) {
+              <div class="invalid-feedback">
+                {{ getFieldError('confirma_contrasenia') }}
+              </div>
+            }
+          </div>
+        </div>
+        }
+
+      </div>
+      }
+
+      <div class="row">
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="rolId" class="form-label fw-bold">Rol *</label>
+            <select 
+              id="rolId" 
+              formControlName="rolId"
+              class="form-control form-select" 
+              [class.is-invalid]="isFieldInvalid('rolId')">
+              <option [ngValue]="undefined">{{ loadingRoles() ? 'Cargando roles...' : '[ SELECCIONE ]' }}</option>
+              @for (role of roles(); track role.value) {
+                <option [ngValue]="role.value">{{ role.text }}</option>
+              }
+            </select>
+            @if (isFieldInvalid('rolId')) {
+              <div class="invalid-feedback">
+                {{ getFieldError('rolId') }}
+              </div>
+            }
+          </div>
+        </div>
+        
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label class="form-label fw-bold d-block">Estado</label>
+            <div class="form-check form-check-inline">
+              <input 
+                class="form-check-input" 
+                type="radio" 
+                id="activo-si" 
+                formControlName="activo"
+                [value]="true">
+              <label class="form-check-label" for="activo-si">Activo</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input 
+                class="form-check-input" 
+                type="radio" 
+                id="activo-no" 
+                formControlName="activo"
+                [value]="false">
+              <label class="form-check-label" for="activo-no">Inactivo</label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pt-3 border-top">
+        <button type="button" class="btn btn-secondary me-2" (click)="onCancel()">
+          Cancelar
+        </button>
+        <button type="submit" class="btn btn-primary" [disabled]="usuarioForm.invalid">
+          <i class="fa fa-save"></i> Guardar
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

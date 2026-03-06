@@ -1,0 +1,12 @@
+﻿global using Ardalis.Specification;
+global using Ardalis.Result;
+global using Ardalis.Result.FluentValidation;
+global using FluentValidation;
+global using LiteBus.Commands.Abstractions;
+global using LiteBus.Queries.Abstractions;
+global using MapsterMapper;
+global using Microsoft.Extensions.Logging;
+global using Microsoft.EntityFrameworkCore;
+global using Anfx.Pasivos.Domain.Entities;
+global using Anfx.Pasivos.Application.Common.DTOs;
+global using Anfx.Pasivos.Application.Common.Interfaces;

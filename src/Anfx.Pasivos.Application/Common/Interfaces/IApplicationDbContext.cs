@@ -1,0 +1,76 @@
+﻿namespace Anfx.Pasivos.Application.Common.Interfaces;
+
+public interface IApplicationDbContext
+{
+    DbSet<Colonia> Colonias { get; }
+    DbSet<Usuario> Usuarios { get; }
+    DbSet<Rol> Roles { get; }
+    DbSet<Empresa> Empresas { get; }
+    DbSet<Menu> Menus { get; }
+    DbSet<TipoDireccion> TiposDirecciones { get; }
+    DbSet<PSV_Menu> PSV_Menu { get; }
+    DbSet<EstatusContrato> EstatusContrato { get; }
+    DbSet<Genero> Genero { get; }
+    DbSet<SB_Periodicidad> SB_Periodicidad { get; }
+    DbSet<SB_TipoMoneda> SB_TipoMoneda { get; }
+    DbSet<Tasa> Tasa { get; }
+    DbSet<TipoCalculoTasaVariable> TipoCalculoTasaVariable { get; }
+    DbSet<TipoGeneracionComprobante> TipoGeneracionComprobante { get; }
+    DbSet<TipoMantenimiento> TipoMantenimiento { get; }
+    DbSet<TipoMovimiento> TipoMovimiento { get; }
+    DbSet<PSV_Fondeador> PSV_Fondeador { get; }
+    DbSet<PSV_Movimiento> PSV_Movimiento { get; }
+    DbSet<PSV_Pago> PSV_Pago { get; }
+    DbSet<PSV_RelPagoMovimiento> PSV_RelPagoMovimiento { get; }
+    DbSet<Contrato> Contrato { get; }
+    DbSet<PSV_Archivo> PSV_Archivo { get; }
+    DbSet<PSV_Parameter> PSV_Parameter { get; }
+    DbSet<Catalogo> Catalogo { get; }
+    DbSet<Empresa> Empresa { get; }
+    DbSet<PSV_Bitacora> PSV_Bitacora { get; }
+    DbSet<View_Menu> View_Menu { get; }
+    DbSet<View_MenuRol> View_MenuRol { get; }
+    DbSet<View_Rol> View_Rol { get; }
+    DbSet<PSV_RelActivoPasivo> PSV_RelActivoPasivo { get; }
+    DbSet<View_LineaCredito> View_LineaCredito { get; }
+    DbSet<PSV_EstatusContrato> PSV_EstatusContrato { get; }
+    DbSet<View_EstatusContrato> View_EstatusContrato { get; }
+    DbSet<TipoCredito> TipoCredito { get; }
+    DbSet<PSV_TipoCredito> PSV_TipoCredito { get; }
+    DbSet<View_TipoCredito> View_TipoCredito { get; }
+    DbSet<View_ContratoPasivo> View_ContratoPasivo { get; }
+    DbSet<PSV_LineaCredito> PSV_LineaCredito { get; }
+    DbSet<PSV_RelLineaCreditoTipoCredito> PSV_RelLineaCreditoTipoCredito { get; }
+    DbSet<PSV_CuentaBancaria> PSV_CuentaBancaria { get; }
+    DbSet<PSV_TipoPago> PSV_TipoPago { get; }
+    DbSet<View_TipoPago> View_TipoPago { get; }
+    DbSet<PSV_Banco> PSV_Banco { get; }
+    DbSet<View_Banco> View_Banco { get; }
+    DbSet<View_CuentaBancaria> View_CuentaBancaria { get; }
+    DbSet<PSV_TipoTablaAmortizaPeriodicidad> PSV_TipoTablaAmortizaPeriodicidad { get; }
+    DbSet<PSV_ContratoPagoIrregular> PSV_ContratoPagoIrregular { get; }
+    DbSet<View_TipoPagoCapital> View_TipoPagoCapital { get; }
+    DbSet<PSV_TipoPagoCapital> PSV_TipoPagoCapital { get; }
+    DbSet<PSV_Contrato> PSV_Contrato { get; }
+    DbSet<PSV_TipoCapitalizacion> PSV_TipoCapitalizacion { get; }
+    DbSet<View_TipoCapitalizacion> View_TipoCapitalizacion { get; }
+    DbSet<View_ContratosAsignados> View_ContratosAsignados { get; }
+    DbSet<PSV_TipoTablaAmortiza> PSV_TipoTablaAmortiza { get; }
+    DbSet<View_TipoTablaAmortiza> View_TipoTablaAmortiza { get; }
+    DbSet<PSV_TablaAmortiza> PSV_TablaAmortiza { get; }
+    DbSet<PSV_TipoTablaAmortizaTipoCapitalizacion> PSV_TipoTablaAmortizaTipoCapitalizacion { get; }
+    DbSet<PSV_TipoTablaAmortizaTipoPagoCapital> PSV_TipoTablaAmortizaTipoPagoCapital { get; }
+    DbSet<View_CarteraActiva_PorVencer> View_CarteraActiva_PorVencer { get; }
+    DbSet<View_CarteraActiva_Vencido> View_CarteraActiva_Vencido { get; }
+    DbSet<View_CarteraPasiva_PorVencer> View_CarteraPasiva_PorVencer { get; }
+    DbSet<View_CarteraPasiva_Vencido> View_CarteraPasiva_Vencido { get; }
+    DbSet<View_RelActivoPasivo> View_RelActivoPasivo { get; }
+    DbSet<View_Fondeador> View_Fondeador { get; }
+    DbSet<View_PSV_PasivoAutocomple> View_PSV_PasivoAutocomple { get; }
+    DbSet<PSV_TipoTerminacion> PSV_TipoTerminacion { get; }
+    DbSet<PSV_Terminacion> PSV_Terminacion { get; }
+    DbSet<View_CarteraPasiva_PorVencerV2> View_CarteraPasiva_PorVencerV2 { get; }
+
+
+    Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
+}

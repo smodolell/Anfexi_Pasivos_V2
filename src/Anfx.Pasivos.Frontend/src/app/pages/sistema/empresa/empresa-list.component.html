@@ -1,0 +1,148 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+          <h4 class="card-title">Empresas</h4>
+          
+          <!-- Barra de búsqueda -->
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <div class="input-group">
+                <input type="text" class="form-control" placeholder="Buscar..." 
+                       [(ngModel)]="query.q" (keyup.enter)="onSearch()">
+                <button class="btn btn-primary" type="button" (click)="onSearch()">
+                  <i class="fa fa-search"></i> Buscar
+                </button>
+              </div>
+            </div>
+            <div class="col-md-6"></div>
+          </div>
+
+          @if (!mostrandoFormulario()) {
+            <div class="row mb-3">
+              <div class="col-md-12 text-end">
+                <button class="btn btn-success" (click)="mostrarFormularioNuevo()">
+                  <i class="fa fa-plus"></i> Nuevo
+                </button>
+              </div>
+            </div>
+          } @else {
+	          <div class="row mb-3">
+              <div class="col-md-12 text-end">
+                <button class="btn btn-secondary" (click)="volverALista()">
+                  <i class="ti-arrow-left"></i> Volver a la Lista
+                </button>
+              </div>
+            </div>
+          }
+          
+          <!-- Tabla de datos -->
+          @if (!mostrandoFormulario()) {
+            <div class="table-responsive">
+              <table class="table table-striped table-hover table-list">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Empresa</th>
+                    <th>RFC</th>
+                    <th>Razón Social</th>
+                    <th>Representante</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (item of items(); track item.id) {
+                    <tr>
+                      <td>{{ item.id }}</td>
+                      <td>{{ item.sEmpresa }}</td>
+                      <td>{{ item.rFC }}</td>
+                      <td>{{ item.razonSocial }}</td>
+                      <td>{{ item.representante }}</td>
+                      <td>
+                        <button class="btn btn-sm btn-primary me-1" (click)="edit(item.id)">
+                          <i class="fa fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-danger" (click)="delete(item.id)">
+                          <i class="fa fa-trash"></i>
+                        </button>
+                      </td>
+                    </tr>
+                  }
+                  @if (items().length === 0 && !loading()) {
+                    <tr>
+                      <td colspan="6" class="text-center">No hay datos disponibles</td>
+                    </tr>
+                  }
+                  @if (loading()) {
+                    <tr>
+                      <td colspan="6" class="text-center">
+                        <div class="spinner-border text-primary" role="status">
+                          <span class="visually-hidden">Cargando...</span>
+                        </div>
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          }
+
+          <!-- Paginación -->
+          @if (!mostrandoFormulario() && totalCount() > 0) {
+            <div class="row">
+              <div class="col-md-6">
+                <p class="text-muted">
+                  Mostrando {{ (currentPage() - 1) * pageSize() + 1 }} a 
+                  {{ Math.min(currentPage() * pageSize(), totalCount()) }} de {{ totalCount() }} registros
+                </p>
+              </div>
+              <div class="col-md-6">
+                <nav aria-label="Navegación de páginas">
+                  <ul class="pagination justify-content-end">
+                    <li class="page-item" [ngClass]="{'disabled': currentPage() <= 1}">
+                      <a class="page-link" href="javascript:void(0)" (click)="prevPage()">Anterior</a>
+                    </li>
+                    <li class="page-item" [ngClass]="{'disabled': currentPage() >= totalPages()}">
+                      <a class="page-link" href="javascript:void(0)" (click)="nextPage()">Siguiente</a>
+                    </li>
+                  </ul>
+                </nav>
+              </div>
+            </div>
+          }
+
+          <!-- Formulario -->
+          @if (mostrandoFormulario()) {
+            <app-empresa-form 
+              [empresa]="empresaSeleccionada"
+              (guardar)="onGuardarEmpresa($event)"
+              (cancelar)="onCancelarEdicion()"
+              (volverALista)="volverALista()">
+            </app-empresa-form>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de confirmación de eliminación -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="confirmDeleteModalLabel">Confirmar Eliminación</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>¿Está seguro que desea eliminar la empresa <strong>{{ empresaAEliminar?.sEmpresa }}</strong>?</p>
+        <p class="text-danger">Esta acción no se puede deshacer.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="cancelarEliminacion()">Cancelar</button>
+        <button type="button" class="btn btn-danger" (click)="confirmarEliminacion()">Eliminar</button>
+      </div>
+    </div>
+  </div>
+</div>

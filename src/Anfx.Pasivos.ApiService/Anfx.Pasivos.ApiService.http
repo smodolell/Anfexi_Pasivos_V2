@@ -1,0 +1,6 @@
+@Anfx.Pasivos.ApiService_HostAddress = http://localhost:5056
+
+GET {{Anfx.Pasivos.ApiService_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

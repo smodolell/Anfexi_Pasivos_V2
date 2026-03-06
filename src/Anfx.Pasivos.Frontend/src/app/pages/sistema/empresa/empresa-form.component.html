@@ -1,0 +1,297 @@
+<div class="card">
+  <div class="card-header {{ empresa.id ? 'bg-warning' : 'bg-info' }} text-white">
+    <h4 class="card-title">
+      {{ empresa.id ? 'Editar' : 'Nueva' }} Empresa
+    </h4>
+ </div>
+  <div class="card-body {{ empresa.id ? 'border-warning' : 'border-info' }}">
+   
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="sEmpresa" class="form-label">Nombre Empresa *</label>
+            <input type="text" 
+                   class="form-control" 
+                   id="sEmpresa" 
+                   formControlName="sEmpresa"
+                   [ngClass]="{'is-invalid': isFieldInvalid('sEmpresa')}"
+                   placeholder="Ingrese el nombre de la empresa">
+            @if (isFieldInvalid('sEmpresa')) {
+              <div class="invalid-feedback">
+                {{ getFieldError('sEmpresa') }}
+              </div>
+            }
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="razonSocial" class="form-label">Razón Social *</label>
+            <input type="text" 
+                   class="form-control" 
+                   id="razonSocial" 
+                   formControlName="razonSocial"
+                   [ngClass]="{'is-invalid': isFieldInvalid('razonSocial')}"
+                   placeholder="Ingrese la razón social">
+            @if (isFieldInvalid('razonSocial')) {
+              <div class="invalid-feedback">
+                {{ getFieldError('razonSocial') }}
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="representante" class="form-label">Representante</label>
+            <input type="text" 
+                   class="form-control" 
+                   id="representante" 
+                   formControlName="representante"
+                   [ngClass]="{'is-invalid': isFieldInvalid('representante')}"
+                   placeholder="Ingrese el representante">
+            @if (isFieldInvalid('representante')) {
+              <div class="invalid-feedback">
+                {{ getFieldError('representante') }}
+              </div>
+            }
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="mb-3">
+            <label for="rFC" class="form-label">RFC *</label>
+            <input type="text" 
+                   class="form-control" 
+                   id="rFC" 
+                   formControlName="rFC"
+                   [ngClass]="{'is-invalid': isFieldInvalid('rFC')}"
+                   placeholder="Ingrese el RFC">
+            @if (isFieldInvalid('rFC')) {
+              <div class="invalid-feedback">
+                {{ getFieldError('rFC') }}
+              </div>
+            }
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="mb-3">
+            <label for="telefono" class="form-label">Teléfono</label>
+            <div class="input-group">
+              <span class="input-group-text">
+                <i class="fa fa-phone"></i>
+              </span>
+              <input type="text" 
+                    class="form-control" 
+                    id="telefono" 
+                    formControlName="telefono"
+                    [ngClass]="{'is-invalid': isFieldInvalid('telefono')}"
+                    placeholder="Ingrese el teléfono">
+            </div>
+            @if (isFieldInvalid('telefono')) {
+              <div class="invalid-feedback">
+                {{ getFieldError('telefono') }}
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+      </div>
+
+       <div class="row">
+         <div class="col-md-3">
+           <div class="mb-3">
+             <label for="tipoDireccionId" class="form-label">Tipo de Dirección *</label>
+             <select class="form-select" 
+                     id="tipoDireccionId" 
+                     formControlName="tipoDireccionId"
+                     [ngClass]="{'is-invalid': isFieldInvalid('tipoDireccionId')}">
+                     <option [ngValue]="undefined">{{ loadingTiposDirecciones() ? 'Cargando tipos de dirección...' : '[ SELECCIONE ]' }}</option>
+               @for (tipo of tiposDirecciones(); track tipo.value) {
+                 <option [ngValue]="tipo.value">{{ tipo.text }}</option>
+               }
+             </select>
+             @if (isFieldInvalid('tipoDireccionId')) {
+               <div class="invalid-feedback">
+                 {{ getFieldError('tipoDireccionId') }}
+               </div>
+             }
+             @if (loadingTiposDirecciones()) {
+               <div class="form-text">
+                 <i class="fa fa-spinner fa-spin"></i> Cargando tipos de dirección...
+               </div>
+             }
+           </div>
+         </div>
+
+         <div class="col-md-5">
+           <div class="mb-3">
+             <label for="calle" class="form-label">Calle</label>
+             <input type="text" 
+                    class="form-control" 
+                    id="calle" 
+                    formControlName="calle"
+                    [ngClass]="{'is-invalid': isFieldInvalid('calle')}"
+                    placeholder="Ingrese la calle">
+             @if (isFieldInvalid('calle')) {
+               <div class="invalid-feedback">
+                 {{ getFieldError('calle') }}
+               </div>
+             }
+           </div>
+         </div>
+
+        <div class="col-md-2">
+          <div class="mb-3">
+            <label for="numExterior" class="form-label">Número Exterior</label>
+            <input type="text" 
+                   class="form-control" 
+                   id="numExterior" 
+                   formControlName="numExterior"
+                   [ngClass]="{'is-invalid': isFieldInvalid('numExterior')}"
+                   placeholder="Número exterior">
+            @if (isFieldInvalid('numExterior')) {
+              <div class="invalid-feedback">
+                {{ getFieldError('numExterior') }}
+              </div>
+            }
+          </div>
+        </div>
+
+        <div class="col-md-2">
+          <div class="mb-3">
+            <label for="numInterior" class="form-label">Número Interior</label>
+            <input type="text" 
+                   class="form-control" 
+                   id="numInterior" 
+                   formControlName="numInterior"
+                   [ngClass]="{'is-invalid': isFieldInvalid('numInterior')}"
+                   placeholder="Número interior">
+            @if (isFieldInvalid('numInterior')) {
+              <div class="invalid-feedback">
+                {{ getFieldError('numInterior') }}
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+      
+      <app-colonia-auto
+        [required]="true"
+        [codigoPostalRequired]="true"
+        labelCodigoPostal="Código Postal"
+        labelEstado="Estado"
+        labelMunicipio="Municipio"
+        labelColonia="Colonia"
+        formControlName="direccion">
+      </app-colonia-auto>
+      
+      <div class="row">
+        <div class="col-md-12">
+          <div class="mb-3">
+            <label for="avisosEstadodeCuenta" class="form-label">Avisos Estado de Cuenta</label>
+            <textarea class="form-control" 
+                      id="avisosEstadodeCuenta" 
+                      formControlName="avisosEstadodeCuenta"
+                      [ngClass]="{'is-invalid': isFieldInvalid('avisosEstadodeCuenta')}"
+                      rows="3"
+                      placeholder="Ingrese los avisos del estado de cuenta"></textarea>
+            @if (isFieldInvalid('avisosEstadodeCuenta')) {
+              <div class="invalid-feedback">
+                {{ getFieldError('avisosEstadodeCuenta') }}
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-12">
+          <div class="mb-3">
+            <label for="advertenciasEstadodeCuenta" class="form-label">Advertencias Estado de Cuenta</label>
+            <textarea class="form-control" 
+                      id="advertenciasEstadodeCuenta" 
+                      formControlName="advertenciasEstadodeCuenta"
+                      [ngClass]="{'is-invalid': isFieldInvalid('advertenciasEstadodeCuenta')}"
+                      rows="3"
+                      placeholder="Ingrese las advertencias del estado de cuenta"></textarea>
+            @if (isFieldInvalid('advertenciasEstadodeCuenta')) {
+              <div class="invalid-feedback">
+                {{ getFieldError('advertenciasEstadodeCuenta') }}
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-12">
+          <div class="mb-3">
+            <label for="aclaracionesEstadodeCuenta" class="form-label">Aclaraciones Estado de Cuenta</label>
+            <textarea class="form-control" 
+                      id="aclaracionesEstadodeCuenta" 
+                      formControlName="aclaracionesEstadodeCuenta"
+                      [ngClass]="{'is-invalid': isFieldInvalid('aclaracionesEstadodeCuenta')}"
+                      rows="3"
+                      placeholder="Ingrese las aclaraciones del estado de cuenta"></textarea>
+            @if (isFieldInvalid('aclaracionesEstadodeCuenta')) {
+              <div class="invalid-feedback">
+                {{ getFieldError('aclaracionesEstadodeCuenta') }}
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <div class="mb-3">
+            <div class="form-check">
+              <input class="form-check-input" 
+                     type="checkbox" 
+                     id="usaDesembolso" 
+                     formControlName="usaDesembolso">
+              <label class="form-check-label" for="usaDesembolso">
+                Usa Desembolso
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="mb-3">
+            <div class="form-check">
+              <input class="form-check-input" 
+                     type="checkbox" 
+                     id="pasivo" 
+                     formControlName="pasivo">
+              <label class="form-check-label" for="pasivo">
+                Pasivo
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="row">
+        <div class="col-12">
+          <div class="d-flex justify-content-end gap-2">
+            <button type="button" class="btn btn-secondary" (click)="onCancel()">
+              <i class="fa fa-times"></i> Cancelar
+            </button>
+            <button type="submit" class="btn btn-primary" [disabled]="form.invalid">
+              <i class="fa fa-save"></i> Guardar
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

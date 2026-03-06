@@ -1,0 +1,61 @@
+
+  <div class="login-register" style="background-image:url('assets/images/background/login-register.jpg');">
+    <div class="login-box card">
+        <div class="text-center p-t-40">
+            <img src="assets/images/Logo.svg" alt="Profuturo">
+        </div>
+        <div class="card-body">
+            <form class="form-horizontal form-material" (ngSubmit)="onSubmitLogin()" id="loginform">
+                <h3 class="text-center m-b-20">Inicia sesión</h3>
+                <div class="form-group ">
+                    <div class="col-xs-12">
+                        <input class="form-control" type="email" required="" placeholder="Usuario" [(ngModel)]="formData.email" name="email"> 
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-xs-12">
+                        <input class="form-control" required="" placeholder="Contraseña" type="password" id="contrasenia" name="contrasenia" [(ngModel)]="formData.contrasenia"> 
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-12">
+                        <div class="d-flex no-block align-items-center">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="recuerdame" name="recuerdame" [(ngModel)]="formData.recuerdame" >
+                                <label class="form-check-label" for="rememberMe">Recuerdame</label>
+                            </div> 
+                            <div class="ms-auto">
+                                <a href="javascript:void(0)" id="to-recover" class="text-muted"><i class="fas fa-lock m-r-5"></i> ¿Olvidaste tu contraseña?</a> 
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group text-center">
+                    <div class="col-xs-12 p-b-20">
+                        <button class="btn w-100 btn-lg btn-info btn-rounded text-white" [attr.disabled]="isLoading ? 'disabled' : null" type="submit">Entrar</button>
+                    </div>
+                </div>
+            </form>
+            <form class="form-horizontal" id="recoverform" action="index.html">
+                <div class="form-group ">
+                    <div class="col-xs-12">
+                        <h3>Recuperar Contraseña</h3>
+                        <p class="text-muted">Ingresa tu correo electrónico y te enviaremos las instrucciones para recuperar tu contraseña! </p>
+                    </div>
+                </div>
+                <div class="form-group ">
+                    <div class="col-xs-12">
+                        <input class="form-control" type="text" required="" placeholder="E-mail"> 
+                    </div>
+                </div>
+                <div class="form-group text-center m-t-20">
+                    <div class="col-xs-12">
+                        <button class="btn btn-primary btn-lg w-100 text-uppercase waves-effect waves-light" type="submit">Reiniciar</button>
+                    </div>
+                </div>
+                <div class="form-group">
+                  <a href="javascript:void(0)" id="to-login" class="text-muted"><i class="fas fa-lock m-r-5"></i> Volver al inicio</a> 
+              </div>                
+            </form>
+        </div>
+    </div>

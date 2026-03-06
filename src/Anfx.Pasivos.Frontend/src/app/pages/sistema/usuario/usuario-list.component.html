@@ -1,0 +1,149 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+          <!-- Header con botón de nuevo usuario -->
+          <h4 class="card-title">Usuarios</h4>
+
+          <div class="row mb-3">
+            <div class="col-md-12">
+              <!-- Filtros y tabla (solo mostrar si no está mostrando el formulario) -->
+            <form class="row g-2 mb-3" (ngSubmit)="onSearch()">
+              <div class="col-sm-6 col-md-4">
+                <input class="form-control" [(ngModel)]="query.q" name="q" placeholder="Buscar..." />
+              </div>
+              <div class="col-sm-3 col-md-2 d-flex align-items-center">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" [(ngModel)]="query.activo" name="activo" id="activo">
+                  <label class="form-check-label" for="activo">Activos</label>
+                </div>
+              </div>
+              <div class="col-sm-3 col-md-2">
+                <div class="input-group">
+                  <select class="form-select" [(ngModel)]="query.size" name="size">
+                    <option [ngValue]="10">10</option>
+                    <option [ngValue]="20">20</option>
+                    <option [ngValue]="50">50</option>
+                  </select>
+                  <button class="btn btn-primary" type="submit" [disabled]="loading()">Buscar</button>
+                </div>
+              </div>
+              <div class="col-sm-12 col-md-6 text-end"></div>
+
+              @if (!mostrandoFormulario()) {
+                <div class="col-sm-12 col-md-12 text-end">
+                  <button type="button" class="btn btn-success" (click)="mostrarFormularioNuevo()">
+                    <i class="fa fa-plus"></i> Nuevo
+                  </button>                
+                </div>
+              }
+            </form>
+
+            </div>
+            <div class="col-md-6"></div>
+          </div>
+
+          @if (mostrandoFormulario()) {
+            <div class="row mb-3">
+              <div class="col-md-12 text-end">
+                <button class="btn btn-secondary" (click)="volverALista()">
+                  <i class="ti-arrow-left"></i> Volver a la Lista
+                </button>
+              </div>
+            </div>
+          }
+
+          <!-- Formulario de usuario -->
+          @if (mostrandoFormulario()) {
+            <div class="mb-4">
+              <app-usuario-form 
+                [usuario]="usuarioSeleccionado"
+                [isFromProfile]="false"
+                (guardar)="onGuardarUsuario($event)"
+                (cancelar)="onCancelarEdicion()"
+                (volverALista)="volverALista()">
+              </app-usuario-form>
+            </div>
+          }
+
+          
+
+          @if (!mostrandoFormulario()) {
+            <div class="table-responsive">
+              <table class="table table-striped table-bordered table-list">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Email</th>
+                    <th>Usuario</th>
+                    <th>Rol</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (u of items(); track u.id) {
+                    <tr>
+                      <td>{{u.id}}</td>
+                      <td>{{u.nombreCompleto}}</td>
+                      <td>{{u.email}}</td>
+                      <td>{{u.usuarioNombre}}</td>
+                      <td>{{u.rolNombre}}</td>
+                      <td>
+                        <button class="btn btn-primary btn-sm me-1" (click)="editarUsuario(u.id)">
+                          <i class="ti-pencil"></i>
+                        </button>
+                        <button class="btn btn-danger btn-sm" (click)="delete(u.id)">
+                          <i class="ti-trash"></i>
+                        </button>
+                      </td>
+                    </tr>
+                  }
+                  @if (!loading() && items().length === 0) {
+                    <tr>
+                      <td colspan="6" class="text-center text-muted">Sin resultados</td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+
+            <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center mt-2">
+              <div class="text-muted">
+                Mostrando {{ items().length }} de {{ totalCount() }} registros
+              </div>
+              <div class="d-flex align-items-center gap-2">
+                <button class="btn btn-outline-secondary" (click)="prevPage()" [disabled]="loading() || currentPage() <= 1">Anterior</button>
+                <span>Página {{ currentPage() }} / {{ totalPages() || 1 }}</span>
+                <button class="btn btn-outline-secondary" (click)="nextPage()" [disabled]="loading() || currentPage()">Siguiente</button>
+              </div>
+            </div>
+          }
+        </div>
+
+        <!-- Modal de confirmación para eliminar usuario -->
+        <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="confirmDeleteModalLabel">Confirmar Eliminación</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <p>¿Estás seguro de que quieres eliminar al usuario <strong>{{ usuarioAEliminar?.nombreCompleto }}</strong>?</p>
+                <p class="text-muted small">Esta acción no se puede deshacer.</p>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="cancelarEliminacion()">Cancelar</button>
+                <button type="button" class="btn btn-danger" (click)="confirmarEliminacion()">
+                  <i class="ti-trash"></i> Eliminar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

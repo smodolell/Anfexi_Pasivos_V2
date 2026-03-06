@@ -1,0 +1,93 @@
+<div class="row">
+  <div class="card col-md-8 offset-md-2">
+    <div class="card-header {{ colonia.id ? 'bg-warning' : 'bg-info' }} text-white">
+      <h4 class="card-title m-b-0">
+        {{ colonia.id ? 'Editar' : 'Crear' }} Colonia
+      </h4>
+    </div>
+    <div class="card-body {{ colonia.id ? 'border-warning' : 'border-info' }} ">
+      <form [formGroup]="coloniaForm" (ngSubmit)="onSubmit()">
+        <div class="row">
+          <!-- Colonia -->
+          <div class="col-md-6 mb-3">
+            <label for="sColonia" class="form-label">Colonia *</label>
+            <input type="text" 
+                  class="form-control" 
+                  id="sColonia"
+                  formControlName="sColonia"
+                  [ngClass]="{'is-invalid': isFieldInvalid('sColonia')}"
+                  placeholder="Ingrese el nombre de la colonia">
+            @if (isFieldInvalid('sColonia')) {
+              <div class="invalid-feedback">
+                {{ getFieldError('sColonia') }}
+              </div>
+            }
+          </div>
+
+          <!-- Estado -->
+          <div class="col-md-6 mb-3">
+            <label for="estado" class="form-label">Estado *</label>
+            <input type="text" 
+                  class="form-control" 
+                  id="estado"
+                  formControlName="estado"
+                  [ngClass]="{'is-invalid': isFieldInvalid('estado')}"
+                  placeholder="Ingrese el nombre del estado">
+            @if (isFieldInvalid('estado')) {
+              <div class="invalid-feedback">
+                {{ getFieldError('estado') }}
+              </div>
+            }
+          </div>
+
+          <!-- Municipio -->
+          <div class="col-md-6 mb-3">
+            <label for="municipio" class="form-label">Municipio *</label>
+            <input type="text" 
+                  class="form-control" 
+                  id="municipio"
+                  formControlName="municipio"
+                  [ngClass]="{'is-invalid': isFieldInvalid('municipio')}"
+                  placeholder="Ingrese el nombre del municipio">
+            @if (isFieldInvalid('municipio')) {
+              <div class="invalid-feedback">
+                {{ getFieldError('municipio') }}
+              </div>
+            }
+          </div>
+
+          <!-- Código Postal -->
+          <div class="col-md-6 mb-3">
+            <label for="codigoPostal" class="form-label">Código Postal *</label>
+            <input type="text" 
+                  class="form-control" 
+                  id="codigoPostal"
+                  formControlName="codigoPostal"
+                  [ngClass]="{'is-invalid': isFieldInvalid('codigoPostal')}"
+                  placeholder="Ingrese el código postal (5 dígitos)"
+                  maxlength="5">
+            @if (isFieldInvalid('codigoPostal')) {
+              <div class="invalid-feedback">
+                {{ getFieldError('codigoPostal') }}
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- Botones de acción -->
+        <div class="row">
+          <div class="col-12">
+            <div class="d-flex justify-content-end gap-2">
+              <button type="button" class="btn btn-secondary" (click)="onCancel()">
+                <i class="fa fa-times"></i> Cancelar
+              </button>
+              <button type="submit" class="btn btn-primary" [disabled]="coloniaForm.invalid">
+                <i class="fa fa-save"></i> Guardar
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

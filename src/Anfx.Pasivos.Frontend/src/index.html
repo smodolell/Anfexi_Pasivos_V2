@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Profuturo</title>
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
+  <link rel="stylesheet" href="assets/node_modules/bootstrap/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="assets/dist/css/style.min.css">
+  <link rel="stylesheet" href="assets/node_modules/toast-master/css/jquery.toast.css">
+
+
+  <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+  <!--[if lt IE 9]>
+  <script src="assets/dist/NoIE/html5shiv.js"></script>
+  <script src="assets/dist/NoIE/respond.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+  <div class="preloader">
+    <div class="loader">
+        <div class="loader__figure"></div>
+        <p class="loader__label">Profuturo trabajando...</p>
+    </div>
+  </div>
+  <app-root></app-root>
+  <script src="assets/node_modules/jquery/dist/jquery.min.js"></script>
+  <script src="assets/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/node_modules/toast-master/js/jquery.toast.js"></script>
+  <script type="text/javascript">
+    // Función global para mostrar notificaciones
+    window.showNotification = function(title, message, type = 'info') {
+      if (typeof $.toast !== 'undefined') {
+        $.toast({
+          heading: title || 'Mensaje',
+          text: message,
+          position: 'top-right',
+          loaderBg: '#ff6849',
+          icon: type,
+          hideAfter: 3500,
+          stack: 6
+        });
+      } else {
+        // Fallback si toast no está disponible
+        alert(message);
+      }
+    };
+
+    // Función global para manejar el preloader
+    window.hidePreloader = function() {
+      const preloader = document.querySelector('.preloader');
+      if (preloader) {
+        preloader.style.opacity = '0';
+        setTimeout(() => {
+          preloader.style.display = 'none';
+        }, 500);
+      }
+    };
+
+    window.showPreloader = function() {
+      const preloader = document.querySelector('.preloader');
+      if (preloader) {
+        preloader.style.opacity = '1';
+        preloader.style.display = 'block';
+      }
+    };
+
+    // Función global para agregar clases al body
+    window.addBodyClass = function(className) {
+      if (document.body) {
+        document.body.classList.add(className);
+      }
+    };
+
+    // Función global para remover clases del body
+    window.removeBodyClass = function(className) {
+      if (document.body) {
+        document.body.classList.remove(className);
+      }
+    };
+  </script>
+</body>
+</html>
