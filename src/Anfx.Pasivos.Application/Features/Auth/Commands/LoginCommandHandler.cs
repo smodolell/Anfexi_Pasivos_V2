@@ -1,3 +1,4 @@
+using Anfx.Pasivos.Application.Common.Utils;
 using Anfx.Pasivos.Application.Features.Auth.DTOs;
 
 namespace Anfx.Pasivos.Application.Features.Auth.Commands;
@@ -31,15 +32,20 @@ public class LoginCommandHandler : ICommandHandler<LoginCommand, Result<UsuarioL
             return Result.Unauthorized("Credenciales inválidas");
         }
 
+        var password = Functions.Decrypt(usuario.Contrasena);
 
-        bool contrasenaValida = BCrypt.Net.BCrypt.Verify(
-           request.Contrasenia,
-           usuario.Contrasena
-       );
-        if (!contrasenaValida)
+        if (request.Contrasenia != password)
         {
             return Result.Unauthorized("Credenciales inválidas");
         }
+        // bool contrasenaValida = BCrypt.Net.BCrypt.Verify(
+        //    request.Contrasenia,
+        //    usuario.Contrasena
+        //);
+        // if (!contrasenaValida)
+        // {
+        //     return Result.Unauthorized("Credenciales inválidas");
+        // }
 
         var loginResponse = new UsuarioLoginDto
         {

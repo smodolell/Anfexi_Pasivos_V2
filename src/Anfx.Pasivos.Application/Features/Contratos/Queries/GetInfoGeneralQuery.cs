@@ -2,32 +2,107 @@
 
 namespace Anfx.Pasivos.Application.Features.Contratos.Queries;
 
-public class GetInfoGeneralQuery : IQuery<Result<InfoGeneralDto>>
+public class GetInfoGeneralQuery : IQuery<Result<InfoGeneralContratoPasivoDto>>
 {
-    public string Contrato { get; set; } = "";
+    public string ContratoPasivo { get; set; } = "";
 }
 
 
 
-public class GetInfoGeneralQueryHandler : IQueryHandler<GetInfoGeneralQuery, Result<InfoGeneralDto>>
+
+
+public class GetInfoGeneralQueryHandler : IQueryHandler<GetInfoGeneralQuery, Result<InfoGeneralContratoPasivoDto>>
 {
     private readonly IApplicationDbContext _context;
-    public GetInfoGeneralQueryHandler(IApplicationDbContext context)
+    private readonly IMapper _mapper;
+    private readonly IDatabaseService _databaseService;
+
+    public GetInfoGeneralQueryHandler(IApplicationDbContext context, IMapper mapper, IDatabaseService databaseService)
     {
         _context = context;
+        _mapper = mapper;
+        _databaseService = databaseService;
     }
-    public async Task<Result<InfoGeneralDto>> HandleAsync(GetInfoGeneralQuery request, CancellationToken cancellationToken)
+    public async Task<Result<InfoGeneralContratoPasivoDto>> HandleAsync(GetInfoGeneralQuery request, CancellationToken cancellationToken)
     {
-        var contrato = await _context.PSV_Contrato.FirstOrDefaultAsync(r => r.Contrato.Equals(request.Contrato));
-        if (contrato is null)
+        try
         {
-            return Result.NotFound("Contrato no encontrado");
+            var contrato = await _context.PSV_Contrato
+                .Include(i => i.SB_Periodicidad)
+                .Include(i => i.SB_TipoMoneda)
+                .Include(i => i.PSV_EstatusContrato)
+                .Include(i => i.PSV_TipoCredito)
+                .Include(i => i.PSV_TablaAmortiza)
+                .FirstOrDefaultAsync(r => r.Contrato.Equals(request.ContratoPasivo));
+            if (contrato is null)
+            {
+                return Result.NotFound("Contrato no encontrado");
+            }
+
+            var hoy = DateTime.Now.Date;
+
+            var infoGeneral = _mapper.Map<InfoGeneralContratoPasivoDto>(contrato);
+
+            infoGeneral.SaldoVencido = _context.PSV_Movimiento
+                .Where(w => w.IdContrato == contrato.IdContrato && w.FecMovimiento <= hoy && w.SaldoTotal > 0)
+                .Sum(s => (decimal?)s.SaldoTotal) ?? 0;
+
+            infoGeneral.Movimientos = await _databaseService.GetDetalleMovimientosAsync(contrato.IdContrato);
+
+
+            var SaldoInsoluto = contrato.PSV_TablaAmortiza
+                .Where(w => !w.Procesado && w.VersionTabla == w.PSV_Contrato.VersionTabla && w.IdTipoTabla == 1)
+                .Sum(s => (decimal?)s.Capital) ?? 0;
+
+            infoGeneral.SaldoInsoluto = SaldoInsoluto + infoGeneral.Movimientos.Where(w => w.EsRenta).Sum(s => (decimal?)s.SaldoCapital) ?? 0;
+            infoGeneral.Pagos = await _databaseService.GetDetallePagosAsync(contrato.IdContrato);
+
+            return Result.Success(infoGeneral);
         }
-            
-        var infoGeneral = new InfoGeneralDto
+        catch (Exception ex)
         {
-            Contrato = contrato.Contrato,
-        };
-        return Result.Success(infoGeneral);
+            return Result.Error(ex.Message);
+        }
+
+    }
+
+}
+
+
+public class GetGetTablaAmortizaQuery : IQuery<Result<List<TablaAmortizaItemDto>>>
+{
+    public int IdContrato { get; set; }
+    public int IdTipoTabla { get; set; }
+
+}
+
+
+
+internal class GetGetTablaAmortizaQueryHandler : IQueryHandler<GetGetTablaAmortizaQuery, Result<List<TablaAmortizaItemDto>>>
+{
+    private readonly IApplicationDbContext _context;
+    private readonly IDatabaseService _databaseService;
+    public GetGetTablaAmortizaQueryHandler(IApplicationDbContext context, IDatabaseService databaseService)
+    {
+        _context = context;
+        _databaseService = databaseService;
+    }
+    public async Task<Result<List<TablaAmortizaItemDto>>> HandleAsync(GetGetTablaAmortizaQuery request, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var contrato = await _context.PSV_Contrato.SingleOrDefaultAsync(r => r.IdContrato == request.IdContrato);
+            if (contrato == null)
+            {
+                return Result.NotFound("Contrato no encontrado");
+            }
+
+            var result = await _databaseService.GetDetalleTablaAmortizaAsync(request.IdContrato, contrato.VersionTabla ?? 1, request.IdTipoTabla);
+            return Result.Success(result);
+        }
+        catch (Exception ex)
+        {
+            return Result.Error(ex.Message);
+        }
     }
 }

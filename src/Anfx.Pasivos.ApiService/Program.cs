@@ -104,6 +104,11 @@ app.UseCors("AllowAngular");
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.UseSwagger();
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "API Pasivos V1");
+});
 app.MapOpenApi();
 
 app.MapScalarApiReference(options =>

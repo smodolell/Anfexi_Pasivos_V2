@@ -6,6 +6,7 @@ import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/
 import { API_AUTH_URL, API_CATALOGO_URL, API_COTIZADOR_URL, API_SISTEMA_URL } from './api.config';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
+import { provideApi } from '@api/provide-api';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -16,6 +17,13 @@ export const appConfig: ApplicationConfig = {
       withFetch(),
       withInterceptors([AuthInterceptor])
     ),
+    provideApi({
+      basePath: process.env['NODE_ENV'] === 'production'
+        ? 'https://dev.anfexi.com/profuturo/backend'
+        : 'https://localhost:7223',
+      withCredentials: true,
+      // Si necesitas configuración adicional
+    }),
     {
       provide: API_AUTH_URL,
       useValue: process.env['NODE_ENV'] === 'production' ? 'https://dev.anfexi.com/profuturo/backend/auth/api' : 'https://localhost:7223/api'

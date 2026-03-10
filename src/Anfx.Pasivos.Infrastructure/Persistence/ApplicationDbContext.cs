@@ -1,10 +1,11 @@
 using Anfx.Pasivos.Application.Common.Interfaces;
+using Anfx.Pasivos.Application.Common.Models.StoredProcedures;
 using Anfx.Pasivos.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Anfx.Pasivos.Infrastructure.Persistence;
 
-public class ApplicationDbContext : DbContext,IApplicationDbContext
+public partial class ApplicationDbContext : DbContext,IApplicationDbContext
 {
     // Propiedades existentes (ya implementadas)
     public DbSet<Usuario> Usuarios => Set<Usuario>();
@@ -87,4 +88,6 @@ public class ApplicationDbContext : DbContext,IApplicationDbContext
         base.OnModelCreating(modelBuilder);
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
     }
+
+   
 }

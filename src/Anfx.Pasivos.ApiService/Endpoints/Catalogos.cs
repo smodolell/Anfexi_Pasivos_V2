@@ -15,7 +15,7 @@ public class Catalogos : EndpointGroupBase
 
         #region Banco
         // GET by id
-        group.MapGet("banco/{id}", GetPaginatedBanco)
+        group.MapGet("banco/{id}", GetBancoById)
             .WithName("GetBancoById")
             .WithSummary("Obtiene un banco por ID")
             .Produces<ApiResponseDto<BancoDto>>(StatusCodes.Status200OK)
@@ -49,7 +49,6 @@ public class Catalogos : EndpointGroupBase
             .Produces<ApiResponseDto>(StatusCodes.Status500InternalServerError);
         #endregion
 
-
         #region CuentaBancaria
         // GET by id
         group.MapGet("cuentaBancaria/{id}", GetCuentasBancariaById)
@@ -60,13 +59,13 @@ public class Catalogos : EndpointGroupBase
             .Produces<ApiResponseDto>(StatusCodes.Status401Unauthorized)
             .Produces<ApiResponseDto>(StatusCodes.Status500InternalServerError);
 
-        group.MapGet("cuentaBancaria/", GetPaginatedCuentasBancaria)
+        group.MapGet("cuentaBancaria", GetPaginatedCuentasBancaria)
             .WithSummary("Obtiene cuentas bancarias paginadas y filtradas")
             .Produces<ApiResponseDto<PagedResultDto<CuentaBancariaListItemDto>>>(StatusCodes.Status200OK)
             .Produces<ApiResponseDto>(StatusCodes.Status401Unauthorized)
             .Produces<ApiResponseDto>(StatusCodes.Status500InternalServerError);
 
-        group.MapPost("cuentaBancaria/", CreateCuentaBancaria)
+        group.MapPost("cuentaBancaria", CreateCuentaBancaria)
             .WithName("CreateCuentaBancaria")
             .WithSummary("Crea una nueva cuenta bancaria")
             .Accepts<CuentaBancariaDto>("application/json")
@@ -122,7 +121,6 @@ public class Catalogos : EndpointGroupBase
             .Produces<ApiResponseDto>(StatusCodes.Status401Unauthorized)
             .Produces<ApiResponseDto>(StatusCodes.Status500InternalServerError);
         #endregion
-
 
         #region TipoPago
 
@@ -209,7 +207,7 @@ public class Catalogos : EndpointGroupBase
 
     public async Task<IResult> UpdateBanco(
     [FromServices] ICommandMediator commandMediator,
-    int id,
+  [FromRoute] int id,
     [FromBody] BancoDto model)
     {
         var command = new UpdateBancoCommand
@@ -227,7 +225,7 @@ public class Catalogos : EndpointGroupBase
 
     public async Task<IResult> GetCuentasBancariaById(
      [FromServices] IQueryMediator queryMediator,
-     int id)
+    [FromRoute] int id)
     {
         var result = await queryMediator.QueryAsync(new GetCuentaBancariaByIdQuery { Id = id });
         return result.ToCustomMinimalApiResult();
@@ -287,7 +285,7 @@ public class Catalogos : EndpointGroupBase
 
     public async Task<IResult> GetEstatusContratoById(
      [FromServices] IQueryMediator queryMediator,
-     int id)
+    [FromRoute] int id)
     {
         var result = await queryMediator.QueryAsync(new GetEstatusContratoByIdQuery { Id = id });
         return result.ToCustomMinimalApiResult();
@@ -328,7 +326,7 @@ public class Catalogos : EndpointGroupBase
 
     public async Task<IResult> UpdateEstatusContrato(
     [FromServices] ICommandMediator commandMediator,
-    int id,
+   [FromRoute] int id,
     [FromBody] EstatusContratoDto model)
     {
         var command = new UpdateEstatusContratoCommand
@@ -387,7 +385,7 @@ public class Catalogos : EndpointGroupBase
 
     public async Task<IResult> UpdateTipoPago(
     [FromServices] ICommandMediator commandMediator,
-    int id,
+  [FromRoute] int id,
     [FromBody] TipoPagoDto model)
     {
         var command = new UpdateTipoPagoCommand

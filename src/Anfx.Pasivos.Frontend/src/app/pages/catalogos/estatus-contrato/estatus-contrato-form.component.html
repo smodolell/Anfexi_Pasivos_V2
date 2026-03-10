@@ -1,0 +1,45 @@
+<div class="container mt-4 pb-5">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb mb-4">
+      <li class="breadcrumb-item"><a routerLink="/catalogos/estatus-contrato">Estatus de Contrato</a></li>
+      <li class="breadcrumb-item active">{{ isEditMode() ? 'Editar' : 'Nuevo' }}</li>
+    </ol>
+  </nav>
+
+  <div class="card shadow-sm border-0">
+    <div class="card-header bg-white py-3 border-bottom">
+      <h4 class="mb-0 text-primary">
+        <i class="bi" [ngClass]="isEditMode() ? 'bi-pencil-square' : 'bi-plus-circle'"></i>
+        {{ isEditMode() ? 'Actualizar Estatus de Contrato' : 'Registrar Nuevo Estatus de Contrato' }}
+      </h4>
+    </div>
+    <div class="card-body p-4">
+      <form [formGroup]="estatusForm" (ngSubmit)="onSubmit()">
+        <div class="row">
+          <div class="col-md-12 mb-3">
+            <label class="form-label fw-bold">Nombre del Estatus <span class="text-danger">*</span></label>
+            <input 
+              type="text" 
+              formControlName="estatusContrato" 
+              class="form-control shadow-none" 
+              [class.is-invalid]="isInvalid('estatusContrato')"
+              placeholder="Ej: Activo, Cancelado, Pendiente...">
+            <div class="invalid-feedback">El nombre del estatus es obligatorio.</div>
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
+          <button type="button" class="btn btn-light" routerLink="/catalogos/estatus-contrato">Cancelar</button>
+          <button type="submit" class="btn btn-primary px-4 shadow-sm" [disabled]="estatusForm.invalid || isLoading()">
+            @if (isLoading()) {
+              <span class="spinner-border spinner-border-sm me-2"></span>
+              Procesando...
+            } @else {
+              <i class="bi bi-save me-2"></i> {{ isEditMode() ? 'Guardar Cambios' : 'Registrar Estatus' }}
+            }
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

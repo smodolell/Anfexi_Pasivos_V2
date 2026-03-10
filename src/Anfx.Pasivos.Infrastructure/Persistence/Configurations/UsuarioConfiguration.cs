@@ -12,6 +12,9 @@ public class UsuarioConfiguration : IEntityTypeConfiguration<Usuario>
         builder.ToTable("Usuario");
 
         // Llave primaria - Asumiendo que agregarás una propiedad Id
+        builder.Property(e => e.Id)
+            .HasColumnName("IdUsuario");
+
         builder.HasKey(e => e.Id);
 
         // Propiedades
@@ -28,10 +31,12 @@ public class UsuarioConfiguration : IEntityTypeConfiguration<Usuario>
             .IsRequired();
 
         builder.Property(e => e.Contrasena)
+            .HasColumnName("UserPass")
             .HasMaxLength(500)
             .IsRequired();
 
         builder.Property(e => e.FechaRegistro)
+            .HasColumnName("FechaRegistracion")
             .IsRequired()
             .HasDefaultValueSql("GETDATE()");
 
@@ -40,6 +45,7 @@ public class UsuarioConfiguration : IEntityTypeConfiguration<Usuario>
             .HasDefaultValue(true);
 
         builder.Property(e => e.RolId)
+            .HasColumnName("IdRol")
             .IsRequired();
 
         // Índices

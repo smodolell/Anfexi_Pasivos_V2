@@ -1,0 +1,11 @@
+{
+  "generatorName": "typescript-angular",
+  "inputSpec": "swagger.json",
+  "outputDir": "src/api",
+  "additionalProperties": {
+    "ngVersion": "21.0.0",
+    "providedInRoot": true,
+    "apiPackage": "services",
+    "modelPackage": "models"
+  }
+}

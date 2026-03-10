@@ -25,7 +25,7 @@ public static class DependencyInjection
         services.AddDbContext<ApplicationDbContext>((sp, options) =>
         {
             options.AddInterceptors(sp.GetServices<ISaveChangesInterceptor>());
-            options.UseSqlServer(connectionString, b => b.MigrationsAssembly("Yggdrasil.Infrastructure"));
+            options.UseSqlServer(connectionString, b => b.MigrationsAssembly("Anfx.Pasivos.Infrastructure"));
         }, ServiceLifetime.Scoped);
 
         services.AddDbContextFactory<ApplicationDbContext>(options =>
@@ -38,6 +38,7 @@ public static class DependencyInjection
         services.AddScoped<IPaginator, Paginator>();
         services.AddScoped<IDynamicSorter, DynamicSorter>();
         services.AddScoped<IJwtService, JwtService>();
+        services.AddScoped<IDatabaseService, DatabaseService>();
         services.AddScoped<IExcelExportService, ExcelExportService>();
 
         return services;

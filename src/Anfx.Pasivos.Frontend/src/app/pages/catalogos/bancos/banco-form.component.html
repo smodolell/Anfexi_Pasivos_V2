@@ -1,0 +1,43 @@
+<div class="container mt-4">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a routerLink="/catalogos/bancos">Bancos</a></li>
+      <li class="breadcrumb-item active">{{ isEditMode() ? 'Editar' : 'Nuevo' }}</li>
+    </ol>
+  </nav>
+
+  <div class="card shadow-sm border-0 mt-4">
+    <div class="card-header bg-white py-3">
+      <h4 class="mb-0 text-primary">
+        <i class="bi bi-bank me-2"></i>
+        {{ isEditMode() ? 'Editar Banco' : 'Nuevo Banco' }}
+      </h4>
+    </div>
+    <div class="card-body p-4">
+      <form [formGroup]="bancoForm" (ngSubmit)="onSubmit()">
+        <div class="row">
+          <div class="col-md-12 mb-3">
+            <label class="form-label fw-bold">Nombre del Banco *</label>
+            <input 
+              type="text" 
+              formControlName="banco" 
+              class="form-control" 
+              [class.is-invalid]="isInvalid('banco')"
+              placeholder="Ej: Banco de México">
+            <div class="invalid-feedback">El nombre del banco es obligatorio (máx 100 caracteres).</div>
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-end gap-2 mt-4 border-top pt-3">
+          <button type="button" class="btn btn-light" routerLink="/catalogos/bancos">Cancelar</button>
+          <button type="submit" class="btn btn-primary px-4" [disabled]="bancoForm.invalid || isLoading()">
+            @if (isLoading()) {
+              <span class="spinner-border spinner-border-sm me-2"></span>
+            }
+            {{ isEditMode() ? 'Guardar Cambios' : 'Registrar Banco' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

@@ -71,6 +71,6 @@ public interface IApplicationDbContext
     DbSet<PSV_Terminacion> PSV_Terminacion { get; }
     DbSet<View_CarteraPasiva_PorVencerV2> View_CarteraPasiva_PorVencerV2 { get; }
 
-
+    IApplicationDbContextProcedures Procedures { get; }
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

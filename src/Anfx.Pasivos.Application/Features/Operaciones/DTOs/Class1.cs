@@ -54,20 +54,6 @@ namespace Anfx.Pasivos.Application.Features.Operaciones.DTOs
 
     }
 }
-public class PagoItemDto
-{
-    public int IdPago { get; set; }
-    public int IdContratoPasivo { get; set; }
-    public string TipoPago { get; set; }
-    public string CuentaBancaria { get; set; }
-    public DateTime? FecPagoValor { get; set; }
-    public DateTime? FecPagoRegistro { get; set; }
-    public Decimal MontoPago { get; set; }
-    public Decimal MontoAplicado { get; set; }
-    public Decimal MontoAplicadoOtros { get; set; }
-    public Decimal SaldoPago { get; set; }
-
-}
 
 public class MovimientoItemDto
 {

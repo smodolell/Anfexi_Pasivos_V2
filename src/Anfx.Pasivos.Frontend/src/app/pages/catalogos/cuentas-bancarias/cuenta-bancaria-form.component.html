@@ -1,0 +1,57 @@
+<div class="container mt-4 pb-5">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb mb-4">
+      <li class="breadcrumb-item"><a routerLink="/catalogos/cuentas-bancarias">Cuentas Bancarias</a></li>
+      <li class="breadcrumb-item active">{{ isEditMode() ? 'Editar' : 'Nueva' }}</li>
+    </ol>
+  </nav>
+
+  <div class="card shadow-sm border-0">
+    <div class="card-header bg-white py-3 border-bottom">
+      <h4 class="mb-0 text-primary">
+        <i class="bi" [ngClass]="isEditMode() ? 'bi-pencil-square' : 'bi-plus-circle'"></i>
+        {{ isEditMode() ? 'Actualizar Cuenta Bancaria' : 'Registrar Nueva Cuenta Bancaria' }}
+      </h4>
+    </div>
+    <div class="card-body p-4">
+      <form [formGroup]="cuentaForm" (ngSubmit)="onSubmit()">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label fw-bold">Banco <span class="text-danger">*</span></label>
+            <select formControlName="idBanco" class="form-select shadow-none" [class.is-invalid]="isInvalid('idBanco')">
+              <option [ngValue]="null">Seleccione un banco...</option>
+              @for (banco of bancos(); track banco.id) {
+                <option [ngValue]="banco.id">{{ banco.banco }}</option>
+              }
+            </select>
+            <div class="invalid-feedback">Debe seleccionar un banco.</div>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label fw-bold">Número de Cuenta <span class="text-danger">*</span></label>
+            <input type="text" formControlName="cuentaBancaria" class="form-control shadow-none" [class.is-invalid]="isInvalid('cuentaBancaria')" placeholder="Máximo 20 dígitos">
+            <div class="invalid-feedback">La cuenta bancaria es obligatoria.</div>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label fw-bold">CLABE <span class="text-danger">*</span></label>
+            <input type="text" formControlName="clabe" class="form-control shadow-none" [class.is-invalid]="isInvalid('clabe')" placeholder="18 dígitos">
+            <div class="invalid-feedback">La CLABE debe tener exactamente 18 dígitos.</div>
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
+          <button type="button" class="btn btn-light" routerLink="/catalogos/cuentas-bancarias">Cancelar</button>
+          <button type="submit" class="btn btn-primary px-4 shadow-sm" [disabled]="cuentaForm.invalid || isLoading()">
+            @if (isLoading()) {
+              <span class="spinner-border spinner-border-sm me-2"></span>
+              Procesando...
+            } @else {
+              <i class="bi bi-save me-2"></i> {{ isEditMode() ? 'Guardar Cambios' : 'Registrar Cuenta' }}
+            }
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
