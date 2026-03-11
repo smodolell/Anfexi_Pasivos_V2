@@ -4,22 +4,20 @@ using Anfx.Pasivos.Application.Features.Empresas.Queries;
 using Ardalis.Result.AspNetCore;
 using IResult = Microsoft.AspNetCore.Http.IResult;
 
+
 namespace Anfx.Pasivos.ApiService.Endpoints;
 
-public class Empresas : EndpointGroupBase
+public class Sistema : EndpointGroupBase
 {
-
-    public override string? GroupName => "empresas";
-
+    public override string? GroupName => "sistema";
     public override void Map(RouteGroupBuilder groupBuilder)
     {
-
         var group = groupBuilder.MapGroup("/")
             .RequireAuthorization()
-            .WithTags("Empresas");
+            .WithTags("Sistema");
 
 
-        group.MapPost("/", Create)
+        group.MapPost("empresa/", Create)
             .WithName("CreateEmpresa")
             .WithSummary("Crea una nueva empresa")
             .Accepts<EmpresaCreateDto>("application/json")
@@ -28,7 +26,7 @@ public class Empresas : EndpointGroupBase
             .Produces<ProblemDetails>(StatusCodes.Status409Conflict);
 
 
-        group.MapPut("/{id}", Update)
+        group.MapPut("empresa/{id}", Update)
             .WithName("UpdateEmpresa")
             .WithSummary("Actualiza una empresa existente")
             .Accepts<EmpresaUpdateDto>("application/json")
@@ -39,7 +37,7 @@ public class Empresas : EndpointGroupBase
             .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
             .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError);
 
-        group.MapDelete("/{id}", Delete)
+        group.MapDelete("empresa/{id}", Delete)
             .WithName("DeleteEmpresa")
             .WithSummary("Elimina una empresa")
             .Produces<EmpresaDto>(StatusCodes.Status200OK)
@@ -47,12 +45,12 @@ public class Empresas : EndpointGroupBase
             .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
             .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError);
 
-        group.MapGet("/", GetPaginated)
+        group.MapGet("empresa/", GetPaginated)
             .WithSummary("Obtiene empresas paginadas y filtradas")
             .Produces<PagedResultDto<EmpresaDto>>(StatusCodes.Status200OK);
 
 
-        group.MapGet("/all", GetAll)
+        group.MapGet("empresa/all", GetAll)
             .WithName("get-all")
             .WithSummary("Obtiene todas las empresas activas")
             .Produces<List<EmpresaDto>>(StatusCodes.Status200OK)
@@ -60,7 +58,7 @@ public class Empresas : EndpointGroupBase
             .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError);
         ;
 
-        group.MapGet("/{id}", GetById)
+        group.MapGet("empresa/{id}", GetById)
             .WithName("GetById")
             .WithSummary("Obtiene una empresa por su ID")
             .Produces<EmpresaDto>(StatusCodes.Status200OK)
@@ -69,7 +67,7 @@ public class Empresas : EndpointGroupBase
             .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError);
 
 
-        group.MapGet("/rfc/{rfc}", GetByRfc)
+        group.MapGet("empresa/rfc/{rfc}", GetByRfc)
             .WithName("GetEmpresaByRfc")
             .WithSummary("Obtiene una empresa por RFC")
             .Produces<EmpresaDto>(StatusCodes.Status200OK)
@@ -78,22 +76,18 @@ public class Empresas : EndpointGroupBase
             .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError);
 
 
-        group.MapGet("/get-tiposdirecciones", GetListTipoDireccion)
+        group.MapGet("empresa/get-tiposdirecciones", GetListTipoDireccion)
             .WithName("GetTiposDirecciones")
             .WithSummary("Obtiene lista de tipo de direcciones")
             .Produces<IEnumerable<SelectItemDto>>(StatusCodes.Status200OK)
             .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
             .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError);
 
-
     }
 
-
-
-
     public async Task<IResult> Create(
-        [FromServices] ICommandMediator commandMediator,
-        [FromBody] EmpresaCreateDto model)
+    [FromServices] ICommandMediator commandMediator,
+    [FromBody] EmpresaCreateDto model)
     {
 
         var command = new CreateEmpresaCommand(model);

@@ -1,4 +1,6 @@
 ﻿using Anfx.Pasivos.Infrastructure.Persistence;
+using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
+using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi;
 using System.Reflection;
@@ -83,7 +85,10 @@ public static class DependencyInjection
         {
             var apiXml = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
             c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, apiXml));
+
         });
+
+        builder.Services.AddFluentValidationRulesToSwagger();
     }
     public static void AddWebServices2(this IHostApplicationBuilder builder)
     {

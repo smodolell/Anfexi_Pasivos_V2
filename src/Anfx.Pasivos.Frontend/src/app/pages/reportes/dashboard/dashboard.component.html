@@ -1,0 +1,225 @@
+<div class="container-fluid mt-4">
+  <div class="card mb-4 shadow-sm">
+    <div class="card-header bg-primary text-white">
+      <h5 class="mb-0">Filtros de Dashboard</h5>
+    </div>
+    <div class="card-body">
+      <div class="row g-3">
+        <div class="col-md-3">
+          <label class="form-label">Fondeador</label>
+          <select
+            class="form-select"
+            [ngModel]="selectedFondeador()"
+            (ngModelChange)="selectedFondeador.set($event)"
+          >
+            <option [value]="undefined">[Seleccione]</option>
+            @for (item of fondeadores(); track item.value) {
+              <option [value]="item.value">{{ item.text }}</option>
+            }
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Contrato Pasivo</label>
+          <select
+            class="form-select"
+            [ngModel]="selectedContratoPasivo()"
+            (ngModelChange)="selectedContratoPasivo.set($event)"
+          >
+            <option [value]="undefined">[Seleccione]</option>
+            @for (item of contratosPasivos(); track item.value) {
+              <option [value]="item.value">{{ item.text }}</option>
+            }
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Contrato Activo</label>
+          <select
+            class="form-select"
+            [ngModel]="selectedContratoActivo()"
+            (ngModelChange)="selectedContratoActivo.set($event)"
+          >
+            <option [value]="undefined">[Seleccione]</option>
+            @for (item of contratosActivos(); track item.value) {
+              <option [value]="item.value">{{ item.text }}</option>
+            }
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Saldos</label>
+          <select
+            class="form-select"
+            [ngModel]="selectedSaldo()"
+            (ngModelChange)="selectedSaldo.set($event)"
+          >
+            <option [value]="undefined">[Seleccione]</option>
+            @for (option of saldosOptions; track option.value) {
+              <option [value]="option.value">{{ option.label }}</option>
+            }
+          </select>
+        </div>
+      </div>
+      <div class="row mt-4">
+        <div class="col-12 d-flex gap-2">
+          <button class="btn btn-primary" (click)="obtenerDetalle()">
+            <i class="bi bi-list-ul me-1"></i> Obtener detalle
+          </button>
+          <button class="btn btn-success" (click)="mostrarGraficos()">
+            <i class="bi bi-graph-up me-1"></i> Gráficos
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  @if (showTables()) {
+    <div class="row">
+      <div class="col-md-6">
+        <div class="card mb-4 shadow-sm">
+          <div class="card-header bg-info text-white">
+            <h5 class="mb-0">Contratos Cartera Activa Por Vencer</h5>
+          </div>
+          <div class="card-body p-0">
+            <div class="table-responsive">
+              <table class="table table-hover mb-0">
+                <thead class="table-light">
+                  <tr>
+                    <th>Contrato</th>
+                    <th>Vencimiento</th>
+                    <th>Capital</th>
+                    <th>Interés</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (item of carteraActiva(); track $index) {
+                    <tr>
+                      <td>{{ item.contrato }}</td>
+                      <td>{{ item.fecVencimiento | date: 'dd/MM/yyyy' }}</td>
+                      <td>{{ item.capital | currency }}</td>
+                      <td>{{ item.interes | currency }}</td>
+                    </tr>
+                  } @empty {
+                    <tr>
+                      <td colspan="4" class="text-center py-4 text-muted">
+                        No se encontraron datos
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="card mb-4 shadow-sm">
+          <div class="card-header bg-warning text-dark">
+            <h5 class="mb-0">Contratos Cartera Pasiva Por Vencer</h5>
+          </div>
+          <div class="card-body p-0">
+            <div class="table-responsive">
+              <table class="table table-hover mb-0">
+                <thead class="table-light">
+                  <tr>
+                    <th>Contrato</th>
+                    <th>Vencimiento</th>
+                    <th>Capital</th>
+                    <th>Interés</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (item of carteraPasiva(); track $index) {
+                    <tr>
+                      <td>{{ item.contrato }}</td>
+                      <td>{{ item.fecVencimiento | date: 'dd/MM/yyyy' }}</td>
+                      <td>{{ item.capital | currency }}</td>
+                      <td>{{ item.interes | currency }}</td>
+                    </tr>
+                  } @empty {
+                    <tr>
+                      <td colspan="4" class="text-center py-4 text-muted">
+                        No se encontraron datos
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
+  @if (showCharts()) {
+    <div class="row">
+      <div class="col-md-6 mb-4">
+        <div class="card shadow-sm h-100">
+          <div class="card-body">
+            <highcharts-chart
+              [options]="pieChartActivaOptions"
+              style="width: 100%; height: 400px; display: block"
+            >
+            </highcharts-chart>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 mb-4">
+        <div class="card shadow-sm h-100">
+          <div class="card-body">
+            <highcharts-chart
+              [options]="pieChartPasivaOptions"
+              style="width: 100%; height: 400px; display: block"
+            >
+            </highcharts-chart>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 mb-4">
+        <div class="card shadow-sm h-100">
+          <div class="card-body">
+            <highcharts-chart
+              [options]="barChartActivaOptions"
+              style="width: 100%; height: 400px; display: block"
+            >
+            </highcharts-chart>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 mb-4">
+        <div class="card shadow-sm h-100">
+          <div class="card-body">
+            <highcharts-chart
+              [options]="barChartPasivaOptions"
+              style="width: 100%; height: 400px; display: block"
+            >
+            </highcharts-chart>
+          </div>
+          {{ barChartPasivaOptions | json }}
+        </div>
+      </div>
+      <div class="col-12 mb-4">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <highcharts-chart
+              [options]="relationChartOptions"
+              style="width: 100%; height: 400px; display: block"
+            >
+            </highcharts-chart>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
+  <div class="form-group text-center">
+    <div class="col-xs-12 p-b-20">
+      <button
+        class="btn w-100 btn-lg btn-info btn-rounded text-white"
+        [attr.disabled]="isLoading() ? 'disabled' : null"
+        type="submit"
+      >
+        Entrar
+      </button>
+    </div>
+  </div>
+</div>

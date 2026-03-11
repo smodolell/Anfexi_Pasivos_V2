@@ -22,11 +22,16 @@ export const routes: Routes = [
     component: AdminLayoutComponent,
     canActivate: [AuthGuard], // Requiere autenticación Y rol de admin
     children: [
-      { path: '', redirectTo: '/admin/dashboard', pathMatch: 'full' },
+      { path: '', redirectTo: '/admin/reportes/dashboard', pathMatch: 'full' },
       {
         path: 'dashboard',
         loadComponent: () =>
-          import('./pages/admin/dashboard/dashboard.component').then((m) => m.DashboardComponent),
+          import('./pages/reportes/dashboard/dashboard.component').then((m) => m.DashboardComponent),
+      },
+      {
+        path: 'reportes/dashboard',
+        loadComponent: () =>
+          import('./pages/reportes/dashboard/dashboard.component').then((m) => m.DashboardComponent),
       },
       {
         path: 'usuarios',
@@ -135,11 +140,16 @@ export const routes: Routes = [
     component: AdminLayoutComponent,
     canActivate: [AuthGuard], // Requiere autenticación Y rol de admin
     children: [
-      { path: '', redirectTo: '/admin/dashboard', pathMatch: 'full' },
+      { path: '', redirectTo: '/admin/reportes/dashboard', pathMatch: 'full' },
       {
         path: 'dashboard',
         loadComponent: () =>
           import('./pages/admin/dashboard/dashboard.component').then((m) => m.DashboardComponent),
+      },
+      {
+        path: 'reportes/dashboard',
+        loadComponent: () =>
+          import('./pages/reportes/dashboard/dashboard.component').then((m) => m.DashboardComponent),
       },
       {
         path: 'usuarios',

@@ -41,7 +41,7 @@ export class BancoFormComponent implements OnInit {
   loadBanco(id: number): void {
     this.isLoading.set(true);
     // Nota: el servicio getBancoById parece tener parámetros innecesarios en su firma
-    this.catalogosService.getBancoById().subscribe({
+    this.catalogosService.getBancoById(id).subscribe({
       next: (res) => {
         if (res.success && res.data) {
           this.bancoForm.patchValue(res.data);

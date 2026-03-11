@@ -85,8 +85,114 @@ public class Configuraciones : EndpointGroupBase
             .Produces<ApiResponseDto>(StatusCodes.Status400BadRequest)
             .Produces<ApiResponseDto>(StatusCodes.Status401Unauthorized)
             .Produces<ApiResponseDto>(StatusCodes.Status500InternalServerError);
+
+
+
+        group.MapGet("fondeador/", GetPaginatedFondeadores)
+            .WithName("GetPaginatedFondeadores")
+            .WithSummary("Obtiene fondeadores paginados y filtrados")
+            .WithDescription("Obtiene una lista paginada de fondeadores con opciones de filtrado y ordenamiento")
+            .Produces<ApiResponseDto<PagedResultDto<FondeadorListItemDto>>>(StatusCodes.Status200OK)
+            .Produces<ApiResponseDto>(StatusCodes.Status401Unauthorized)
+            .Produces<ApiResponseDto>(StatusCodes.Status500InternalServerError);
+
+        group.MapGet("fondeador/{id}", GetFondeadorById)
+            .WithName("GetFondeadorById")
+            .WithSummary("Obtiene un fondeador por ID")
+            .WithDescription("Obtiene un fondeador específico por su identificador")
+            .Produces<ApiResponseDto<FondeadorDto>>(StatusCodes.Status200OK)
+            .Produces<ApiResponseDto>(StatusCodes.Status404NotFound)
+            .Produces<ApiResponseDto>(StatusCodes.Status401Unauthorized)
+            .Produces<ApiResponseDto>(StatusCodes.Status500InternalServerError);
+
+        // POST create
+        group.MapPost("fondeador/", CreateFondeador)
+            .WithName("CreateFondeador")
+            .WithSummary("Crea un nuevo fondeador")
+            .WithDescription("Crea un nuevo registro de fondeador")
+            .Accepts<FondeadorEditDto>("application/json")
+            .Produces<int>(StatusCodes.Status201Created)
+            .Produces<ApiResponseDto<int>>(StatusCodes.Status400BadRequest)
+            .Produces<ApiResponseDto<int>>(StatusCodes.Status401Unauthorized)
+            .Produces<ApiResponseDto<int>>(StatusCodes.Status500InternalServerError);
+
+        // PUT update
+        group.MapPut("fondeador/{id}", UpdateFondeador)
+            .WithName("UpdateFondeador")
+            .WithSummary("Actualiza un fondeador existente")
+            .WithDescription("Actualiza los datos de un fondeador específico")
+            .Accepts<FondeadorEditDto>("application/json")
+            .Produces(StatusCodes.Status200OK)
+            .Produces<ApiResponseDto>(StatusCodes.Status404NotFound)
+            .Produces<ApiResponseDto>(StatusCodes.Status400BadRequest)
+            .Produces<ApiResponseDto>(StatusCodes.Status401Unauthorized)
+            .Produces<ApiResponseDto>(StatusCodes.Status500InternalServerError);
+
+        // DELETE
+        group.MapDelete("fondeador/{id}", DeleteFondeador)
+            .WithName("DeleteFondeador")
+            .WithSummary("Elimina un fondeador")
+            .WithDescription("Elimina un fondeador específico por su ID")
+            .Produces(StatusCodes.Status200OK)
+            .Produces<ApiResponseDto>(StatusCodes.Status404NotFound)
+            .Produces<ApiResponseDto>(StatusCodes.Status401Unauthorized)
+            .Produces<ApiResponseDto>(StatusCodes.Status500InternalServerError);
+
+
+        group.MapGet("linea-credito/{id}", GetLineaCreditoById)
+            .WithName("GetLineaCreditoById")
+            .WithSummary("Obtiene una línea de crédito por ID")
+            .WithDescription("Obtiene una línea de crédito específica por su identificador")
+            .Produces<ApiResponseDto<LineaCreditoDto>>(StatusCodes.Status200OK)
+            .Produces<ApiResponseDto>(StatusCodes.Status404NotFound)
+            .Produces<ApiResponseDto>(StatusCodes.Status401Unauthorized)
+            .Produces<ApiResponseDto>(StatusCodes.Status500InternalServerError);
+
+        // GET paginated list
+        group.MapGet("linea-credito/", GetPaginatedLineasCredito)
+            .WithName("GetPaginatedLineasCredito")
+            .WithSummary("Obtiene líneas de crédito paginadas y filtradas")
+            .WithDescription("Obtiene una lista paginada de líneas de crédito con opciones de filtrado y ordenamiento")
+            .Produces<ApiResponseDto<PagedResultDto<LineaCreditoListItemDto>>>(StatusCodes.Status200OK)
+            .Produces<ApiResponseDto>(StatusCodes.Status401Unauthorized)
+            .Produces<ApiResponseDto>(StatusCodes.Status500InternalServerError);
+
+        // POST create
+        group.MapPost("linea-credito/", CreateLineaCredito)
+            .WithName("CreateLineaCredito")
+            .WithSummary("Crea una nueva línea de crédito")
+            .WithDescription("Crea un nuevo registro de línea de crédito")
+            .Accepts<LineaCreditoEditDto>("application/json")
+            .Produces<int>(StatusCodes.Status201Created)
+            .Produces<ApiResponseDto<int>>(StatusCodes.Status400BadRequest)
+            .Produces<ApiResponseDto<int>>(StatusCodes.Status401Unauthorized)
+            .Produces<ApiResponseDto<int>>(StatusCodes.Status500InternalServerError);
+
+        // PUT update
+        group.MapPut("linea-credito/{id}", UpdateLineaCredito)
+            .WithName("UpdateLineaCredito")
+            .WithSummary("Actualiza una línea de crédito existente")
+            .WithDescription("Actualiza los datos de una línea de crédito específica")
+            .Accepts<LineaCreditoEditDto>("application/json")
+            .Produces(StatusCodes.Status200OK)
+            .Produces<ApiResponseDto>(StatusCodes.Status404NotFound)
+            .Produces<ApiResponseDto>(StatusCodes.Status400BadRequest)
+            .Produces<ApiResponseDto>(StatusCodes.Status401Unauthorized)
+            .Produces<ApiResponseDto>(StatusCodes.Status500InternalServerError);
+
+        // DELETE
+        group.MapDelete("linea-credito/{id}", DeleteLineaCredito)
+            .WithName("DeleteLineaCredito")
+            .WithSummary("Elimina una línea de crédito")
+            .WithDescription("Elimina una línea de crédito específica por su ID")
+            .Produces(StatusCodes.Status200OK)
+            .Produces<ApiResponseDto>(StatusCodes.Status404NotFound)
+            .Produces<ApiResponseDto>(StatusCodes.Status401Unauthorized)
+            .Produces<ApiResponseDto>(StatusCodes.Status500InternalServerError);
     }
 
+
+    #region TipoCredito
 
     public async Task<IResult> GetTipoCreditoById(
      [FromServices] IQueryMediator queryMediator,
@@ -145,6 +251,9 @@ public class Configuraciones : EndpointGroupBase
         var result = await commandMediator.SendAsync(command);
         return result.ToCustomMinimalApiResult();
     }
+    #endregion
+
+
 
     #region TipoTablaAmortiza
 
@@ -199,6 +308,161 @@ public class Configuraciones : EndpointGroupBase
         {
             Id = id,
             Model = model
+        };
+
+        var result = await commandMediator.SendAsync(command);
+        return result.ToCustomMinimalApiResult();
+    }
+    #endregion
+
+
+    #region Fondeador
+
+
+    public async Task<IResult> GetPaginatedFondeadores(
+     [FromServices] IQueryMediator queryMediator,
+     [FromQuery] string? q = null,
+     [FromQuery] int page = 1,
+     [FromQuery] int size = 10,
+     [FromQuery] string sortColumn = nameof(FondeadorListItemDto.Titulo),
+     [FromQuery] bool sortDescending = false)
+    {
+        var query = new GetFondeadoresQuery
+        {
+            SearchText = q,
+            Page = page,
+            PageSize = size,
+            SortColumn = sortColumn,
+            SortDescending = sortDescending
+        };
+
+        var result = await queryMediator.QueryAsync(query);
+        return result.ToCustomMinimalApiResult();
+    }
+
+    public async Task<IResult> GetFondeadorById(
+      [FromServices] IQueryMediator queryMediator,
+      int id)
+    {
+        var result = await queryMediator.QueryAsync(new GetFondeadorByIdQuery { Id = id });
+        return result.ToCustomMinimalApiResult();
+    }
+
+    public async Task<IResult> CreateFondeador(
+    [FromServices] ICommandMediator commandMediator,
+    [FromBody] FondeadorEditDto model)
+    {
+        var command = new CreateFondeadorCommand
+        {
+            Model = model
+        };
+
+        var result = await commandMediator.SendAsync(command);
+        return result.ToCustomMinimalApiResult();
+    }
+
+    public async Task<IResult> UpdateFondeador(
+        [FromServices] ICommandMediator commandMediator,
+        int id,
+        [FromBody] FondeadorEditDto model)
+    {
+        var command = new UpdateFondeadorCommand
+        {
+            Id = id,
+            Model = model
+        };
+
+        var result = await commandMediator.SendAsync(command);
+        return result.ToCustomMinimalApiResult();
+    }
+
+    public async Task<IResult> DeleteFondeador(
+        [FromServices] ICommandMediator commandMediator,
+        int id)
+    {
+        var command = new DeleteFondeadorCommand
+        {
+            Id = id
+        };
+
+        var result = await commandMediator.SendAsync(command);
+        return result.ToCustomMinimalApiResult();
+    }
+    #endregion
+
+
+    #region LineaCredito
+
+    private async Task<IResult> GetLineaCreditoById(
+    [FromServices] IQueryMediator queryMediator,
+    int id)
+    {
+        var result = await queryMediator.QueryAsync(new GetLineaCreditoByIdQuery { Id = id });
+        return result.ToCustomMinimalApiResult();
+    }
+
+    private async Task<IResult> GetPaginatedLineasCredito(
+        [FromServices] IQueryMediator queryMediator,
+        [FromQuery] string? q = null,
+        [FromQuery] int? idFondeador = null,
+        [FromQuery] int? idMoneda = null,
+        [FromQuery] bool? activo = null,
+        [FromQuery] int page = 1,
+        [FromQuery] int size = 10,
+        [FromQuery] string sortColumn = nameof(LineaCreditoListItemDto.FechaAprobacion),
+        [FromQuery] bool sortDescending = true)
+    {
+        var query = new GetLineasCreditoQuery
+        {
+            SearchText = q,
+            IdFondeador = idFondeador,
+            IdMoneda = idMoneda,
+            Activo = activo,
+            Page = page,
+            PageSize = size,
+            SortColumn = sortColumn,
+            SortDescending = sortDescending
+        };
+
+        var result = await queryMediator.QueryAsync(query);
+        return result.ToCustomMinimalApiResult();
+    }
+
+    private async Task<IResult> CreateLineaCredito(
+        [FromServices] ICommandMediator commandMediator,
+        [FromBody] LineaCreditoEditDto model)
+    {
+        var command = new CreateLineaCreditoCommand
+        {
+            Model = model
+        };
+
+        var result = await commandMediator.SendAsync(command);
+        return result.ToCustomMinimalApiResult();
+    }
+
+    private async Task<IResult> UpdateLineaCredito(
+        [FromServices] ICommandMediator commandMediator,
+        int id,
+        [FromBody] LineaCreditoEditDto model)
+    {
+        var command = new UpdateLineaCreditoCommand
+        {
+            Id = id,
+            Model = model
+        };
+
+        var result = await commandMediator.SendAsync(command);
+        return result.ToCustomMinimalApiResult();
+    }
+
+    private async Task<IResult> DeleteLineaCredito(
+        [FromServices] ICommandMediator commandMediator,
+        int id)
+    {
+        var command = new DeleteLineaCreditoCommand
+        {
+            Id = id
         };
 
         var result = await commandMediator.SendAsync(command);

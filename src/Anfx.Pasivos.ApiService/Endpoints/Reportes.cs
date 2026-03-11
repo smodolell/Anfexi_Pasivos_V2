@@ -58,6 +58,7 @@ public class Reportes : EndpointGroupBase
     {
 
 
+        
         var dataActivo = await queryMediator.QueryAsync(new GetCarteraActivaQuery
         {
             IdFondeador = IdFondeador,
