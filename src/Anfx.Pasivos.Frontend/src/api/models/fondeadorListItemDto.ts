@@ -9,8 +9,11 @@
  */
 
 
-export interface RolCreateDto { 
-    sRol: string;
-    descripcion?: string | null;
+export interface FondeadorListItemDto { 
+    id?: number;
+    titulo?: string | null;
+    lineasCredito?: number;
+    contratos?: number;
+    claveCuentaContable?: string | null;
 }
 

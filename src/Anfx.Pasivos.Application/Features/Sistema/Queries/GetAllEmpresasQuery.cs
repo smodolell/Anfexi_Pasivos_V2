@@ -1,6 +1,6 @@
-using Anfx.Pasivos.Application.Features.Empresas.DTOs;
+using Anfx.Pasivos.Application.Features.Sistema.DTOs;
 
-namespace Anfx.Pasivos.Application.Features.Empresas.Queries;
+namespace Anfx.Pasivos.Application.Features.Sistema.Queries;
 
 public record GetAllEmpresasQuery : IQuery<Result<IEnumerable<EmpresaDto>>>;
 
@@ -21,7 +21,7 @@ public class GetAllEmpresasQueryHandler : IQueryHandler<GetAllEmpresasQuery, Res
         try
         {
             var empresas = await _context.Empresas
-                .OrderBy(e => e.sEmpresa)
+                .OrderBy(e => e.Empresa1)
                 .ToListAsync(cancellationToken);
 
             var empresasDto = _mapper.Map<IEnumerable<EmpresaDto>>(empresas);

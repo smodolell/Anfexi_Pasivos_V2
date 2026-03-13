@@ -1,13 +1,13 @@
-using Anfx.Pasivos.Application.Features.Empresas.DTOs;
+using Anfx.Pasivos.Application.Features.Sistema.DTOs;
 
-namespace Anfx.Pasivos.Application.Features.Empresas.Validators;
+namespace Anfx.Pasivos.Application.Features.Sistema.Validators;
 
 public class EmpresaCreateDtoValidator : AbstractValidator<EmpresaCreateDto>
 {
     public EmpresaCreateDtoValidator()
     {
 
-        RuleFor(x => x.sEmpresa)
+        RuleFor(x => x.Empresa1)
             .NotEmpty().WithMessage("El nombre de la empresa no puede estar vacío")
             .MaximumLength(180).WithMessage("El nombre no puede exceder 180 caracteres");
 
@@ -40,30 +40,30 @@ public class EmpresaCreateDtoValidator : AbstractValidator<EmpresaCreateDto>
         RuleFor(x => x.AclaracionesEstadodeCuenta)
             .MaximumLength(500).WithMessage("Las aclaraciones no pueden exceder 500 caracteres");
 
-        // Validaciones de dirección
-        RuleFor(x => x.TipoDireccionId)
-            .GreaterThan(0)
-            .WithMessage("El tipo de dirección debe ser válido");
+        //// Validaciones de dirección
+        //RuleFor(x => x.TipoDireccionId)
+        //    .GreaterThan(0)
+        //    .WithMessage("El tipo de dirección debe ser válido");
 
-        RuleFor(x => x.ColoniaId)
-            .GreaterThan(0)
-            .WithMessage("La colonia debe ser válida");
+        //RuleFor(x => x.ColoniaId)
+        //    .GreaterThan(0)
+        //    .WithMessage("La colonia debe ser válida");
 
-        // Validaciones condicionales de dirección
-        When(x => !string.IsNullOrEmpty(x.Calle) ||
-                  !string.IsNullOrEmpty(x.NumExterior) ||
-                  !string.IsNullOrEmpty(x.NumInterior), () =>
-                  {
-                      RuleFor(x => x.Calle)
-                          .NotEmpty().WithMessage("La calle es requerida")
-                          .MaximumLength(200).WithMessage("La calle no puede exceder 200 caracteres");
+        //// Validaciones condicionales de dirección
+        //When(x => !string.IsNullOrEmpty(x.Calle) ||
+        //          !string.IsNullOrEmpty(x.NumExterior) ||
+        //          !string.IsNullOrEmpty(x.NumInterior), () =>
+        //          {
+        //              RuleFor(x => x.Calle)
+        //                  .NotEmpty().WithMessage("La calle es requerida")
+        //                  .MaximumLength(200).WithMessage("La calle no puede exceder 200 caracteres");
 
-                      RuleFor(x => x.NumExterior)
-                          .MaximumLength(20).WithMessage("El número exterior no puede exceder 20 caracteres");
+        //              RuleFor(x => x.NumExterior)
+        //                  .MaximumLength(20).WithMessage("El número exterior no puede exceder 20 caracteres");
 
-                      RuleFor(x => x.NumInterior)
-                          .MaximumLength(20).WithMessage("El número interior no puede exceder 20 caracteres");
-                  });
+        //              RuleFor(x => x.NumInterior)
+        //                  .MaximumLength(20).WithMessage("El número interior no puede exceder 20 caracteres");
+        //          });
 
         // Validación de coherencia
         RuleFor(x => x)
@@ -81,12 +81,12 @@ public class EmpresaCreateDtoValidator : AbstractValidator<EmpresaCreateDto>
     private bool HaveConsistentAddress(EmpresaCreateDto dto)
     {
         // Si hay datos de dirección, debe haber al menos calle o número exterior
-        if (!string.IsNullOrEmpty(dto.Calle) ||
-            !string.IsNullOrEmpty(dto.NumExterior) ||
-            !string.IsNullOrEmpty(dto.NumInterior))
-        {
-            return dto.TipoDireccionId > 0 && dto.ColoniaId > 0;
-        }
+        //if (!string.IsNullOrEmpty(dto.Calle) ||
+        //    !string.IsNullOrEmpty(dto.NumExterior) ||
+        //    !string.IsNullOrEmpty(dto.NumInterior))
+        //{
+        //    return dto.TipoDireccionId > 0 && dto.ColoniaId > 0;
+        //}
         return true;
     }
 }

@@ -11,20 +11,14 @@
 
 export interface EmpresaUpdateDto { 
     id?: number;
-    sEmpresa?: string | null;
-    rfc?: string | null;
-    razonSocial?: string | null;
+    sEmpresa: string;
+    rfc: string;
+    razonSocial: string;
     telefono?: string | null;
     representante?: string | null;
     avisosEstadodeCuenta?: string | null;
     advertenciasEstadodeCuenta?: string | null;
     aclaracionesEstadodeCuenta?: string | null;
     usaDesembolso?: boolean;
-    pasivo?: boolean;
-    tipoDireccionId?: number;
-    calle?: string | null;
-    numExterior?: string | null;
-    numInterior?: string | null;
-    coloniaId?: number;
 }
 

@@ -1,4 +1,4 @@
-namespace Anfx.Pasivos.Application.Features.Empresas.Queries
+namespace Anfx.Pasivos.Application.Features.Sistema.Queries
 {
     public record EmpresaExistsQuery(int Id) : IQuery<Result<bool>>;
 
@@ -17,7 +17,7 @@ namespace Anfx.Pasivos.Application.Features.Empresas.Queries
             try
             {
                 var exists = await _context.Empresas
-                    .AnyAsync(e => e.Id == message.Id, cancellationToken);
+                    .AnyAsync(e => e.IdEmpresa == message.Id, cancellationToken);
 
                 return Result.Success(exists);
             }

@@ -1,4 +1,4 @@
-﻿namespace Anfx.Pasivos.Application.Features.Empresas.Queries;
+﻿namespace Anfx.Pasivos.Application.Features.Sistema.Queries;
 
 public record GetAllTiposDireccionesQuery : IQuery<Result<IEnumerable<SelectItemDto>>>;
 

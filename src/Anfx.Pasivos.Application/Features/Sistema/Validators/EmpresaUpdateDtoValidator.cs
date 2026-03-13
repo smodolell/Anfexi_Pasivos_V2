@@ -1,6 +1,6 @@
-using Anfx.Pasivos.Application.Features.Empresas.DTOs;
+using Anfx.Pasivos.Application.Features.Sistema.DTOs;
 
-namespace Anfx.Pasivos.Application.Features.Empresas.Validators;
+namespace Anfx.Pasivos.Application.Features.Sistema.Validators;
 
 public class EmpresaUpdateDtoValidator : AbstractValidator<EmpresaUpdateDto>
 {
@@ -33,30 +33,30 @@ public class EmpresaUpdateDtoValidator : AbstractValidator<EmpresaUpdateDto>
         RuleFor(x => x.Representante)
             .MaximumLength(150).WithMessage("El representante no puede exceder 150 caracteres");
 
-        // Validaciones de dirección
-        RuleFor(x => x.TipoDireccionId)
-            .GreaterThan(0)
-            .WithMessage("El tipo de dirección es requerido");
+        //// Validaciones de dirección
+        //RuleFor(x => x.TipoDireccionId)
+        //    .GreaterThan(0)
+        //    .WithMessage("El tipo de dirección es requerido");
 
-        RuleFor(x => x.ColoniaId)
-            .GreaterThan(0)
-            .WithMessage("La colonia es requerida");
+        //RuleFor(x => x.ColoniaId)
+        //    .GreaterThan(0)
+        //    .WithMessage("La colonia es requerida");
 
-        // Validaciones condicionales para dirección
-        When(x => !string.IsNullOrEmpty(x.Calle) ||
-                  !string.IsNullOrEmpty(x.NumExterior) ||
-                  !string.IsNullOrEmpty(x.NumInterior), () =>
-                  {
-                      RuleFor(x => x.Calle)
-                          .NotEmpty().WithMessage("La calle es requerida cuando se especifica dirección")
-                          .MaximumLength(200).WithMessage("La calle no puede exceder 200 caracteres");
+        //// Validaciones condicionales para dirección
+        //When(x => !string.IsNullOrEmpty(x.Calle) ||
+        //          !string.IsNullOrEmpty(x.NumExterior) ||
+        //          !string.IsNullOrEmpty(x.NumInterior), () =>
+        //          {
+        //              RuleFor(x => x.Calle)
+        //                  .NotEmpty().WithMessage("La calle es requerida cuando se especifica dirección")
+        //                  .MaximumLength(200).WithMessage("La calle no puede exceder 200 caracteres");
 
-                      RuleFor(x => x.NumExterior)
-                          .MaximumLength(20).WithMessage("El número exterior no puede exceder 20 caracteres");
+        //              RuleFor(x => x.NumExterior)
+        //                  .MaximumLength(20).WithMessage("El número exterior no puede exceder 20 caracteres");
 
-                      RuleFor(x => x.NumInterior)
-                          .MaximumLength(20).WithMessage("El número interior no puede exceder 20 caracteres");
-                  });
+        //              RuleFor(x => x.NumInterior)
+        //                  .MaximumLength(20).WithMessage("El número interior no puede exceder 20 caracteres");
+        //          });
 
         // Validación de formato RFC (México)
         RuleFor(x => x.RFC)

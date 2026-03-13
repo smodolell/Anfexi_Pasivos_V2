@@ -1,6 +1,8 @@
 ﻿using Anfx.Pasivos.Application.Common.Interfaces;
 using Anfx.Pasivos.Infrastructure.Persistence;
 using Anfx.Pasivos.Infrastructure.Services;
+using Anfx.Profuturo.Sofom.Infrastructure.Persitence;
+using Anfx.Profuturo.Sofom.Infrastructure.Services;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -34,7 +36,8 @@ public static class DependencyInjection
         }, ServiceLifetime.Scoped);
 
         services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
-
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddScoped<IConsecutivoService, ConsecutivoService>();
         services.AddScoped<IPaginator, Paginator>();
         services.AddScoped<IDynamicSorter, DynamicSorter>();
         services.AddScoped<IJwtService, JwtService>();

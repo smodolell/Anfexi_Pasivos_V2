@@ -1,4 +1,4 @@
-namespace Anfx.Pasivos.Application.Features.Empresas.Commands;
+namespace Anfx.Pasivos.Application.Features.Sistema.Commands;
 
 public record DeleteEmpresaCommand(int Id) : ICommand<Result>;
 
@@ -16,7 +16,7 @@ public class DeleteEmpresaCommandHandler : ICommandHandler<DeleteEmpresaCommand,
         try
         {
             var empresa = await _context.Empresas
-                .FirstOrDefaultAsync(e => e.Id == message.Id, cancellationToken);
+                .FirstOrDefaultAsync(e => e.IdEmpresa == message.Id, cancellationToken);
 
             if (empresa == null)
             {

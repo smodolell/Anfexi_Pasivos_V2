@@ -43,6 +43,17 @@ public class SelectLists : EndpointGroupBase
             .Produces<ApiResponseDto>(StatusCodes.Status401Unauthorized)
             .Produces<ApiResponseDto>(StatusCodes.Status404NotFound)
             .Produces<ApiResponseDto>(StatusCodes.Status500InternalServerError);
+
+
+        group.MapGet("moneda/", GetMonedas)
+            .WithName("GetMonedas")
+            .WithSummary("Obtiene las monedas del catalogo")
+            .WithDescription("Retorna una lista de monedas")
+            .Produces<ApiResponseDto<List<SelectItemDto>>>(StatusCodes.Status200OK)
+            .Produces<ApiResponseDto>(StatusCodes.Status400BadRequest)
+            .Produces<ApiResponseDto>(StatusCodes.Status401Unauthorized)
+            .Produces<ApiResponseDto>(StatusCodes.Status404NotFound)
+            .Produces<ApiResponseDto>(StatusCodes.Status500InternalServerError);
     }
 
 
@@ -92,6 +103,16 @@ public class SelectLists : EndpointGroupBase
 
         var result = await queryMediator.QueryAsync(query, cancellationToken);
 
+        return result.ToCustomMinimalApiResult();
+    }
+
+    public async Task<IResult> GetMonedas(
+      [FromServices] IQueryMediator queryMediator,
+      CancellationToken cancellationToken = default)
+    {
+
+        var query = new GetMonedassSelectListQuery();
+        var result = await queryMediator.QueryAsync(query, cancellationToken);
         return result.ToCustomMinimalApiResult();
     }
 }

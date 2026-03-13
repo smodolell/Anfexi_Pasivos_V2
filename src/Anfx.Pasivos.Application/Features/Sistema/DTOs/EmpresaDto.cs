@@ -1,4 +1,4 @@
-namespace Anfx.Pasivos.Application.Features.Empresas.DTOs;
+namespace Anfx.Pasivos.Application.Features.Sistema.DTOs;
 
 public class EmpresaDto
 {

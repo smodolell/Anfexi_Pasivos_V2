@@ -189,7 +189,28 @@ public class Configuraciones : EndpointGroupBase
             .Produces<ApiResponseDto>(StatusCodes.Status404NotFound)
             .Produces<ApiResponseDto>(StatusCodes.Status401Unauthorized)
             .Produces<ApiResponseDto>(StatusCodes.Status500InternalServerError);
+
+        group.MapGet("linea-credito/{idLineaCredito}/tipos-credito", GetTiposCreditoByLineaCredito)
+            .WithName("GetTiposCreditoByLineaCredito").WithSummary("Obtiene tipos de crédito por línea de crédito")
+            .WithDescription("Obtiene todos los tipos de crédito activos indicando cuáles están seleccionados para la línea de crédito especificada")
+            .Produces<ApiResponseDto<List<RelLineaCreditoTipoCreditoDto>>>(StatusCodes.Status200OK)
+            .Produces<ApiResponseDto>(StatusCodes.Status404NotFound)
+            .Produces<ApiResponseDto>(StatusCodes.Status401Unauthorized)
+            .Produces<ApiResponseDto>(StatusCodes.Status500InternalServerError);
+
+        // PUT/POST: Guarda la relación entre línea de crédito y tipos de crédito
+        group.MapPut("linea-credito/{idLineaCredito}/tipos-credito", SaveTiposCreditoByLineaCredito)
+            .WithName("SaveTiposCreditoByLineaCredito")
+            .WithSummary("Guarda los tipos de crédito asociados a una línea")
+            .WithDescription("Actualiza la selección de tipos de crédito para una línea de crédito específica")
+            .Accepts<List<RelLineaCreditoTipoCreditoDto>>("application/json")
+            .Produces(StatusCodes.Status200OK)
+            .Produces<ApiResponseDto>(StatusCodes.Status404NotFound)
+            .Produces<ApiResponseDto>(StatusCodes.Status400BadRequest)
+            .Produces<ApiResponseDto>(StatusCodes.Status401Unauthorized)
+            .Produces<ApiResponseDto>(StatusCodes.Status500InternalServerError);
     }
+
 
 
     #region TipoCredito
@@ -469,4 +490,38 @@ public class Configuraciones : EndpointGroupBase
         return result.ToCustomMinimalApiResult();
     }
     #endregion
+
+    #region MyRegion
+
+
+    private async Task<IResult> GetTiposCreditoByLineaCredito(
+        [FromServices] IQueryMediator queryMediator,
+        int idLineaCredito)
+    {
+        var query = new GetTiposCreditoByIdLineaCreditoQuery
+        {
+            IdLineaCredito = idLineaCredito
+        };
+
+        var result = await queryMediator.QueryAsync(query);
+        return result.ToCustomMinimalApiResult();
+    }
+
+    private async Task<IResult> SaveTiposCreditoByLineaCredito(
+        [FromServices] ICommandMediator commandMediator,
+        int idLineaCredito,
+        [FromBody] List<RelLineaCreditoTipoCreditoDto> model)
+    {
+        var command = new SaveTiposCreditoByIdLineaCreditoCommand
+        {
+            IdLineaCredito = idLineaCredito,
+            Model = model
+        };
+
+        var result = await commandMediator.SendAsync(command);
+        return result.ToCustomMinimalApiResult();
+    }
+
+    #endregion
+
 }

@@ -9,8 +9,10 @@
  */
 
 
-export interface RolCreateDto { 
-    sRol: string;
-    descripcion?: string | null;
+export interface RelLineaCreditoTipoCreditoDto { 
+    idLineaCredito?: number;
+    idTipoCredito?: number;
+    seleccionado?: boolean;
+    tipoCredito?: string | null;
 }
 

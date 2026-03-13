@@ -10,7 +10,7 @@
 
 
 export interface EmpresaCreateDto { 
-    sEmpresa: string;
+    empresa1: string;
     rfc: string;
     razonSocial: string;
     telefono?: string | null;
@@ -19,11 +19,5 @@ export interface EmpresaCreateDto {
     advertenciasEstadodeCuenta?: string | null;
     aclaracionesEstadodeCuenta?: string | null;
     usaDesembolso?: boolean;
-    pasivo?: boolean;
-    tipoDireccionId: number;
-    calle?: string | null;
-    numExterior?: string | null;
-    numInterior?: string | null;
-    coloniaId: number;
 }
 

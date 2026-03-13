@@ -39,10 +39,12 @@ public class PSV_TipoCreditoConfiguration : IEntityTypeConfiguration<PSV_TipoCre
             .WithMany(t => t.PSV_TipoCredito)
             .HasForeignKey(e => e.IdTipoTablaAmortiza)
             .OnDelete(DeleteBehavior.Restrict);
-            
+
         builder.HasOne(e => e.Empresa)
-            .WithMany()
+            .WithMany(emp => emp.PSV_TipoCreditos)
             .HasForeignKey(e => e.IdEmpresa)
+            .HasPrincipalKey(emp => emp.IdEmpresa)
             .OnDelete(DeleteBehavior.Restrict);
+
     }
 }

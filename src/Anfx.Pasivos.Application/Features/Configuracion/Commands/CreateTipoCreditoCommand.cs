@@ -27,15 +27,26 @@ internal class CreateTipoCreditoCommandHandler : ICommandHandler<CreateTipoCredi
         {
             var model = request.Model;
 
+
+
             var validationResult = await _validator.ValidateAsync(model, cancellationToken);
             if (!validationResult.IsValid)
             {
                 return Result.Invalid(validationResult.AsErrors());
             }
 
+            var empresa = await _context.Empresa.FirstOrDefaultAsync(cancellationToken);
+
+            if(empresa is null)
+            {
+                return Result.Invalid(new ValidationError("No se encontró la empresa."));
+            }
+
             var entity = _mapper.Map<PSV_TipoCredito>(model);
 
-            await _context.PSV_TipoCredito.AddAsync(entity);
+            entity.IdEmpresa = empresa.IdEmpresa;
+
+            await _context.PSV_TipoCredito.AddAsync(entity,cancellationToken);
 
             await _context.SaveChangesAsync(cancellationToken);
 

@@ -1,27 +1,26 @@
-using Anfx.Pasivos.Application.Features.Empresas.DTOs;
-using Azure.Core;
+using Anfx.Pasivos.Application.Features.Sistema.DTOs;
 
-namespace Anfx.Pasivos.Application.Features.Empresas.Queries;
+namespace Anfx.Pasivos.Application.Features.Sistema.Queries;
 
-public record GetEmpresaByRfcQuery(string RFC) : IQuery<Result<EmpresaDto>>;
+public record GetEmpresaByIdQuery(int Id) : IQuery<Result<EmpresaDto>>;
 
-public class GetEmpresaByRfcQueryHandler : IQueryHandler<GetEmpresaByRfcQuery, Result<EmpresaDto>>
+public class GetEmpresaByIdQueryHandler : IQueryHandler<GetEmpresaByIdQuery, Result<EmpresaDto>>
 {
     private readonly IApplicationDbContext _context;
     private readonly IMapper _mapper;
 
-    public GetEmpresaByRfcQueryHandler(IApplicationDbContext context, IMapper mapper)
+    public GetEmpresaByIdQueryHandler(IApplicationDbContext context, IMapper mapper)
     {
         _context = context;
         _mapper = mapper;
     }
 
-    public async Task<Result<EmpresaDto>> HandleAsync(GetEmpresaByRfcQuery message, CancellationToken cancellationToken = default)
+    public async Task<Result<EmpresaDto>> HandleAsync(GetEmpresaByIdQuery message, CancellationToken cancellationToken = default)
     {
         try
         {
             var empresa = await _context.Empresas
-                .FirstOrDefaultAsync(e => e.RFC == message.RFC, cancellationToken);
+                .FirstOrDefaultAsync(e => e.IdEmpresa== message.Id, cancellationToken);
 
             if (empresa == null)
             {

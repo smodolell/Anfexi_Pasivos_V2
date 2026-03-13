@@ -1,6 +1,6 @@
-using Anfx.Pasivos.Application.Features.Empresas.DTOs;
+using Anfx.Pasivos.Application.Features.Sistema.DTOs;
 
-namespace Anfx.Pasivos.Application.Features.Empresas.Queries;
+namespace Anfx.Pasivos.Application.Features.Sistema.Queries;
 
 public record GetEmpresasQuery(int Page, int Size, string? SearchTerm) : IQuery<Result<PagedResultDto<EmpresaDto>>>;
 
@@ -25,13 +25,13 @@ public class GetEmpresasQueryHandler : IQueryHandler<GetEmpresasQuery, Result<Pa
 
             if (!string.IsNullOrEmpty(request.SearchTerm))
             {
-                query = query.Where(e => e.sEmpresa.Contains(request.SearchTerm) ||
+                query = query.Where(e => e.Empresa1.Contains(request.SearchTerm) ||
                                        e.RFC.Contains(request.SearchTerm) ||
                                        e.RazonSocial.Contains(request.SearchTerm));
             }
 
 
-            var empresas = query.OrderBy(e => e.sEmpresa);
+            var empresas = query.OrderBy(e => e.Empresa1);
 
 
             var result = await _paginator.PaginateAsync<Empresa, EmpresaDto>(

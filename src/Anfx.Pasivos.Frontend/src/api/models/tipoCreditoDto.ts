@@ -11,12 +11,12 @@
 
 export interface TipoCreditoDto { 
     tipoCredito: string;
-    idTipoMovimiento?: number;
+    idTipoMovimiento: number;
     prefijo: string;
     sufijo: string;
     contador?: number;
-    idTipoTablaAmortiza?: number;
+    idTipoTablaAmortiza: number;
     activo?: boolean;
-    idTipoMovimiento_Mora?: number;
+    idTipoMovimiento_Mora: number;
 }
 

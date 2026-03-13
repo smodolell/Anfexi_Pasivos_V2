@@ -1,6 +1,6 @@
-using Anfx.Pasivos.Application.Features.Empresas.DTOs;
+using Anfx.Pasivos.Application.Features.Sistema.DTOs;
 
-namespace Anfx.Pasivos.Application.Features.Empresas.Commands;
+namespace Anfx.Pasivos.Application.Features.Sistema.Commands;
 
 public record UpdateEmpresaCommand(int id, EmpresaUpdateDto Empresa) : ICommand<Result<EmpresaDto>>;
 
@@ -35,7 +35,7 @@ public class UpdateEmpresaCommandHandler : ICommandHandler<UpdateEmpresaCommand,
 
 
             var empresa = await _context.Empresas
-                .FirstOrDefaultAsync(e => e.Id == request.Empresa.Id, cancellationToken);
+                .FirstOrDefaultAsync(e => e.IdEmpresa == request.Empresa.Id, cancellationToken);
 
             if (empresa == null)
             {
@@ -44,7 +44,7 @@ public class UpdateEmpresaCommandHandler : ICommandHandler<UpdateEmpresaCommand,
 
             // Verificar si el RFC ya existe en otra empresa
             var rfcExists = await _context.Empresas
-                .AnyAsync(e => e.RFC == request.Empresa.RFC && e.Id != request.Empresa.Id, cancellationToken);
+                .AnyAsync(e => e.RFC == request.Empresa.RFC && e.IdEmpresa != request.Empresa.Id, cancellationToken);
 
             if (rfcExists)
             {
@@ -52,7 +52,7 @@ public class UpdateEmpresaCommandHandler : ICommandHandler<UpdateEmpresaCommand,
             }
 
             // Actualizar propiedades
-            empresa.sEmpresa = request.Empresa.sEmpresa;
+            empresa.Empresa1 = request.Empresa.sEmpresa;
             empresa.RFC = request.Empresa.RFC;
             empresa.RazonSocial = request.Empresa.RazonSocial;
             empresa.Telefono = request.Empresa.Telefono??"";
@@ -61,12 +61,12 @@ public class UpdateEmpresaCommandHandler : ICommandHandler<UpdateEmpresaCommand,
             empresa.AdvertenciasEstadodeCuenta = request.Empresa.AdvertenciasEstadodeCuenta ?? "";
             empresa.AclaracionesEstadodeCuenta = request.Empresa.AclaracionesEstadodeCuenta ?? "";
             empresa.UsaDesembolso = request.Empresa.UsaDesembolso;
-            empresa.Pasivo = request.Empresa.Pasivo;
-            empresa.TipoDireccionId = request.Empresa.TipoDireccionId;
-            empresa.Calle = request.Empresa.Calle ?? "";
-            empresa.NumExterior = request.Empresa.NumExterior ?? "";
-            empresa.NumInterior = request.Empresa.NumInterior ?? "";
-            empresa.ColoniaId = request.Empresa.ColoniaId;
+            //empresa.Pasivo = request.Empresa.Pasivo;
+            //empresa.TipoDireccionId = request.Empresa.TipoDireccionId;
+            //empresa.Calle = request.Empresa.Calle ?? "";
+            //empresa.NumExterior = request.Empresa.NumExterior ?? "";
+            //empresa.NumInterior = request.Empresa.NumInterior ?? "";
+            //empresa.ColoniaId = request.Empresa.ColoniaId;
 
             await _context.SaveChangesAsync(cancellationToken);
 
