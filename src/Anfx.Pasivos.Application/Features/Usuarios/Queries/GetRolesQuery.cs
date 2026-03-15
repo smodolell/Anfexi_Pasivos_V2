@@ -18,8 +18,8 @@ public class GetRolesQueryHandler : IQueryHandler<GetRolesQuery, Result<IEnumera
         try
         {
             var roles = await _context.Roles
-                .Where(r => r.Activo)
-                .OrderBy(r => r.sRol)
+                //.Where(r => r.Activo)
+                .OrderBy(r => r.Titulo)
                 .ToListAsync(cancellationToken);
 
             var rolesDto = _mapper.Map<IEnumerable<SelectItemDto>>(roles);

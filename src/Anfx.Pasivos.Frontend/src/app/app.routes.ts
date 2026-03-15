@@ -57,6 +57,13 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./pages/admin/profile/profile.component').then((m) => m.ProfileComponent),
       },
+      {
+        path: 'contratos/info-general',
+        loadComponent: () =>
+          import('./pages/contratos/info-general/info-general-contrato-pasivo.component').then(
+            (m) => m.InfoGeneralContratoPasivoComponent
+          ),
+      },
     ],
   },
   {

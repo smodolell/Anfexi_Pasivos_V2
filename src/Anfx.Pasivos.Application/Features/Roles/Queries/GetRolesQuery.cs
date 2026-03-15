@@ -42,7 +42,7 @@ public class GetRolesQuery : IQuery<Result<PagedResultDto<RolDto>>>
     public string? SearchTerm { get; set; }
 
 
-    
+
 }
 
 
@@ -57,7 +57,7 @@ public class GetRolesQueryHandler : IQueryHandler<GetRolesQuery, Result<PagedRes
     private readonly IPaginator _paginator;
 
     public GetRolesQueryHandler(IApplicationDbContext context,
-        IMapper mapper,        
+        IMapper mapper,
         IDynamicSorter sorter,
         IPaginator paginator)
     {
@@ -70,8 +70,16 @@ public class GetRolesQueryHandler : IQueryHandler<GetRolesQuery, Result<PagedRes
     public async Task<Result<PagedResultDto<RolDto>>> HandleAsync(GetRolesQuery message, CancellationToken cancellationToken = default)
     {
 
-        var query = _context.Roles.Where(r => r.Activo);
-     
+        var query = _context.Roles.AsQueryable();//.Where(r => r.Activo);
+
+        if (message.SearchTerm != null)
+        {
+            query = query.Where(r =>
+            (r.Titulo != null && r.Titulo.Contains(message.SearchTerm)) ||
+            (r.Descripcion != null && r.Descripcion.Contains(message.SearchTerm)));
+        }
+
+
         query = _sorter.ApplySort(query, message.SortColumn, message.SortDescending);
 
         var result = await _paginator.PaginateAsync<Rol, RolDto>(

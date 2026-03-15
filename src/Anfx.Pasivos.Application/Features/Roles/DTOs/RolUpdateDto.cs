@@ -33,7 +33,7 @@ public class RolUpdateDtoValidator : AbstractValidator<RolUpdateDto>
             .MinimumLength(3).WithMessage("El nombre debe tener al menos 3 caracteres")
               .MustAsync(async (model, nombre, cancellationToken) =>
                 !await _context.Roles
-                    .AnyAsync(r => r.sRol == nombre && r.Id != model.Id, cancellationToken))
+                    .AnyAsync(r => r.Titulo == nombre && r.IdRol != model.Id, cancellationToken))
             .WithMessage("El nombre del rol ya está registrado");
 
         RuleFor(x => x.Descripcion)

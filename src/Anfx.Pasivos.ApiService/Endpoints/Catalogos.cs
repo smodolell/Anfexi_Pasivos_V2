@@ -11,6 +11,7 @@ public class Catalogos : EndpointGroupBase
     public override void Map(RouteGroupBuilder groupBuilder)
     {
         var group = groupBuilder.MapGroup("/")
+            .RequireAuthorization()
         .WithTags("Catalogos");
 
         #region Banco

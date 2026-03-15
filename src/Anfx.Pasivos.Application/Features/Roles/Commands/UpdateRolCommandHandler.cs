@@ -42,7 +42,7 @@ public class UpdateRolCommandHandler : ICommandHandler<UpdateRolCommand, Result<
             }
 
             var rol = await _context.Roles
-                .FirstOrDefaultAsync(r => r.Id == request.Model.Id, cancellationToken);
+                .FirstOrDefaultAsync(r => r.IdRol == request.Model.Id, cancellationToken);
 
             if (rol == null)
             {
@@ -55,7 +55,7 @@ public class UpdateRolCommandHandler : ICommandHandler<UpdateRolCommand, Result<
                 return Result.Invalid(validateResult.AsErrors());
             }
 
-            rol.sRol = request.Model.sRol;
+            rol.Titulo = request.Model.sRol;
             rol.Descripcion = request.Model.Descripcion;
 
             await _context.SaveChangesAsync(cancellationToken);

@@ -48,7 +48,7 @@ public class UpdateUsuarioCommandHandler : ICommandHandler<UpdateUsuarioCommand,
 
             // Verificar que el rol existe
             var rolExists = await _context.Roles
-                .AnyAsync(r => r.Id == request.Usuario.RolId, cancellationToken);
+                .AnyAsync(r => r.IdRol == request.Usuario.RolId, cancellationToken);
 
             if (!rolExists)
             {

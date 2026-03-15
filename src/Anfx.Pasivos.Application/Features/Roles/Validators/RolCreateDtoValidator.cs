@@ -15,7 +15,7 @@ public class RolCreateDtoValidator : AbstractValidator<RolCreateDto>
             .MaximumLength(50).WithMessage("El nombre no puede exceder 50 caracteres")
             .MustAsync(async (nombre, cancellationToken) =>
                 !await _context.Roles
-                    .AnyAsync(r => r.sRol == nombre, cancellationToken))
+                    .AnyAsync(r => r.Titulo == nombre, cancellationToken))
             .WithMessage("El nombre del rol ya está registrado"); ;
 
         RuleFor(x => x.Descripcion)

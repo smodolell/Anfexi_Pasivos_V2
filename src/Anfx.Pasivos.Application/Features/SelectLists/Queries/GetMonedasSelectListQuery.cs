@@ -1,19 +1,18 @@
 ﻿namespace Anfx.Pasivos.Application.Features.SelectLists.Queries;
 
-public class GetMonedassSelectListQuery : SelectListQueryBase
+public class GetMonedasSelectListQuery : SelectListQueryBase
 {
-
 }
 
-internal class GetMonedassSelectListQueryHandler : IQueryHandler<GetFondeadoresSelectListQuery, Result<List<SelectItemDto>>>
+internal class GetMonedasSelectListQueryHandler : IQueryHandler<GetMonedasSelectListQuery, Result<List<SelectItemDto>>>
 {
     private readonly IApplicationDbContext _context;
-    public GetMonedassSelectListQueryHandler(IApplicationDbContext context)
+    public GetMonedasSelectListQueryHandler(IApplicationDbContext context)
     {
         _context = context;
     }
 
-    public async Task<Result<List<SelectItemDto>>> HandleAsync(GetFondeadoresSelectListQuery message, CancellationToken cancellationToken = default)
+    public async Task<Result<List<SelectItemDto>>> HandleAsync(GetMonedasSelectListQuery message, CancellationToken cancellationToken = default)
     {
         var items = await _context.SB_TipoMoneda
             .Select(f => new SelectItemDto

@@ -2,7 +2,7 @@ using Anfx.Pasivos.Application.Features.Usuarios.DTOs;
 
 namespace Anfx.Pasivos.Application.Features.Usuarios.Queries;
 
-public record GetUsuariosQuery(int PageNumber = 1, int PageSize = 10, string? SearchTerm = null) 
+public record GetUsuariosQuery(int PageNumber = 1, int PageSize = 10, string? SearchTerm = null)
     : IQuery<Result<PagedResultDto<UsuarioDto>>>;
 
 public class GetUsuariosQueryHandler : IQueryHandler<GetUsuariosQuery, Result<PagedResultDto<UsuarioDto>>>
@@ -11,7 +11,7 @@ public class GetUsuariosQueryHandler : IQueryHandler<GetUsuariosQuery, Result<Pa
     private readonly IMapper _mapper;
     private readonly IValidator<GetUsuariosQuery> _validator;
 
-    public GetUsuariosQueryHandler(IApplicationDbContext context, IMapper mapper,IValidator<GetUsuariosQuery> validator)
+    public GetUsuariosQueryHandler(IApplicationDbContext context, IMapper mapper, IValidator<GetUsuariosQuery> validator)
     {
         _context = context;
         _mapper = mapper;
@@ -41,8 +41,8 @@ public class GetUsuariosQueryHandler : IQueryHandler<GetUsuariosQuery, Result<Pa
                 query = query.Where(u =>
                     u.NombreCompleto.Contains(request.SearchTerm) ||
                     u.Email.Contains(request.SearchTerm) ||
-                    u.UsuarioNombre.Contains(request.SearchTerm) ||
-                    u.Rol.sRol.Contains(request.SearchTerm));
+                    u.UsuarioNombre.Contains(request.SearchTerm) || (u.Rol.Descripcion != null && u.Rol.Descripcion.Contains(request.SearchTerm))
+                    );
             }
 
             var totalCount = await query.CountAsync(cancellationToken);

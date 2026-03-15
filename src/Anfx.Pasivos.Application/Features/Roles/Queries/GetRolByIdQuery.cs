@@ -1,5 +1,4 @@
 using Anfx.Pasivos.Application.Features.Roles.DTOs;
-using Azure.Core;
 
 namespace Anfx.Pasivos.Application.Features.Roles.Queries;
 
@@ -21,7 +20,7 @@ public class GetRolByIdQueryHandler : IQueryHandler<GetRolByIdQuery, Result<RolD
         try
         {
             var rol = await _context.Roles
-                .FirstOrDefaultAsync(r => r.Id == request.Id && r.Activo, cancellationToken);
+                .FirstOrDefaultAsync(r => r.IdRol == request.Id /*&& r.Activo*/, cancellationToken);
 
             if (rol == null)
             {
@@ -29,7 +28,7 @@ public class GetRolByIdQueryHandler : IQueryHandler<GetRolByIdQuery, Result<RolD
             }
 
             var rolDto = _mapper.Map<RolDto>(rol);
-             return Result.Success(rolDto);
+            return Result.Success(rolDto);
         }
         catch (Exception ex)
         {

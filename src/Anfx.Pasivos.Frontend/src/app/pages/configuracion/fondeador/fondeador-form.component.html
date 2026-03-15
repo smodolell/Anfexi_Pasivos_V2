@@ -1,0 +1,70 @@
+<div class="container mt-4">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">
+        <a routerLink="/configuracion/fondeador">Fondeadores</a>
+      </li>
+      <li class="breadcrumb-item active">{{ isEditMode() ? 'Editar' : 'Nuevo' }}</li>
+    </ol>
+  </nav>
+
+  <div class="card shadow-sm border-0 mt-3">
+    <div class="card-header bg-white py-3">
+      <h4 class="mb-0 text-primary">
+        <i class="fa fa-building-o me-2"></i>
+        {{ isEditMode() ? 'Editar Fondeador' : 'Nuevo Fondeador' }}
+      </h4>
+    </div>
+    <div class="card-body p-4">
+
+      @if (errorMsg()) {
+        <div class="alert alert-danger">{{ errorMsg() }}</div>
+      }
+
+      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <div class="row g-3">
+
+          <div class="col-md-8">
+            <label class="form-label fw-bold">Nombre del Fondeador <span class="text-danger">*</span></label>
+            <input
+              type="text"
+              formControlName="fondeador"
+              class="form-control"
+              [class.is-invalid]="isInvalid('fondeador')"
+              placeholder="Ej: INFONAVIT"
+            />
+            <div class="invalid-feedback">El nombre es obligatorio (máx. 200 caracteres).</div>
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label fw-bold">Clave Cuenta Contable</label>
+            <input
+              type="text"
+              formControlName="claveCuentaContable"
+              class="form-control"
+              [class.is-invalid]="isInvalid('claveCuentaContable')"
+              placeholder="Ej: 2100-001"
+            />
+            <div class="invalid-feedback">Máximo 50 caracteres.</div>
+          </div>
+
+        </div>
+
+        <div class="d-flex justify-content-end gap-2 mt-4 border-top pt-3">
+          <a routerLink="/configuracion/fondeador" class="btn btn-light">Cancelar</a>
+          <button
+            type="submit"
+            class="btn btn-primary px-4"
+            [disabled]="form.invalid || isLoading()"
+          >
+            @if (isLoading()) {
+              <span class="spinner-border spinner-border-sm me-2"></span>
+            }
+            {{ isEditMode() ? 'Guardar Cambios' : 'Registrar Fondeador' }}
+          </button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+</div>

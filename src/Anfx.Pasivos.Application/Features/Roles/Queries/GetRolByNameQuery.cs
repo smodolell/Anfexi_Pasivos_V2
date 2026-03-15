@@ -20,7 +20,7 @@ internal class GetRolByNameQueryHandler : IQueryHandler<GetRolByNameQuery, Resul
         try
         {
             var rol = await _context.Roles
-                .FirstOrDefaultAsync(r => r.sRol == request.Nombre && r.Activo, cancellationToken);
+                .FirstOrDefaultAsync(r => r.Titulo== request.Nombre /*&& r.Activo*/, cancellationToken);
 
             if (rol == null)
             {

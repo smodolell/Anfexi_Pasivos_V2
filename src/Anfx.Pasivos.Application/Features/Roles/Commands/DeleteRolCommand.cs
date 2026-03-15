@@ -17,7 +17,7 @@ public class DeleteRolCommandHandler : ICommandHandler<DeleteRolCommand, Result<
         {
             var rol = await _context.Roles
                 .Include(r => r.Usuarios)
-                .FirstOrDefaultAsync(r => r.Id == request.Id, cancellationToken);
+                .FirstOrDefaultAsync(r => r.IdRol == request.Id, cancellationToken);
 
             if (rol == null)
             {
@@ -31,7 +31,7 @@ public class DeleteRolCommandHandler : ICommandHandler<DeleteRolCommand, Result<
             }
 
             // Soft delete
-            rol.Activo = false;
+            //rol.Activo = false;
 
             await _context.SaveChangesAsync(cancellationToken);
 

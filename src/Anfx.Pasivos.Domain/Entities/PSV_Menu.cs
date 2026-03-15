@@ -4,7 +4,7 @@ public partial class PSV_Menu
 {
     public PSV_Menu()
     {
-        this.Rol = new HashSet<Rol>();
+        //this.Rol = new HashSet<Rol>();
     }
 
     public int ID { get; set; }
@@ -17,5 +17,5 @@ public partial class PSV_Menu
     public Nullable<int> ParentID { get; set; }
     public bool Activo { get; set; }
 
-    public virtual ICollection<Rol> Rol { get; set; }
+    //public virtual ICollection<Rol> Rol { get; set; }
 }

@@ -1,4 +1,5 @@
 import { Component, OnInit, signal, effect, inject } from '@angular/core';
+import { forkJoin } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ReportesService } from '@api/services/reportes.service';
@@ -7,7 +8,7 @@ import { SelectItemDto } from '@api/models/selectItemDto';
 import { CarteraReporteDto } from '@api/models/carteraReporteDto';
 import { DashboardResponse } from '@api/models/dashboardResponse';
 import { HighchartsChartComponent } from 'highcharts-angular';
-import * as Highcharts from 'highcharts';
+import type { Options as HighchartsOptions } from 'highcharts';
 import { SelectItemDtoListApiResponseDto } from '@api/models/selectItemDtoListApiResponseDto';
 import { CarteraReporteDtoPagedResultDtoApiResponseDto } from '../../../../api/models/carteraReporteDtoPagedResultDtoApiResponseDto';
 import { DashboardResponseApiResponseDto } from '@api/models/dashboardResponseApiResponseDto';
@@ -23,7 +24,6 @@ import { LayoutService } from 'src/app/services/layout.service';
   styleUrl: './dashboard.component.css',
 })
 export class DashboardComponent implements OnInit {
-  Highcharts: typeof Highcharts = Highcharts;
   private layoutService = inject(LayoutService);
   // Select Lists
   fondeadores = signal<SelectItemDto[]>([]);
@@ -55,31 +55,33 @@ export class DashboardComponent implements OnInit {
   totalPasiva = 0;
 
   // Chart Options
-  pieChartActivaOptions: Highcharts.Options = {
+  pieChartActivaOptions: HighchartsOptions = {
     chart: { type: 'pie' },
     title: { text: 'Cartera Activa' },
     series: [{ name: 'Monto', type: 'pie', data: [] }],
   };
-  pieChartPasivaOptions: Highcharts.Options = {
+  pieChartPasivaOptions: HighchartsOptions = {
     chart: { type: 'pie' },
     title: { text: 'Cartera Pasiva' },
     series: [{ name: 'Monto', type: 'pie', data: [] }],
   };
-  barChartActivaOptions: Highcharts.Options = {
+  barChartActivaOptions: HighchartsOptions = {
     chart: { type: 'column' },
     title: { text: 'Interés y Capital Activo' },
     series: [],
   };
-  barChartPasivaOptions: Highcharts.Options = {
+  barChartPasivaOptions: HighchartsOptions = {
     chart: { type: 'column' },
     title: { text: 'Interés y Capital Pasivo' },
     series: [],
   };
-  relationChartOptions: Highcharts.Options = {
+  relationChartOptions: HighchartsOptions = {
     chart: { type: 'column' },
     title: { text: 'Relación Activo vs Pasivo' },
     series: [],
   };
+
+  updateFlag = false;
 
   showTables = signal(false);
   showCharts = signal(false);
@@ -142,46 +144,33 @@ export class DashboardComponent implements OnInit {
   obtenerDetalle() {
     this.showTables.set(true);
     this.showCharts.set(false);
-    this.loadCarteraActiva();
-    this.loadCarteraPasiva();
-  }
+    this.isLoading.set(true);
 
-  loadCarteraActiva() {
-    this.reportesService
-      .getCarteraPorVencer(
-        this.pageActiva,
-        this.pageSizeActiva,
-        undefined,
-        this.selectedFondeador(),
-        this.selectedContratoPasivo(),
-        this.selectedContratoActivo(),
-        this.selectedSaldo(),
-      )
-      .subscribe((res: CarteraReporteDtoPagedResultDtoApiResponseDto) => {
-        if (res.data && res.data.results) {
-          this.carteraActiva.set(res.data.results);
-          this.totalActiva = res.data.totalCount || 0;
+    forkJoin({
+      activa: this.reportesService.getCarteraPorVencer(
+        this.pageActiva, this.pageSizeActiva, undefined,
+        this.selectedFondeador(), this.selectedContratoPasivo(),
+        this.selectedContratoActivo(), this.selectedSaldo(),
+      ),
+      pasiva: this.reportesService.getCarteraPasivaPorVencer(
+        this.pagePasiva, this.pageSizePasiva, undefined,
+        this.selectedFondeador(), this.selectedContratoPasivo(),
+        this.selectedContratoActivo(), this.selectedSaldo(),
+      ),
+    }).subscribe({
+      next: ({ activa, pasiva }) => {
+        if (activa.data?.results) {
+          this.carteraActiva.set(activa.data.results);
+          this.totalActiva = activa.data.totalCount || 0;
         }
-      });
-  }
-
-  loadCarteraPasiva() {
-    this.reportesService
-      .getCarteraPasivaPorVencer(
-        this.pagePasiva,
-        this.pageSizePasiva,
-        undefined,
-        this.selectedFondeador(),
-        this.selectedContratoPasivo(),
-        this.selectedContratoActivo(),
-        this.selectedSaldo(),
-      )
-      .subscribe((res: CarteraReporteDtoPagedResultDtoApiResponseDto) => {
-        if (res.data && res.data.results) {
-          this.carteraPasiva.set(res.data.results);
-          this.totalPasiva = res.data.totalCount || 0;
+        if (pasiva.data?.results) {
+          this.carteraPasiva.set(pasiva.data.results);
+          this.totalPasiva = pasiva.data.totalCount || 0;
         }
-      });
+        this.isLoading.set(false);
+      },
+      error: () => this.isLoading.set(false),
+    });
   }
 
   mostrarGraficos() {
@@ -216,9 +205,10 @@ export class DashboardComponent implements OnInit {
       data.pasivosMensual || [],
     );
     this.relationChartOptions = this.getRelationChartOptions(data);
+    this.updateFlag = true;
   }
 
-  getPieChartOptions(title: string, data: CarteraDto): Highcharts.Options {
+  getPieChartOptions(title: string, data: CarteraDto): HighchartsOptions {
     return {
       chart: { type: 'pie' },
       title: { text: title },
@@ -235,7 +225,7 @@ export class DashboardComponent implements OnInit {
     };
   }
 
-  getBarChartOptions(title: string, data: CarteraMensualDto[]): Highcharts.Options {
+  getBarChartOptions(title: string, data: CarteraMensualDto[]): HighchartsOptions {
     const categories = data.map((d) => (d.fecIni ? new Date(d.fecIni).toLocaleDateString() : ''));
     const capitalData = data.map((d) => d.capital || 0);
     const interesData = data.map((d) => d.interes || 0);
@@ -252,7 +242,7 @@ export class DashboardComponent implements OnInit {
     };
   }
 
-  getRelationChartOptions(data: DashboardResponse): Highcharts.Options {
+  getRelationChartOptions(data: DashboardResponse): HighchartsOptions {
     return {
       chart: { type: 'column' },
       title: { text: 'Relación Activo vs Pasivo' },

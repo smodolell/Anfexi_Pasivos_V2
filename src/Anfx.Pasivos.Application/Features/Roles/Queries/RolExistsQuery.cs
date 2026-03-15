@@ -17,7 +17,7 @@ public class RolExistsQueryHandler : IQueryHandler<RolExistsQuery, Result<bool>>
         try
         {
             var exists = await _context.Roles
-                .AnyAsync(r => r.Id == request.Id && r.Activo, cancellationToken);
+                .AnyAsync(r => r.IdRol == request.Id /*&& r.Activo*/, cancellationToken);
 
             return Result.Success(exists);
         }

@@ -111,7 +111,7 @@ public class SelectLists : EndpointGroupBase
       CancellationToken cancellationToken = default)
     {
 
-        var query = new GetMonedassSelectListQuery();
+        var query = new GetMonedasSelectListQuery();
         var result = await queryMediator.QueryAsync(query, cancellationToken);
         return result.ToCustomMinimalApiResult();
     }

@@ -17,12 +17,12 @@ public class GetRolesSelectListQueryHandler : IQueryHandler<GetRolesSelectListQu
         try
         {
             var roles = await _context.Roles
-                .Where(r => r.Activo)
-                .OrderBy(r => r.sRol)
+                //.Where(r => r.Activo)
+                .OrderBy(r => r.Titulo)
                 .Select(r => new SelectItemDto
                 {
-                    Value = r.Id,
-                    Text = r.sRol
+                    Value = r.IdRol,
+                    Text = r.Titulo ?? ""
                 })
                 .ToListAsync(cancellationToken);
 

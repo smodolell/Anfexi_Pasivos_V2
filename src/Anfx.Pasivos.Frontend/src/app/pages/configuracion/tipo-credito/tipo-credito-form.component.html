@@ -1,0 +1,151 @@
+<div class="container mt-4">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">
+        <a routerLink="/configuracion/tipo-credito">Tipos de Crédito</a>
+      </li>
+      <li class="breadcrumb-item active">{{ isEditMode() ? 'Editar' : 'Nuevo' }}</li>
+    </ol>
+  </nav>
+
+  <div class="card shadow-sm border-0 mt-3">
+    <div class="card-header bg-white py-3">
+      <h4 class="mb-0 text-primary">
+        <i class="ti-credit-card me-2"></i>
+        {{ isEditMode() ? 'Editar Tipo de Crédito' : 'Nuevo Tipo de Crédito' }}
+      </h4>
+    </div>
+    <div class="card-body p-4">
+
+      @if (errorMsg()) {
+        <div class="alert alert-danger">{{ errorMsg() }}</div>
+      }
+
+      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <div class="row g-3">
+
+          <!-- Nombre -->
+          <div class="col-md-6">
+            <label class="form-label fw-bold">Tipo de Crédito <span class="text-danger">*</span></label>
+            <input
+              type="text"
+              formControlName="tipoCredito"
+              class="form-control"
+              [class.is-invalid]="isInvalid('tipoCredito')"
+              placeholder="Ej: Crédito Hipotecario"
+            />
+            <div class="invalid-feedback">Campo obligatorio (máx. 200 caracteres).</div>
+          </div>
+
+          <!-- Tipo Tabla Amortiza -->
+          <div class="col-md-6">
+            <label class="form-label fw-bold">Tipo Tabla Amortiza <span class="text-danger">*</span></label>
+            <select
+              formControlName="idTipoTablaAmortiza"
+              class="form-select"
+              [class.is-invalid]="isInvalid('idTipoTablaAmortiza')"
+            >
+              <option [ngValue]="null" disabled>-- Seleccione --</option>
+              @for (t of tiposTablaAmortiza(); track t.id) {
+                <option [ngValue]="t.id">{{ t.tipoTablaAmortiza }}</option>
+              }
+            </select>
+            <div class="invalid-feedback">Seleccione un tipo de tabla de amortización.</div>
+          </div>
+
+          <!-- Prefijo -->
+          <div class="col-md-3">
+            <label class="form-label fw-bold">Prefijo <span class="text-danger">*</span></label>
+            <input
+              type="text"
+              formControlName="prefijo"
+              class="form-control"
+              [class.is-invalid]="isInvalid('prefijo')"
+              placeholder="Ej: CRH"
+            />
+            <div class="invalid-feedback">Campo obligatorio (máx. 10 caracteres).</div>
+          </div>
+
+          <!-- Sufijo -->
+          <div class="col-md-3">
+            <label class="form-label fw-bold">Sufijo <span class="text-danger">*</span></label>
+            <input
+              type="text"
+              formControlName="sufijo"
+              class="form-control"
+              [class.is-invalid]="isInvalid('sufijo')"
+              placeholder="Ej: 00"
+            />
+            <div class="invalid-feedback">Campo obligatorio (máx. 10 caracteres).</div>
+          </div>
+
+          <!-- Contador -->
+          <div class="col-md-3">
+            <label class="form-label fw-bold">Contador</label>
+            <input
+              type="number"
+              formControlName="contador"
+              class="form-control"
+              min="0"
+            />
+          </div>
+
+          <!-- Activo -->
+          <div class="col-md-3 d-flex align-items-end">
+            <div class="form-check mb-2">
+              <input
+                type="checkbox"
+                formControlName="activo"
+                class="form-check-input"
+                id="activoCheck"
+              />
+              <label class="form-check-label fw-bold" for="activoCheck">Activo</label>
+            </div>
+          </div>
+
+          <!-- Tipo Movimiento -->
+          <div class="col-md-6">
+            <label class="form-label fw-bold">ID Tipo Movimiento <span class="text-danger">*</span></label>
+            <input
+              type="number"
+              formControlName="idTipoMovimiento"
+              class="form-control"
+              [class.is-invalid]="isInvalid('idTipoMovimiento')"
+              placeholder="ID del tipo de movimiento"
+            />
+            <div class="invalid-feedback">Campo obligatorio.</div>
+          </div>
+
+          <!-- Tipo Movimiento Mora -->
+          <div class="col-md-6">
+            <label class="form-label fw-bold">ID Tipo Movimiento Mora <span class="text-danger">*</span></label>
+            <input
+              type="number"
+              formControlName="idTipoMovimiento_Mora"
+              class="form-control"
+              [class.is-invalid]="isInvalid('idTipoMovimiento_Mora')"
+              placeholder="ID del tipo de movimiento de mora"
+            />
+            <div class="invalid-feedback">Campo obligatorio.</div>
+          </div>
+
+        </div>
+
+        <div class="d-flex justify-content-end gap-2 mt-4 border-top pt-3">
+          <a routerLink="/configuracion/tipo-credito" class="btn btn-light">Cancelar</a>
+          <button
+            type="submit"
+            class="btn btn-primary px-4"
+            [disabled]="form.invalid || isLoading()"
+          >
+            @if (isLoading()) {
+              <span class="spinner-border spinner-border-sm me-2"></span>
+            }
+            {{ isEditMode() ? 'Guardar Cambios' : 'Registrar Tipo de Crédito' }}
+          </button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+</div>
