@@ -1,117 +1,36 @@
-<div class="container mt-4">
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="text-primary">
-      <i class="fa fa-building-o me-2"></i> Fondeadores
-    </h2>
-    <a routerLink="new" class="btn btn-success">
-      <i class="fa fa-plus me-1"></i> Nuevo Fondeador
-    </a>
-  </div>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-12">
 
-  @if (deleteError()) {
-    <div class="alert alert-danger alert-dismissible">
-      {{ deleteError() }}
-      <button type="button" class="btn-close" (click)="deleteError.set(null)"></button>
-    </div>
-  }
+      <app-generic-table
+        [columns]="columns"
+        [items]="fondeadores()"
+        [loading]="loading()"
+        [actions]="actions"
+        [totalCount]="totalCount()"
+        [currentPage]="currentPage()"
+        [totalPages]="totalPages()"
+        [pageSize]="pageSize()"
+        [searchable]="true"
+        [searchPlaceholder]="'Buscar fondeador...'"
+        [searchValue]="query.q"
+        [showNew]="true"
+        (searchChanged)="onSearch($event)"
+        (actionCalled)="onAction($event)"
+        (pageNext)="nextPage()"
+        (pagePrev)="prevPage()"
+        (newClicked)="onNuevo()">
+      </app-generic-table>
 
-  <!-- Filtro -->
-  <div class="card mb-4 border-0 shadow-sm">
-    <div class="card-body">
-      <div class="input-group">
-        <span class="input-group-text bg-white border-end-0">
-          <i class="fa fa-search text-muted"></i>
-        </span>
-        <input
-          type="text"
-          [formControl]="searchControl"
-          class="form-control border-start-0 shadow-none"
-          placeholder="Buscar fondeador..."
-        />
-      </div>
     </div>
   </div>
-
-  <!-- Tabla -->
-  <div class="card border-0 shadow-sm">
-    <div class="table-responsive">
-      <table class="table table-hover align-middle mb-0">
-        <thead class="table-light">
-          <tr>
-            <th style="width: 80px;">ID</th>
-            <th>Fondeador</th>
-            <th>Clave Cta. Contable</th>
-            <th class="text-center" style="width: 100px;">Líneas</th>
-            <th class="text-center" style="width: 100px;">Contratos</th>
-            <th class="text-center" style="width: 130px;">Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (item of fondeadores(); track item.id) {
-            <tr>
-              <td><span class="text-muted fw-bold">#{{ item.id }}</span></td>
-              <td class="fw-semibold">{{ item.titulo }}</td>
-              <td>{{ item.claveCuentaContable || '—' }}</td>
-              <td class="text-center">
-                <span class="badge bg-info text-dark">{{ item.lineasCredito }}</span>
-              </td>
-              <td class="text-center">
-                <span class="badge bg-dark text-white">{{ item.contratos }}</span>
-              </td>
-              <td class="text-center">
-                <div class="btn-group">
-                  <a [routerLink]="['/configuracion/fondeador/edit', item.id]" class="btn btn-sm btn-outline-primary" title="Editar">
-                    <i class="ti-pencil"></i>
-                  </a>
-                  <button
-                    (click)="delete(item)"
-                    class="btn btn-sm btn-outline-danger"
-                    title="Eliminar"
-                    [disabled]="(item.lineasCredito || 0) > 0 || (item.contratos || 0) > 0"
-                  >
-                    <i class="ti-trash"></i>
-                  </button>
-                </div>
-              </td>
-            </tr>
-          } @empty {
-            <tr>
-              <td colspan="6" class="text-center py-5">
-                @if (isLoading()) {
-                  <div class="spinner-border text-primary" role="status">
-                    <span class="visually-hidden">Cargando...</span>
-                  </div>
-                } @else {
-                  <div class="text-muted">
-                    <i class="fa fa-inbox fa-3x d-block mb-2"></i>
-                    No se encontraron fondeadores registrados
-                  </div>
-                }
-              </td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <!-- Paginación -->
-  @if (totalCount() > pageSize()) {
-    <nav class="mt-4 d-flex justify-content-between align-items-center">
-      <div class="text-muted small">
-        Mostrando {{ fondeadores().length }} de {{ totalCount() }} fondeadores
-      </div>
-      <ul class="pagination pagination-sm mb-0 shadow-sm">
-        <li class="page-item" [class.disabled]="currentPage() === 1">
-          <button class="page-link" (click)="goToPage(currentPage() - 1)">Anterior</button>
-        </li>
-        <li class="page-item active">
-          <span class="page-link px-3">Página {{ currentPage() }}</span>
-        </li>
-        <li class="page-item" [class.disabled]="currentPage() >= totalPages()">
-          <button class="page-link" (click)="goToPage(currentPage() + 1)">Siguiente</button>
-        </li>
-      </ul>
-    </nav>
-  }
 </div>
+
+<app-confirm-modal
+  #confirmModal
+  title="Confirmar eliminación"
+  message="¿Está seguro que desea eliminar el fondeador?"
+  [itemName]="fondeadorAEliminar?.titulo ?? undefined"
+  (confirmed)="confirmarEliminacion()"
+  (cancelled)="cancelarEliminacion()">
+</app-confirm-modal>

@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ColoniaService } from '../../../services/catalogos/colonia.service';
@@ -7,19 +7,23 @@ import { UtilsService } from '../../../services/utils.service';
 import { ColoniaFormComponent } from './colonia-form.component';
 import { GenericTableComponent } from '../../../shared/components/generic-table/generic-table.component';
 import { TableColumn, TableAction, TableActionEvent, TableSortEvent, SortDirection } from '../../../shared/components/generic-table/table-column.model';
+import { ConfirmModalComponent } from '../../../shared/components/confirm-modal/confirm-modal.component';
 
 @Component({
   selector: 'app-colonia-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, ColoniaFormComponent, GenericTableComponent],
+  imports: [CommonModule, FormsModule, ColoniaFormComponent, GenericTableComponent, ConfirmModalComponent],
   templateUrl: './colonia-list.component.html'
 })
 export class ColoniaListComponent implements OnInit {
+  @ViewChild('confirmModal') confirmModal!: ConfirmModalComponent;
+
   private coloniaService = inject(ColoniaService);
   private utilsService = inject(UtilsService);
 
-  items = signal<ColoniaDto[]>([]);
-  loading = signal<boolean>(false);
+  items         = signal<ColoniaDto[]>([]);
+  loading       = signal<boolean>(false);
+  exportLoading = signal<boolean>(false);
   query: ColoniaPageQueryDto = { q: '', page: 1, size: 10 };
 
   totalCount = signal<number>(0);
@@ -119,10 +123,10 @@ export class ColoniaListComponent implements OnInit {
   onCancelarEdicion() { this.volverALista(); }
 
   onExportar() {
-    this.loading.set(true);
+    this.exportLoading.set(true);
     this.coloniaService.exportar(this.query).subscribe({
       next: (blob) => {
-        const url = window.URL.createObjectURL(blob);
+        const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
         const fecha = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
@@ -130,12 +134,12 @@ export class ColoniaListComponent implements OnInit {
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
-        window.URL.revokeObjectURL(url);
-        this.loading.set(false);
+        URL.revokeObjectURL(url);
+        this.exportLoading.set(false);
         this.utilsService.showNotification('Éxito', 'Archivo exportado correctamente', 'success');
       },
       error: () => {
-        this.loading.set(false);
+        this.exportLoading.set(false);
         this.utilsService.showNotification('Error', 'Error al exportar', 'error');
       }
     });
@@ -187,8 +191,7 @@ export class ColoniaListComponent implements OnInit {
     const colonia = this.items().find(c => c.id === id);
     if (!colonia) return;
     this.coloniaAEliminar = colonia;
-    const modal = document.getElementById('confirmDeleteModal');
-    if (modal) new (window as any).bootstrap.Modal(modal).show();
+    this.confirmModal.show();
   }
 
   confirmarEliminacion() {
@@ -197,7 +200,8 @@ export class ColoniaListComponent implements OnInit {
       next: (response) => {
         if (response.success) {
           this.load();
-          this.cerrarModal();
+          this.confirmModal.hide();
+          this.coloniaAEliminar = null;
         } else {
           const msg = response.errors?.[0] ?? response.message ?? 'Error al eliminar';
           this.utilsService.showNotification('Error', msg, 'error');
@@ -207,11 +211,7 @@ export class ColoniaListComponent implements OnInit {
     });
   }
 
-  cancelarEliminacion() { this.cerrarModal(); }
-
-  private cerrarModal() {
-    const modal = document.getElementById('confirmDeleteModal');
-    if (modal) (window as any).bootstrap.Modal.getInstance(modal)?.hide();
+  cancelarEliminacion() {
     this.coloniaAEliminar = null;
   }
 

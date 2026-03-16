@@ -2,6 +2,26 @@
   display: block;
 }
 
+/* ── Toolbar ─────────────────────────────────────────────── */
+.gt-toolbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+
+  &__search {
+    flex: 1 1 auto;
+    min-width: 160px;
+  }
+
+  &__actions {
+    margin-left: auto;
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+}
+
 /* ── Tabla: separar bordes para poder aplicar border-radius ── */
 .gt-table {
   border-collapse: separate;
@@ -156,4 +176,57 @@ th .gt-cell-text {
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(13, 110, 253, 0.07);
+}
+
+/* ── Skeleton loading ────────────────────────────────────── */
+@keyframes gt-shimmer {
+  0%   { background-position: -600px 0; }
+  100% { background-position: 600px 0; }
+}
+
+.gt-skeleton-row {
+  td {
+    padding: 13px 16px;
+    border-bottom: 1px solid #e2e8f0;
+  }
+
+  &:nth-child(even) td {
+    background-color: #f4f9ff;
+  }
+}
+
+.gt-skeleton-cell {
+  display: block;
+  height: 13px;
+  border-radius: 6px;
+  background: linear-gradient(
+    90deg,
+    #e2e8f0 0%,
+    #f1f5f9 40%,
+    #e8f0fa 50%,
+    #f1f5f9 60%,
+    #e2e8f0 100%
+  );
+  background-size: 1200px 100%;
+  animation: gt-shimmer 1.6s ease-in-out infinite;
+  animation-delay: var(--sk-delay, 0ms);
+}
+
+.gt-skeleton-btn {
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  border-radius: 6px;
+  vertical-align: middle;
+  background: linear-gradient(
+    90deg,
+    #e2e8f0 0%,
+    #f1f5f9 40%,
+    #e8f0fa 50%,
+    #f1f5f9 60%,
+    #e2e8f0 100%
+  );
+  background-size: 1200px 100%;
+  animation: gt-shimmer 1.6s ease-in-out infinite;
+  animation-delay: var(--sk-delay, 0ms);
 }

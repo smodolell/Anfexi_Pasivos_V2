@@ -1,26 +1,17 @@
-import { configuracionRoutes } from './features/configuracion/configuracion.routes';
-import { CuentaBancariaForm } from './features/catalogos/components/cuenta-bancaria-form/cuenta-bancaria-form';
 import { Routes } from '@angular/router';
-import { LayoutComponent } from './layout/layout.component';
 import { AdminLayoutComponent } from './layout/admin-layout.component';
 import { LoginLayoutComponent } from './layout/login-layout.component';
-import { AuthGuard } from './guards/auth.guard';
-import { BancoFormComponent } from './pages/catalogos/bancos/banco-form.component';
-import { CuentaBancariaFormComponent } from './pages/catalogos/cuentas-bancarias/cuenta-bancaria-form.component';
+import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
-  // Rutas con layout principal (como Master Page)
-  {
-    path: '',
-    component: LayoutComponent,
-    children: [{ path: '', redirectTo: '/auth/login', pathMatch: 'full' }],
-  },
+  // Ruta raíz → login
+  { path: '', redirectTo: '/auth/login', pathMatch: 'full' },
 
   // Rutas con layout de administración - PROTEGIDAS
   {
     path: 'admin',
     component: AdminLayoutComponent,
-    canActivate: [AuthGuard], // Requiere autenticación Y rol de admin
+    canActivate: [authGuard],
     children: [
       { path: '', redirectTo: '/admin/reportes/dashboard', pathMatch: 'full' },
       {
@@ -68,21 +59,25 @@ export const routes: Routes = [
         data: { title: 'Información General del Contrato Pasivo' },
         loadComponent: () =>
           import('./pages/contratos/info-general/info-general-contrato-pasivo.component').then(
-            (m) => m.InfoGeneralContratoPasivoComponent
+            (m) => m.InfoGeneralContratoPasivoComponent,
           ),
       },
     ],
   },
+
+  // Configuración - PROTEGIDA
   {
     path: 'configuracion',
+    canActivate: [authGuard],
     loadChildren: () => import('./features/configuracion/configuracion.routes'),
   },
+
+  // Catálogos - PROTEGIDOS
   {
     path: 'catalogos',
     component: AdminLayoutComponent,
-    canActivate: [AuthGuard], // Requiere autenticación Y rol de admin
+    canActivate: [authGuard],
     children: [
-      // Catálogos
       {
         path: 'tiposdirecciones',
         data: { title: 'Tipos de Dirección' },
@@ -148,7 +143,7 @@ export const routes: Routes = [
           ),
       },
       {
-        path: 'estatus-contrato/edit:id',
+        path: 'estatus-contrato/edit/:id',
         data: { title: 'Editar Estatus de Contrato' },
         loadComponent: () =>
           import('./pages/catalogos/estatus-contrato/estatus-contrato-form.component').then(
@@ -157,57 +152,8 @@ export const routes: Routes = [
       },
     ],
   },
-  // Rutas con layout de administración - PROTEGIDAS
-  {
-    path: 'admin',
-    component: AdminLayoutComponent,
-    canActivate: [AuthGuard],
-    children: [
-      { path: '', redirectTo: '/admin/reportes/dashboard', pathMatch: 'full' },
-      {
-        path: 'dashboard',
-        data: { title: 'Dashboard de Administración' },
-        loadComponent: () =>
-          import('./pages/admin/dashboard/dashboard.component').then((m) => m.DashboardComponent),
-      },
-      {
-        path: 'reportes/dashboard',
-        data: { title: 'Monitor de Cartera Pasiva' },
-        loadComponent: () =>
-          import('./pages/reportes/dashboard/dashboard.component').then((m) => m.DashboardComponent),
-      },
-      {
-        path: 'usuarios',
-        data: { title: 'Administración de Usuarios' },
-        loadComponent: () =>
-          import('./pages/sistema/usuario/usuario-list.component').then(
-            (m) => m.UsuarioListComponent,
-          ),
-      },
-      {
-        path: 'roles',
-        data: { title: 'Roles' },
-        loadComponent: () =>
-          import('./pages/sistema/rol/rol-list.component').then((m) => m.RolListComponent),
-      },
-      {
-        path: 'empresas',
-        data: { title: 'Empresas' },
-        loadComponent: () =>
-          import('./pages/sistema/empresa/empresa-list.component').then(
-            (m) => m.EmpresaListComponent,
-          ),
-      },
-      {
-        path: 'profile',
-        data: { title: 'Mi Perfil' },
-        loadComponent: () =>
-          import('./pages/admin/profile/profile.component').then((m) => m.ProfileComponent),
-      },
-    ],
-  },
 
-  // Rutas con layout de login/autenticación
+  // Autenticación
   {
     path: 'auth',
     component: LoginLayoutComponent,
@@ -221,9 +167,6 @@ export const routes: Routes = [
     ],
   },
 
-  // Ruta de logout
-  { path: 'logout', redirectTo: '/auth/login', pathMatch: 'full' },
-
-  // Ruta para usuarios no autenticados que intenten acceder a rutas protegidas
+  { path: 'logout',       redirectTo: '/auth/login', pathMatch: 'full' },
   { path: 'unauthorized', redirectTo: '/auth/login', pathMatch: 'full' },
 ];

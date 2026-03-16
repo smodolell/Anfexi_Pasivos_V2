@@ -16,42 +16,41 @@ export class LoginComponent {
   formData: LoginCredentials = {
     email: '',
     contrasenia: '',
-    recuerdame: false
+    recuerdame: false,
   };
-  
+
   showPassword = false;
-  isLoading = false;
+  isLoading    = false;
 
   constructor(
-    private authService: AuthService,
-    private router: Router,
-    private utils: UtilsService
+    private readonly authService: AuthService,
+    private readonly router: Router,
+    private readonly utils: UtilsService,
   ) {}
 
   async onSubmitLogin() {
-    if (this.formData.email && this.formData.contrasenia) {
-      this.isLoading = true;
-      this.utils.showPreloader();
-      try {
-        const result = await this.authService.login(this.formData);
-        this.utils.hidePreloader();
-        this.isLoading = false;
-        if (result.success) {
-          this.utils.showNotification('Completado', result.message, 'success');
-          // Redirigir según el rol del usuario
-          if (result.user?.role === 'Webmaster') {
-            this.router.navigate(['/admin/usuarios']);
-          } else {
-            this.router.navigate(['/admin/usuarios']);
-          }
-        } else {
-          this.utils.showNotification(result.message, result.errors?.join(', ') || '', 'error');
-        }
-      } catch (error) {
-        this.utils.showNotification('Error', 'Error durante la validación de los datos', 'error');
-      }
-    } else {
+    if (!this.formData.email || !this.formData.contrasenia) {
       this.utils.showNotification('Advertencia', 'Debe completar todos los campos.', 'warning');
+      return;
+    }
+
+    this.isLoading = true;
+    this.utils.showPreloader();
+
+    try {
+      const result = await this.authService.login(this.formData);
+
+      if (result.success) {
+        this.utils.showNotification('Completado', result.message, 'success');
+        this.router.navigate(['/admin/reportes/dashboard']);
+      } else {
+        this.utils.showNotification(result.message, result.errors?.join(', ') ?? '', 'error');
+      }
+    } catch {
+      this.utils.showNotification('Error', 'Ocurrió un error inesperado. Intente de nuevo.', 'error');
+    } finally {
+      this.isLoading = false;
+      this.utils.hidePreloader();
     }
   }
 }

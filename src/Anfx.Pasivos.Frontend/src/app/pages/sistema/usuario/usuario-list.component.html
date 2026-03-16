@@ -23,15 +23,6 @@
           }
 
           @if (!mostrandoFormulario()) {
-            <!-- Filtro extra: activo (fuera del generic-table) -->
-            <div class="d-flex align-items-center gap-3 mb-2">
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" id="filtroActivo"
-                  [(ngModel)]="query.activo" (change)="onActivoChange()">
-                <label class="form-check-label" for="filtroActivo">Solo activos</label>
-              </div>
-            </div>
-
             <app-generic-table
               [columns]="columns"
               [actions]="actions"
@@ -47,34 +38,30 @@
               (pageNext)="onPageNext()"
               (pagePrev)="onPagePrev()"
               (newClicked)="onNuevo()">
+
+              <app-filter-activo
+                slot="filters"
+                label="Solo activos"
+                [(value)]="query.activo"
+                (changed)="onActivoChange()">
+              </app-filter-activo>
+
             </app-generic-table>
           }
 
         </div>
 
-        <!-- Modal eliminación -->
-        <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-hidden="true">
-          <div class="modal-dialog">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title">Confirmar eliminación</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-              </div>
-              <div class="modal-body">
-                <p>¿Eliminar al usuario <strong>{{ usuarioAEliminar?.nombreCompleto }}</strong>?</p>
-                <p class="text-muted small">Esta acción no se puede deshacer.</p>
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" (click)="cancelarEliminacion()">Cancelar</button>
-                <button type="button" class="btn btn-danger" (click)="confirmarEliminacion()">
-                  <i class="fa-solid fa-user-minus me-1"></i> Eliminar
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
 
       </div>
     </div>
   </div>
 </div>
+
+<app-confirm-modal
+  #confirmModal
+  title="Confirmar eliminación"
+  message="¿Está seguro que desea eliminar el usuario?"
+  [itemName]="usuarioAEliminar?.nombreCompleto"
+  (confirmed)="confirmarEliminacion()"
+  (cancelled)="cancelarEliminacion()">
+</app-confirm-modal>

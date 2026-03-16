@@ -2,11 +2,13 @@ import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from 
 import { CommonModule, DatePipe, CurrencyPipe, PercentPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TableColumn, TableAction, TableActionEvent, TableSortEvent, SortDirection } from './table-column.model';
+import { SearchInputComponent } from '../search-input/search-input.component';
+import { GenericButtonComponent } from '../generic-button/generic-button.component';
 
 @Component({
   selector: 'app-generic-table',
   standalone: true,
-  imports: [CommonModule, FormsModule, DatePipe, CurrencyPipe, PercentPipe],
+  imports: [CommonModule, FormsModule, DatePipe, CurrencyPipe, PercentPipe, SearchInputComponent, GenericButtonComponent],
   templateUrl: './generic-table.component.html',
   styleUrl: './generic-table.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -40,6 +42,13 @@ export class GenericTableComponent {
   @Input() showNew = true;
   @Input() showExport = false;
   @Input() exportLoading = false;
+
+  // ── Skeleton ─────────────────────────────────────────────────
+  @Input() skeletonRowCount = 10;
+
+  get skeletonRows(): number[] {
+    return Array.from({ length: this.skeletonRowCount }, (_, i) => i);
+  }
 
   // ── Eventos ──────────────────────────────────────────────────
   @Output() actionCalled = new EventEmitter<TableActionEvent>();

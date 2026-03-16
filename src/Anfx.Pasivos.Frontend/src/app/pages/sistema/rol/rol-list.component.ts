@@ -1,15 +1,16 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal, ViewChild } from '@angular/core';
 import { RolService } from '../../../services/sistema/rol.service';
 import { UtilsService } from '../../../services/utils.service';
 import { RolFormComponent } from './rol-form.component';
 import { GenericTableComponent } from '../../../shared/components/generic-table/generic-table.component';
 import { TableColumn, TableAction, TableActionEvent } from '../../../shared/components/generic-table/table-column.model';
 import { RolDto, RolPageQueryDto, CreateRolDto, UpdateRolDto } from '../../../../types/sistema/rol.dto';
+import { ConfirmModalComponent } from '../../../shared/components/confirm-modal/confirm-modal.component';
 
 @Component({
   selector: 'app-rol-list',
   standalone: true,
-  imports: [RolFormComponent, GenericTableComponent],
+  imports: [RolFormComponent, GenericTableComponent, ConfirmModalComponent],
   templateUrl: './rol-list.component.html',
 })
 export class RolListComponent implements OnInit {
@@ -42,6 +43,7 @@ export class RolListComponent implements OnInit {
   rolSeleccionado: Partial<RolDto> = {};
 
   // ── Modal eliminación ─────────────────────────────────────────
+  @ViewChild('confirmModal') confirmModal!: ConfirmModalComponent;
   rolAEliminar: RolDto | null = null;
 
   ngOnInit(): void {
@@ -155,8 +157,7 @@ export class RolListComponent implements OnInit {
 
   private iniciarEliminacion(rol: RolDto) {
     this.rolAEliminar = rol;
-    const modal = document.getElementById('confirmDeleteRolModal');
-    if (modal) new (globalThis as any).bootstrap.Modal(modal).show();
+    this.confirmModal.show();
   }
 
   confirmarEliminacion() {
@@ -165,7 +166,8 @@ export class RolListComponent implements OnInit {
       next: res => {
         if (res.success) {
           this.load();
-          this.cerrarModal();
+          this.confirmModal.hide();
+          this.rolAEliminar = null;
         } else {
           this.utilsService.showNotification('Error', res.errors?.[0] ?? res.message ?? 'Error al eliminar', 'error');
         }
@@ -175,12 +177,6 @@ export class RolListComponent implements OnInit {
   }
 
   cancelarEliminacion() {
-    this.cerrarModal();
-  }
-
-  private cerrarModal() {
-    const modal = document.getElementById('confirmDeleteRolModal');
-    if (modal) (globalThis as any).bootstrap.Modal.getInstance(modal)?.hide();
     this.rolAEliminar = null;
   }
 }

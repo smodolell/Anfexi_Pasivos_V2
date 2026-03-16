@@ -2,41 +2,41 @@
   <div class="card-body">
 
     <!-- ── Toolbar ─────────────────────────────────────────── -->
-    <div class="row mb-3 align-items-center g-2">
+    <div class="gt-toolbar mb-3">
 
       <!-- Búsqueda -->
       @if (searchable) {
-        <div class="col-12 col-sm-6 col-md-5">
-          <div class="input-group">
-            <input
-              #searchInput
-              type="text"
-              class="form-control"
-              [placeholder]="searchPlaceholder"
-              [value]="searchValue"
-              (keyup.enter)="onSearch(searchInput.value)"
-            />
-            <button class="btn btn-primary" type="button" (click)="onSearch(searchInput.value)">
-              <i class="fa-solid fa-magnifying-glass"></i>
-              <span class="d-none d-sm-inline ms-1">Buscar</span>
-            </button>
-          </div>
+        <div class="gt-toolbar__search">
+          <app-search-input
+            [placeholder]="searchPlaceholder"
+            [value]="searchValue"
+            (search)="onSearch($event)">
+          </app-search-input>
         </div>
       }
 
+      <!-- Filtros extra proyectados por el padre (slot=filters) -->
+      <ng-content select="[slot=filters]"></ng-content>
+
       <!-- Botones de toolbar -->
-      <div class="col text-end">
+      <div class="gt-toolbar__actions">
         @if (showExport) {
-          <button class="btn btn-info me-2" (click)="exportClicked.emit()" [disabled]="exportLoading || loading">
-            <i class="fa-solid fa-file-excel"></i>
-            <span class="d-none d-sm-inline ms-1">Exportar</span>
-          </button>
+          <app-button
+            icon="fa-solid fa-file-export"
+            label="Exportar"
+            variant="info"
+            [loading]="exportLoading"
+            [disabled]="exportLoading || loading"
+            (clicked)="exportClicked.emit()">
+          </app-button>
         }
         @if (showNew) {
-          <button class="btn btn-success" (click)="newClicked.emit()">
-            <i class="fa-solid fa-plus"></i>
-            <span class="d-none d-sm-inline ms-1">Nuevo</span>
-          </button>
+          <app-button
+            icon="fa-solid fa-circle-plus"
+            label="Nuevo"
+            variant="success"
+            (clicked)="newClicked.emit()">
+          </app-button>
         }
       </div>
 
@@ -83,16 +83,26 @@
         <!-- Cuerpo -->
         <tbody>
 
-          <!-- Loading -->
+          <!-- Skeleton loading -->
           @if (loading) {
-            <tr>
-              <td [attr.colspan]="visibleColumns.length + (actions.length > 0 ? 1 : 0)" class="text-center py-4">
-                <output>
-                  <div class="spinner-border text-primary" aria-hidden="true"></div>
-                  <span class="visually-hidden">Cargando...</span>
-                </output>
-              </td>
-            </tr>
+            @for (i of skeletonRows; track i) {
+              <tr class="gt-skeleton-row" [style.--sk-delay]="(i * 80) + 'ms'">
+                @for (col of visibleColumns; track col.key) {
+                  <td [class]="colVisibilityClass(col)" [style.max-width.px]="col.maxWidth ?? null">
+                    <span class="gt-skeleton-cell"
+                      [style.width]="(55 + (col.key.length * 7 + i * 11) % 35) + '%'">
+                    </span>
+                  </td>
+                }
+                @if (actions.length > 0) {
+                  <td class="gt-actions-cell text-center">
+                    @for (act of actions; track act.id) {
+                      <span class="gt-skeleton-btn me-1"></span>
+                    }
+                  </td>
+                }
+              </tr>
+            }
           }
 
           <!-- Sin datos -->
@@ -150,6 +160,7 @@
                       <button
                         [class]="'btn btn-sm me-1 ' + act.btnClass"
                         [title]="act.label"
+                        [disabled]="act.disabledFn ? act.disabledFn(row) : false"
                         (click)="onAction(act.id, row)"
                       >
                         <i [class]="act.icon"></i>

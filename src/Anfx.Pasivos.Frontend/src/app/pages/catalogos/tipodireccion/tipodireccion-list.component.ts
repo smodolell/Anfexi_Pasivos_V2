@@ -1,15 +1,16 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TipoDireccionService } from '../../../services/catalogos/tipodireccion.service';
 import { TipoDireccionDto, TipoDireccionPageQueryDto } from '../../../../types/catalogos/tipodireccion.dto';
 import { UtilsService } from '../../../services/utils.service';
 import { TipoDireccionFormComponent } from './tipodireccion-form.component';
+import { ConfirmModalComponent } from '../../../shared/components/confirm-modal/confirm-modal.component';
 
 @Component({
   selector: 'app-tipodireccion-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, TipoDireccionFormComponent],
+  imports: [CommonModule, FormsModule, TipoDireccionFormComponent, ConfirmModalComponent],
   templateUrl: './tipodireccion-list.component.html'
 })
 export class TipoDireccionListComponent implements OnInit {
@@ -24,6 +25,8 @@ export class TipoDireccionListComponent implements OnInit {
   totalPages = signal<number>(0);
   currentPage = signal<number>(1);
   pageSize = signal<number>(10);
+
+  @ViewChild('confirmModal') confirmModal!: ConfirmModalComponent;
 
   tipoDireccionSeleccionado: Partial<TipoDireccionDto> = {};
   mostrandoFormulario = signal<boolean>(false);
@@ -196,56 +199,29 @@ export class TipoDireccionListComponent implements OnInit {
     const tipoDireccion = this.items().find(t => t.id === id);
     if (tipoDireccion) {
       this.tipoDireccionAEliminar = tipoDireccion;
-      this.mostrarModalEliminacion();
-    }
-  }
-
-  private mostrarModalEliminacion() {
-    const modal = document.getElementById('confirmDeleteModal');
-    if (modal) {
-      const bootstrapModal = new (window as any).bootstrap.Modal(modal);
-      bootstrapModal.show();
+      this.confirmModal.show();
     }
   }
 
   confirmarEliminacion() {
-    if (this.tipoDireccionAEliminar) {
-      this.tipoDireccionService.delete(this.tipoDireccionAEliminar.id).subscribe({
-        next: (response) => {
-          if (response.success) {
-            this.load();
-            this.cerrarModalEliminacion();
-          } else {
-            if (response.errors && response.errors.length > 0) {
-              this.utilsService.showNotification('Error', response.errors[0], 'error');
-            } else if (response.message) {
-              this.utilsService.showNotification('Error', response.message, 'error');
-            } else {
-              this.utilsService.showNotification('Error', 'Error al eliminar el tipo de dirección', 'error');
-            }
-          }
-        },
-        error: (httpError) => {
-          this.utilsService.showNotification('Error', 'Error de conexión al eliminar el tipo de dirección', 'error');
-          console.error('Error HTTP:', httpError);
+    if (!this.tipoDireccionAEliminar) return;
+    this.tipoDireccionService.delete(this.tipoDireccionAEliminar.id).subscribe({
+      next: (response) => {
+        if (response.success) {
+          this.load();
+          this.confirmModal.hide();
+          this.tipoDireccionAEliminar = null;
+        } else {
+          const msg = response.errors?.[0] ?? response.message ?? 'Error al eliminar el tipo de dirección';
+          this.utilsService.showNotification('Error', msg, 'error');
         }
-      });
-    }
-  }
-
-  private cerrarModalEliminacion() {
-    const modal = document.getElementById('confirmDeleteModal');
-    if (modal) {
-      const bootstrapModal = (window as any).bootstrap.Modal.getInstance(modal);
-      if (bootstrapModal) {
-        bootstrapModal.hide();
-      }
-    }
-    this.tipoDireccionAEliminar = null;
+      },
+      error: () => this.utilsService.showNotification('Error', 'Error de conexión al eliminar el tipo de dirección', 'error')
+    });
   }
 
   cancelarEliminacion() {
-    this.cerrarModalEliminacion();
+    this.tipoDireccionAEliminar = null;
   }
 
   onExportar() {

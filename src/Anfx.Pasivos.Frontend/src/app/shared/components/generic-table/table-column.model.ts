@@ -37,6 +37,8 @@ export interface TableAction {
   icon: string;
   /** Clase CSS del botón Bootstrap, ej: 'btn-primary', 'btn-danger' */
   btnClass: string;
+  /** Función opcional que deshabilita el botón por fila */
+  disabledFn?: (row: any) => boolean;
 }
 
 export interface TableActionEvent<T = any> {

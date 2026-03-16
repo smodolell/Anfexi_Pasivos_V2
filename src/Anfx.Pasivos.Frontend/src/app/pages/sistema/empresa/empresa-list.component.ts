@@ -1,15 +1,16 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { EmpresaService } from '../../../services/sistema/empresa.service';
 import { UtilsService } from '../../../services/utils.service';
 import { EmpresaFormComponent } from './empresa-form.component';
 import { EmpresaDto, EmpresaPageQueryDto } from '../../../../types/sistema/empresa.dto';
+import { ConfirmModalComponent } from '../../../shared/components/confirm-modal/confirm-modal.component';
 
 @Component({
   selector: 'app-empresa-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, EmpresaFormComponent],
+  imports: [CommonModule, FormsModule, EmpresaFormComponent, ConfirmModalComponent],
   templateUrl: './empresa-list.component.html'
 })
 export class EmpresaListComponent implements OnInit {
@@ -42,6 +43,8 @@ export class EmpresaListComponent implements OnInit {
     numExterior: '',
     numInterior: ''
   };
+  @ViewChild('confirmModal') confirmModal!: ConfirmModalComponent;
+
   mostrandoFormulario = signal<boolean>(false);
   empresaAEliminar: EmpresaDto | null = null;
 
@@ -253,56 +256,29 @@ export class EmpresaListComponent implements OnInit {
     const empresa = this.items().find(e => e.id === id);
     if (empresa) {
       this.empresaAEliminar = empresa;
-      this.mostrarModalEliminacion();
-    }
-  }
-
-  private mostrarModalEliminacion() {
-    const modal = document.getElementById('confirmDeleteModal');
-    if (modal) {
-      const bootstrapModal = new (window as any).bootstrap.Modal(modal);
-      bootstrapModal.show();
+      this.confirmModal.show();
     }
   }
 
   confirmarEliminacion() {
-    if (this.empresaAEliminar) {
-      this.empresaService.delete(this.empresaAEliminar.id).subscribe({
-        next: (response) => {
-          if (response.success) {
-            this.load();
-            this.cerrarModalEliminacion();
-            this.utilsService.showNotification('Éxito', 'Empresa eliminada correctamente', 'success');
-          } else {
-            if (response.errors && response.errors.length > 0) {
-              this.utilsService.showNotification('Error', response.errors[0], 'error');
-            } else if (response.message) {
-              this.utilsService.showNotification('Error', response.message, 'error');
-            } else {
-              this.utilsService.showNotification('Error', 'Error al eliminar la empresa', 'error');
-            }
-          }
-        },
-        error: (httpError) => {
-          this.utilsService.showNotification('Error', 'Error de conexión al eliminar la empresa', 'error');
-          console.error('Error HTTP:', httpError);
+    if (!this.empresaAEliminar) return;
+    this.empresaService.delete(this.empresaAEliminar.id).subscribe({
+      next: (response) => {
+        if (response.success) {
+          this.load();
+          this.confirmModal.hide();
+          this.empresaAEliminar = null;
+          this.utilsService.showNotification('Éxito', 'Empresa eliminada correctamente', 'success');
+        } else {
+          const msg = response.errors?.[0] ?? response.message ?? 'Error al eliminar la empresa';
+          this.utilsService.showNotification('Error', msg, 'error');
         }
-      });
-    }
-  }
-
-  private cerrarModalEliminacion() {
-    const modal = document.getElementById('confirmDeleteModal');
-    if (modal) {
-      const bootstrapModal = (window as any).bootstrap.Modal.getInstance(modal);
-      if (bootstrapModal) {
-        bootstrapModal.hide();
-      }
-    }
-    this.empresaAEliminar = null;
+      },
+      error: () => this.utilsService.showNotification('Error', 'Error de conexión al eliminar la empresa', 'error')
+    });
   }
 
   cancelarEliminacion() {
-    this.cerrarModalEliminacion();
+    this.empresaAEliminar = null;
   }
 }

@@ -19,7 +19,7 @@
           [searchValue]="query.q ?? ''"
           [showNew]="true"
           [showExport]="true"
-          [exportLoading]="loading()"
+          [exportLoading]="exportLoading()"
           [sortColumn]="sortColumn"
           [sortDirection]="sortDirection"
           (searchChanged)="onSearch($event)"
@@ -57,24 +57,11 @@
   </div>
 </div>
 
-<!-- Modal confirmación de eliminación -->
-<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="confirmDeleteModalLabel">Confirmar Eliminación</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-      </div>
-      <div class="modal-body">
-        <p>¿Está seguro que desea eliminar la colonia <strong>{{ coloniaAEliminar?.sColonia }}</strong>?</p>
-        <p class="text-danger"><i class="fa-solid fa-triangle-exclamation"></i> Esta acción no se puede deshacer.</p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" (click)="cancelarEliminacion()">Cancelar</button>
-        <button type="button" class="btn btn-danger" (click)="confirmarEliminacion()">
-          <i class="fa-solid fa-trash"></i> Eliminar
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
+<app-confirm-modal
+  #confirmModal
+  title="Confirmar eliminación"
+  message="¿Está seguro que desea eliminar la colonia?"
+  [itemName]="coloniaAEliminar?.sColonia"
+  (confirmed)="confirmarEliminacion()"
+  (cancelled)="cancelarEliminacion()">
+</app-confirm-modal>

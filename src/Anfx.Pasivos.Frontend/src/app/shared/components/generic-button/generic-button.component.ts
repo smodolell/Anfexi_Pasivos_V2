@@ -13,6 +13,31 @@ export type ButtonType    = 'button' | 'submit' | 'reset';
   imports: [CommonModule],
   templateUrl: './generic-button.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  styles: [`
+    :host { display: inline-flex; }
+
+    button {
+      transition: transform .15s ease, box-shadow .15s ease;
+
+      &:not(:disabled):hover {
+        transform: translateY(-1px);
+      }
+
+      &:not(:disabled):active {
+        transform: translateY(0);
+        box-shadow: none !important;
+      }
+
+      /* Glow por variante — mismo estilo que search input y pill filter */
+      &.btn-primary:not(:disabled):hover   { box-shadow: 0 0 0 3px rgba(29,  108, 245, .20); }
+      &.btn-success:not(:disabled):hover   { box-shadow: 0 0 0 3px rgba(39,  174,  96, .20); }
+      &.btn-info:not(:disabled):hover      { box-shadow: 0 0 0 3px rgba(41,  128, 185, .20); }
+      &.btn-danger:not(:disabled):hover    { box-shadow: 0 0 0 3px rgba(231,  76,  60, .20); }
+      &.btn-warning:not(:disabled):hover   { box-shadow: 0 0 0 3px rgba(243, 156,  18, .20); }
+      &.btn-secondary:not(:disabled):hover { box-shadow: 0 0 0 3px rgba(127, 140, 141, .20); }
+      &.btn-light:not(:disabled):hover     { box-shadow: 0 0 0 3px rgba(  0,   0,   0, .08); }
+    }
+  `],
 })
 export class GenericButtonComponent {
   /** Clase FontAwesome, ej: 'fa-solid fa-plus' */

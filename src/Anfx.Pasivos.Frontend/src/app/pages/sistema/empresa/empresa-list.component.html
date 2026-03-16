@@ -127,22 +127,11 @@
   </div>
 </div>
 
-<!-- Modal de confirmación de eliminación -->
-<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="confirmDeleteModalLabel">Confirmar Eliminación</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <p>¿Está seguro que desea eliminar la empresa <strong>{{ empresaAEliminar?.sEmpresa }}</strong>?</p>
-        <p class="text-danger">Esta acción no se puede deshacer.</p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" (click)="cancelarEliminacion()">Cancelar</button>
-        <button type="button" class="btn btn-danger" (click)="confirmarEliminacion()">Eliminar</button>
-      </div>
-    </div>
-  </div>
-</div>
+<app-confirm-modal
+  #confirmModal
+  title="Confirmar eliminación"
+  message="¿Está seguro que desea eliminar la empresa?"
+  [itemName]="empresaAEliminar?.sEmpresa"
+  (confirmed)="confirmarEliminacion()"
+  (cancelled)="cancelarEliminacion()">
+</app-confirm-modal>

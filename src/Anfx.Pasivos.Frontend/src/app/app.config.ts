@@ -1,6 +1,5 @@
 import {
   ApplicationConfig,
-  importProvidersFrom,
   provideBrowserGlobalErrorListeners,
   provideZonelessChangeDetection,
 } from '@angular/core';
@@ -9,7 +8,6 @@ import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { API_AUTH_URL, API_CATALOGO_URL, API_COTIZADOR_URL, API_SISTEMA_URL } from './api.config';
-import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { provideApi } from '@api/provide-api';
 import { provideHighcharts } from 'highcharts-angular';
@@ -57,6 +55,5 @@ export const appConfig: ApplicationConfig = {
           ? 'http://dev.anfexi.com/profuturo/backend/cotizador/api'
           : 'http://localhost:5056/api',
     },
-    provideClientHydration(withEventReplay()),
   ],
 };

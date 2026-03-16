@@ -1,16 +1,17 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, OnInit, inject, signal, ViewChild } from '@angular/core';
 import { UsuarioService } from '../../../services/sistema/usuario.service';
 import { UsuarioItemDto, UsuarioDto, CreateUsuarioDto, UpdateUsuarioDto, UsuarioPageQueryDto } from '../../../../types/sistema/usuario.dto';
 import { UtilsService } from '../../../services/utils.service';
 import { UsuarioFormComponent } from './usuario-form.component';
 import { GenericTableComponent } from '../../../shared/components/generic-table/generic-table.component';
 import { TableColumn, TableAction, TableActionEvent } from '../../../shared/components/generic-table/table-column.model';
+import { FilterActivoComponent } from '../../../shared/components/filter-activo/filter-activo.component';
+import { ConfirmModalComponent } from '../../../shared/components/confirm-modal/confirm-modal.component';
 
 @Component({
   selector: 'app-usuario-list',
   standalone: true,
-  imports: [FormsModule, UsuarioFormComponent, GenericTableComponent],
+  imports: [UsuarioFormComponent, GenericTableComponent, FilterActivoComponent, ConfirmModalComponent],
   templateUrl: './usuario-list.component.html',
 })
 export class UsuarioListComponent implements OnInit {
@@ -46,6 +47,7 @@ export class UsuarioListComponent implements OnInit {
   usuarioSeleccionado: Partial<UsuarioDto> = {};
 
   // ── Modal eliminación ─────────────────────────────────────────
+  @ViewChild('confirmModal') confirmModal!: ConfirmModalComponent;
   usuarioAEliminar: UsuarioItemDto | null = null;
 
   ngOnInit(): void {
@@ -164,8 +166,7 @@ export class UsuarioListComponent implements OnInit {
 
   private iniciarEliminacion(usuario: UsuarioItemDto) {
     this.usuarioAEliminar = usuario;
-    const modal = document.getElementById('confirmDeleteModal');
-    if (modal) new (globalThis as any).bootstrap.Modal(modal).show();
+    this.confirmModal.show();
   }
 
   confirmarEliminacion() {
@@ -174,7 +175,8 @@ export class UsuarioListComponent implements OnInit {
       next: res => {
         if (res.success) {
           this.load();
-          this.cerrarModal();
+          this.confirmModal.hide();
+          this.usuarioAEliminar = null;
         } else {
           this.utilsService.showNotification('Error', res.errors?.[0] ?? res.message ?? 'Error al eliminar', 'error');
         }
@@ -184,12 +186,6 @@ export class UsuarioListComponent implements OnInit {
   }
 
   cancelarEliminacion() {
-    this.cerrarModal();
-  }
-
-  private cerrarModal() {
-    const modal = document.getElementById('confirmDeleteModal');
-    if (modal) (globalThis as any).bootstrap.Modal.getInstance(modal)?.hide();
     this.usuarioAEliminar = null;
   }
 }
