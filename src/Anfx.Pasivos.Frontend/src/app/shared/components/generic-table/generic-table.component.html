@@ -4,7 +4,7 @@
     <!-- ── Toolbar ─────────────────────────────────────────── -->
     <div class="gt-toolbar mb-3">
 
-      <!-- Búsqueda -->
+      <!-- Búsqueda + badge de resultados -->
       @if (searchable) {
         <div class="gt-toolbar__search">
           <app-search-input
@@ -12,6 +12,11 @@
             [value]="searchValue"
             (search)="onSearch($event)">
           </app-search-input>
+          @if (hasActiveSearch && !loading) {
+            <span class="gt-results-badge">
+              {{ totalCount }} {{ totalCount === 1 ? 'resultado' : 'resultados' }}
+            </span>
+          }
         </div>
       }
 
@@ -108,9 +113,31 @@
           <!-- Sin datos -->
           @else if (items.length === 0) {
             <tr>
-              <td [attr.colspan]="visibleColumns.length + (actions.length > 0 ? 1 : 0)" class="text-center py-4 text-muted">
-                <i class="fa-solid fa-inbox fa-2x d-block mb-2"></i>
-                No hay datos disponibles
+              <td
+                [attr.colspan]="visibleColumns.length + (actions.length > 0 ? 1 : 0)"
+                class="gt-empty-state"
+              >
+                @if (hasActiveSearch) {
+                  <!-- Sin resultados de búsqueda -->
+                  <i class="fa-solid fa-magnifying-glass gt-empty-icon gt-empty-icon--search"></i>
+                  <p class="gt-empty-title">
+                    Sin resultados para <strong>"{{ searchValue }}"</strong>
+                  </p>
+                  <p class="gt-empty-subtitle">Intenta con otros términos de búsqueda</p>
+                  <button class="btn btn-sm btn-outline-secondary mt-2" (click)="onClearSearch()">
+                    <i class="fa-solid fa-xmark me-1"></i>Limpiar búsqueda
+                  </button>
+                } @else {
+                  <!-- Sin registros -->
+                  <i [class]="emptyIcon + ' gt-empty-icon'"></i>
+                  <p class="gt-empty-title">{{ emptyMessage }}</p>
+                  <p class="gt-empty-subtitle">Aún no hay registros en este catálogo</p>
+                  @if (showNew) {
+                    <button class="btn btn-sm btn-success mt-2" (click)="newClicked.emit()">
+                      <i class="fa-solid fa-circle-plus me-1"></i>Crear primero
+                    </button>
+                  }
+                }
               </td>
             </tr>
           }
@@ -160,6 +187,7 @@
                       <button
                         [class]="'btn btn-sm me-1 ' + act.btnClass"
                         [title]="act.label"
+                        [attr.aria-label]="act.label"
                         [disabled]="act.disabledFn ? act.disabledFn(row) : false"
                         (click)="onAction(act.id, row)"
                       >
@@ -179,16 +207,39 @@
     <!-- ── Paginación ──────────────────────────────────────── -->
     @if (totalCount > 0 && !loading) {
       <div class="row align-items-center mt-3 g-2">
-        <div class="col-12 col-md-6">
+
+        <!-- Info + selector de page size -->
+        <div class="col-12 col-md-6 d-flex align-items-center gap-3">
           <small class="text-muted">
             Mostrando {{ startRecord }} – {{ endRecord }} de {{ totalCount }} registros
           </small>
+          @if (showPageSizeSelector) {
+            <label class="d-flex align-items-center gap-2 mb-0">
+              <small class="text-muted text-nowrap">Filas:</small>
+              <select
+                class="form-select form-select-sm gt-page-size-select"
+                [value]="pageSize"
+                (change)="onPageSizeChange($event)"
+              >
+                @for (size of pageSizeOptions; track size) {
+                  <option [value]="size">{{ size }}</option>
+                }
+              </select>
+            </label>
+          }
         </div>
+
+        <!-- Controles de página -->
         <div class="col-12 col-md-6">
-          <nav aria-label="Paginación">
+          <nav aria-label="Paginación de tabla">
             <ul class="pagination justify-content-start justify-content-md-end mb-0">
               <li class="page-item" [class.disabled]="currentPage <= 1">
-                <a class="page-link" href="javascript:void(0)" (click)="pagePrev.emit()">
+                <a
+                  class="page-link"
+                  href="javascript:void(0)"
+                  aria-label="Página anterior"
+                  (click)="pagePrev.emit()"
+                >
                   <i class="fa-solid fa-chevron-left"></i>
                 </a>
               </li>
@@ -196,13 +247,19 @@
                 <span class="page-link">{{ currentPage }} / {{ totalPages }}</span>
               </li>
               <li class="page-item" [class.disabled]="currentPage >= totalPages">
-                <a class="page-link" href="javascript:void(0)" (click)="pageNext.emit()">
+                <a
+                  class="page-link"
+                  href="javascript:void(0)"
+                  aria-label="Página siguiente"
+                  (click)="pageNext.emit()"
+                >
                   <i class="fa-solid fa-chevron-right"></i>
                 </a>
               </li>
             </ul>
           </nav>
         </div>
+
       </div>
     }
 

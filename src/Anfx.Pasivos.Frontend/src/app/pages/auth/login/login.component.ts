@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService, LoginCredentials } from '../../../services/auth.service';
@@ -13,28 +13,31 @@ import { Router } from '@angular/router';
   styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent {
+  private readonly authService = inject(AuthService);
+  private readonly router      = inject(Router);
+  private readonly utils       = inject(UtilsService);
+
   formData: LoginCredentials = {
     email: '',
     contrasenia: '',
     recuerdame: false,
   };
 
-  showPassword = false;
-  isLoading    = false;
+  showPassword = signal(false);
+  isLoading    = signal(false);
+  showRecovery = signal(false);
 
-  constructor(
-    private readonly authService: AuthService,
-    private readonly router: Router,
-    private readonly utils: UtilsService,
-  ) {}
+  togglePassword(): void {
+    this.showPassword.update(v => !v);
+  }
 
-  async onSubmitLogin() {
+  async onSubmitLogin(): Promise<void> {
     if (!this.formData.email || !this.formData.contrasenia) {
       this.utils.showNotification('Advertencia', 'Debe completar todos los campos.', 'warning');
       return;
     }
 
-    this.isLoading = true;
+    this.isLoading.set(true);
     this.utils.showPreloader();
 
     try {
@@ -49,8 +52,16 @@ export class LoginComponent {
     } catch {
       this.utils.showNotification('Error', 'Ocurrió un error inesperado. Intente de nuevo.', 'error');
     } finally {
-      this.isLoading = false;
+      this.isLoading.set(false);
       this.utils.hidePreloader();
     }
+  }
+
+  onSubmitRecovery(): void {
+    this.utils.showNotification(
+      'Información',
+      'La recuperación de contraseña no está disponible. Contacta al administrador del sistema.',
+      'info',
+    );
   }
 }

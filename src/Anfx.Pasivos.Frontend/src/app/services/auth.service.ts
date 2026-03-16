@@ -41,8 +41,9 @@ export class AuthService {
   // ── Inicialización ────────────────────────────────────────────
 
   private checkStoredAuth(): void {
-    const storedUser  = localStorage.getItem('currentUser');
-    const storedToken = localStorage.getItem('authToken');
+    // Primero buscar en localStorage (recuerdame=true), luego en sessionStorage
+    const storedUser  = localStorage.getItem('currentUser')  ?? sessionStorage.getItem('currentUser');
+    const storedToken = localStorage.getItem('authToken')     ?? sessionStorage.getItem('authToken');
 
     if (storedUser && storedToken) {
       try {
@@ -70,8 +71,12 @@ export class AuthService {
       );
 
       this.clearAuth();
-      localStorage.setItem('currentUser', JSON.stringify(res.user));
-      localStorage.setItem('authToken', res.token);
+
+      // recuerdame=true → localStorage (persiste entre sesiones)
+      // recuerdame=false → sessionStorage (se limpia al cerrar el navegador)
+      const storage = credentials.recuerdame ? localStorage : sessionStorage;
+      storage.setItem('currentUser', JSON.stringify(res.user));
+      storage.setItem('authToken', res.token);
 
       this.currentUserSubject.next(res.user);
       this.isAuthenticatedSubject.next(true);
@@ -83,7 +88,7 @@ export class AuthService {
       // status 0 → sin red; cualquier otro → error del servidor
       const message = error.status === 0
         ? 'No se pudo conectar con el servidor. Verifique su conexión a internet.'
-        : error.error?.message ?? error.statusText ?? 'Error en el servidor';
+        : error.error?.message ?? 'Error en el servidor';
 
       const errors: string[] = error.error?.errors ?? [];
       return { success: false, message, errors };
@@ -93,7 +98,6 @@ export class AuthService {
   // ── Logout ────────────────────────────────────────────────────
 
   logout(): void {
-    this.notifyOtherTabs();
     this.clearAuth();
     this.router.navigate(['/auth/login']);
   }
@@ -120,7 +124,7 @@ export class AuthService {
   // ── Token ─────────────────────────────────────────────────────
 
   getAuthToken(): string | null {
-    return localStorage.getItem('authToken');
+    return localStorage.getItem('authToken') ?? sessionStorage.getItem('authToken');
   }
 
   isTokenExpired(token?: string): boolean {
@@ -157,6 +161,8 @@ export class AuthService {
   private clearAuth(): void {
     localStorage.removeItem('currentUser');
     localStorage.removeItem('authToken');
+    sessionStorage.removeItem('currentUser');
+    sessionStorage.removeItem('authToken');
     this.currentUserSubject.next(null);
     this.isAuthenticatedSubject.next(false);
   }
@@ -165,7 +171,9 @@ export class AuthService {
     if (this.storageListenerRegistered) return;
     this.storageListenerRegistered = true;
 
-    window.addEventListener('storage', (event) => {
+    // El evento 'storage' se dispara en otras pestañas cuando localStorage cambia.
+    // Si el token o usuario se eliminan (logout en otra pestaña), se cierra sesión aquí también.
+    globalThis.addEventListener('storage', (event) => {
       if (event.key !== 'currentUser' && event.key !== 'authToken') return;
 
       if (event.newValue === null) {
@@ -181,12 +189,5 @@ export class AuthService {
         }
       }
     });
-  }
-
-  private notifyOtherTabs(): void {
-    // El propio evento 'storage' que dispara clearAuth() (removeItem)
-    // es suficiente para notificar otras pestañas; no se necesita señal adicional
-    localStorage.setItem('auth_logout', Date.now().toString());
-    localStorage.removeItem('auth_logout');
   }
 }
