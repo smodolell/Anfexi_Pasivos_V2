@@ -7,13 +7,16 @@ import { PagoItemDto } from '../../../../api/models/pagoItemDto';
 import { MovimientoItemDto } from '../../../../api/models/movimientoItemDto';
 import { TablaAmortizaItemDto } from '../../../../api/models/tablaAmortizaItemDto';
 import { LayoutService } from '../../../services/layout.service';
+import { GenericTableComponent } from '../../../shared/components/generic-table/generic-table.component';
+import { TableColumn } from '../../../shared/components/generic-table/table-column.model';
+import { SearchInputComponent } from '../../../shared/components/search-input/search-input.component';
 
 type TabActiva = 'pagos' | 'movimientos' | 'tabla';
 
 @Component({
   selector: 'app-info-general-contrato-pasivo',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, GenericTableComponent, SearchInputComponent],
   templateUrl: './info-general-contrato-pasivo.component.html'
 })
 export class InfoGeneralContratoPasivoComponent implements OnInit {
@@ -44,8 +47,51 @@ export class InfoGeneralContratoPasivoComponent implements OnInit {
 
   private idContrato = 0;
 
+  readonly columnasPagos: TableColumn[] = [
+    { key: 'idPago',               header: 'ID Pago' },
+    { key: 'tipoPago',             header: 'Tipo Pago' },
+    { key: 'cuentaBancaria',       header: 'Cuenta Bancaria' },
+    { key: 'fecPagoValor',         header: 'Fec. Valor',    type: 'date' },
+    { key: 'fecPagoRegistro',      header: 'Fec. Registro', type: 'date' },
+    { key: 'montoPago',            header: 'Monto Pago',    type: 'currency' },
+    { key: 'montoAplicado',        header: 'Monto Aplicado',type: 'currency' },
+    { key: 'montoAplicadoOtros',   header: 'Otros',         type: 'currency' },
+    { key: 'saldoPago',            header: 'Saldo',         type: 'currency' },
+  ];
+
+  readonly columnasMovimientos: TableColumn[] = [
+    { key: 'noPago',       header: 'No. Pago' },
+    { key: 'descripcion',  header: 'Descripción' },
+    { key: 'fecMovimiento',header: 'Fecha',         type: 'date' },
+    { key: 'capital',      header: 'Capital',       type: 'currency' },
+    { key: 'interes',      header: 'Interés',       type: 'currency' },
+    { key: 'iva',          header: 'IVA',           type: 'currency' },
+    { key: 'total',        header: 'Total',         type: 'currency' },
+    { key: 'saldoCapital', header: 'Saldo Capital', type: 'currency' },
+    { key: 'saldoTotal',   header: 'Saldo Total',   type: 'currency' },
+    { key: 'esRenta',      header: 'Renta',         type: 'boolean' },
+  ];
+
+  readonly columnasTablaAmortiza: TableColumn[] = [
+    { key: 'noPago',         header: 'No. Pago' },
+    { key: 'fecInicial',     header: 'Fec. Inicial',     type: 'date' },
+    { key: 'fecVencimiento', header: 'Fec. Vencimiento', type: 'date' },
+    { key: 'saldoInicial',   header: 'Saldo Inicial',    type: 'currency' },
+    { key: 'capital',        header: 'Capital',          type: 'currency' },
+    { key: 'interes',        header: 'Interés',          type: 'currency' },
+    { key: 'seguro',         header: 'Seguro',           type: 'currency' },
+    { key: 'iva',            header: 'IVA',              type: 'currency' },
+    { key: 'total',          header: 'Total',            type: 'currency' },
+    { key: 'procesado',      header: 'Procesado',        type: 'boolean' },
+  ];
+
   ngOnInit(): void {
     this.layoutService.setTitle('Información General del Contrato Pasivo');
+  }
+
+  onSearch(value: string): void {
+    this.contratoBusqueda.set(value);
+    this.buscar();
   }
 
   buscar(): void {
