@@ -8,7 +8,7 @@ import { EmpresaDto, EmpresaPageQueryDto, CreateEmpresaDto, UpdateEmpresaDto, Ti
 
 @Injectable({ providedIn: 'root' })
 export class EmpresaService {
-  private readonly resource = 'empresas';
+  private readonly resource = 'sistema/empresa';
 
   constructor(
     private http: HttpClient,

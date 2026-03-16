@@ -1,7 +1,6 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { LayoutService } from '../../../services/layout.service';
 import { TipoDireccionService } from '../../../services/catalogos/tipodireccion.service';
 import { TipoDireccionDto, TipoDireccionPageQueryDto } from '../../../../types/catalogos/tipodireccion.dto';
 import { UtilsService } from '../../../services/utils.service';
@@ -15,7 +14,6 @@ import { TipoDireccionFormComponent } from './tipodireccion-form.component';
 })
 export class TipoDireccionListComponent implements OnInit {
   private tipoDireccionService = inject(TipoDireccionService);
-  private layoutService = inject(LayoutService);
   private utilsService = inject(UtilsService);
 
   items = signal<TipoDireccionDto[]>([]);
@@ -35,7 +33,6 @@ export class TipoDireccionListComponent implements OnInit {
   Math = Math;
 
   ngOnInit(): void {
-    this.layoutService.setTitle('Administración de Tipos de Dirección');
     this.load();
   }
 

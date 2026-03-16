@@ -2,7 +2,7 @@ import { Injectable, Inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { API_SISTEMA_URL } from '../../api.config';
-import { PagedResultDto, PageQueryDto } from '../../../types/paged-result.dto';
+import { PagedResultDto } from '../../../types/paged-result.dto';
 import { ApiResultDto } from '../../../types/apiresult.dto';
 import {
   UsuarioDto,
@@ -12,14 +12,13 @@ import {
   UpdateUsuarioDto,
   RolItemDto,
 } from '../../../types/sistema/usuario.dto';
-import { SelectItemDto } from '../../../types/selectitem.dto';
 
 @Injectable({ providedIn: 'root' })
 export class UsuarioService {
-  private readonly resource = 'usuarios';
+  private readonly resource = 'sistema/usuarios';
 
   constructor(
-    private http: HttpClient,
+    private readonly http: HttpClient,
     @Inject(API_SISTEMA_URL) private readonly baseUrl: string,
   ) {}
 

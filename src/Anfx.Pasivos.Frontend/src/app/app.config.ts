@@ -24,8 +24,8 @@ export const appConfig: ApplicationConfig = {
     provideApi({
       basePath:
         process.env['NODE_ENV'] === 'production'
-          ? 'https://dev.anfexi.com/profuturo/backend'
-          : 'https://localhost:7223',
+          ? 'http://dev.anfexi.com/profuturo/backend'
+          : 'http://localhost:5056',
       withCredentials: true,
       // Si necesitas configuración adicional
     }),
@@ -33,29 +33,29 @@ export const appConfig: ApplicationConfig = {
       provide: API_AUTH_URL,
       useValue:
         process.env['NODE_ENV'] === 'production'
-          ? 'https://dev.anfexi.com/profuturo/backend/auth/api'
-          : 'https://localhost:7223/api',
+          ? 'http://dev.anfexi.com/profuturo/backend/auth/api'
+          : 'http://localhost:5056/api',
     },
     {
       provide: API_CATALOGO_URL,
       useValue:
         process.env['NODE_ENV'] === 'production'
-          ? 'https://dev.anfexi.com/profuturo/backend/catalogo/api'
-          : 'https://localhost:7223/api',
+          ? 'http://dev.anfexi.com/profuturo/backend/catalogo/api'
+          : 'http://localhost:5056/api',
     },
     {
       provide: API_SISTEMA_URL,
       useValue:
         process.env['NODE_ENV'] === 'production'
-          ? 'https://dev.anfexi.com/profuturo/backend/sistema/api'
-          : 'https://localhost:7223/api',
+          ? 'http://dev.anfexi.com/profuturo/backend/sistema/api'
+          : 'http://localhost:5056/api',
     },
     {
       provide: API_COTIZADOR_URL,
       useValue:
         process.env['NODE_ENV'] === 'production'
-          ? 'https://dev.anfexi.com/profuturo/backend/cotizador/api'
-          : 'https://localhost:7223/api',
+          ? 'http://dev.anfexi.com/profuturo/backend/cotizador/api'
+          : 'http://localhost:5056/api',
     },
     provideClientHydration(withEventReplay()),
   ],

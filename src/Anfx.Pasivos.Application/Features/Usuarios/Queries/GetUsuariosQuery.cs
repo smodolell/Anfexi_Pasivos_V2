@@ -2,7 +2,7 @@ using Anfx.Pasivos.Application.Features.Usuarios.DTOs;
 
 namespace Anfx.Pasivos.Application.Features.Usuarios.Queries;
 
-public record GetUsuariosQuery(int PageNumber = 1, int PageSize = 10, string? SearchTerm = null)
+public record GetUsuariosQuery(int PageNumber = 1, int PageSize = 10, string? SearchTerm = null, bool? Activo = null)
     : IQuery<Result<PagedResultDto<UsuarioDto>>>;
 
 public class GetUsuariosQueryHandler : IQueryHandler<GetUsuariosQuery, Result<PagedResultDto<UsuarioDto>>>
@@ -35,14 +35,18 @@ public class GetUsuariosQueryHandler : IQueryHandler<GetUsuariosQuery, Result<Pa
                 .Include(u => u.Rol)
                 .AsQueryable();
 
-            // Aplicar filtro de búsqueda si se proporciona
+            // Filtro por estado activo
+            if (request.Activo.HasValue)
+                query = query.Where(u => u.Activo == request.Activo.Value);
+
+            // Filtro de búsqueda
             if (!string.IsNullOrEmpty(request.SearchTerm))
             {
                 query = query.Where(u =>
                     u.NombreCompleto.Contains(request.SearchTerm) ||
                     u.Email.Contains(request.SearchTerm) ||
-                    u.UsuarioNombre.Contains(request.SearchTerm) || (u.Rol.Descripcion != null && u.Rol.Descripcion.Contains(request.SearchTerm))
-                    );
+                    u.UsuarioNombre.Contains(request.SearchTerm) ||
+                    (u.Rol.Titulo != null && u.Rol.Titulo.Contains(request.SearchTerm)));
             }
 
             var totalCount = await query.CountAsync(cancellationToken);

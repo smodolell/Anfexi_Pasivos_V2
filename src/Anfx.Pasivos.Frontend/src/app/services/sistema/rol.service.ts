@@ -11,14 +11,23 @@ export class RolService {
   private readonly resource = 'roles';
 
   constructor(
-    private http: HttpClient,
+    private readonly http: HttpClient,
     @Inject(API_SISTEMA_URL) private readonly baseUrl: string
   ) {}
 
   getAll(params?: RolPageQueryDto): Observable<ApiResultDto<PagedResultDto<RolDto>>> {
-    const body = params || {};
-
-    return this.http.post<ApiResultDto<PagedResultDto<RolDto>>>(`${this.baseUrl}/${this.resource}/paginados`, body);
+    let httpParams = new HttpParams();
+    if (params) {
+      if (params.q)       httpParams = httpParams.set('q',    params.q);
+      if (params.page)    httpParams = httpParams.set('page', String(params.page));
+      if (params.size)    httpParams = httpParams.set('size', String(params.size));
+      if (params.sortBy)  httpParams = httpParams.set('sortBy',  params.sortBy);
+      if (params.sortDir) httpParams = httpParams.set('sortDir', params.sortDir);
+    }
+    return this.http.get<ApiResultDto<PagedResultDto<RolDto>>>(
+      `${this.baseUrl}/${this.resource}/paginados`,
+      { params: httpParams }
+    );
   }
 
   getById(id: number): Observable<ApiResultDto<RolDto>> {

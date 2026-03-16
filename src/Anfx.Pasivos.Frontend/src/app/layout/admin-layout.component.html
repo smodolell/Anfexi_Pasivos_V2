@@ -82,81 +82,73 @@
             <a
               class="has-arrow waves-effect waves-dark"
               href="javascript:void(0)"
-              aria-expanded="false"
+              [attr.aria-expanded]="activeMenu === 'reportes'"
+              (click)="toggleMenu('reportes')"
             >
-              <i class="fa fa-bars"></i><span class="hide-menu">Reportes</span></a
+              <i class="fa-solid fa-chart-line"></i><span class="hide-menu">Reportes</span></a
             >
-            <ul aria-expanded="false" class="collapse">
-              <li><a routerLink="/admin/reportes/dashboard">Dashboard</a></li>
+            <ul [class.in]="activeMenu === 'reportes'" class="collapse">
+              <li><a routerLink="/admin/reportes/dashboard"><i class="fa-solid fa-gauge-high"></i> Dashboard</a></li>
             </ul>
           </li>
           <li>
             <a
               class="has-arrow waves-effect waves-dark"
               href="javascript:void(0)"
-              aria-expanded="false"
+              [attr.aria-expanded]="activeMenu === 'catalogos'"
+              (click)="toggleMenu('catalogos')"
             >
-              <i class="fa fa-bars"></i><span class="hide-menu">Cátalogos</span></a
+              <i class="fa-solid fa-book-open"></i><span class="hide-menu">Cátalogos</span></a
             >
-            <ul aria-expanded="false" class="collapse">
-              <li><a routerLink="/catalogos/bancos">Bancos</a></li>
-              <li><a routerLink="/catalogos/cuentas-bancarias">Cuentas Bancarias</a></li>
-              <!--<li><a routerLink="/catalogos/personasjuridicas">Persona Jurídica</a></li>-->
-              <li><a routerLink="/catalogos/tiposdirecciones">Tipo de Dirección</a></li>
-              <li><a routerLink="/catalogos/colonias">Colonia</a></li>
-              <li><a routerLink="/catalogos/estatus-contrato">Estatus Contrato</a></li>
-              <!--<li><a routerLink="/catalogos/tipostelefonos">Tipo de Teléfono</a></li>
-  <li><a routerLink="/catalogos/unidadesnegocio">Unidad de Negocio</a></li>
-
-  <li><a routerLink="/catalogos/beneficiosadicionales">Beneficios Adicionales</a></li>
-  <li><a routerLink="/catalogos/periodicidades">Periodicidades</a></li>
-  <li><a routerLink="/catalogos/plazos">Plazos</a></li>
-  <li><a routerLink="/catalogos/tiposprestamos">Tipos de Préstamo</a></li>
-  <li><a routerLink="/catalogos/tiposseguros">Tipos de Seguro</a></li>
-  <li><a routerLink="/catalogos/tiposgeneracioncomprobantes">Tipos de Comprobantes</a></li>
-  <li><a routerLink="/catalogos/esquemasfinancieros">Esquemas Financieros</a></li>-->
+            <ul [class.in]="activeMenu === 'catalogos'" class="collapse">
+              <li><a routerLink="/catalogos/bancos"><i class="fa-solid fa-building-columns"></i> Bancos</a></li>
+              <li><a routerLink="/catalogos/cuentas-bancarias"><i class="fa-solid fa-credit-card"></i> Cuentas Bancarias</a></li>
+              <li><a routerLink="/catalogos/tiposdirecciones"><i class="fa-solid fa-location-dot"></i> Tipo de Dirección</a></li>
+              <li><a routerLink="/catalogos/colonias"><i class="fa-solid fa-map-location-dot"></i> Colonia</a></li>
+              <li><a routerLink="/catalogos/estatus-contrato"><i class="fa-solid fa-file-circle-check"></i> Estatus Contrato</a></li>
             </ul>
           </li>
           <li>
             <a
               class="has-arrow waves-effect waves-dark"
               href="javascript:void(0)"
-              aria-expanded="false"
+              [attr.aria-expanded]="activeMenu === 'contratos'"
+              (click)="toggleMenu('contratos')"
             >
-              <i class="fa fa-bars"></i><span class="hide-menu">Contratos</span></a
+              <i class="fa-solid fa-file-contract"></i><span class="hide-menu">Contratos</span></a
             >
-            <ul aria-expanded="false" class="collapse">
-              <li><a routerLink="/admin/contratos/info-general">Información General</a></li>
+            <ul [class.in]="activeMenu === 'contratos'" class="collapse">
+              <li><a routerLink="/admin/contratos/info-general"><i class="fa-solid fa-circle-info"></i> Información General</a></li>
             </ul>
           </li>
           <li>
             <a
               class="has-arrow waves-effect waves-dark"
               href="javascript:void(0)"
-              aria-expanded="false"
+              [attr.aria-expanded]="activeMenu === 'configuracion'"
+              (click)="toggleMenu('configuracion')"
             >
-              <i class="fa fa-bars"></i><span class="hide-menu">Configuración</span></a
+              <i class="fa-solid fa-gear"></i><span class="hide-menu">Configuración</span></a
             >
-            <ul aria-expanded="false" class="collapse">
-              <li><a routerLink="/admin/empresas">Empresas</a></li>
-              <li><a routerLink="/configuracion/fondeador">Fondeadores</a></li>
-              <li><a routerLink="/configuracion/tipo-credito">Tipos de Crédito</a></li>
-              <li><a routerLink="/configuracion/tipo-tabla-amortiza">Tipo Tabla Amortiza</a></li>
+            <ul [class.in]="activeMenu === 'configuracion'" class="collapse">
+              <li><a routerLink="/admin/empresas"><i class="fa-solid fa-building"></i> Empresas</a></li>
+              <li><a routerLink="/configuracion/fondeador"><i class="fa-solid fa-hand-holding-dollar"></i> Fondeadores</a></li>
+              <li><a routerLink="/configuracion/tipo-credito"><i class="fa-solid fa-tag"></i> Tipos de Crédito</a></li>
+              <li><a routerLink="/configuracion/tipo-tabla-amortiza"><i class="fa-solid fa-table-list"></i> Tipo Tabla Amortiza</a></li>
             </ul>
           </li>
           <li>
             <a
               class="has-arrow waves-effect waves-dark"
               href="javascript:void(0)"
-              aria-expanded="false"
+              [attr.aria-expanded]="activeMenu === 'sistema'"
+              (click)="toggleMenu('sistema')"
             >
-              <i class="fa fa-bars"></i><span class="hide-menu">Sistema</span></a
+              <i class="fa-solid fa-screwdriver-wrench"></i><span class="hide-menu">Sistema</span></a
             >
-            <ul aria-expanded="false" class="collapse">
-              <li><a routerLink="/admin/usuarios">Usuarios</a></li>
-              <li><a routerLink="/admin/roles">Roles</a></li>
-              <!--<li><a routerLink="/admin/menus">Menú</a></li>
-                        <li><a routerLink="/admin/menuroles">Menú Rol</a></li>-->
+            <ul [class.in]="activeMenu === 'sistema'" class="collapse">
+              <li><a routerLink="/admin/usuarios"><i class="fa-solid fa-users"></i> Usuarios</a></li>
+              <li><a routerLink="/admin/roles"><i class="fa-solid fa-user-shield"></i> Roles</a></li>
             </ul>
           </li>
         </ul>

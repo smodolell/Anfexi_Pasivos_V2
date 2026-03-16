@@ -1,7 +1,6 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { LayoutService } from '../../../services/layout.service';
 import { EmpresaService } from '../../../services/sistema/empresa.service';
 import { UtilsService } from '../../../services/utils.service';
 import { EmpresaFormComponent } from './empresa-form.component';
@@ -15,7 +14,6 @@ import { EmpresaDto, EmpresaPageQueryDto } from '../../../../types/sistema/empre
 })
 export class EmpresaListComponent implements OnInit {
   private empresaService = inject(EmpresaService);
-  private layoutService = inject(LayoutService);
   private utilsService = inject(UtilsService);
 
   items = signal<EmpresaDto[]>([]);
@@ -51,7 +49,6 @@ export class EmpresaListComponent implements OnInit {
   Math = Math;
 
   ngOnInit(): void {
-    this.layoutService.setTitle('Empresas');
     this.load();
   }
 

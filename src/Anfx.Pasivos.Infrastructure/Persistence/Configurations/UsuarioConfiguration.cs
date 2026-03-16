@@ -27,7 +27,8 @@ public class UsuarioConfiguration : IEntityTypeConfiguration<Usuario>
             .IsRequired();
 
         builder.Property(e => e.UsuarioNombre)
-            .HasMaxLength(100)
+            .HasColumnName("UserName")
+            .HasMaxLength(50)
             .IsRequired();
 
         builder.Property(e => e.Contrasena)
@@ -47,6 +48,13 @@ public class UsuarioConfiguration : IEntityTypeConfiguration<Usuario>
         builder.Property(e => e.RolId)
             .HasColumnName("IdRol")
             .IsRequired();
+
+        // Relación con Rol (FK explícita porque Rol.IdRol no sigue la convención Id)
+        builder.HasOne(u => u.Rol)
+            .WithMany(r => r.Usuarios)
+            .HasForeignKey(u => u.RolId)
+            .HasPrincipalKey(r => r.IdRol)
+            .OnDelete(DeleteBehavior.Restrict);
 
         // Índices
         builder.HasIndex(e => e.Email)

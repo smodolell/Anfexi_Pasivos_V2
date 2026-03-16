@@ -1,3 +1,56 @@
+/* =============================================
+   SIDEBAR - Toggle de submenús
+   ============================================= */
+#sidebarnav ul.collapse {
+  display: none;
+}
+
+#sidebarnav ul.collapse.in {
+  display: block;
+}
+
+/* =============================================
+   SIDEBAR - Iconos menú principal (nivel 1)
+   ============================================= */
+.sidebar-nav > ul > li > a > i {
+  display: inline-block;
+  width: 32px;
+  font-size: 1.2rem !important;
+  text-align: center;
+  vertical-align: middle;
+  color: #5dade2 !important;          /* Azul claro */
+  transition: color 0.2s ease;
+}
+
+.sidebar-nav > ul > li > a:hover > i,
+.sidebar-nav > ul > li > a.active > i {
+  color: #03a9f3 !important;          /* Azul vivo al hover/activo */
+}
+
+/* =============================================
+   SIDEBAR - Iconos submenús (nivel 2)
+   ============================================= */
+.sidebar-nav ul ul li a i {
+  display: inline-block;
+  width: 20px;
+  font-size: 0.78rem !important;
+  text-align: center;
+  vertical-align: middle;
+  color: #82e0aa !important;          /* Verde menta suave */
+  transition: color 0.2s ease;
+  margin-right: 5px;
+}
+
+.sidebar-nav ul ul li a:hover i {
+  color: #58d68d !important;          /* Verde más vivo al hover */
+}
+
+/* Padding extra en submenús para alinear con el nivel 1 */
+.sidebar-nav ul ul li a {
+  padding-left: 20px !important;
+  font-size: 13px !important;
+}
+
 .table-list > thead > tr > th:first-child,
 .table-list > tbody > tr > td:first-child {
     width: 40px;
@@ -19,7 +72,7 @@
 }
 
 .btn-primary:hover {
-    color: #000;
+    color: #fff;
     background: #015baa;
     border-color: #015baa;
 }
@@ -31,14 +84,14 @@
 }
 .btn-primary.disabled,
 .btn-primary:disabled {
-    color: #cfcfcf;
+    color: #fff;
     background-color: #186bb4;
     border-color: #186bb4;
 }
 
 /* Estilos para el modal de logout */
 #logoutModal {
-    z-index: 1055;
+    z-index: 1055 !important;
 }
 
 #logoutModal .modal-content {
@@ -84,12 +137,6 @@
 .modal-backdrop {
     z-index: 1050;
     background-color: rgba(0, 0, 0, 0.5);
-}
-
-/* Mejoras de accesibilidad para el modal */
-#logoutModal {
-    /* Asegurar que el modal esté en el top del stack */
-    z-index: 1055 !important;
 }
 
 #logoutModal .modal-dialog {

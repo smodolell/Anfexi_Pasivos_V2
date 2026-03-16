@@ -15,5 +15,9 @@ public class GeneroConfiguration : IEntityTypeConfiguration<Genero>
         builder.Property(e => e.Titulo)
             .IsRequired()
             .HasMaxLength(50);
+
+        // La entidad Usuario ya no tiene FK a Genero en el nuevo esquema.
+        // Ignorar la colección para evitar shadow FK "GeneroIdGenero".
+        builder.Ignore(e => e.Usuario);
     }
 }

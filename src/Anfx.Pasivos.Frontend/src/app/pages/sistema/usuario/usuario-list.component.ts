@@ -1,285 +1,195 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { LayoutService } from '../../../services/layout.service';
 import { UsuarioService } from '../../../services/sistema/usuario.service';
 import { UsuarioItemDto, UsuarioDto, CreateUsuarioDto, UpdateUsuarioDto, UsuarioPageQueryDto } from '../../../../types/sistema/usuario.dto';
 import { UtilsService } from '../../../services/utils.service';
 import { UsuarioFormComponent } from './usuario-form.component';
+import { GenericTableComponent } from '../../../shared/components/generic-table/generic-table.component';
+import { TableColumn, TableAction, TableActionEvent } from '../../../shared/components/generic-table/table-column.model';
 
 @Component({
   selector: 'app-usuario-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, UsuarioFormComponent],
-  templateUrl: './usuario-list.component.html'
+  imports: [FormsModule, UsuarioFormComponent, GenericTableComponent],
+  templateUrl: './usuario-list.component.html',
 })
 export class UsuarioListComponent implements OnInit {
-  private usuarioService = inject(UsuarioService);
-  private layoutService = inject(LayoutService);
-  private utilsService = inject(UtilsService);
+  private readonly usuarioService = inject(UsuarioService);
+  private readonly utilsService  = inject(UtilsService);
 
-  items = signal<UsuarioItemDto[]>([]);
-  loading = signal<boolean>(false);
+  // ── Tabla ────────────────────────────────────────────────────
+  columns: TableColumn[] = [
+    { key: 'id', header: 'ID',      type: 'number', sortable: true, maxWidth: 80 },
+    { key: 'nombreCompleto', header: 'Nombre',  type: 'text', sortable: true, maxWidth: 220 },
+    { key: 'email',          header: 'Email',   type: 'text', sortable: true, maxWidth: 200, hideBelow: 'sm' },
+    { key: 'usuarioNombre',  header: 'Usuario', type: 'text', sortable: true, hideBelow: 'md' },
+    { key: 'rolNombre',      header: 'Rol',     type: 'text', hideBelow: 'lg' },
+  ];
+
+  actions: TableAction[] = [
+    { id: 'edit',   label: 'Editar',   icon: 'fa-solid fa-user-pen',  btnClass: 'btn-outline-primary' },
+    { id: 'delete', label: 'Eliminar', icon: 'fa-solid fa-user-minus', btnClass: 'btn-outline-danger'  },
+  ];
+
+  // ── Estado ───────────────────────────────────────────────────
+  items       = signal<UsuarioItemDto[]>([]);
+  loading     = signal(false);
+  totalCount  = signal(0);
+  totalPages  = signal(0);
+  currentPage = signal(1);
+  pageSize    = signal(10);
+
   query: UsuarioPageQueryDto = { q: '', page: 1, size: 10, activo: true };
 
-  // metadata de paginación
-  totalCount = signal<number>(0);
-  totalPages = signal<number>(0);
-  currentPage = signal<number>(1);
-  pageSize = signal<number>(10);
-
-  // Nuevas propiedades para el formulario
+  // ── Formulario ───────────────────────────────────────────────
+  mostrandoFormulario  = signal(false);
   usuarioSeleccionado: Partial<UsuarioDto> = {};
-  mostrandoFormulario = signal<boolean>(false);
 
-  // Propiedades para el modal de eliminación
+  // ── Modal eliminación ─────────────────────────────────────────
   usuarioAEliminar: UsuarioItemDto | null = null;
 
   ngOnInit(): void {
-    this.layoutService.setTitle('Administración de Usuarios');
     this.load();
   }
 
-  onSearch() {
+  // ── Eventos del GenericTable ──────────────────────────────────
+
+  onAction(event: TableActionEvent) {
+    switch (event.action) {
+      case 'edit':   this.editarUsuario((event.row as UsuarioItemDto).id);  break;
+      case 'delete': this.iniciarEliminacion(event.row as UsuarioItemDto);  break;
+    }
+  }
+
+  onSearch(q: string) {
+    this.query.q    = q;
     this.query.page = 1;
     this.load();
   }
 
-  nextPage() {
+  onPageNext() {
     if (this.currentPage() < this.totalPages()) {
-      this.query.page = (this.query.page || 1) + 1;
+      this.query.page = (this.query.page ?? 1) + 1;
       this.load();
     }
   }
 
-  prevPage() {
-    if ((this.query.page || 1) > 1) {
-      this.query.page = (this.query.page || 1) - 1;
+  onPagePrev() {
+    if ((this.query.page ?? 1) > 1) {
+      this.query.page = (this.query.page ?? 1) - 1;
       this.load();
     }
   }
 
-  private load() {
-    this.loading.set(true);
-    this.usuarioService.getAll(this.query).subscribe({
-      next: response => {
-        if (response.success) {
-          // Éxito: establecer los datos
-          this.items.set(response.data.results);
-          this.currentPage.set(response.data.currentPage);
-          this.pageSize.set(response.data.pageSize);
-          this.totalCount.set(response.data.totalCount);
-          this.totalPages.set(response.data.totalPages);
-        } else {
-          // Error de la API: mostrar errores específicos
-          this.items.set([]);
-          this.currentPage.set(this.query.page || 1);
-          this.pageSize.set(this.query.size || 10);
-          this.totalCount.set(0);
-          this.totalPages.set(0);
-
-          if (response.errors && response.errors.length > 0) {
-            // Mostrar el primer error
-            this.utilsService.showNotification('Error', response.errors[0], 'error');
-          } else if (response.message) {
-            // Mostrar mensaje de error general
-            this.utilsService.showNotification('Error', response.message, 'error');
-          } else {
-            // Mensaje de error por defecto
-            this.utilsService.showNotification('Error', 'Error al cargar usuarios', 'error');
-          }
-        }
-        this.loading.set(false);
-      },
-      error: (httpError) => {
-        // Error de HTTP (conexión, servidor, etc.)
-        this.items.set([]);
-        this.currentPage.set(this.query.page || 1);
-        this.pageSize.set(this.query.size || 10);
-        this.totalCount.set(0);
-        this.totalPages.set(0);
-        this.loading.set(false);
-
-        // Mostrar error de conexión
-        this.utilsService.showNotification('Error', 'Error de conexión al cargar usuarios', 'error');
-        console.error('Error HTTP:', httpError);
-      }
-    });
+  onActivoChange() {
+    this.query.page = 1;
+    this.load();
   }
 
-  // Nuevos métodos para el formulario
-  mostrarFormularioNuevo() {
-    this.usuarioSeleccionado = {
-      id: 0,
-      nombreCompleto: '',
-      email: '',
-      usuarioNombre: '',
-      activo: true,
-      rolId: 0
-    };
+  onNuevo() {
+    this.usuarioSeleccionado = { id: 0, nombreCompleto: '', email: '', usuarioNombre: '', activo: true, rolId: 0 };
     this.mostrandoFormulario.set(true);
-  }
-
-  editarUsuario(id: number) {
-    this.usuarioService.getById(id).subscribe({
-      next: (response) => {
-        if (response.success) {
-          this.usuarioSeleccionado = { ...response.data };
-          this.mostrandoFormulario.set(true);
-        } else {
-          // Error de la API
-          if (response.errors && response.errors.length > 0) {
-            this.utilsService.showNotification('Error', response.errors[0], 'error');
-          } else if (response.message) {
-            this.utilsService.showNotification('Error', response.message, 'error');
-          } else {
-            this.utilsService.showNotification('Error', 'Error al cargar el usuario', 'error');
-          }
-        }
-      },
-      error: (httpError) => {
-        this.utilsService.showNotification('Error', 'Error de conexión al cargar el usuario', 'error');
-        console.error('Error HTTP:', httpError);
-      }
-    });
-  }
-
-  onGuardarUsuario(usuario: CreateUsuarioDto | UpdateUsuarioDto) {
-    if ('id' in usuario && usuario.id && typeof usuario.id === 'number') {
-      // Actualizar usuario existente
-      this.usuarioService.update(usuario.id, usuario).subscribe({
-        next: (response) => {
-          if (response.success) {
-            this.load();
-            this.mostrandoFormulario.set(false);
-          } else {
-            // Error de la API
-            if (response.errors && response.errors.length > 0) {
-              this.utilsService.showNotification('Error', response.errors[0], 'error');
-            } else if (response.message) {
-              this.utilsService.showNotification('Error', response.message, 'error');
-            } else {
-              this.utilsService.showNotification('Error', 'Error al actualizar el usuario', 'error');
-            }
-          }
-        },
-        error: (httpError) => {
-          this.utilsService.showNotification('Error', 'Error de conexión al actualizar el usuario', 'error');
-          console.error('Error HTTP:', httpError);
-        }
-      });
-    } else {
-      // Crear nuevo usuario
-      this.usuarioService.create(usuario as CreateUsuarioDto).subscribe({
-        next: (response) => {
-          if (response.success) {
-            this.load();
-            this.mostrandoFormulario.set(false);
-          } else {
-            // Error de la API
-            if (response.errors && response.errors.length > 0) {
-              this.utilsService.showNotification('Error', response.errors[0], 'error');
-            } else if (response.message) {
-              this.utilsService.showNotification('Error', response.message, 'error');
-            } else {
-              this.utilsService.showNotification('Error', 'Error al crear el usuario', 'error');
-            }
-          }
-        },
-        error: (httpError) => {
-          this.utilsService.showNotification('Error', 'Error de conexión al crear el usuario', 'error');
-          console.error('Error HTTP:', httpError);
-        }
-      });
-    }
-  }
-
-  onCancelarEdicion() {
-    this.mostrandoFormulario.set(false);
-    this.usuarioSeleccionado = {
-      id: 0,
-      nombreCompleto: '',
-      email: '',
-      usuarioNombre: '',
-      activo: true,
-      rolId: 0
-    };
   }
 
   volverALista() {
     this.mostrandoFormulario.set(false);
-    this.usuarioSeleccionado = {
-      id: 0,
-      nombreCompleto: '',
-      email: '',
-      usuarioNombre: '',
-      activo: true,
-      rolId: 0
-    };
+    this.usuarioSeleccionado = {};
   }
 
-  edit(id: number) {
-    this.editarUsuario(id);
+  // ── CRUD ──────────────────────────────────────────────────────
+
+  private load() {
+    this.loading.set(true);
+    this.usuarioService.getAll(this.query).subscribe({
+      next: res => {
+        if (res.success) {
+          this.items.set(res.data.results);
+          this.currentPage.set(res.data.currentPage);
+          this.pageSize.set(res.data.pageSize);
+          this.totalCount.set(res.data.totalCount);
+          this.totalPages.set(res.data.totalPages);
+        } else {
+          this.items.set([]);
+          this.utilsService.showNotification('Error', res.errors?.[0] ?? res.message ?? 'Error al cargar usuarios', 'error');
+        }
+        this.loading.set(false);
+      },
+      error: () => {
+        this.items.set([]);
+        this.loading.set(false);
+        this.utilsService.showNotification('Error', 'Error de conexión al cargar usuarios', 'error');
+      },
+    });
   }
 
-  delete(id: number) {
-    // Buscar el usuario por ID para mostrar su nombre en el modal
-    const usuario = this.items().find(u => u.id === id);
-    if (usuario) {
-      this.usuarioAEliminar = usuario;
-      this.mostrarModalEliminacion();
-    }
+  private editarUsuario(id: number) {
+    this.usuarioService.getById(id).subscribe({
+      next: res => {
+        if (res.success) {
+          this.usuarioSeleccionado = { ...res.data };
+          this.mostrandoFormulario.set(true);
+        } else {
+          this.utilsService.showNotification('Error', res.errors?.[0] ?? res.message ?? 'Error al cargar el usuario', 'error');
+        }
+      },
+      error: () => this.utilsService.showNotification('Error', 'Error de conexión al cargar el usuario', 'error'),
+    });
   }
 
-  private mostrarModalEliminacion() {
-    // Usar Bootstrap Modal API
+  onGuardarUsuario(usuario: CreateUsuarioDto | UpdateUsuarioDto) {
+    const id = this.usuarioSeleccionado.id;
+    const isUpdate = id != null && id > 0;
+    const request$ = isUpdate
+      ? this.usuarioService.update(id, usuario as UpdateUsuarioDto)
+      : this.usuarioService.create(usuario as CreateUsuarioDto);
+
+    request$.subscribe({
+      next: res => {
+        if (res.success) {
+          this.load();
+          this.mostrandoFormulario.set(false);
+        } else {
+          this.utilsService.showNotification('Error', res.errors?.[0] ?? res.message ?? 'Error al guardar el usuario', 'error');
+        }
+      },
+      error: () => this.utilsService.showNotification('Error', 'Error de conexión al guardar el usuario', 'error'),
+    });
+  }
+
+  onCancelarEdicion() {
+    this.volverALista();
+  }
+
+  // ── Eliminación ───────────────────────────────────────────────
+
+  private iniciarEliminacion(usuario: UsuarioItemDto) {
+    this.usuarioAEliminar = usuario;
     const modal = document.getElementById('confirmDeleteModal');
-    if (modal) {
-      const bootstrapModal = new (window as any).bootstrap.Modal(modal);
-      bootstrapModal.show();
-    }
+    if (modal) new (globalThis as any).bootstrap.Modal(modal).show();
   }
 
   confirmarEliminacion() {
-    if (this.usuarioAEliminar) {
-      this.usuarioService.delete(this.usuarioAEliminar.id).subscribe({
-        next: (response) => {
-          if (response.success) {
-            this.load();
-            this.cerrarModalEliminacion();
-          } else {
-            // Error de la API
-            if (response.errors && response.errors.length > 0) {
-              this.utilsService.showNotification('Error', response.errors[0], 'error');
-            } else if (response.message) {
-              this.utilsService.showNotification('Error', response.message, 'error');
-            } else {
-              this.utilsService.showNotification('Error', 'Error al eliminar el usuario', 'error');
-            }
-          }
-        },
-        error: (httpError) => {
-          this.utilsService.showNotification('Error', 'Error de conexión al eliminar el usuario', 'error');
-          console.error('Error HTTP:', httpError);
+    if (!this.usuarioAEliminar) return;
+    this.usuarioService.delete(this.usuarioAEliminar.id).subscribe({
+      next: res => {
+        if (res.success) {
+          this.load();
+          this.cerrarModal();
+        } else {
+          this.utilsService.showNotification('Error', res.errors?.[0] ?? res.message ?? 'Error al eliminar', 'error');
         }
-      });
-    }
-  }
-
-  private cerrarModalEliminacion() {
-    const modal = document.getElementById('confirmDeleteModal');
-    if (modal) {
-      const bootstrapModal = (window as any).bootstrap.Modal.getInstance(modal);
-      if (bootstrapModal) {
-        bootstrapModal.hide();
-      }
-    }
-    this.usuarioAEliminar = null;
+      },
+      error: () => this.utilsService.showNotification('Error', 'Error de conexión al eliminar el usuario', 'error'),
+    });
   }
 
   cancelarEliminacion() {
-    this.cerrarModalEliminacion();
+    this.cerrarModal();
+  }
+
+  private cerrarModal() {
+    const modal = document.getElementById('confirmDeleteModal');
+    if (modal) (globalThis as any).bootstrap.Modal.getInstance(modal)?.hide();
+    this.usuarioAEliminar = null;
   }
 }
-
-

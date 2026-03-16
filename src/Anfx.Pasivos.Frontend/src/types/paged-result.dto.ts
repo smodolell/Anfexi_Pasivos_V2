@@ -10,5 +10,7 @@ export interface PageQueryDto {
     q?: string;
     page?: number;
     size?: number;
+    sortBy?: string;
+    sortDir?: 'asc' | 'desc';
 }
 

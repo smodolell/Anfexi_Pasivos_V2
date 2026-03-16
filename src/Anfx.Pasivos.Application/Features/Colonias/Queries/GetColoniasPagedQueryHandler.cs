@@ -28,6 +28,19 @@ public class GetColoniasPagedQueryHandler : IQueryHandler<GetColoniasPagedQuery,
 
         var totalCount = await query.CountAsync(cancellationToken);
 
+        query = (request.SortBy?.ToLower(), request.SortDir?.ToLower() == "desc") switch
+        {
+            ("id",          true)  => query.OrderByDescending(c => c.Id),
+            ("id",          false) => query.OrderBy(c => c.Id),
+            ("scolonia",    true)  => query.OrderByDescending(c => c.sColonia),
+            ("scolonia",    false) => query.OrderBy(c => c.sColonia),
+            ("estado",      true)  => query.OrderByDescending(c => c.Estado),
+            ("estado",      false) => query.OrderBy(c => c.Estado),
+            ("municipio",   true)  => query.OrderByDescending(c => c.Municipio),
+            ("municipio",   false) => query.OrderBy(c => c.Municipio),
+            _                      => query.OrderBy(c => c.Id),
+        };
+
         var colonias = await query
             .Skip((request.Page - 1) * request.Size)
             .Take(request.Size)

@@ -10,6 +10,9 @@ namespace Anfx.Pasivos.Infrastructure.Persistence.Configurations
         {
             builder.HasKey(c => c.Id);
             builder.ToTable("Colonia");
+
+            builder.Property(c => c.Id)
+                .HasColumnName("IdColonia");
             
             builder.Property(c => c.sColonia)
                 .HasColumnName("Colonia")

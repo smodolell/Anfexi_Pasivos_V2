@@ -4,11 +4,12 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, ValidatorFn, A
 import { UsuarioService } from '../../../services/sistema/usuario.service';
 import { UsuarioFormData, UsuarioDto, CreateUsuarioDto, UpdateUsuarioDto, RolItemDto } from '../../../../types/sistema/usuario.dto';
 import { UtilsService } from '../../../services/utils.service';
+import { CardComponent } from '../../../shared/components/card/card.component';
 
 @Component({
   selector: 'app-usuario-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, CardComponent],
   templateUrl: './usuario-form.component.html'
 })
 export class UsuarioFormComponent implements OnInit {

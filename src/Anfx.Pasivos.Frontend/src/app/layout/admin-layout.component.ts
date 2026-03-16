@@ -1,10 +1,12 @@
-import { Component, OnInit, OnDestroy, inject, Renderer2, Inject, ChangeDetectorRef } from '@angular/core';
-import { RouterOutlet, Router, RouterModule } from '@angular/router';
-import { CommonModule } from '@angular/common';
+import {
+  Component, OnInit, OnDestroy,
+  inject, Renderer2, ChangeDetectorRef, ViewEncapsulation
+} from '@angular/core';
+import { RouterOutlet, Router, RouterModule, NavigationEnd, ActivatedRoute } from '@angular/router';
+import { CommonModule, DOCUMENT } from '@angular/common';
+import { Subject, takeUntil, filter } from 'rxjs';
 import { AuthService, User } from '../services/auth.service';
-import { DOCUMENT } from '@angular/common';
 import { LayoutService } from '../services/layout.service';
-import { ViewEncapsulation } from '@angular/core';
 
 @Component({
   selector: 'app-admin-layout',
@@ -15,52 +17,55 @@ import { ViewEncapsulation } from '@angular/core';
   encapsulation: ViewEncapsulation.None
 })
 export class AdminLayoutComponent implements OnInit, OnDestroy {
-  isSidebarCollapsed = false;
   currentUser: User | null = null;
-  currentTitle: string = 'Title';
+  currentTitle = 'Title';
   showLogoutModal = false;
+  activeMenu: string | null = null;
 
-  private renderer = inject(Renderer2);
-  private document = inject(DOCUMENT);
-  private cdr = inject(ChangeDetectorRef);
-  
-  private cssLink: HTMLLinkElement | null = null;
-  private jsScript: HTMLScriptElement | null = null;
-
+  private readonly renderer = inject(Renderer2);
+  private readonly document = inject(DOCUMENT);
+  private readonly cdr = inject(ChangeDetectorRef);
+  private readonly destroy$ = new Subject<void>();
 
   constructor(
-    private authService: AuthService,
-    private router: Router,
-    private layoutService: LayoutService
+    private readonly authService: AuthService,
+    private readonly router: Router,
+    private readonly activatedRoute: ActivatedRoute,
+    private readonly layoutService: LayoutService
   ) {}
 
   ngOnInit() {
-    // Suscribirse al usuario actual
-    this.authService.currentUser$.subscribe(user => {
+    this.authService.currentUser$.pipe(takeUntil(this.destroy$)).subscribe(user => {
       this.currentUser = user;
     });
 
-    // Suscribirse al título del layout
-    this.layoutService.title$.subscribe(title => {
+    this.layoutService.title$.pipe(takeUntil(this.destroy$)).subscribe(title => {
       this.currentTitle = title;
-      // Forzar la detección de cambios
       this.cdr.detectChanges();
     });
 
-    // Solo ejecutar en el navegador
-    if (typeof window !== 'undefined') {
+    // Auto-título desde route data en cada navegación
+    this.router.events.pipe(
+      filter(e => e instanceof NavigationEnd),
+      takeUntil(this.destroy$)
+    ).subscribe(() => {
+      const title = this.extractTitle(this.activatedRoute);
+      if (title) this.layoutService.setTitle(title);
+    });
+
+    if (globalThis.window !== undefined) {
       this.loadExternalResources();
       this.addBodyClasses();
     }
   }
 
   ngOnDestroy() {
-    // Cleanup si es necesario
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   logout() {
     this.showLogoutModal = true;
-    // Forzar detección de cambios para asegurar que el modal se renderice
     this.cdr.detectChanges();
   }
 
@@ -73,20 +78,26 @@ export class AdminLayoutComponent implements OnInit, OnDestroy {
     this.showLogoutModal = false;
   }
 
-  onModalKeydown(event: KeyboardEvent) {
-    // Manejar tecla Escape para cerrar el modal
-    if (event.key === 'Escape') {
-      this.cancelLogout();
-    }
+  toggleMenu(menuName: string) {
+    this.activeMenu = this.activeMenu === menuName ? null : menuName;
   }
 
-  // Verificar si el usuario tiene un rol específico
+  onModalKeydown(event: KeyboardEvent) {
+    if (event.key === 'Escape') this.cancelLogout();
+  }
+
   hasRole(role: string): boolean {
     return this.authService.hasRole(role);
   }
 
+  /** Recorre el árbol de rutas hijo para encontrar el data.title más profundo. */
+  private extractTitle(route: ActivatedRoute): string | null {
+    let current = route;
+    while (current.firstChild) current = current.firstChild;
+    return current.snapshot.data['title'] ?? null;
+  }
+
   private addBodyClasses() {
-    // Agregar clases específicas del login-layout al body
     if (this.document.body) {
       this.renderer.addClass(this.document.body, 'skin-blue');
       this.renderer.addClass(this.document.body, 'fixed-layout');
@@ -95,28 +106,20 @@ export class AdminLayoutComponent implements OnInit, OnDestroy {
   }
 
   private loadExternalResources() {
+    const scripts = [
+      'assets/dist/js/perfect-scrollbar.jquery.min.js',
+      'assets/dist/js/waves.js',
+      'assets/dist/js/custom.min.js',
+    ];
+    this.loadScriptsSequentially(scripts);
+  }
 
-    // Cargar JavaScript específico del admin-layout
-    this.jsScript = this.renderer.createElement('script');
-    this.renderer.setAttribute(this.jsScript, 'src', 'assets/dist/js/perfect-scrollbar.jquery.min.js');
-    this.renderer.setAttribute(this.jsScript, 'type', 'text/javascript');
-    this.renderer.appendChild(this.document.body, this.jsScript);
-
-    this.jsScript = this.renderer.createElement('script');
-    this.renderer.setAttribute(this.jsScript, 'src', 'assets/dist/js/waves.js');
-    this.renderer.setAttribute(this.jsScript, 'type', 'text/javascript');
-    this.renderer.appendChild(this.document.body, this.jsScript);
-
-    this.jsScript = this.renderer.createElement('script');
-    this.renderer.setAttribute(this.jsScript, 'src', 'assets/dist/js/sidebarmenu.js');
-    this.renderer.setAttribute(this.jsScript, 'type', 'text/javascript');
-    this.renderer.appendChild(this.document.body, this.jsScript);
-
-    this.jsScript = this.renderer.createElement('script');
-    this.renderer.setAttribute(this.jsScript, 'src', 'assets/dist/js/custom.min.js');
-    this.renderer.setAttribute(this.jsScript, 'type', 'text/javascript');
-    this.renderer.appendChild(this.document.body, this.jsScript);
-
-  }  
-  
+  private loadScriptsSequentially(srcs: string[], index = 0) {
+    if (index >= srcs.length) return;
+    const script = this.renderer.createElement('script');
+    this.renderer.setAttribute(script, 'src', srcs[index]);
+    this.renderer.setAttribute(script, 'type', 'text/javascript');
+    script.onload = () => this.loadScriptsSequentially(srcs, index + 1);
+    this.renderer.appendChild(this.document.body, script);
+  }
 }

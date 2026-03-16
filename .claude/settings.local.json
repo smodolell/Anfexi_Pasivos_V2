@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep -o .sidebar-nav[^{]*{[^}]*} e:/profuturo/pasivos/Anfexi_Pasivos_V2/src/Anfx.Pasivos.Frontend/public/assets/dist/css/style.min.css)",
+      "Bash(npm install:*)",
+      "Bash(find e:/profuturo/pasivos/Anfexi_Pasivos_V2 -path */Features/* -type f -name *.cs)",
+      "Bash(grep -r \"UsuarioNombre\\\\|NombreUsuario\\\\|UserLogin\\\\|UserName\\\\|UsuLogin\" e:profuturopasivosAnfexi_Pasivos_V2src --include=*.sql -n)"
+    ]
+  }
+}
