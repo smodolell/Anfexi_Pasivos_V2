@@ -85,7 +85,7 @@ export type CardVariant = 'primary' | 'success' | 'warning' | 'info' | 'danger' 
       border-radius: 12px;
       overflow: hidden;
       box-shadow: 0 2px 10px rgba(0,0,0,0.07);
-      border: 1px solid #e2e8f0;
+      border: 1px solid var(--pf-card-border);
     }
 
     .gc-card__header {
@@ -104,14 +104,14 @@ export type CardVariant = 'primary' | 'success' | 'warning' | 'info' | 'danger' 
     .gc-card__subtitle { font-size: 0.8rem; display: block; }
 
     /* ── Variantes de color ───────────────────────── */
-    .gc-header--primary   { background: linear-gradient(135deg, #1d6cf5, #1340b0); }
-    .gc-header--success   { background: linear-gradient(135deg, #27ae60, #1a7a42); }
-    .gc-header--warning   { background: linear-gradient(135deg, #f39c12, #c47d0a); }
-    .gc-header--info      { background: linear-gradient(135deg, #2980b9, #1a5a8a); }
-    .gc-header--danger    { background: linear-gradient(135deg, #e74c3c, #a93226); }
+    .gc-header--primary   { background: linear-gradient(135deg, var(--pf-primary), var(--pf-primary-active)); }
+    .gc-header--success   { background: linear-gradient(135deg, var(--pf-success), #126832); }
+    .gc-header--warning   { background: linear-gradient(135deg, var(--pf-warning), #92400e); }
+    .gc-header--info      { background: linear-gradient(135deg, var(--pf-info), #025180); }
+    .gc-header--danger    { background: linear-gradient(135deg, var(--pf-danger), #991b1b); }
     .gc-header--secondary { background: linear-gradient(135deg, #7f8c8d, #5d6d7e); }
-    .gc-header--light     { background: #f4f9ff; color: #1a1a2e !important;
-                            border-bottom: 1px solid #dbe8f5; }
+    .gc-header--light     { background: var(--pf-primary-light); color: #1a1a2e !important;
+                            border-bottom: 1px solid var(--pf-border); }
     .gc-header--light .gc-card__title,
     .gc-header--light .gc-card__subtitle { color: #1a1a2e; }
     .gc-header--none      { display: none; }
@@ -121,7 +121,7 @@ export type CardVariant = 'primary' | 'success' | 'warning' | 'info' | 'danger' 
       display: block;
       padding: 12px 20px;
       background: #f8fafc;
-      border-top: 1px solid #e2e8f0;
+      border-top: 1px solid var(--pf-card-border);
     }
   `],
 })

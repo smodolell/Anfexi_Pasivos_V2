@@ -1,11 +1,12 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { ConfiguracionesService } from '../../../../api/services/configuraciones.service';
-import { TipoCreditoListItemDto } from '../../../../api/models/tipoCreditoListItemDto';
+import { TipoCreditoService } from '../../../services/configuracion/tipo-credito.service';
+import { TipoCreditoListItemDto } from '../../../../types/configuracion/tipo-credito.dto';
 import { UtilsService } from '../../../services/utils.service';
 import { GenericTableComponent } from '../../../shared/components/generic-table/generic-table.component';
 import { TableColumn, TableAction, TableActionEvent, TableSortEvent, SortDirection } from '../../../shared/components/generic-table/table-column.model';
+import { wasHandledByInterceptor } from '../../../interceptors/auth.interceptor';
 
 @Component({
   selector: 'app-tipo-credito-list',
@@ -14,7 +15,7 @@ import { TableColumn, TableAction, TableActionEvent, TableSortEvent, SortDirecti
   templateUrl: './tipo-credito-list.component.html'
 })
 export class TipoCreditoListComponent implements OnInit {
-  private readonly service      = inject(ConfiguracionesService);
+  private readonly service      = inject(TipoCreditoService);
   private readonly utilsService = inject(UtilsService);
   private readonly router       = inject(Router);
 
@@ -33,8 +34,8 @@ export class TipoCreditoListComponent implements OnInit {
   private page = 1;
 
   columns: TableColumn[] = [
-    { key: 'id',          header: 'ID',               type: 'number', sortable: true },
-    { key: 'tipoCredito', header: 'Tipo de Crédito',  type: 'text',   sortable: true },
+    { key: 'id',          header: 'ID',              type: 'number', sortable: true },
+    { key: 'tipoCredito', header: 'Tipo de Crédito', type: 'text',   sortable: true },
   ];
 
   actions: TableAction[] = [
@@ -79,7 +80,13 @@ export class TipoCreditoListComponent implements OnInit {
 
   private load() {
     this.loading.set(true);
-    this.service.getPaginatedTipoCreditoById(this.q || undefined, this.page, this.pageSize()).subscribe({
+    this.service.getAll({
+      q: this.q,
+      page: this.page,
+      size: this.pageSize(),
+      sortBy:  this.sortColumn  ?? undefined,
+      sortDir: this.sortDirection,
+    }).subscribe({
       next: (res) => {
         if (res.success && res.data) {
           const size  = res.data.pageSize  ?? 10;
@@ -95,10 +102,12 @@ export class TipoCreditoListComponent implements OnInit {
         }
         this.loading.set(false);
       },
-      error: () => {
+      error: (err) => {
         this.resetPagination();
         this.loading.set(false);
-        this.utilsService.showNotification('Error', 'Error de conexión al cargar tipos de crédito', 'error');
+        if (!wasHandledByInterceptor(err)) {
+          this.utilsService.showNotification('Error', 'Error de conexión al cargar tipos de crédito', 'error');
+        }
       }
     });
   }

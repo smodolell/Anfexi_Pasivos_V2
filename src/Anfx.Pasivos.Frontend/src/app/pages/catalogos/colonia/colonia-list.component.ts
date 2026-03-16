@@ -2,6 +2,7 @@ import { Component, OnInit, inject, signal, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ColoniaService } from '../../../services/catalogos/colonia.service';
+import { wasHandledByInterceptor } from '../../../interceptors/auth.interceptor';
 import { ColoniaDto, ColoniaPageQueryDto } from '../../../../types/catalogos/colonia.dto';
 import { UtilsService } from '../../../services/utils.service';
 import { ColoniaFormComponent } from './colonia-form.component';
@@ -101,9 +102,9 @@ export class ColoniaListComponent implements OnInit {
   }
 
   onGuardarColonia(colonia: any) {
-    const isUpdate = 'Id' in colonia && colonia.Id && typeof colonia.Id === 'number';
+    const isUpdate = typeof colonia.id === 'number' && colonia.id > 0;
     const request$ = isUpdate
-      ? this.coloniaService.update(colonia.Id, colonia)
+      ? this.coloniaService.update(colonia.id, colonia)
       : this.coloniaService.create(colonia);
 
     request$.subscribe({
@@ -116,7 +117,7 @@ export class ColoniaListComponent implements OnInit {
           this.utilsService.showNotification('Error', msg, 'error');
         }
       },
-      error: () => this.utilsService.showNotification('Error', 'Error de conexión', 'error')
+      error: (err) => { if (!wasHandledByInterceptor(err)) this.utilsService.showNotification('Error', 'Error de conexión', 'error'); }
     });
   }
 
@@ -138,9 +139,11 @@ export class ColoniaListComponent implements OnInit {
         this.exportLoading.set(false);
         this.utilsService.showNotification('Éxito', 'Archivo exportado correctamente', 'success');
       },
-      error: () => {
+      error: (err) => {
         this.exportLoading.set(false);
-        this.utilsService.showNotification('Error', 'Error al exportar', 'error');
+        if (!wasHandledByInterceptor(err)) {
+          this.utilsService.showNotification('Error', 'Error al exportar', 'error');
+        }
       }
     });
   }
@@ -166,7 +169,9 @@ export class ColoniaListComponent implements OnInit {
       error: (err) => {
         this.resetPagination();
         this.loading.set(false);
-        this.utilsService.showNotification('Error', 'Error de conexión al cargar colonias', 'error');
+        if (!wasHandledByInterceptor(err)) {
+          this.utilsService.showNotification('Error', 'Error de conexión al cargar colonias', 'error');
+        }
         console.error(err);
       }
     });
@@ -183,7 +188,7 @@ export class ColoniaListComponent implements OnInit {
           this.utilsService.showNotification('Error', msg, 'error');
         }
       },
-      error: () => this.utilsService.showNotification('Error', 'Error de conexión', 'error')
+      error: (err) => { if (!wasHandledByInterceptor(err)) this.utilsService.showNotification('Error', 'Error de conexión', 'error'); }
     });
   }
 
@@ -207,7 +212,7 @@ export class ColoniaListComponent implements OnInit {
           this.utilsService.showNotification('Error', msg, 'error');
         }
       },
-      error: () => this.utilsService.showNotification('Error', 'Error de conexión', 'error')
+      error: (err) => { if (!wasHandledByInterceptor(err)) this.utilsService.showNotification('Error', 'Error de conexión', 'error'); }
     });
   }
 

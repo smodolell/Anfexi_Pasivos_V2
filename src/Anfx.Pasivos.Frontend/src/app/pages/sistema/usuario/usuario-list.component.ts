@@ -1,5 +1,6 @@
 import { Component, OnInit, inject, signal, ViewChild } from '@angular/core';
 import { UsuarioService } from '../../../services/sistema/usuario.service';
+import { wasHandledByInterceptor } from '../../../interceptors/auth.interceptor';
 import { UsuarioItemDto, UsuarioDto, CreateUsuarioDto, UpdateUsuarioDto, UsuarioPageQueryDto } from '../../../../types/sistema/usuario.dto';
 import { UtilsService } from '../../../services/utils.service';
 import { UsuarioFormComponent } from './usuario-form.component';
@@ -116,10 +117,12 @@ export class UsuarioListComponent implements OnInit {
         }
         this.loading.set(false);
       },
-      error: () => {
+      error: (err) => {
         this.items.set([]);
         this.loading.set(false);
-        this.utilsService.showNotification('Error', 'Error de conexión al cargar usuarios', 'error');
+        if (!wasHandledByInterceptor(err)) {
+          this.utilsService.showNotification('Error', 'Error de conexión al cargar usuarios', 'error');
+        }
       },
     });
   }
@@ -134,7 +137,7 @@ export class UsuarioListComponent implements OnInit {
           this.utilsService.showNotification('Error', res.errors?.[0] ?? res.message ?? 'Error al cargar el usuario', 'error');
         }
       },
-      error: () => this.utilsService.showNotification('Error', 'Error de conexión al cargar el usuario', 'error'),
+      error: (err) => { if (!wasHandledByInterceptor(err)) this.utilsService.showNotification('Error', 'Error de conexión al cargar el usuario', 'error'); },
     });
   }
 
@@ -154,7 +157,7 @@ export class UsuarioListComponent implements OnInit {
           this.utilsService.showNotification('Error', res.errors?.[0] ?? res.message ?? 'Error al guardar el usuario', 'error');
         }
       },
-      error: () => this.utilsService.showNotification('Error', 'Error de conexión al guardar el usuario', 'error'),
+      error: (err) => { if (!wasHandledByInterceptor(err)) this.utilsService.showNotification('Error', 'Error de conexión al guardar el usuario', 'error'); },
     });
   }
 
@@ -181,7 +184,7 @@ export class UsuarioListComponent implements OnInit {
           this.utilsService.showNotification('Error', res.errors?.[0] ?? res.message ?? 'Error al eliminar', 'error');
         }
       },
-      error: () => this.utilsService.showNotification('Error', 'Error de conexión al eliminar el usuario', 'error'),
+      error: (err) => { if (!wasHandledByInterceptor(err)) this.utilsService.showNotification('Error', 'Error de conexión al eliminar el usuario', 'error'); },
     });
   }
 

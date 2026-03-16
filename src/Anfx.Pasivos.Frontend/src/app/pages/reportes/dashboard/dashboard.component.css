@@ -8,14 +8,14 @@
 
 /* Fila de totales en el pie de tabla */
 .table-totals tr {
-  background-color: #f0f6ff;
-  border-top: 2px solid #c5dcf7;
+  background-color: var(--pf-primary-light);
+  border-top: 2px solid var(--pf-border-strong);
 }
 
 .table-totals td {
   font-size: 0.85rem;
   padding: 8px 16px;
-  color: #1e3a8a;
+  color: var(--pf-primary);
 }
 
 /* ── Highcharts ─────────────────────────────────────────────── */

@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { TipoDireccionDto, CreateTipoDireccionDto, UpdateTipoDireccionDto } from '../../../../types/catalogos/tipodireccion.dto';
 import { UtilsService } from '../../../services/utils.service';
+import { CardComponent } from '../../../shared/components/card/card.component';
 
 @Component({
   selector: 'app-tipodireccion-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, CardComponent],
   templateUrl: './tipodireccion-form.component.html'
 })
 export class TipoDireccionFormComponent implements OnInit, OnChanges {

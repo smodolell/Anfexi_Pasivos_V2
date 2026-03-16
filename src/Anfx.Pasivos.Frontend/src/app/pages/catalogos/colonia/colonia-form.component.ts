@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ColoniaDto, CreateColoniaDto, UpdateColoniaDto } from '../../../../types/catalogos/colonia.dto';
 import { UtilsService } from '../../../services/utils.service';
+import { CardComponent } from '../../../shared/components/card/card.component';
 
 @Component({
   selector: 'app-colonia-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, CardComponent],
   templateUrl: './colonia-form.component.html'
 })
 export class ColoniaFormComponent implements OnInit, OnChanges {

@@ -9,7 +9,12 @@
       "Bash(find e:profuturopasivosAnfexi_Pasivos_V2 -maxdepth 3 -type f -name *.sln)",
       "Bash(find e:profuturopasivosAnfexi_Pasivos_V2 -maxdepth 5 -type f \\\\\\(-name web.config -o -name *.pubxml -o -name *.config \\\\\\))",
       "Bash(find e:profuturopasivosAnfexi_Pasivos_V2 -name *.pubxml -o -name launchSettings.json)",
-      "Bash(find e:profuturopasivosAnfexi_Pasivos_V2 -name *.yml -o -name *.yaml)"
+      "Bash(find e:profuturopasivosAnfexi_Pasivos_V2 -name *.yml -o -name *.yaml)",
+      "Bash(xargs find:*)",
+      "Bash(ls -1 /e/profuturo/pasivos/Anfexi_Pasivos_V2/src/Anfx.Pasivos.Application/Features/*/Commands)",
+      "Bash(ls -la \"e:\\\\profuturo\\\\pasivos\\\\Anfexi_Pasivos_V2\\\\src\\\\Anfx.Pasivos.Frontend\\\\src\\\\app\\\\shared\\\\components\\\\confirm-modal\"\" 2>/dev/null || echo \"Directory contents: \")",
+      "Bash(find /e/profuturo/pasivos/Anfexi_Pasivos_V2/src/Anfx.Pasivos.Frontend/src -type f \\\\\\(-name *variable* -o -name *theme* -o -name *.scss \\\\\\))",
+      "Bash(find /e/profuturo/pasivos/Anfexi_Pasivos_V2/src/Anfx.Pasivos.Frontend/src/assets -type f -name *.css -o -name *.scss)"
     ]
   }
 }

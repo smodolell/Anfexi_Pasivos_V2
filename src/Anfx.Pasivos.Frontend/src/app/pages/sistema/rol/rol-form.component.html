@@ -1,61 +1,53 @@
 <div class="row">
-  <div class="card col-md-8 offset-md-2">
-    <div class="card-header {{ rol.id ? 'bg-warning' : 'bg-info' }} text-white">
-      <h4 class="card-title m-b-0">
-        {{ rol.id ? 'Editar' : 'Nuevo' }} Rol
-      </h4>
-    </div>
-    <div class="card-body {{ rol.id ? 'border-warning' : 'border-info' }} ">
+  <div class="col-md-8 offset-md-2">
+    <app-card
+      [title]="rol.id ? 'Editar Rol' : 'Nuevo Rol'"
+      [icon]="rol.id ? 'fa-solid fa-pen-clip' : 'fa-solid fa-shield-halved'"
+      [variant]="rol.id ? 'warning' : 'info'">
+
       <form [formGroup]="form" (ngSubmit)="onSubmit()">
         <div class="row">
           <div class="col-md-6">
             <div class="mb-3">
               <label for="sRol" class="form-label">Nombre *</label>
-              <input type="text" 
-                      class="form-control" 
-                      id="sRol" 
-                      formControlName="sRol"
-                      [ngClass]="{'is-invalid': isFieldInvalid('sRol')}"
-                      placeholder="Ingrese el nombre del rol">
+              <input type="text"
+                class="form-control"
+                id="sRol"
+                formControlName="sRol"
+                [ngClass]="{'is-invalid': isFieldInvalid('sRol')}"
+                placeholder="Ingrese el nombre del rol">
               @if (isFieldInvalid('sRol')) {
-                <div class="invalid-feedback">
-                  {{ getFieldError('sRol') }}
-                </div>
+                <div class="invalid-feedback">{{ getFieldError('sRol') }}</div>
               }
             </div>
           </div>
-          
+
           <div class="col-md-6">
             <div class="mb-3">
               <label for="descripcion" class="form-label">Descripción</label>
-              <input type="text" 
-                      class="form-control" 
-                      id="descripcion" 
-                      formControlName="descripcion"
-                      [ngClass]="{'is-invalid': isFieldInvalid('descripcion')}"
-                      placeholder="Ingrese la descripción">
+              <input type="text"
+                class="form-control"
+                id="descripcion"
+                formControlName="descripcion"
+                [ngClass]="{'is-invalid': isFieldInvalid('descripcion')}"
+                placeholder="Ingrese la descripción">
               @if (isFieldInvalid('descripcion')) {
-                <div class="invalid-feedback">
-                  {{ getFieldError('descripcion') }}
-                </div>
+                <div class="invalid-feedback">{{ getFieldError('descripcion') }}</div>
               }
-            </div>
-          </div>
-        </div>
-        
-        <div class="row">
-          <div class="col-12">
-            <div class="d-flex justify-content-end gap-2">
-              <button type="button" class="btn btn-secondary" (click)="onCancel()">
-                <i class="fa fa-times"></i> Cancelar
-              </button>
-              <button type="submit" class="btn btn-primary" [disabled]="form.invalid">
-                <i class="fa fa-save"></i> Guardar
-              </button>
             </div>
           </div>
         </div>
       </form>
-    </div>
-    </div>
+
+      <div slot="footer" class="d-flex justify-content-end gap-2">
+        <button type="button" class="btn btn-outline-secondary" (click)="onCancel()">
+          <i class="fa fa-times me-1"></i> Cancelar
+        </button>
+        <button type="submit" form="rolFormEl" class="btn btn-primary" [disabled]="form.invalid" (click)="onSubmit()">
+          <i class="fa fa-save me-1"></i> Guardar
+        </button>
+      </div>
+
+    </app-card>
+  </div>
 </div>

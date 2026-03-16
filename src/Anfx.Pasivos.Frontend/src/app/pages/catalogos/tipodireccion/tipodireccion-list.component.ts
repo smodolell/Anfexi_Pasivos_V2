@@ -1,6 +1,7 @@
 import { Component, OnInit, inject, signal, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TipoDireccionService } from '../../../services/catalogos/tipodireccion.service';
+import { wasHandledByInterceptor } from '../../../interceptors/auth.interceptor';
 import { TipoDireccionDto } from '../../../../types/catalogos/tipodireccion.dto';
 import { UtilsService } from '../../../services/utils.service';
 import { TipoDireccionFormComponent } from './tipodireccion-form.component';
@@ -100,17 +101,19 @@ export class TipoDireccionListComponent implements OnInit {
         this.loading.set(false);
         this.utilsService.showNotification('Éxito', 'Archivo exportado correctamente', 'success');
       },
-      error: () => {
+      error: (err) => {
         this.loading.set(false);
-        this.utilsService.showNotification('Error', 'Error al exportar el archivo', 'error');
+        if (!wasHandledByInterceptor(err)) {
+          this.utilsService.showNotification('Error', 'Error al exportar el archivo', 'error');
+        }
       }
     });
   }
 
   onGuardarTipoDireccion(tipoDireccion: any) {
-    const isUpdate = 'Id' in tipoDireccion && tipoDireccion.Id && typeof tipoDireccion.Id === 'number';
+    const isUpdate = typeof tipoDireccion.id === 'number' && tipoDireccion.id > 0;
     const request$ = isUpdate
-      ? this.tipoDireccionService.update(tipoDireccion.Id, tipoDireccion)
+      ? this.tipoDireccionService.update(tipoDireccion.id, tipoDireccion)
       : this.tipoDireccionService.create(tipoDireccion);
 
     request$.subscribe({
@@ -123,7 +126,7 @@ export class TipoDireccionListComponent implements OnInit {
           this.utilsService.showNotification('Error', msg, 'error');
         }
       },
-      error: () => this.utilsService.showNotification('Error', 'Error de conexión', 'error')
+      error: (err) => { if (!wasHandledByInterceptor(err)) this.utilsService.showNotification('Error', 'Error de conexión', 'error'); }
     });
   }
 
@@ -149,7 +152,7 @@ export class TipoDireccionListComponent implements OnInit {
           this.utilsService.showNotification('Error', msg, 'error');
         }
       },
-      error: () => this.utilsService.showNotification('Error', 'Error de conexión al eliminar', 'error')
+      error: (err) => { if (!wasHandledByInterceptor(err)) this.utilsService.showNotification('Error', 'Error de conexión al eliminar', 'error'); }
     });
   }
 
@@ -168,7 +171,7 @@ export class TipoDireccionListComponent implements OnInit {
           this.utilsService.showNotification('Error', msg, 'error');
         }
       },
-      error: () => this.utilsService.showNotification('Error', 'Error de conexión', 'error')
+      error: (err) => { if (!wasHandledByInterceptor(err)) this.utilsService.showNotification('Error', 'Error de conexión', 'error'); }
     });
   }
 
@@ -198,10 +201,12 @@ export class TipoDireccionListComponent implements OnInit {
         }
         this.loading.set(false);
       },
-      error: () => {
+      error: (err) => {
         this.resetPagination();
         this.loading.set(false);
-        this.utilsService.showNotification('Error', 'Error de conexión al cargar tipos de dirección', 'error');
+        if (!wasHandledByInterceptor(err)) {
+          this.utilsService.showNotification('Error', 'Error de conexión al cargar tipos de dirección', 'error');
+        }
       }
     });
   }

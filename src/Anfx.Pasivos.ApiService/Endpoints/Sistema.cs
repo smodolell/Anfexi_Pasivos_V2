@@ -189,7 +189,7 @@ public class Sistema : EndpointGroupBase
     {
         var query = new EmpresaExistsQuery(id);
         var result = await queryMediator.QueryAsync(query);
-        return result.ToMinimalApiResult();
+        return result.ToCustomMinimalApiResult();
     }
 
     public async Task<IResult> GetListTipoDireccion(
@@ -197,7 +197,7 @@ public class Sistema : EndpointGroupBase
     {
         var query = new GetAllTiposDireccionesQuery();
         var result = await queryMediator.QueryAsync(query);
-        return result.ToMinimalApiResult();
+        return result.ToCustomMinimalApiResult();
     }
 
     public async Task<IResult> GetAll(

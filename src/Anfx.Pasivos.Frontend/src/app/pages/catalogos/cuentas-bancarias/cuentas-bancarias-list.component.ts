@@ -6,6 +6,7 @@ import { CuentaBancariaListItemDto } from '../../../../api/models/models';
 import { UtilsService } from '../../../services/utils.service';
 import { GenericTableComponent } from '../../../shared/components/generic-table/generic-table.component';
 import { TableColumn, TableAction, TableActionEvent, TableSortEvent, SortDirection } from '../../../shared/components/generic-table/table-column.model';
+import { wasHandledByInterceptor } from '../../../interceptors/auth.interceptor';
 
 @Component({
   selector: 'app-cuentas-bancarias-list',
@@ -96,10 +97,12 @@ export class CuentasBancariasListComponent implements OnInit {
         }
         this.loading.set(false);
       },
-      error: () => {
+      error: (err) => {
         this.resetPagination();
         this.loading.set(false);
-        this.utilsService.showNotification('Error', 'Error de conexión al cargar cuentas bancarias', 'error');
+        if (!wasHandledByInterceptor(err)) {
+          this.utilsService.showNotification('Error', 'Error de conexión al cargar cuentas bancarias', 'error');
+        }
       }
     });
   }

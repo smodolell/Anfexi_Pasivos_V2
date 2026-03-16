@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { RolDto, CreateRolDto, UpdateRolDto } from '../../../../types/sistema/rol.dto';
 import { UtilsService } from '../../../services/utils.service';
+import { CardComponent } from '../../../shared/components/card/card.component';
 
 @Component({
   selector: 'app-rol-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, CardComponent],
   templateUrl: './rol-form.component.html'
 })
 export class RolFormComponent implements OnInit {

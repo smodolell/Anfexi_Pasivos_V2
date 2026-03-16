@@ -5,3 +5,167 @@ h1, h2, h3, h4, h5, h6,
 td, th, label, div, li {
   font-family: 'Roboto', sans-serif;
 }
+
+/* ============================================================
+   PALETA DE COLORES — Profuturo Pasivos
+   Todos los componentes deben referenciar estas variables.
+   ============================================================ */
+:root {
+  /* ── Brand ──────────────────────────────────────────────── */
+  --pf-primary:           #004b8d;
+  --pf-primary-hover:     #015baa;
+  --pf-primary-active:    #013d74;
+  --pf-primary-light:     #e8f1fb;
+  --pf-primary-dim:       #dbeafe;
+
+  /* ── Semánticos ─────────────────────────────────────────── */
+  --pf-info:              #0369a1;
+  --pf-info-light:        #e0f2fe;
+  --pf-success:           #15803d;
+  --pf-success-light:     #dcfce7;
+  --pf-warning:           #d97706;
+  --pf-warning-light:     #fef3c7;
+  --pf-danger:            #b91c1c;
+  --pf-danger-light:      #fee2e2;
+
+  /* ── Neutros / superficie ───────────────────────────────── */
+  --pf-border:            #dbe8f5;
+  --pf-border-strong:     #c5dcf7;
+  --pf-bg-subtle:         #f4f9ff;
+  --pf-bg-table-head:     #ebf5ff;
+  --pf-text-muted:        #6b7280;
+  --pf-text-base:         #1f2937;
+  --pf-text-on-dark:      #ffffff;
+
+  /* ── Card ───────────────────────────────────────────────── */
+  --pf-card-border:       #e0e6ed;
+  --pf-card-radius:       6px;
+  --pf-card-shadow:       0 1px 4px rgba(0, 0, 0, 0.06);
+
+  /* ── Sidebar ────────────────────────────────────────────── */
+  --pf-sidebar-icon:      #6badde;
+  --pf-sidebar-icon-hover:#3d8fd4;
+  --pf-sidebar-sub-icon:  #7dd3c0;
+  --pf-sidebar-sub-hover: #5bbcaa;
+
+  /* ── Bootstrap 5 CSS var overrides ─────────────────────── */
+  --bs-primary:           #004b8d;
+  --bs-primary-rgb:       0, 75, 141;
+  --bs-info:              #0369a1;
+  --bs-info-rgb:          3, 105, 161;
+  --bs-success:           #15803d;
+  --bs-success-rgb:       21, 128, 61;
+  --bs-warning:           #d97706;
+  --bs-warning-rgb:       217, 119, 6;
+  --bs-danger:            #b91c1c;
+  --bs-danger-rgb:        185, 28, 28;
+}
+
+/* ============================================================
+   OVERRIDES de clases Bootstrap (bg-*, text-*, border-*, btn-*)
+   Se necesitan porque el tema compilado (style.min.css) define
+   los valores como colores literales, no como CSS vars.
+   ============================================================ */
+
+/* ── Fondos ─────────────────────────────────────────────────── */
+.bg-primary { background-color: var(--pf-primary)  !important; }
+.bg-info    { background-color: var(--pf-info)     !important; }
+.bg-success { background-color: var(--pf-success)  !important; }
+.bg-warning { background-color: var(--pf-warning)  !important; }
+.bg-danger  { background-color: var(--pf-danger)   !important; }
+
+/* ── Textos ─────────────────────────────────────────────────── */
+.text-primary { color: var(--pf-primary)  !important; }
+.text-info    { color: var(--pf-info)     !important; }
+.text-success { color: var(--pf-success)  !important; }
+.text-warning { color: var(--pf-warning)  !important; }
+.text-danger  { color: var(--pf-danger)   !important; }
+
+/* Fix: badges con bg-white sobre header de color */
+.badge.bg-white.text-info    { color: var(--pf-info)    !important; }
+.badge.bg-white.text-warning { color: var(--pf-warning) !important; }
+.badge.bg-white.text-primary { color: var(--pf-primary) !important; }
+
+/* ── Bordes ─────────────────────────────────────────────────── */
+.border-primary { border-color: var(--pf-primary)  !important; }
+.border-info    { border-color: var(--pf-info)     !important; }
+.border-warning { border-color: var(--pf-warning)  !important; }
+.border-success { border-color: var(--pf-success)  !important; }
+.border-danger  { border-color: var(--pf-danger)   !important; }
+
+/* ── btn-primary ────────────────────────────────────────────── */
+.btn-primary {
+  background-color: var(--pf-primary);
+  border-color:     var(--pf-primary-active);
+  color:            var(--pf-text-on-dark);
+}
+.btn-primary:hover {
+  background-color: var(--pf-primary-hover);
+  border-color:     var(--pf-primary-hover);
+  color:            var(--pf-text-on-dark);
+}
+.btn-primary:focus {
+  background-color: var(--pf-primary-hover);
+  border-color:     var(--pf-primary-hover);
+  color:            var(--pf-text-on-dark);
+  box-shadow:       0 0 0 0.25rem rgba(0, 75, 141, 0.25);
+}
+.btn-primary.disabled,
+.btn-primary:disabled {
+  background-color: #5a85b5;
+  border-color:     #5a85b5;
+  color:            var(--pf-text-on-dark);
+}
+
+/* ── btn-success ────────────────────────────────────────────── */
+.btn-success {
+  background-color: var(--pf-success);
+  border-color:     #126832;
+  color:            var(--pf-text-on-dark);
+}
+.btn-success:hover,
+.btn-success:focus {
+  background-color: #126832;
+  border-color:     #126832;
+  color:            var(--pf-text-on-dark);
+}
+
+/* ── btn-danger ─────────────────────────────────────────────── */
+.btn-danger {
+  background-color: var(--pf-danger);
+  border-color:     #991b1b;
+  color:            var(--pf-text-on-dark);
+}
+.btn-danger:hover,
+.btn-danger:focus {
+  background-color: #991b1b;
+  border-color:     #991b1b;
+  color:            var(--pf-text-on-dark);
+}
+
+/* ── Card base ──────────────────────────────────────────────── */
+.card {
+  border:        1px solid var(--pf-card-border);
+  border-radius: var(--pf-card-radius);
+}
+
+.card-header {
+  font-weight:   500;
+  border-bottom: 1px solid var(--pf-card-border);
+}
+
+/* Asegurar que card-header coloreado tenga texto blanco */
+.card-header.bg-primary,
+.card-header.bg-info,
+.card-header.bg-success,
+.card-header.bg-warning,
+.card-header.bg-danger {
+  color: var(--pf-text-on-dark) !important;
+}
+
+/* ── Borders info/warning (usados en form-card bodies) ──────── */
+.border-info,
+.border-warning {
+  border-style: solid !important;
+  border-width: 1px  !important;
+}

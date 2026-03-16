@@ -115,7 +115,7 @@ public class Colonias : EndpointGroupBase
         [FromServices] IQueryMediator queryMediator)
     {
         var result = await queryMediator.QueryAsync(new GetColoniasQuery());
-        return result.ToMinimalApiResult();
+        return result.ToCustomMinimalApiResult();
     }
 
     public async Task<IResult> GetPaginados(
@@ -150,7 +150,7 @@ public class Colonias : EndpointGroupBase
         int id)
     {
         var result = await queryMediator.QueryAsync(new GetColoniaByIdQuery { Id = id });
-        return result.ToMinimalApiResult();
+        return result.ToCustomMinimalApiResult();
     }
 
     public async Task<IResult> GetCodigosPostales(
@@ -158,17 +158,15 @@ public class Colonias : EndpointGroupBase
         [FromQuery] string codigoPostal)
     {
         var result = await queryMediator.QueryAsync(new GetCodigosPostalesQuery { CodigoPostal = codigoPostal });
-        return result.ToMinimalApiResult();
+        return result.ToCustomMinimalApiResult();
     }
 
     public async Task<IResult> GetColoniasByCodigoPostal(
         [FromServices] IQueryMediator queryMediator,
         [FromQuery] string codigoPostal)
     {
-        
-
         var result = await queryMediator.QueryAsync(new GetColoniasByCodigoPostalQuery { CodigoPostal = codigoPostal });
-        return result.ToMinimalApiResult();
+        return result.ToCustomMinimalApiResult();
     }
 
     public async Task<IResult> GetColoniasById(
@@ -176,7 +174,7 @@ public class Colonias : EndpointGroupBase
         int id)
     {
         var result = await queryMediator.QueryAsync(new GetColoniasByIdQuery { Id = id });
-        return result.ToMinimalApiResult();
+        return result.ToCustomMinimalApiResult();
     }
 
     public async Task<IResult> Create(
@@ -192,8 +190,7 @@ public class Colonias : EndpointGroupBase
         };
 
         var result = await commandMediator.SendAsync(command);
-
-        return result.ToMinimalApiResult();
+        return result.ToCustomMinimalApiResult();
     }
 
     public async Task<IResult> Update(
@@ -211,7 +208,7 @@ public class Colonias : EndpointGroupBase
         };
 
         var result = await commandMediator.SendAsync(command);
-        return result.ToMinimalApiResult();
+        return result.ToCustomMinimalApiResult();
     }
 
     public async Task<IResult> Delete(
@@ -219,7 +216,7 @@ public class Colonias : EndpointGroupBase
         int id)
     {
         var result = await commandMediator.SendAsync(new DeleteColoniaCommand { Id = id });
-        return result.ToMinimalApiResult();
+        return result.ToCustomMinimalApiResult();
     }
 
     public async Task<IResult> ExportToExcel(

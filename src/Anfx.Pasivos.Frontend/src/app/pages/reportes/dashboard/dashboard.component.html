@@ -176,7 +176,7 @@
       <!-- Cartera Pasiva -->
       <div class="col-md-6">
         <div class="card mb-4 shadow-sm">
-          <div class="card-header bg-warning text-dark d-flex justify-content-between align-items-center">
+          <div class="card-header bg-warning text-white d-flex justify-content-between align-items-center">
             <h5 class="mb-0"><i class="fa-solid fa-arrow-trend-down me-2"></i>Cartera Pasiva Por Vencer</h5>
             <span class="badge bg-white text-warning">{{ totalPasiva() }} registros</span>
           </div>
@@ -259,7 +259,7 @@
             <div class="card-body d-flex align-items-center justify-content-center" style="min-height: 420px;">
               <div class="text-center text-muted">
                 <div class="spinner-border text-primary mb-2" aria-hidden="true"></div>
-                <p class="small mb-0">Cargando gráfico...</p>
+                <p class="small mb-0">Consultando y procesando datos...</p>
               </div>
             </div>
           </div>
@@ -270,7 +270,7 @@
           <div class="card-body d-flex align-items-center justify-content-center" style="min-height: 420px;">
             <div class="text-center text-muted">
               <div class="spinner-border text-primary mb-2" aria-hidden="true"></div>
-              <p class="small mb-0">Cargando gráfico...</p>
+              <p class="small mb-0">Consultando y procesando datos...</p>
             </div>
           </div>
         </div>
@@ -285,6 +285,9 @@
       <!-- Pie: Cartera Activa -->
       <div class="col-md-6 mb-4">
         <div class="card shadow-sm h-100">
+          <div class="card-header bg-primary text-white">
+            <h5 class="mb-0"><i class="fa-solid fa-chart-pie me-2"></i>Distribución Cartera Activa</h5>
+          </div>
           <div class="card-body">
             <highcharts-chart
               [options]="pieChartActivaOptions"
@@ -297,6 +300,9 @@
       <!-- Pie: Cartera Pasiva -->
       <div class="col-md-6 mb-4">
         <div class="card shadow-sm h-100">
+          <div class="card-header bg-info text-white">
+            <h5 class="mb-0"><i class="fa-solid fa-chart-pie me-2"></i>Distribución Cartera Pasiva</h5>
+          </div>
           <div class="card-body">
             <highcharts-chart
               [options]="pieChartPasivaOptions"
@@ -309,6 +315,9 @@
       <!-- Barras: Evolución Activo -->
       <div class="col-md-6 mb-4">
         <div class="card shadow-sm h-100">
+          <div class="card-header bg-success text-white">
+            <h5 class="mb-0"><i class="fa-solid fa-chart-bar me-2"></i>Evolución Cartera Activa</h5>
+          </div>
           <div class="card-body">
             <highcharts-chart
               [options]="barChartActivaOptions"
@@ -321,6 +330,9 @@
       <!-- Barras: Evolución Pasivo -->
       <div class="col-md-6 mb-4">
         <div class="card shadow-sm h-100">
+          <div class="card-header bg-warning text-white">
+            <h5 class="mb-0"><i class="fa-solid fa-chart-bar me-2"></i>Evolución Cartera Pasiva</h5>
+          </div>
           <div class="card-body">
             <highcharts-chart
               [options]="barChartPasivaOptions"
@@ -333,6 +345,9 @@
       <!-- Barras horizontales: Relación Activo vs Pasivo -->
       <div class="col-12 mb-4">
         <div class="card shadow-sm">
+          <div class="card-header bg-primary text-white">
+            <h5 class="mb-0"><i class="fa-solid fa-scale-balanced me-2"></i>Relación Activo vs Pasivo</h5>
+          </div>
           <div class="card-body">
             <highcharts-chart
               [options]="relationChartOptions"

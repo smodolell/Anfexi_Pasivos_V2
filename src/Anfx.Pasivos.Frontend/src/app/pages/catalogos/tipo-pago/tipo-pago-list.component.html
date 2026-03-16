@@ -3,8 +3,6 @@
     <div class="col-12">
 
       @if (!mostrandoFormulario()) {
-
-        <!-- Tabla genérica -->
         <app-generic-table
           [columns]="columns"
           [items]="items()"
@@ -14,29 +12,25 @@
           [currentPage]="currentPage()"
           [totalPages]="totalPages()"
           [pageSize]="pageSize()"
-          [searchable]="true"
-          [searchPlaceholder]="'Buscar colonia, estado, municipio...'"
-          [searchValue]="query.q ?? ''"
-          [showNew]="true"
-          [showExport]="true"
-          [exportLoading]="exportLoading()"
           [sortColumn]="sortColumn"
           [sortDirection]="sortDirection"
+          [searchable]="true"
+          [searchPlaceholder]="'Buscar tipo de pago...'"
+          [searchValue]="searchValue"
+          [showNew]="true"
+          [showExport]="false"
           (searchChanged)="onSearch($event)"
           (sortChanged)="onSort($event)"
           (actionCalled)="onAction($event)"
           (pageNext)="nextPage()"
           (pagePrev)="prevPage()"
-          (newClicked)="mostrarFormularioNuevo()"
-          (exportClicked)="onExportar()"
+          (newClicked)="onNuevo()"
         />
-
       } @else {
-        <app-colonia-form
-          [colonia]="coloniaSeleccionada"
-          (guardar)="onGuardarColonia($event)"
-          (cancelar)="onCancelarEdicion()"
-          (volverALista)="volverALista()"
+        <app-tipo-pago-form
+          [tipoPago]="tipoPagoSeleccionado"
+          (guardar)="onGuardar($event)"
+          (cancelar)="onCancelar()"
         />
       }
 
@@ -47,8 +41,8 @@
 <app-confirm-modal
   #confirmModal
   title="Confirmar eliminación"
-  message="¿Está seguro que desea eliminar la colonia?"
-  [itemName]="coloniaAEliminar?.sColonia"
+  message="¿Está seguro que desea eliminar el tipo de pago?"
+  [itemName]="tipoPagoAEliminar?.tipoPago"
   (confirmed)="confirmarEliminacion()"
-  (cancelled)="cancelarEliminacion()">
-</app-confirm-modal>
+  (cancelled)="cancelarEliminacion()"
+/>

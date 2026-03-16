@@ -1,6 +1,7 @@
 import { Component, OnInit, inject, signal, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { ConfiguracionesService } from '../../../../api/services/configuraciones.service';
+import { wasHandledByInterceptor } from '../../../interceptors/auth.interceptor';
 import { FondeadorListItemDto } from '../../../../api/models/fondeadorListItemDto';
 import { UtilsService } from '../../../services/utils.service';
 import { GenericTableComponent } from '../../../shared/components/generic-table/generic-table.component';
@@ -99,8 +100,10 @@ export class FondeadorListComponent implements OnInit {
         this.fondeadorAEliminar = null;
       },
       error: (err) => {
-        const msg = err?.error?.message ?? 'Error al eliminar el fondeador.';
-        this.utilsService.showNotification('Error', msg, 'error');
+        if (!wasHandledByInterceptor(err)) {
+          const msg = err?.error?.message ?? 'Error al eliminar el fondeador.';
+          this.utilsService.showNotification('Error', msg, 'error');
+        }
       }
     });
   }
@@ -129,10 +132,12 @@ export class FondeadorListComponent implements OnInit {
         }
         this.loading.set(false);
       },
-      error: () => {
+      error: (err) => {
         this.fondeadores.set([]);
         this.loading.set(false);
-        this.utilsService.showNotification('Error', 'Error de conexión al cargar fondeadores', 'error');
+        if (!wasHandledByInterceptor(err)) {
+          this.utilsService.showNotification('Error', 'Error de conexión al cargar fondeadores', 'error');
+        }
       }
     });
   }

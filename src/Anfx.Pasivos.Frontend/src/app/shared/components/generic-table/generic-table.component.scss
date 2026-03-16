@@ -25,14 +25,14 @@
 
   /* ── Encabezado ─────────────────────────────────────────── */
   thead tr th {
-    background-color: #ebf5ff;
-    color: #0a0a0a;
+    background-color: var(--pf-bg-table-head);
+    color: var(--pf-text-base);
     font-weight: 500;
     font-size: 14px;
     height: 40px;
     padding: 0 16px;
     vertical-align: middle;
-    border-bottom: 2px solid #c5dcf7;
+    border-bottom: 2px solid var(--pf-border-strong);
     white-space: nowrap;
   }
 
@@ -42,11 +42,11 @@
     user-select: none;
 
     &:hover {
-      background-color: #dbeafe;
+      background-color: var(--pf-primary-dim);
     }
 
     &:focus-visible {
-      outline: 2px solid #3b82f6;
+      outline: 2px solid var(--pf-primary);
       outline-offset: -2px;
     }
   }
@@ -63,8 +63,8 @@
 
   thead tr th.gt-sort-asc,
   thead tr th.gt-sort-desc {
-    background-color: #dbeafe;
-    color: #1e3a8a;
+    background-color: var(--pf-primary-dim);
+    color: var(--pf-primary);
   }
 
   /* Esquinas redondeadas del encabezado */
@@ -80,7 +80,7 @@
   tbody tr td {
     padding: 10px 16px;
     vertical-align: middle;
-    border-bottom: 1px solid #e2e8f0;
+    border-bottom: 1px solid var(--pf-border);
     font-size: 13px;
   }
 
@@ -95,12 +95,12 @@
 
   /* Filas pares (zebra striping) */
   tbody tr:nth-child(even) td {
-    background-color: #f4f9ff;
+    background-color: var(--pf-bg-subtle);
   }
 
   /* Hover en filas */
   tbody tr:hover td {
-    background-color: #dbeeff;
+    background-color: var(--pf-primary-dim);
     transition: background-color 0.15s ease;
   }
 }
@@ -156,21 +156,20 @@ th .gt-cell-text {
 }
 
 .btn-action-edit {
-  background: linear-gradient(135deg, #1d6cf5, #1340b0);
-  color: #fff;
+  background: linear-gradient(135deg, var(--pf-primary), var(--pf-primary-hover));
+  color: var(--pf-text-on-dark);
 }
 
 .btn-action-delete {
-  background: linear-gradient(135deg, #e03232, #a81414);
-  color: #fff;
+  background: linear-gradient(135deg, var(--pf-danger), #991b1b);
+  color: var(--pf-text-on-dark);
 }
 
 /* ── Contenedor con borde y sombra suave ─────────────────── */
 .gt-table-wrapper {
-  border: 1px solid #dbe8f5;
+  border:        1px solid var(--pf-border);
   border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 2px 8px rgba(13, 110, 253, 0.07);
+  overflow:      hidden;
 }
 
 /* ── Skeleton loading ────────────────────────────────────── */
@@ -182,11 +181,11 @@ th .gt-cell-text {
 .gt-skeleton-row {
   td {
     padding: 13px 16px;
-    border-bottom: 1px solid #e2e8f0;
+    border-bottom: 1px solid var(--pf-border);
   }
 
   &:nth-child(even) td {
-    background-color: #f4f9ff;
+    background-color: var(--pf-bg-subtle);
   }
 }
 
@@ -214,12 +213,12 @@ th .gt-cell-text {
 
   .gt-empty-icon {
     font-size: 3.5rem;
-    color: #c5dcf7;
+    color: var(--pf-border-strong);
     display: block;
     margin-bottom: 1rem;
 
     &--search {
-      color: #adb5bd;
+      color: var(--pf-text-muted);
     }
   }
 
@@ -232,7 +231,7 @@ th .gt-cell-text {
 
   .gt-empty-subtitle {
     font-size: 0.85rem;
-    color: #9ca3af;
+    color: var(--pf-text-muted);
     margin-bottom: 0;
   }
 }
@@ -247,7 +246,7 @@ th .gt-cell-text {
 
   app-search-input {
     flex: 1 1 auto;
-    min-width: 0; // evita que el input desborde el flex container
+    min-width: 0;
   }
 }
 
@@ -258,8 +257,8 @@ th .gt-cell-text {
   border-radius: 20px;
   font-size: 0.75rem;
   font-weight: 500;
-  color: #1340b0;
-  background-color: #dbeafe;
+  color: var(--pf-primary);
+  background-color: var(--pf-primary-dim);
   white-space: nowrap;
   flex-shrink: 0;
 }

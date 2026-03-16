@@ -79,14 +79,6 @@ export const routes: Routes = [
     canActivate: [authGuard],
     children: [
       {
-        path: 'tiposdirecciones',
-        data: { title: 'Tipos de Dirección' },
-        loadComponent: () =>
-          import('./pages/catalogos/tipodireccion/tipodireccion-list.component').then(
-            (m) => m.TipoDireccionListComponent,
-          ),
-      },
-      {
         path: 'colonias',
         data: { title: 'Colonias' },
         loadComponent: () =>
@@ -100,6 +92,22 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./pages/catalogos/bancos/bancos-list.component').then(
             (m) => m.BancosListComponent,
+          ),
+      },
+      {
+        path: 'bancos/new',
+        data: { title: 'Nuevo Banco' },
+        loadComponent: () =>
+          import('./pages/catalogos/bancos/banco-form.component').then(
+            (m) => m.BancoFormComponent,
+          ),
+      },
+      {
+        path: 'bancos/edit/:id',
+        data: { title: 'Editar Banco' },
+        loadComponent: () =>
+          import('./pages/catalogos/bancos/banco-form.component').then(
+            (m) => m.BancoFormComponent,
           ),
       },
       {
@@ -148,6 +156,14 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./pages/catalogos/estatus-contrato/estatus-contrato-form.component').then(
             (m) => m.EstatusContratoFormComponent,
+          ),
+      },
+      {
+        path: 'tipo-pago',
+        data: { title: 'Tipos de Pago' },
+        loadComponent: () =>
+          import('./pages/catalogos/tipo-pago/tipo-pago-list.component').then(
+            (m) => m.TipoPagoListComponent,
           ),
       },
     ],

@@ -1,5 +1,6 @@
 import { Component, OnInit, inject, signal, ViewChild } from '@angular/core';
 import { RolService } from '../../../services/sistema/rol.service';
+import { wasHandledByInterceptor } from '../../../interceptors/auth.interceptor';
 import { UtilsService } from '../../../services/utils.service';
 import { RolFormComponent } from './rol-form.component';
 import { GenericTableComponent } from '../../../shared/components/generic-table/generic-table.component';
@@ -107,10 +108,12 @@ export class RolListComponent implements OnInit {
         }
         this.loading.set(false);
       },
-      error: () => {
+      error: (err) => {
         this.items.set([]);
         this.loading.set(false);
-        this.utilsService.showNotification('Error', 'Error de conexión al cargar roles', 'error');
+        if (!wasHandledByInterceptor(err)) {
+          this.utilsService.showNotification('Error', 'Error de conexión al cargar roles', 'error');
+        }
       },
     });
   }
@@ -125,7 +128,7 @@ export class RolListComponent implements OnInit {
           this.utilsService.showNotification('Error', res.errors?.[0] ?? res.message ?? 'Error al cargar el rol', 'error');
         }
       },
-      error: () => this.utilsService.showNotification('Error', 'Error de conexión al cargar el rol', 'error'),
+      error: (err) => { if (!wasHandledByInterceptor(err)) this.utilsService.showNotification('Error', 'Error de conexión al cargar el rol', 'error'); },
     });
   }
 
@@ -145,7 +148,7 @@ export class RolListComponent implements OnInit {
           this.utilsService.showNotification('Error', res.errors?.[0] ?? res.message ?? 'Error al guardar el rol', 'error');
         }
       },
-      error: () => this.utilsService.showNotification('Error', 'Error de conexión al guardar el rol', 'error'),
+      error: (err) => { if (!wasHandledByInterceptor(err)) this.utilsService.showNotification('Error', 'Error de conexión al guardar el rol', 'error'); },
     });
   }
 
@@ -172,7 +175,7 @@ export class RolListComponent implements OnInit {
           this.utilsService.showNotification('Error', res.errors?.[0] ?? res.message ?? 'Error al eliminar', 'error');
         }
       },
-      error: () => this.utilsService.showNotification('Error', 'Error de conexión al eliminar el rol', 'error'),
+      error: (err) => { if (!wasHandledByInterceptor(err)) this.utilsService.showNotification('Error', 'Error de conexión al eliminar el rol', 'error'); },
     });
   }
 

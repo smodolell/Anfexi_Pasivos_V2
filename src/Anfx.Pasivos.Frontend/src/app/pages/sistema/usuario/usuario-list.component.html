@@ -1,58 +1,42 @@
 <div class="container-fluid">
   <div class="row">
     <div class="col-12">
-      <div class="card">
-        <div class="card-body">
 
-          @if (mostrandoFormulario()) {
-            <div class="mb-3 d-flex justify-content-between align-items-center">
-              <h4 class="card-title mb-0">
-                {{ usuarioSeleccionado.id ? 'Editar Usuario' : 'Nuevo Usuario' }}
-              </h4>
-              <button class="btn btn-outline-secondary btn-sm" (click)="volverALista()">
-                <i class="fa-solid fa-arrow-left me-1"></i> Volver
-              </button>
-            </div>
-            <app-usuario-form
-              [usuario]="usuarioSeleccionado"
-              [isFromProfile]="false"
-              (guardar)="onGuardarUsuario($event)"
-              (cancelar)="onCancelarEdicion()"
-              (volverALista)="volverALista()">
-            </app-usuario-form>
-          }
+      @if (!mostrandoFormulario()) {
+        <app-generic-table
+          [columns]="columns"
+          [actions]="actions"
+          [items]="items()"
+          [loading]="loading()"
+          [totalCount]="totalCount()"
+          [currentPage]="currentPage()"
+          [totalPages]="totalPages()"
+          [pageSize]="pageSize()"
+          [showNew]="true"
+          (actionCalled)="onAction($event)"
+          (searchChanged)="onSearch($event)"
+          (pageNext)="onPageNext()"
+          (pagePrev)="onPagePrev()"
+          (newClicked)="onNuevo()">
 
-          @if (!mostrandoFormulario()) {
-            <app-generic-table
-              [columns]="columns"
-              [actions]="actions"
-              [items]="items()"
-              [loading]="loading()"
-              [totalCount]="totalCount()"
-              [currentPage]="currentPage()"
-              [totalPages]="totalPages()"
-              [pageSize]="pageSize()"
-              [showNew]="true"
-              (actionCalled)="onAction($event)"
-              (searchChanged)="onSearch($event)"
-              (pageNext)="onPageNext()"
-              (pagePrev)="onPagePrev()"
-              (newClicked)="onNuevo()">
+          <app-filter-activo
+            slot="filters"
+            label="Solo activos"
+            [(value)]="query.activo"
+            (changed)="onActivoChange()">
+          </app-filter-activo>
 
-              <app-filter-activo
-                slot="filters"
-                label="Solo activos"
-                [(value)]="query.activo"
-                (changed)="onActivoChange()">
-              </app-filter-activo>
+        </app-generic-table>
+      } @else {
+        <app-usuario-form
+          [usuario]="usuarioSeleccionado"
+          [isFromProfile]="false"
+          (guardar)="onGuardarUsuario($event)"
+          (cancelar)="onCancelarEdicion()"
+          (volverALista)="volverALista()">
+        </app-usuario-form>
+      }
 
-            </app-generic-table>
-          }
-
-        </div>
-
-
-      </div>
     </div>
   </div>
 </div>

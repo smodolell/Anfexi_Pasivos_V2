@@ -1,27 +1,27 @@
 import { Component, OnInit, inject, signal, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { EmpresaService } from '../../../services/sistema/empresa.service';
+import { TipoPagoService } from '../../../services/catalogos/tipo-pago.service';
 import { wasHandledByInterceptor } from '../../../interceptors/auth.interceptor';
+import { TipoPagoListItemDto } from '../../../../types/catalogos/tipo-pago.dto';
 import { UtilsService } from '../../../services/utils.service';
-import { EmpresaFormComponent } from './empresa-form.component';
-import { EmpresaDto } from '../../../../types/sistema/empresa.dto';
+import { TipoPagoFormComponent } from './tipo-pago-form.component';
 import { ConfirmModalComponent } from '../../../shared/components/confirm-modal/confirm-modal.component';
 import { GenericTableComponent } from '../../../shared/components/generic-table/generic-table.component';
 import { TableColumn, TableAction, TableActionEvent, TableSortEvent, SortDirection } from '../../../shared/components/generic-table/table-column.model';
 
 @Component({
-  selector: 'app-empresa-list',
+  selector: 'app-tipo-pago-list',
   standalone: true,
-  imports: [CommonModule, EmpresaFormComponent, ConfirmModalComponent, GenericTableComponent],
-  templateUrl: './empresa-list.component.html'
+  imports: [CommonModule, TipoPagoFormComponent, ConfirmModalComponent, GenericTableComponent],
+  templateUrl: './tipo-pago-list.component.html'
 })
-export class EmpresaListComponent implements OnInit {
+export class TipoPagoListComponent implements OnInit {
   @ViewChild('confirmModal') confirmModal!: ConfirmModalComponent;
 
-  private readonly empresaService = inject(EmpresaService);
-  private readonly utilsService   = inject(UtilsService);
+  private readonly tipoPagoService = inject(TipoPagoService);
+  private readonly utilsService    = inject(UtilsService);
 
-  items       = signal<EmpresaDto[]>([]);
+  items       = signal<TipoPagoListItemDto[]>([]);
   loading     = signal(false);
   totalCount  = signal(0);
   totalPages  = signal(0);
@@ -33,18 +33,15 @@ export class EmpresaListComponent implements OnInit {
   searchValue = '';
 
   mostrandoFormulario = signal(false);
-  empresaSeleccionada: Partial<EmpresaDto> = this.emptyEmpresa();
-  empresaAEliminar: EmpresaDto | null = null;
+  tipoPagoSeleccionado: Partial<TipoPagoListItemDto> = {};
+  tipoPagoAEliminar: TipoPagoListItemDto | null = null;
 
   private q    = '';
   private page = 1;
 
   columns: TableColumn[] = [
-    { key: 'id',            header: 'ID',             type: 'number', sortable: true  },
-    { key: 'sEmpresa',      header: 'Empresa',         type: 'text',   sortable: true  },
-    { key: 'rFC',           header: 'RFC',             type: 'text',   sortable: false },
-    { key: 'razonSocial',   header: 'Razón Social',    type: 'text',   sortable: true  },
-    { key: 'representante', header: 'Representante',   type: 'text',   sortable: false },
+    { key: 'id',       header: 'ID',           type: 'number', sortable: true },
+    { key: 'tipoPago', header: 'Tipo de Pago', type: 'text',   sortable: true },
   ];
 
   actions: TableAction[] = [
@@ -64,7 +61,7 @@ export class EmpresaListComponent implements OnInit {
   }
 
   onSort(event: TableSortEvent) {
-    this.sortColumn    = event.column;
+    this.sortColumn   = event.column;
     this.sortDirection = event.direction;
     this.page = 1;
     this.load();
@@ -79,93 +76,96 @@ export class EmpresaListComponent implements OnInit {
   }
 
   onNuevo() {
-    this.empresaSeleccionada = this.emptyEmpresa();
+    this.tipoPagoSeleccionado = { id: 0, tipoPago: '' };
     this.mostrandoFormulario.set(true);
   }
 
-  onAction(event: TableActionEvent<EmpresaDto>) {
-    if (event.action === 'edit')   this.editarEmpresa(event.row.id);
+  onAction(event: TableActionEvent<TipoPagoListItemDto>) {
+    if (event.action === 'edit')   this.editar(event.row.id);
     if (event.action === 'delete') this.delete(event.row.id);
   }
 
-  onGuardarEmpresa(empresa: any) {
-    const isUpdate = this.empresaSeleccionada?.id && this.empresaSeleccionada.id > 0;
+  onGuardar(tipoPago: any) {
+    const isUpdate = typeof tipoPago.id === 'number' && tipoPago.id > 0;
     const request$ = isUpdate
-      ? this.empresaService.update(this.empresaSeleccionada.id!, empresa)
-      : this.empresaService.create(empresa);
+      ? this.tipoPagoService.update(tipoPago.id, tipoPago)
+      : this.tipoPagoService.create(tipoPago);
 
     request$.subscribe({
       next: (response) => {
         if (response.success) {
           this.load();
           this.mostrandoFormulario.set(false);
-          const msg = isUpdate ? 'Empresa actualizada correctamente' : 'Empresa creada correctamente';
-          this.utilsService.showNotification('Éxito', msg, 'success');
         } else {
-          const msg = response.errors?.[0] ?? response.message ?? 'Error al guardar la empresa';
+          const msg = response.errors?.[0] ?? response.message ?? 'Error al guardar';
           this.utilsService.showNotification('Error', msg, 'error');
         }
       },
-      error: (err) => { if (!wasHandledByInterceptor(err)) this.utilsService.showNotification('Error', 'Error de conexión al guardar la empresa', 'error'); }
+      error: (err) => { if (!wasHandledByInterceptor(err)) this.utilsService.showNotification('Error', 'Error de conexión', 'error'); }
     });
   }
 
-  onCancelarEdicion() {
+  onCancelar() {
     this.volverALista();
   }
 
   volverALista() {
     this.mostrandoFormulario.set(false);
-    this.empresaSeleccionada = this.emptyEmpresa();
+    this.tipoPagoSeleccionado = { id: 0, tipoPago: '' };
   }
 
   confirmarEliminacion() {
-    if (!this.empresaAEliminar) return;
-    this.empresaService.delete(this.empresaAEliminar.id).subscribe({
+    if (!this.tipoPagoAEliminar) return;
+    this.tipoPagoService.delete(this.tipoPagoAEliminar.id).subscribe({
       next: (response) => {
         if (response.success) {
           this.load();
           this.confirmModal.hide();
-          this.empresaAEliminar = null;
-          this.utilsService.showNotification('Éxito', 'Empresa eliminada correctamente', 'success');
+          this.tipoPagoAEliminar = null;
         } else {
-          const msg = response.errors?.[0] ?? response.message ?? 'Error al eliminar la empresa';
+          const msg = response.errors?.[0] ?? response.message ?? 'Error al eliminar';
           this.utilsService.showNotification('Error', msg, 'error');
         }
       },
-      error: (err) => { if (!wasHandledByInterceptor(err)) this.utilsService.showNotification('Error', 'Error de conexión al eliminar la empresa', 'error'); }
+      error: (err) => { if (!wasHandledByInterceptor(err)) this.utilsService.showNotification('Error', 'Error de conexión al eliminar', 'error'); }
     });
   }
 
   cancelarEliminacion() {
-    this.empresaAEliminar = null;
+    this.tipoPagoAEliminar = null;
   }
 
-  private editarEmpresa(id: number) {
-    this.empresaService.getById(id).subscribe({
+  private editar(id: number) {
+    this.tipoPagoService.getById(id).subscribe({
       next: (response) => {
         if (response.success) {
-          this.empresaSeleccionada = { ...response.data };
+          this.tipoPagoSeleccionado = { ...response.data };
           this.mostrandoFormulario.set(true);
         } else {
-          const msg = response.errors?.[0] ?? response.message ?? 'Error al cargar la empresa';
+          const msg = response.errors?.[0] ?? response.message ?? 'Error al cargar';
           this.utilsService.showNotification('Error', msg, 'error');
         }
       },
-      error: (err) => { if (!wasHandledByInterceptor(err)) this.utilsService.showNotification('Error', 'Error de conexión al cargar la empresa', 'error'); }
+      error: (err) => { if (!wasHandledByInterceptor(err)) this.utilsService.showNotification('Error', 'Error de conexión', 'error'); }
     });
   }
 
   private delete(id: number) {
-    const empresa = this.items().find(e => e.id === id);
-    if (!empresa) return;
-    this.empresaAEliminar = empresa;
+    const item = this.items().find(t => t.id === id);
+    if (!item) return;
+    this.tipoPagoAEliminar = item;
     this.confirmModal.show();
   }
 
   private load() {
     this.loading.set(true);
-    this.empresaService.getAll({ q: this.q, page: this.page, size: this.pageSize() }).subscribe({
+    this.tipoPagoService.getAll({
+      q: this.q,
+      page: this.page,
+      size: this.pageSize(),
+      sortBy:  this.sortColumn  ?? undefined,
+      sortDir: this.sortDirection,
+    }).subscribe({
       next: (response) => {
         if (response.success) {
           const size  = response.data.pageSize  ?? 10;
@@ -177,7 +177,7 @@ export class EmpresaListComponent implements OnInit {
           this.totalPages.set(total > 0 ? Math.ceil(total / size) : 0);
         } else {
           this.resetPagination();
-          const msg = response.errors?.[0] ?? response.message ?? 'Error al cargar empresas';
+          const msg = response.errors?.[0] ?? response.message ?? 'Error al cargar tipos de pago';
           this.utilsService.showNotification('Error', msg, 'error');
         }
         this.loading.set(false);
@@ -186,7 +186,7 @@ export class EmpresaListComponent implements OnInit {
         this.resetPagination();
         this.loading.set(false);
         if (!wasHandledByInterceptor(err)) {
-          this.utilsService.showNotification('Error', 'Error de conexión al cargar empresas', 'error');
+          this.utilsService.showNotification('Error', 'Error de conexión al cargar tipos de pago', 'error');
         }
       }
     });
@@ -198,14 +198,5 @@ export class EmpresaListComponent implements OnInit {
     this.pageSize.set(10);
     this.totalCount.set(0);
     this.totalPages.set(0);
-  }
-
-  private emptyEmpresa(): Partial<EmpresaDto> {
-    return {
-      id: 0, sEmpresa: '', rFC: '', razonSocial: '', telefono: '',
-      representante: '', avisosEstadodeCuenta: '', advertenciasEstadodeCuenta: '',
-      aclaracionesEstadodeCuenta: '', usaDesembolso: false, pasivo: false,
-      tipoDireccionId: 0, calle: '', numExterior: '', numInterior: ''
-    };
   }
 }
