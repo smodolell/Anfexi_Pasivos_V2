@@ -1,0 +1,52 @@
+<ul id="sidebarnav">
+  @for (item of items; track item.id) {
+
+    @if (!item.disabled) {
+
+      <!-- ── Grupo con submenú ────────────────────────────── -->
+      @if (item.children?.length) {
+        <li [class.active]="isGroupActive(item)">
+          <a
+            class="has-arrow waves-effect waves-dark"
+            href="javascript:void(0)"
+            [attr.aria-expanded]="activeGroup() === item.id"
+            (click)="toggleGroup(item.id)"
+          >
+            <i [class]="item.icon"></i>
+            <span class="hide-menu">{{ item.label }}</span>
+          </a>
+          <ul [class.in]="activeGroup() === item.id" class="collapse">
+            @for (child of item.children; track child.id) {
+              @if (!child.disabled) {
+                <li>
+                  <a
+                    [routerLink]="child.route"
+                    routerLinkActive="active"
+                    [routerLinkActiveOptions]="{ exact: false }"
+                  >
+                    <i [class]="child.icon"></i> {{ child.label }}
+                  </a>
+                </li>
+              }
+            }
+          </ul>
+        </li>
+
+      <!-- ── Ítem hoja (sin hijos) ────────────────────────── -->
+      } @else if (item.route) {
+        <li>
+          <a
+            [routerLink]="item.route"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: false }"
+            class="waves-effect waves-dark"
+          >
+            <i [class]="item.icon"></i>
+            <span class="hide-menu">{{ item.label }}</span>
+          </a>
+        </li>
+      }
+
+    }
+  }
+</ul>

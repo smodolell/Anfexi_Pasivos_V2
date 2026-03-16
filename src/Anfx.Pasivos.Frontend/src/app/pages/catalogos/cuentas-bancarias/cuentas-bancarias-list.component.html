@@ -1,69 +1,29 @@
-<div class="container mt-4">
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="text-primary"><i class="bi bi-wallet2"></i> Cuentas Bancarias</h2>
-    <a routerLink="new" class="btn btn-success">
-      <i class="bi bi-plus-lg"></i> Nueva Cuenta
-    </a>
-  </div>
-
-  <div class="card mb-4 border-0 shadow-sm">
-    <div class="card-body">
-      <div class="input-group">
-        <span class="input-group-text bg-white border-end-0"><i class="bi bi-search"></i></span>
-        <input [formControl]="searchControl" type="text" class="form-control border-start-0 shadow-none" placeholder="Buscar por banco o cuenta...">
-      </div>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-12">
+      <app-generic-table
+        [columns]="columns"
+        [items]="items()"
+        [loading]="loading()"
+        [actions]="actions"
+        [totalCount]="totalCount()"
+        [currentPage]="currentPage()"
+        [totalPages]="totalPages()"
+        [pageSize]="pageSize()"
+        [sortColumn]="sortColumn"
+        [sortDirection]="sortDirection"
+        [searchable]="true"
+        [searchPlaceholder]="'Buscar por banco o cuenta...'"
+        [searchValue]="searchValue"
+        [showNew]="true"
+        [showExport]="false"
+        (searchChanged)="onSearch($event)"
+        (sortChanged)="onSort($event)"
+        (actionCalled)="onAction($event)"
+        (pageNext)="nextPage()"
+        (pagePrev)="prevPage()"
+        (newClicked)="onNuevo()"
+      />
     </div>
   </div>
-
-  <div class="card border-0 shadow-sm">
-    <div class="table-responsive">
-      <table class="table table-hover align-middle mb-0">
-        <thead class="table-light">
-          <tr>
-            <th>Banco</th>
-            <th>Cuenta Bancaria</th>
-            <th>CLABE</th>
-            <th class="text-center">Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (item of cuentas(); track item.id) {
-            <tr>
-              <td class="fw-semibold">{{ item.banco }}</td>
-              <td>{{ item.cuentaBancaria }}</td>
-              <td><code>{{ item.clabe }}</code></td>
-              <td class="text-center">
-                <a [routerLink]="['edit', item.id]" class="btn btn-sm btn-white border shadow-sm"><i class="bi bi-pencil-fill text-primary"></i></a>
-              </td>
-            </tr>
-          } @empty {
-            <tr>
-              <td colspan="4" class="text-center py-5 text-muted">
-                @if (isLoading()) {
-                  <div class="spinner-border text-primary" role="status"></div>
-                } @else {
-                  No hay cuentas bancarias registradas
-                }
-              </td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  @if (totalCount() > pageSize()) {
-    <nav class="mt-4 d-flex justify-content-between align-items-center">
-      <div class="text-muted small">Mostrando {{ cuentas().length }} de {{ totalCount() }}</div>
-      <ul class="pagination pagination-sm mb-0">
-        <li class="page-item" [class.disabled]="currentPage() === 1">
-          <button class="page-link" (click)="goToPage(currentPage() - 1)">Anterior</button>
-        </li>
-        <li class="page-item active"><span class="page-link px-3">Página {{ currentPage() }}</span></li>
-        <li class="page-item" [class.disabled]="currentPage() >= totalPages()">
-          <button class="page-link" (click)="goToPage(currentPage() + 1)">Siguiente</button>
-        </li>
-      </ul>
-    </nav>
-  }
 </div>

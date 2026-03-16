@@ -1,120 +1,96 @@
 import {
   Component, OnInit, OnDestroy,
-  inject, Renderer2, ChangeDetectorRef, ViewEncapsulation
+  inject, Renderer2, ChangeDetectorRef, ViewEncapsulation,
 } from '@angular/core';
 import { RouterOutlet, Router, RouterModule, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { CommonModule, DOCUMENT } from '@angular/common';
-import { Subject, takeUntil, filter } from 'rxjs';
-import { AuthService, User } from '../services/auth.service';
+import { Subject, switchMap, takeUntil, filter } from 'rxjs';
+import { AuthService } from '../services/auth.service';
 import { LayoutService } from '../services/layout.service';
+import { MenuService } from '../services/menu.service';
+import { MenuItem } from '../shared/models/menu-item.model';
+import { TopbarComponent } from '../shared/components/topbar/topbar.component';
+import { SidebarNavComponent } from '../shared/components/sidebar-nav/sidebar-nav.component';
+import { FooterComponent } from '../shared/components/footer/footer.component';
 
 @Component({
   selector: 'app-admin-layout',
   standalone: true,
-  imports: [RouterOutlet, CommonModule, RouterModule],
+  imports: [RouterOutlet, CommonModule, RouterModule, TopbarComponent, SidebarNavComponent, FooterComponent],
   templateUrl: './admin-layout.component.html',
   styleUrls: ['./admin-layout.component.scss'],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
 })
 export class AdminLayoutComponent implements OnInit, OnDestroy {
-  currentUser: User | null = null;
-  currentTitle = 'Title';
-  showLogoutModal = false;
-  activeMenu: string | null = null;
+  currentTitle = '';
+  menuItems: MenuItem[] = [];
 
-  private readonly renderer = inject(Renderer2);
-  private readonly document = inject(DOCUMENT);
-  private readonly cdr = inject(ChangeDetectorRef);
-  private readonly destroy$ = new Subject<void>();
+  private readonly renderer      = inject(Renderer2);
+  private readonly document      = inject(DOCUMENT);
+  private readonly cdr           = inject(ChangeDetectorRef);
+  private readonly destroy$      = new Subject<void>();
+  private readonly authService   = inject(AuthService);
+  private readonly router        = inject(Router);
+  private readonly activatedRoute = inject(ActivatedRoute);
+  private readonly layoutService = inject(LayoutService);
+  private readonly menuService   = inject(MenuService);
 
-  constructor(
-    private readonly authService: AuthService,
-    private readonly router: Router,
-    private readonly activatedRoute: ActivatedRoute,
-    private readonly layoutService: LayoutService
-  ) {}
-
-  ngOnInit() {
-    this.authService.currentUser$.pipe(takeUntil(this.destroy$)).subscribe(user => {
-      this.currentUser = user;
+  ngOnInit(): void {
+    // Menú reactivo: se recarga cada vez que cambia el usuario (ej: re-login con otro rol)
+    this.authService.currentUser$.pipe(
+      switchMap(user => this.menuService.getMenuForUser(user)),
+      takeUntil(this.destroy$),
+    ).subscribe(items => {
+      this.menuItems = items;
+      this.cdr.detectChanges();
     });
 
+    // Título de página
     this.layoutService.title$.pipe(takeUntil(this.destroy$)).subscribe(title => {
       this.currentTitle = title;
       this.cdr.detectChanges();
     });
 
-    // Auto-título desde route data en cada navegación
+    // Auto-título desde route data
     this.router.events.pipe(
       filter(e => e instanceof NavigationEnd),
-      takeUntil(this.destroy$)
+      takeUntil(this.destroy$),
     ).subscribe(() => {
       const title = this.extractTitle(this.activatedRoute);
       if (title) this.layoutService.setTitle(title);
     });
 
     if (globalThis.window !== undefined) {
-      this.loadExternalResources();
       this.addBodyClasses();
+      this.loadScriptsSequentially([
+        'assets/dist/js/perfect-scrollbar.jquery.min.js',
+        'assets/dist/js/waves.js',
+        'assets/dist/js/custom.min.js',
+      ]);
     }
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
   }
 
-  logout() {
-    this.showLogoutModal = true;
-    this.cdr.detectChanges();
-  }
-
-  confirmLogout() {
-    this.authService.logout();
-    this.showLogoutModal = false;
-  }
-
-  cancelLogout() {
-    this.showLogoutModal = false;
-  }
-
-  toggleMenu(menuName: string) {
-    this.activeMenu = this.activeMenu === menuName ? null : menuName;
-  }
-
-  onModalKeydown(event: KeyboardEvent) {
-    if (event.key === 'Escape') this.cancelLogout();
-  }
-
-  hasRole(role: string): boolean {
-    return this.authService.hasRole(role);
-  }
-
-  /** Recorre el árbol de rutas hijo para encontrar el data.title más profundo. */
   private extractTitle(route: ActivatedRoute): string | null {
     let current = route;
     while (current.firstChild) current = current.firstChild;
     return current.snapshot.data['title'] ?? null;
   }
 
-  private addBodyClasses() {
-    if (this.document.body) {
-      this.renderer.addClass(this.document.body, 'skin-blue');
-      this.renderer.addClass(this.document.body, 'fixed-layout');
-      this.renderer.addClass(this.document.body, 'mini-sidebar');
+  private addBodyClasses(): void {
+    const body = this.document.body;
+    if (body) {
+      this.renderer.addClass(body, 'skin-blue');
+      this.renderer.addClass(body, 'fixed-layout');
+      this.renderer.addClass(body, 'mini-sidebar');
     }
   }
 
-  private loadExternalResources() {
-    const scripts = [
-      'assets/dist/js/perfect-scrollbar.jquery.min.js',
-      'assets/dist/js/waves.js',
-      'assets/dist/js/custom.min.js',
-    ];
-    this.loadScriptsSequentially(scripts);
-  }
-
-  private loadScriptsSequentially(srcs: string[], index = 0) {
+  private loadScriptsSequentially(srcs: string[], index = 0): void {
     if (index >= srcs.length) return;
     const script = this.renderer.createElement('script');
     this.renderer.setAttribute(script, 'src', srcs[index]);

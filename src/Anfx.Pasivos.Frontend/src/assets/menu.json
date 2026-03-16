@@ -1,0 +1,69 @@
+[
+  {
+    "id": "reportes",
+    "label": "Reportes",
+    "icon": "fa-solid fa-chart-line",
+    "order": 1,
+    "children": [
+      {
+        "id": "dashboard",
+        "label": "Dashboard",
+        "icon": "fa-solid fa-gauge-high",
+        "route": "/admin/reportes/dashboard",
+        "order": 1
+      }
+    ]
+  },
+  {
+    "id": "catalogos",
+    "label": "Catálogos",
+    "icon": "fa-solid fa-book-open",
+    "order": 2,
+    "children": [
+      { "id": "bancos",            "label": "Bancos",            "icon": "fa-solid fa-building-columns",  "route": "/catalogos/bancos",             "order": 1 },
+      { "id": "cuentas-bancarias", "label": "Cuentas Bancarias", "icon": "fa-solid fa-credit-card",       "route": "/catalogos/cuentas-bancarias",  "order": 2 },
+      { "id": "tiposdirecciones",  "label": "Tipo de Dirección", "icon": "fa-solid fa-location-dot",      "route": "/catalogos/tiposdirecciones",   "order": 3 },
+      { "id": "colonias",          "label": "Colonia",           "icon": "fa-solid fa-map-location-dot",  "route": "/catalogos/colonias",           "order": 4 },
+      { "id": "estatus-contrato",  "label": "Estatus Contrato",  "icon": "fa-solid fa-file-circle-check", "route": "/catalogos/estatus-contrato",   "order": 5 }
+    ]
+  },
+  {
+    "id": "contratos",
+    "label": "Contratos",
+    "icon": "fa-solid fa-file-contract",
+    "order": 3,
+    "children": [
+      {
+        "id": "info-general",
+        "label": "Información General",
+        "icon": "fa-solid fa-circle-info",
+        "route": "/admin/contratos/info-general",
+        "order": 1
+      }
+    ]
+  },
+  {
+    "id": "configuracion",
+    "label": "Configuración",
+    "icon": "fa-solid fa-gear",
+    "order": 4,
+    "roles": ["Admin", "Webmaster"],
+    "children": [
+      { "id": "empresas",            "label": "Empresas",            "icon": "fa-solid fa-building",            "route": "/admin/empresas",                    "order": 1, "roles": ["Admin", "Webmaster"] },
+      { "id": "fondeador",           "label": "Fondeadores",         "icon": "fa-solid fa-hand-holding-dollar",  "route": "/configuracion/fondeador",           "order": 2, "roles": ["Admin", "Webmaster"] },
+      { "id": "tipo-credito",        "label": "Tipos de Crédito",    "icon": "fa-solid fa-tag",                  "route": "/configuracion/tipo-credito",        "order": 3, "roles": ["Admin", "Webmaster"] },
+      { "id": "tipo-tabla-amortiza", "label": "Tipo Tabla Amortiza", "icon": "fa-solid fa-table-list",           "route": "/configuracion/tipo-tabla-amortiza", "order": 4, "roles": ["Admin", "Webmaster"] }
+    ]
+  },
+  {
+    "id": "sistema",
+    "label": "Sistema",
+    "icon": "fa-solid fa-screwdriver-wrench",
+    "order": 5,
+    "roles": ["Webmaster"],
+    "children": [
+      { "id": "usuarios", "label": "Usuarios", "icon": "fa-solid fa-users",       "route": "/admin/usuarios", "order": 1, "roles": ["Webmaster"] },
+      { "id": "roles",    "label": "Roles",    "icon": "fa-solid fa-user-shield",  "route": "/admin/roles",    "order": 2, "roles": ["Webmaster"] }
+    ]
+  }
+]

@@ -1,0 +1,8 @@
+// Los estilos principales del sidebar viven en admin-layout.component.scss
+// porque aplican sobre clases del tema externo (skin-blue) que necesitan
+// ViewEncapsulation.None. Este archivo contiene únicamente estilos propios
+// del componente que no dependen del tema.
+
+:host {
+  display: block;
+}

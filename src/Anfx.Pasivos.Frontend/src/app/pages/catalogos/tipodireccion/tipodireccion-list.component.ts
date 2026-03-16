@@ -1,206 +1,139 @@
 import { Component, OnInit, inject, signal, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 import { TipoDireccionService } from '../../../services/catalogos/tipodireccion.service';
-import { TipoDireccionDto, TipoDireccionPageQueryDto } from '../../../../types/catalogos/tipodireccion.dto';
+import { TipoDireccionDto } from '../../../../types/catalogos/tipodireccion.dto';
 import { UtilsService } from '../../../services/utils.service';
 import { TipoDireccionFormComponent } from './tipodireccion-form.component';
 import { ConfirmModalComponent } from '../../../shared/components/confirm-modal/confirm-modal.component';
+import { GenericTableComponent } from '../../../shared/components/generic-table/generic-table.component';
+import { TableColumn, TableAction, TableActionEvent, TableSortEvent, SortDirection } from '../../../shared/components/generic-table/table-column.model';
 
 @Component({
   selector: 'app-tipodireccion-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, TipoDireccionFormComponent, ConfirmModalComponent],
+  imports: [CommonModule, TipoDireccionFormComponent, ConfirmModalComponent, GenericTableComponent],
   templateUrl: './tipodireccion-list.component.html'
 })
 export class TipoDireccionListComponent implements OnInit {
-  private tipoDireccionService = inject(TipoDireccionService);
-  private utilsService = inject(UtilsService);
-
-  items = signal<TipoDireccionDto[]>([]);
-  loading = signal<boolean>(false);
-  query: TipoDireccionPageQueryDto = { q: '', page: 1, size: 10 };
-
-  totalCount = signal<number>(0);
-  totalPages = signal<number>(0);
-  currentPage = signal<number>(1);
-  pageSize = signal<number>(10);
-
   @ViewChild('confirmModal') confirmModal!: ConfirmModalComponent;
 
+  private readonly tipoDireccionService = inject(TipoDireccionService);
+  private readonly utilsService         = inject(UtilsService);
+
+  items       = signal<TipoDireccionDto[]>([]);
+  loading     = signal(false);
+  totalCount  = signal(0);
+  totalPages  = signal(0);
+  currentPage = signal(1);
+  pageSize    = signal(10);
+
+  sortColumn:    string | null = null;
+  sortDirection: SortDirection = 'asc';
+  searchValue = '';
+
+  mostrandoFormulario    = signal(false);
   tipoDireccionSeleccionado: Partial<TipoDireccionDto> = {};
-  mostrandoFormulario = signal<boolean>(false);
   tipoDireccionAEliminar: TipoDireccionDto | null = null;
 
-  // Exponer Math para usar en el template
-  Math = Math;
+  private q    = '';
+  private page = 1;
 
-  ngOnInit(): void {
+  columns: TableColumn[] = [
+    { key: 'id',             header: 'ID',     type: 'number', sortable: true },
+    { key: 'sTipoDireccion', header: 'Título', type: 'text',   sortable: true },
+  ];
+
+  actions: TableAction[] = [
+    { id: 'edit',   label: 'Editar',   icon: 'fa-solid fa-pen-clip',  btnClass: 'btn-action-edit'   },
+    { id: 'delete', label: 'Eliminar', icon: 'fa-solid fa-trash-can', btnClass: 'btn-action-delete' },
+  ];
+
+  ngOnInit() {
     this.load();
   }
 
-  onSearch() {
-    this.query.page = 1;
+  onSearch(value: string) {
+    this.q           = value;
+    this.searchValue = value;
+    this.page        = 1;
+    this.load();
+  }
+
+  onSort(event: TableSortEvent) {
+    this.sortColumn    = event.column;
+    this.sortDirection = event.direction;
+    this.page = 1;
     this.load();
   }
 
   nextPage() {
-    if (this.currentPage() < this.totalPages()) {
-      this.query.page = (this.query.page || 1) + 1;
-      this.load();
-    }
+    if (this.currentPage() < this.totalPages()) { this.page++; this.load(); }
   }
 
   prevPage() {
-    if ((this.query.page || 1) > 1) {
-      this.query.page = (this.query.page || 1) - 1;
-      this.load();
-    }
+    if (this.page > 1) { this.page--; this.load(); }
   }
 
-  private load() {
-    this.loading.set(true);
-    this.tipoDireccionService.getAll(this.query).subscribe({
-      next: response => {
-        if (response.success) {
-          this.items.set(response.data.results);
-          this.currentPage.set(response.data.currentPage);
-          this.pageSize.set(response.data.pageSize);
-          this.totalCount.set(response.data.totalCount);
-          this.totalPages.set(response.data.totalPages);
-        } else {
-          this.items.set([]);
-          this.currentPage.set(this.query.page || 1);
-          this.pageSize.set(this.query.size || 10);
-          this.totalCount.set(0);
-          this.totalPages.set(0);
-
-          if (response.errors && response.errors.length > 0) {
-            this.utilsService.showNotification('Error', response.errors[0], 'error');
-          } else if (response.message) {
-            this.utilsService.showNotification('Error', response.message, 'error');
-          } else {
-            this.utilsService.showNotification('Error', 'Error al cargar tipos de dirección', 'error');
-          }
-        }
-        this.loading.set(false);
-      },
-      error: (httpError) => {
-        this.items.set([]);
-        this.currentPage.set(this.query.page || 1);
-        this.pageSize.set(this.query.size || 10);
-        this.totalCount.set(0);
-        this.totalPages.set(0);
-        this.loading.set(false);
-        this.utilsService.showNotification('Error', 'Error de conexión al cargar tipos de dirección', 'error');
-        console.error('Error HTTP:', httpError);
-      }
-    });
-  }
-
-  mostrarFormularioNuevo() {
-    this.tipoDireccionSeleccionado = {
-      id: 0,
-      sTipoDireccion: ''
-    };
+  onNuevo() {
+    this.tipoDireccionSeleccionado = { id: 0, sTipoDireccion: '' };
     this.mostrandoFormulario.set(true);
   }
 
-  editarTipoDireccion(id: number) {
-    this.tipoDireccionService.getById(id).subscribe({
-      next: (response) => {
-        if (response.success) {
-          this.tipoDireccionSeleccionado = { ...response.data };
-          this.mostrandoFormulario.set(true);
-        } else {
-          if (response.errors && response.errors.length > 0) {
-            this.utilsService.showNotification('Error', response.errors[0], 'error');
-          } else if (response.message) {
-            this.utilsService.showNotification('Error', response.message, 'error');
-          } else {
-            this.utilsService.showNotification('Error', 'Error al cargar el tipo de dirección', 'error');
-          }
-        }
+  onAction(event: TableActionEvent<TipoDireccionDto>) {
+    if (event.action === 'edit')   this.editarTipoDireccion(event.row.id);
+    if (event.action === 'delete') this.delete(event.row.id);
+  }
+
+  onExportar() {
+    this.loading.set(true);
+    this.tipoDireccionService.exportar(this.q).subscribe({
+      next: (blob) => {
+        const url  = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href  = url;
+        const fecha = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
+        link.download = `tipos_direcciones_${fecha}.xlsx`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+        this.loading.set(false);
+        this.utilsService.showNotification('Éxito', 'Archivo exportado correctamente', 'success');
       },
-      error: (httpError) => {
-        this.utilsService.showNotification('Error', 'Error de conexión al cargar el tipo de dirección', 'error');
-        console.error('Error HTTP:', httpError);
+      error: () => {
+        this.loading.set(false);
+        this.utilsService.showNotification('Error', 'Error al exportar el archivo', 'error');
       }
     });
   }
 
   onGuardarTipoDireccion(tipoDireccion: any) {
-    if ('Id' in tipoDireccion && tipoDireccion.Id && typeof tipoDireccion.Id === 'number') {
-      this.tipoDireccionService.update(tipoDireccion.Id, tipoDireccion).subscribe({
-        next: (response) => {
-          if (response.success) {
-            this.load();
-            this.mostrandoFormulario.set(false);
-          } else {
-            if (response.errors && response.errors.length > 0) {
-              this.utilsService.showNotification('Error', response.errors[0], 'error');
-            } else if (response.message) {
-              this.utilsService.showNotification('Error', response.message, 'error');
-            } else {
-              this.utilsService.showNotification('Error', 'Error al actualizar el tipo de dirección', 'error');
-            }
-          }
-        },
-        error: (httpError) => {
-          this.utilsService.showNotification('Error', 'Error de conexión al actualizar el tipo de dirección', 'error');
-          console.error('Error HTTP:', httpError);
+    const isUpdate = 'Id' in tipoDireccion && tipoDireccion.Id && typeof tipoDireccion.Id === 'number';
+    const request$ = isUpdate
+      ? this.tipoDireccionService.update(tipoDireccion.Id, tipoDireccion)
+      : this.tipoDireccionService.create(tipoDireccion);
+
+    request$.subscribe({
+      next: (response) => {
+        if (response.success) {
+          this.load();
+          this.mostrandoFormulario.set(false);
+        } else {
+          const msg = response.errors?.[0] ?? response.message ?? 'Error al guardar';
+          this.utilsService.showNotification('Error', msg, 'error');
         }
-      });
-    } else {
-      this.tipoDireccionService.create(tipoDireccion).subscribe({
-        next: (response) => {
-          if (response.success) {
-            this.load();
-            this.mostrandoFormulario.set(false);
-          } else {
-            if (response.errors && response.errors.length > 0) {
-              this.utilsService.showNotification('Error', response.errors[0], 'error');
-            } else if (response.message) {
-              this.utilsService.showNotification('Error', response.message, 'error');
-            } else {
-              this.utilsService.showNotification('Error', 'Error al crear el tipo de dirección', 'error');
-            }
-          }
-        },
-        error: (httpError) => {
-          this.utilsService.showNotification('Error', 'Error de conexión al crear el tipo de dirección', 'error');
-          console.error('Error HTTP:', httpError);
-        }
-      });
-    }
+      },
+      error: () => this.utilsService.showNotification('Error', 'Error de conexión', 'error')
+    });
   }
 
   onCancelarEdicion() {
-    this.mostrandoFormulario.set(false);
-    this.tipoDireccionSeleccionado = {
-      id: 0,
-      sTipoDireccion: ''
-    };
+    this.volverALista();
   }
 
   volverALista() {
     this.mostrandoFormulario.set(false);
-    this.tipoDireccionSeleccionado = {
-      id: 0,
-      sTipoDireccion: ''
-    };
-  }
-
-  edit(id: number) {
-    this.editarTipoDireccion(id);
-  }
-
-  delete(id: number) {
-    const tipoDireccion = this.items().find(t => t.id === id);
-    if (tipoDireccion) {
-      this.tipoDireccionAEliminar = tipoDireccion;
-      this.confirmModal.show();
-    }
+    this.tipoDireccionSeleccionado = { id: 0, sTipoDireccion: '' };
   }
 
   confirmarEliminacion() {
@@ -212,11 +145,11 @@ export class TipoDireccionListComponent implements OnInit {
           this.confirmModal.hide();
           this.tipoDireccionAEliminar = null;
         } else {
-          const msg = response.errors?.[0] ?? response.message ?? 'Error al eliminar el tipo de dirección';
+          const msg = response.errors?.[0] ?? response.message ?? 'Error al eliminar';
           this.utilsService.showNotification('Error', msg, 'error');
         }
       },
-      error: () => this.utilsService.showNotification('Error', 'Error de conexión al eliminar el tipo de dirección', 'error')
+      error: () => this.utilsService.showNotification('Error', 'Error de conexión al eliminar', 'error')
     });
   }
 
@@ -224,33 +157,60 @@ export class TipoDireccionListComponent implements OnInit {
     this.tipoDireccionAEliminar = null;
   }
 
-  onExportar() {
-    this.loading.set(true);
-    this.tipoDireccionService.exportar(this.query.q).subscribe({
-      next: (blob) => {
-        // Crear un enlace temporal para descargar el archivo
-        const url = window.URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-
-        // Generar nombre de archivo con fecha y hora
-        const fecha = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
-        const nombreArchivo = `tipos_direcciones_${fecha}.xlsx`;
-
-        link.download = nombreArchivo;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        window.URL.revokeObjectURL(url);
-
-        this.loading.set(false);
-        this.utilsService.showNotification('Éxito', 'Archivo exportado correctamente', 'success');
+  private editarTipoDireccion(id: number) {
+    this.tipoDireccionService.getById(id).subscribe({
+      next: (response) => {
+        if (response.success) {
+          this.tipoDireccionSeleccionado = { ...response.data };
+          this.mostrandoFormulario.set(true);
+        } else {
+          const msg = response.errors?.[0] ?? response.message ?? 'Error al cargar';
+          this.utilsService.showNotification('Error', msg, 'error');
+        }
       },
-      error: (httpError) => {
+      error: () => this.utilsService.showNotification('Error', 'Error de conexión', 'error')
+    });
+  }
+
+  private delete(id: number) {
+    const item = this.items().find(t => t.id === id);
+    if (!item) return;
+    this.tipoDireccionAEliminar = item;
+    this.confirmModal.show();
+  }
+
+  private load() {
+    this.loading.set(true);
+    this.tipoDireccionService.getAll({ q: this.q, page: this.page, size: this.pageSize() }).subscribe({
+      next: (response) => {
+        if (response.success) {
+          const size  = response.data.pageSize  ?? 10;
+          const total = response.data.totalCount ?? 0;
+          this.items.set(response.data.results ?? []);
+          this.currentPage.set(response.data.currentPage ?? this.page);
+          this.pageSize.set(size);
+          this.totalCount.set(total);
+          this.totalPages.set(total > 0 ? Math.ceil(total / size) : 0);
+        } else {
+          this.resetPagination();
+          const msg = response.errors?.[0] ?? response.message ?? 'Error al cargar tipos de dirección';
+          this.utilsService.showNotification('Error', msg, 'error');
+        }
         this.loading.set(false);
-        this.utilsService.showNotification('Error', 'Error al exportar el archivo', 'error');
-        console.error('Error HTTP:', httpError);
+      },
+      error: () => {
+        this.resetPagination();
+        this.loading.set(false);
+        this.utilsService.showNotification('Error', 'Error de conexión al cargar tipos de dirección', 'error');
       }
     });
+  }
+
+  private resetPagination() {
+    this.items.set([]);
+    this.currentPage.set(this.page);
+    this.pageSize.set(10);
+    this.totalCount.set(0);
+    this.totalPages.set(0);
   }
 }

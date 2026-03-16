@@ -4,7 +4,12 @@
       "Bash(grep -o .sidebar-nav[^{]*{[^}]*} e:/profuturo/pasivos/Anfexi_Pasivos_V2/src/Anfx.Pasivos.Frontend/public/assets/dist/css/style.min.css)",
       "Bash(npm install:*)",
       "Bash(find e:/profuturo/pasivos/Anfexi_Pasivos_V2 -path */Features/* -type f -name *.cs)",
-      "Bash(grep -r \"UsuarioNombre\\\\|NombreUsuario\\\\|UserLogin\\\\|UserName\\\\|UsuLogin\" e:profuturopasivosAnfexi_Pasivos_V2src --include=*.sql -n)"
+      "Bash(grep -r \"UsuarioNombre\\\\|NombreUsuario\\\\|UserLogin\\\\|UserName\\\\|UsuLogin\" e:profuturopasivosAnfexi_Pasivos_V2src --include=*.sql -n)",
+      "Bash(find e:profuturopasivosAnfexi_Pasivos_V2 -type f \\\\\\(-name *.sh -o -name *.ps1 -o -name *.bat -o -name docker* -o -name *deploy* \\\\\\))",
+      "Bash(find e:profuturopasivosAnfexi_Pasivos_V2 -maxdepth 3 -type f -name *.sln)",
+      "Bash(find e:profuturopasivosAnfexi_Pasivos_V2 -maxdepth 5 -type f \\\\\\(-name web.config -o -name *.pubxml -o -name *.config \\\\\\))",
+      "Bash(find e:profuturopasivosAnfexi_Pasivos_V2 -name *.pubxml -o -name launchSettings.json)",
+      "Bash(find e:profuturopasivosAnfexi_Pasivos_V2 -name *.yml -o -name *.yaml)"
     ]
   }
 }

@@ -55,11 +55,14 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddAuthorization();
 
 // Configuración de CORS
+// Los orígenes adicionales de producción se pueden agregar vía appsettings.Production.json:
+//   "AllowedOrigins": ["http://dev.anfexi.com", "https://dev.anfexi.com"]
 builder.Services.AddCors(options =>
 {
     var allowedOrigins = builder.Environment.IsDevelopment()
         ? new[] { "http://localhost:4200" }
-        : new[] { "http://localhost:4200", "https://dev.anfexi.com" };
+        : builder.Configuration.GetSection("AllowedOrigins").Get<string[]>()
+          ?? ["http://dev.anfexi.com", "https://dev.anfexi.com"];
 
     options.AddPolicy("AllowAngular",
         policy =>
@@ -104,25 +107,28 @@ app.UseCors("AllowAngular");
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseSwagger();
-app.UseSwaggerUI(c =>
+// Swagger y Scalar solo en desarrollo — no exponer en producción
+if (app.Environment.IsDevelopment())
 {
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", "API Pasivos V1");
-});
-app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "API Pasivos V1");
+    });
+    app.MapOpenApi();
 
-app.MapScalarApiReference(options =>
-{
-    options.WithTitle("API Services Catalogos");
-    options.WithTheme(ScalarTheme.DeepSpace);
-    options.WithDefaultHttpClient(ScalarTarget.JavaScript, ScalarClient.AsyncHttp);
-    options.HideSearch = true;// Habilita/Deshabilita el buscador (Ctrl+K)
-    options.ShowSidebar = true; // Muestra u oculta la barra lateral
-    options.DarkMode = false;
-});
+    app.MapScalarApiReference(options =>
+    {
+        options.WithTitle("API Services Catalogos");
+        options.WithTheme(ScalarTheme.DeepSpace);
+        options.WithDefaultHttpClient(ScalarTarget.JavaScript, ScalarClient.AsyncHttp);
+        options.HideSearch = true;
+        options.ShowSidebar = true;
+        options.DarkMode = false;
+    });
 
-
-app.Map("/", () => Results.Redirect("/scalar"));
+    app.Map("/", () => Results.Redirect("/scalar"));
+}
 
 
 #if (UseAspire)

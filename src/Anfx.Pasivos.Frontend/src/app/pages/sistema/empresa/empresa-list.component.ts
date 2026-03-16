@@ -1,263 +1,121 @@
 import { Component, OnInit, inject, signal, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 import { EmpresaService } from '../../../services/sistema/empresa.service';
 import { UtilsService } from '../../../services/utils.service';
 import { EmpresaFormComponent } from './empresa-form.component';
-import { EmpresaDto, EmpresaPageQueryDto } from '../../../../types/sistema/empresa.dto';
+import { EmpresaDto } from '../../../../types/sistema/empresa.dto';
 import { ConfirmModalComponent } from '../../../shared/components/confirm-modal/confirm-modal.component';
+import { GenericTableComponent } from '../../../shared/components/generic-table/generic-table.component';
+import { TableColumn, TableAction, TableActionEvent, TableSortEvent, SortDirection } from '../../../shared/components/generic-table/table-column.model';
 
 @Component({
   selector: 'app-empresa-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, EmpresaFormComponent, ConfirmModalComponent],
+  imports: [CommonModule, EmpresaFormComponent, ConfirmModalComponent, GenericTableComponent],
   templateUrl: './empresa-list.component.html'
 })
 export class EmpresaListComponent implements OnInit {
-  private empresaService = inject(EmpresaService);
-  private utilsService = inject(UtilsService);
-
-  items = signal<EmpresaDto[]>([]);
-  loading = signal<boolean>(false);
-  query: EmpresaPageQueryDto = { q: '', page: 1, size: 10 };
-
-  totalCount = signal<number>(0);
-  totalPages = signal<number>(0);
-  currentPage = signal<number>(1);
-  pageSize = signal<number>(10);
-
-  empresaSeleccionada: Partial<EmpresaDto> = {
-    id: 0,
-    sEmpresa: '',
-    rFC: '',
-    razonSocial: '',
-    telefono: '',
-    representante: '',
-    avisosEstadodeCuenta: '',
-    advertenciasEstadodeCuenta: '',
-    aclaracionesEstadodeCuenta: '',
-    usaDesembolso: false,
-    pasivo: false,
-    tipoDireccionId: 0,
-    calle: '',
-    numExterior: '',
-    numInterior: ''
-  };
   @ViewChild('confirmModal') confirmModal!: ConfirmModalComponent;
 
-  mostrandoFormulario = signal<boolean>(false);
+  private readonly empresaService = inject(EmpresaService);
+  private readonly utilsService   = inject(UtilsService);
+
+  items       = signal<EmpresaDto[]>([]);
+  loading     = signal(false);
+  totalCount  = signal(0);
+  totalPages  = signal(0);
+  currentPage = signal(1);
+  pageSize    = signal(10);
+
+  sortColumn:    string | null = null;
+  sortDirection: SortDirection = 'asc';
+  searchValue = '';
+
+  mostrandoFormulario = signal(false);
+  empresaSeleccionada: Partial<EmpresaDto> = this.emptyEmpresa();
   empresaAEliminar: EmpresaDto | null = null;
 
-  // Exponer Math para usar en el template
-  Math = Math;
+  private q    = '';
+  private page = 1;
 
-  ngOnInit(): void {
+  columns: TableColumn[] = [
+    { key: 'id',            header: 'ID',             type: 'number', sortable: true  },
+    { key: 'sEmpresa',      header: 'Empresa',         type: 'text',   sortable: true  },
+    { key: 'rFC',           header: 'RFC',             type: 'text',   sortable: false },
+    { key: 'razonSocial',   header: 'Razón Social',    type: 'text',   sortable: true  },
+    { key: 'representante', header: 'Representante',   type: 'text',   sortable: false },
+  ];
+
+  actions: TableAction[] = [
+    { id: 'edit',   label: 'Editar',   icon: 'fa-solid fa-pen-clip',  btnClass: 'btn-action-edit'   },
+    { id: 'delete', label: 'Eliminar', icon: 'fa-solid fa-trash-can', btnClass: 'btn-action-delete' },
+  ];
+
+  ngOnInit() {
     this.load();
   }
 
-  onSearch() {
-    this.query.page = 1;
+  onSearch(value: string) {
+    this.q           = value;
+    this.searchValue = value;
+    this.page        = 1;
+    this.load();
+  }
+
+  onSort(event: TableSortEvent) {
+    this.sortColumn    = event.column;
+    this.sortDirection = event.direction;
+    this.page = 1;
     this.load();
   }
 
   nextPage() {
-    if (this.currentPage() < this.totalPages()) {
-      this.query.page = (this.query.page || 1) + 1;
-      this.load();
-    }
+    if (this.currentPage() < this.totalPages()) { this.page++; this.load(); }
   }
 
   prevPage() {
-    if ((this.query.page || 1) > 1) {
-      this.query.page = (this.query.page || 1) - 1;
-      this.load();
-    }
+    if (this.page > 1) { this.page--; this.load(); }
   }
 
-  private load() {
-    this.loading.set(true);
-    this.empresaService.getAll(this.query).subscribe({
-      next: response => {
-        if (response.success) {
-          this.items.set(response.data.results);
-          this.currentPage.set(response.data.currentPage);
-          this.pageSize.set(response.data.pageSize);
-          this.totalCount.set(response.data.totalCount);
-          this.totalPages.set(response.data.totalPages);
-        } else {
-          this.items.set([]);
-          this.currentPage.set(this.query.page || 1);
-          this.pageSize.set(this.query.size || 10);
-          this.totalCount.set(0);
-          this.totalPages.set(0);
-
-          if (response.errors && response.errors.length > 0) {
-            this.utilsService.showNotification('Error', response.errors[0], 'error');
-          } else if (response.message) {
-            this.utilsService.showNotification('Error', response.message, 'error');
-          } else {
-            this.utilsService.showNotification('Error', 'Error al cargar empresas', 'error');
-          }
-        }
-        this.loading.set(false);
-      },
-      error: (httpError) => {
-        this.items.set([]);
-        this.currentPage.set(this.query.page || 1);
-        this.pageSize.set(this.query.size || 10);
-        this.totalCount.set(0);
-        this.totalPages.set(0);
-        this.loading.set(false);
-        this.utilsService.showNotification('Error', 'Error de conexión al cargar empresas', 'error');
-        console.error('Error HTTP:', httpError);
-      }
-    });
-  }
-
-  mostrarFormularioNuevo() {
-    this.empresaSeleccionada = {
-      id: 0,
-      sEmpresa: '',
-      rFC: '',
-      razonSocial: '',
-      telefono: '',
-      representante: '',
-      avisosEstadodeCuenta: '',
-      advertenciasEstadodeCuenta: '',
-      aclaracionesEstadodeCuenta: '',
-      usaDesembolso: false,
-      pasivo: false,
-      tipoDireccionId: undefined,
-      calle: '',
-      numExterior: '',
-      numInterior: ''
-    };
+  onNuevo() {
+    this.empresaSeleccionada = this.emptyEmpresa();
     this.mostrandoFormulario.set(true);
   }
 
-  editarEmpresa(id: number) {
-    this.empresaService.getById(id).subscribe({
-      next: (response) => {
-        if (response.success) {
-          this.empresaSeleccionada = { ...response.data };
-          this.mostrandoFormulario.set(true);
-        } else {
-          if (response.errors && response.errors.length > 0) {
-            this.utilsService.showNotification('Error', response.errors[0], 'error');
-          } else if (response.message) {
-            this.utilsService.showNotification('Error', response.message, 'error');
-          } else {
-            this.utilsService.showNotification('Error', 'Error al cargar la empresa', 'error');
-          }
-        }
-      },
-      error: (httpError) => {
-        this.utilsService.showNotification('Error', 'Error de conexión al cargar la empresa', 'error');
-        console.error('Error HTTP:', httpError);
-      }
-    });
+  onAction(event: TableActionEvent<EmpresaDto>) {
+    if (event.action === 'edit')   this.editarEmpresa(event.row.id);
+    if (event.action === 'delete') this.delete(event.row.id);
   }
 
   onGuardarEmpresa(empresa: any) {
-    if (this.empresaSeleccionada && this.empresaSeleccionada.id && this.empresaSeleccionada.id > 0) {
-      this.empresaService.update(this.empresaSeleccionada.id, empresa).subscribe({
-        next: (response) => {
-          if (response.success) {
-            this.load();
-            this.mostrandoFormulario.set(false);
-            this.utilsService.showNotification('Éxito', 'Empresa actualizada correctamente', 'success');
-          } else {
-            if (response.errors && response.errors.length > 0) {
-              this.utilsService.showNotification('Error', response.errors[0], 'error');
-            } else if (response.message) {
-              this.utilsService.showNotification('Error', response.message, 'error');
-            } else {
-              this.utilsService.showNotification('Error', 'Error al actualizar la empresa', 'error');
-            }
-          }
-        },
-        error: (httpError) => {
-          this.utilsService.showNotification('Error', 'Error de conexión al actualizar la empresa', 'error');
-          console.error('Error HTTP:', httpError);
+    const isUpdate = this.empresaSeleccionada?.id && this.empresaSeleccionada.id > 0;
+    const request$ = isUpdate
+      ? this.empresaService.update(this.empresaSeleccionada.id!, empresa)
+      : this.empresaService.create(empresa);
+
+    request$.subscribe({
+      next: (response) => {
+        if (response.success) {
+          this.load();
+          this.mostrandoFormulario.set(false);
+          const msg = isUpdate ? 'Empresa actualizada correctamente' : 'Empresa creada correctamente';
+          this.utilsService.showNotification('Éxito', msg, 'success');
+        } else {
+          const msg = response.errors?.[0] ?? response.message ?? 'Error al guardar la empresa';
+          this.utilsService.showNotification('Error', msg, 'error');
         }
-      });
-    } else {
-      this.empresaService.create(empresa).subscribe({
-        next: (response) => {
-          if (response.success) {
-            this.load();
-            this.mostrandoFormulario.set(false);
-            this.utilsService.showNotification('Éxito', 'Empresa creada correctamente', 'success');
-          } else {
-            if (response.errors && response.errors.length > 0) {
-              this.utilsService.showNotification('Error', response.errors[0], 'error');
-            } else if (response.message) {
-              this.utilsService.showNotification('Error', response.message, 'error');
-            } else {
-              this.utilsService.showNotification('Error', 'Error al crear la empresa', 'error');
-            }
-          }
-        },
-        error: (httpError) => {
-          this.utilsService.showNotification('Error', 'Error de conexión al crear la empresa', 'error');
-          console.error('Error HTTP:', httpError);
-        }
-      });
-    }
+      },
+      error: () => this.utilsService.showNotification('Error', 'Error de conexión al guardar la empresa', 'error')
+    });
   }
 
   onCancelarEdicion() {
-    this.mostrandoFormulario.set(false);
-    this.empresaSeleccionada = {
-      id: 0,
-      sEmpresa: '',
-      rFC: '',
-      razonSocial: '',
-      telefono: '',
-      representante: '',
-      avisosEstadodeCuenta: '',
-      advertenciasEstadodeCuenta: '',
-      aclaracionesEstadodeCuenta: '',
-      usaDesembolso: false,
-      pasivo: false,
-      tipoDireccionId: 0,
-      calle: '',
-      numExterior: '',
-      numInterior: ''
-    };
+    this.volverALista();
   }
 
   volverALista() {
     this.mostrandoFormulario.set(false);
-    this.empresaSeleccionada = {
-      id: 0,
-      sEmpresa: '',
-      rFC: '',
-      razonSocial: '',
-      telefono: '',
-      representante: '',
-      avisosEstadodeCuenta: '',
-      advertenciasEstadodeCuenta: '',
-      aclaracionesEstadodeCuenta: '',
-      usaDesembolso: false,
-      pasivo: false,
-      tipoDireccionId: 0,
-      calle: '',
-      numExterior: '',
-      numInterior: ''
-    };
-  }
-
-  edit(id: number) {
-    this.editarEmpresa(id);
-  }
-
-  delete(id: number) {
-    const empresa = this.items().find(e => e.id === id);
-    if (empresa) {
-      this.empresaAEliminar = empresa;
-      this.confirmModal.show();
-    }
+    this.empresaSeleccionada = this.emptyEmpresa();
   }
 
   confirmarEliminacion() {
@@ -280,5 +138,71 @@ export class EmpresaListComponent implements OnInit {
 
   cancelarEliminacion() {
     this.empresaAEliminar = null;
+  }
+
+  private editarEmpresa(id: number) {
+    this.empresaService.getById(id).subscribe({
+      next: (response) => {
+        if (response.success) {
+          this.empresaSeleccionada = { ...response.data };
+          this.mostrandoFormulario.set(true);
+        } else {
+          const msg = response.errors?.[0] ?? response.message ?? 'Error al cargar la empresa';
+          this.utilsService.showNotification('Error', msg, 'error');
+        }
+      },
+      error: () => this.utilsService.showNotification('Error', 'Error de conexión al cargar la empresa', 'error')
+    });
+  }
+
+  private delete(id: number) {
+    const empresa = this.items().find(e => e.id === id);
+    if (!empresa) return;
+    this.empresaAEliminar = empresa;
+    this.confirmModal.show();
+  }
+
+  private load() {
+    this.loading.set(true);
+    this.empresaService.getAll({ q: this.q, page: this.page, size: this.pageSize() }).subscribe({
+      next: (response) => {
+        if (response.success) {
+          const size  = response.data.pageSize  ?? 10;
+          const total = response.data.totalCount ?? 0;
+          this.items.set(response.data.results ?? []);
+          this.currentPage.set(response.data.currentPage ?? this.page);
+          this.pageSize.set(size);
+          this.totalCount.set(total);
+          this.totalPages.set(total > 0 ? Math.ceil(total / size) : 0);
+        } else {
+          this.resetPagination();
+          const msg = response.errors?.[0] ?? response.message ?? 'Error al cargar empresas';
+          this.utilsService.showNotification('Error', msg, 'error');
+        }
+        this.loading.set(false);
+      },
+      error: () => {
+        this.resetPagination();
+        this.loading.set(false);
+        this.utilsService.showNotification('Error', 'Error de conexión al cargar empresas', 'error');
+      }
+    });
+  }
+
+  private resetPagination() {
+    this.items.set([]);
+    this.currentPage.set(this.page);
+    this.pageSize.set(10);
+    this.totalCount.set(0);
+    this.totalPages.set(0);
+  }
+
+  private emptyEmpresa(): Partial<EmpresaDto> {
+    return {
+      id: 0, sEmpresa: '', rFC: '', razonSocial: '', telefono: '',
+      representante: '', avisosEstadodeCuenta: '', advertenciasEstadodeCuenta: '',
+      aclaracionesEstadodeCuenta: '', usaDesembolso: false, pasivo: false,
+      tipoDireccionId: 0, calle: '', numExterior: '', numInterior: ''
+    };
   }
 }

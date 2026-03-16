@@ -9,22 +9,30 @@
   display: block;
 }
 
+/* Links de nivel 1 en flex para que icono + texto + flecha se alineen bien */
+.sidebar-nav > ul > li > a {
+  display: flex !important;
+  align-items: center !important;
+}
+
 /* =============================================
    SIDEBAR - Iconos menú principal (nivel 1)
    ============================================= */
 .sidebar-nav > ul > li > a > i {
   display: inline-block;
-  width: 32px;
-  font-size: 1.2rem !important;
+  width: 28px;
+  font-size: 1.15rem !important;
   text-align: center;
   vertical-align: middle;
-  color: #5dade2 !important;          /* Azul claro */
-  transition: color 0.2s ease;
+  margin-right: 10px;               /* Gap entre icono y etiqueta */
+  color: #5dade2 !important;
+  transition: color 0.2s ease, font-size 0.2s ease;
+  flex-shrink: 0;
 }
 
 .sidebar-nav > ul > li > a:hover > i,
 .sidebar-nav > ul > li > a.active > i {
-  color: #03a9f3 !important;          /* Azul vivo al hover/activo */
+  color: #03a9f3 !important;
 }
 
 /* =============================================
@@ -32,23 +40,52 @@
    ============================================= */
 .sidebar-nav ul ul li a i {
   display: inline-block;
-  width: 20px;
+  width: 18px;
   font-size: 0.78rem !important;
   text-align: center;
   vertical-align: middle;
-  color: #82e0aa !important;          /* Verde menta suave */
+  color: #82e0aa !important;
   transition: color 0.2s ease;
-  margin-right: 5px;
+  margin-right: 8px;
+  flex-shrink: 0;
 }
 
 .sidebar-nav ul ul li a:hover i {
-  color: #58d68d !important;          /* Verde más vivo al hover */
+  color: #58d68d !important;
 }
 
-/* Padding extra en submenús para alinear con el nivel 1 */
+/* Submenú: reducir indent — alinear icono con inicio del label del padre */
 .sidebar-nav ul ul li a {
-  padding-left: 20px !important;
+  padding-left: 10px !important;
   font-size: 13px !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+/* =============================================
+   SIDEBAR - Mini-sidebar (colapsado)
+   Cuando el body tiene la clase mini-sidebar,
+   el sidebar muestra solo iconos. Se agrandan
+   y centran para mejor legibilidad.
+   ============================================= */
+.mini-sidebar .sidebar-nav > ul > li > a {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 12px 0 !important;
+}
+
+.mini-sidebar .sidebar-nav > ul > li > a > i {
+  font-size: 1.5rem !important;      /* Icono más grande al colapsar */
+  width: 100% !important;
+  margin-right: 0 !important;        /* Sin gap cuando no hay texto */
+  text-align: center !important;
+}
+
+/* Al expandir sidebar, vuelve al tamaño normal */
+.mini-sidebar:hover .sidebar-nav > ul > li > a > i,
+.sidebar-nav > ul > li > a > i {
+  transition: font-size 0.2s ease, margin-right 0.2s ease;
 }
 
 .table-list > thead > tr > th:first-child,
@@ -177,4 +214,32 @@
 .border-warning {
     border-style: solid !important;
     border-width: 1px !important;
+}
+
+/* =============================================
+   FOOTER
+   ============================================= */
+.footer-inner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.footer-logo {
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.footer-text {
+  flex: 1 1 auto;
+  font-size: 0.82rem;
+  color: inherit;
+}
+
+.footer-version {
+  font-size: 0.75rem;
+  opacity: 0.55;
+  font-family: monospace;
+  white-space: nowrap;
 }

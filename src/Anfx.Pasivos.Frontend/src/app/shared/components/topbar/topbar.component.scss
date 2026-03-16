@@ -1,0 +1,7 @@
+// Los estilos de .topbar, .navbar, etc. viven en el tema externo (style.min.css)
+// y en admin-layout.component.scss (ViewEncapsulation.None).
+// Este archivo contiene únicamente overrides propios del componente.
+
+:host {
+  display: block;
+}
