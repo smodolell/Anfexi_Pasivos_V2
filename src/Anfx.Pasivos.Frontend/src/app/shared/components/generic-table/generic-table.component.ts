@@ -29,10 +29,19 @@ export class GenericTableComponent {
   @Input() totalPages = 1;
   @Input() pageSize = 10;
 
+  /** Muestra selector de filas por página (10 / 25 / 50 / 100) */
+  @Input() showPageSizeSelector = false;
+
   // ── Búsqueda ────────────────────────────────────────────────
   @Input() searchable = true;
   @Input() searchPlaceholder = 'Buscar...';
   @Input() searchValue = '';
+
+  // ── Empty state ──────────────────────────────────────────────
+  /** Mensaje cuando la tabla no tiene datos (sin búsqueda activa) */
+  @Input() emptyMessage = 'No hay registros disponibles';
+  /** Ícono FontAwesome para el empty state (sin búsqueda activa) */
+  @Input() emptyIcon = 'fa-solid fa-box-open';
 
   // ── Ordenamiento server-side ─────────────────────────────────
   @Input() sortColumn: string | null = null;
@@ -51,19 +60,21 @@ export class GenericTableComponent {
   }
 
   // ── Eventos ──────────────────────────────────────────────────
-  @Output() actionCalled = new EventEmitter<TableActionEvent>();
-  @Output() pageNext = new EventEmitter<void>();
-  @Output() pagePrev = new EventEmitter<void>();
-  @Output() searchChanged = new EventEmitter<string>();
-  @Output() sortChanged = new EventEmitter<TableSortEvent>();
-  @Output() newClicked = new EventEmitter<void>();
-  @Output() exportClicked = new EventEmitter<void>();
+  @Output() actionCalled    = new EventEmitter<TableActionEvent>();
+  @Output() pageNext        = new EventEmitter<void>();
+  @Output() pagePrev        = new EventEmitter<void>();
+  @Output() searchChanged   = new EventEmitter<string>();
+  @Output() clearSearch     = new EventEmitter<void>();
+  @Output() sortChanged     = new EventEmitter<TableSortEvent>();
+  @Output() newClicked      = new EventEmitter<void>();
+  @Output() exportClicked   = new EventEmitter<void>();
+  @Output() pageSizeChanged = new EventEmitter<number>();
+
+  readonly pageSizeOptions = [10, 25, 50, 100];
 
   get visibleColumns(): TableColumn[] {
     return this.columns.filter(c => c.visible !== false);
   }
-
-  get Math() { return Math; }
 
   get startRecord(): number {
     return this.totalCount === 0 ? 0 : (this.currentPage - 1) * this.pageSize + 1;
@@ -71,6 +82,10 @@ export class GenericTableComponent {
 
   get endRecord(): number {
     return Math.min(this.currentPage * this.pageSize, this.totalCount);
+  }
+
+  get hasActiveSearch(): boolean {
+    return !!this.searchValue?.trim();
   }
 
   onAction(actionId: string, row: any) {
@@ -81,11 +96,21 @@ export class GenericTableComponent {
     this.searchChanged.emit(value);
   }
 
+  onClearSearch() {
+    this.clearSearch.emit();
+    this.searchChanged.emit('');
+  }
+
   onSort(col: TableColumn) {
     if (!col.sortable) return;
     const direction: SortDirection =
       this.sortColumn === col.key && this.sortDirection === 'asc' ? 'desc' : 'asc';
     this.sortChanged.emit({ column: col.key, direction });
+  }
+
+  onPageSizeChange(event: Event) {
+    const value = Number((event.target as HTMLSelectElement).value);
+    this.pageSizeChanged.emit(value);
   }
 
   /**

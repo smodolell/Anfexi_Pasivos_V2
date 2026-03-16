@@ -25,8 +25,8 @@ export const AuthInterceptor: HttpInterceptorFn = (request, next) => {
 
       if (error.status === 401) {
         // Token expirado o inválido → forzar nuevo login
+        // logout() ya navega a /auth/login internamente
         authService.logout();
-        router.navigate(['/auth/login']);
       } else if (error.status === 403) {
         router.navigate(['/unauthorized']);
       }
