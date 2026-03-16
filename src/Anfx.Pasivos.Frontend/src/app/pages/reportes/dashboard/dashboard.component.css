@@ -1,28 +1,38 @@
-/* Dashboard Reportes Styles */
-.card-header h5 {
-    font-weight: 600;
-}
-
+/* ── Tabla ─────────────────────────────────────────────────── */
 .table th {
-    font-weight: 600;
-    text-transform: uppercase;
-    font-size: 0.8rem;
-    letter-spacing: 0.05em;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  letter-spacing: 0.05em;
 }
 
+/* Fila de totales en el pie de tabla */
+.table-totals tr {
+  background-color: #f0f6ff;
+  border-top: 2px solid #c5dcf7;
+}
+
+.table-totals td {
+  font-size: 0.85rem;
+  padding: 8px 16px;
+  color: #1e3a8a;
+}
+
+/* ── Highcharts ─────────────────────────────────────────────── */
 highcharts-chart {
-    display: block;
-    width: 100%;
+  display: block;
+  width: 100%;
 }
 
+/* ── Overlay de carga ───────────────────────────────────────── */
 .chart-loading-overlay {
-    position: absolute;
-    inset: 0;
-    background: rgba(255, 255, 255, 0.82);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    z-index: 10;
-    border-radius: inherit;
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.82);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  border-radius: inherit;
 }

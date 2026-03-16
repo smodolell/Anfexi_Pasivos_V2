@@ -1,98 +1,92 @@
 <div class="container-fluid mt-4">
 
-  <!-- FILTROS -->
+  <!-- ── FILTROS ──────────────────────────────────────────────── -->
   <div class="card mb-4 shadow-sm">
-    <div class="card-header bg-primary text-white">
-      <h5 class="mb-0">Filtros de Dashboard</h5>
+    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+      <h5 class="mb-0"><i class="fa-solid fa-filter me-2"></i>Filtros</h5>
+      <button class="btn btn-sm btn-outline-light" (click)="limpiarFiltros()" [disabled]="isBusy()">
+        <i class="fa-solid fa-xmark me-1"></i> Limpiar
+      </button>
     </div>
     <div class="card-body">
       <div class="row g-3">
+
         <div class="col-md-3">
-          <label class="form-label">Fondeador</label>
-          <select
-            class="form-select"
+          <label class="form-label" for="sel-fondeador">Fondeador</label>
+          <select id="sel-fondeador" class="form-select"
             [ngModel]="selectedFondeador()"
             (ngModelChange)="selectedFondeador.set($event)"
-            [disabled]="isLoading()"
-          >
-            <option [value]="undefined">[Seleccione]</option>
+            [disabled]="isBusy()">
+            <option [value]="undefined">— Todos —</option>
             @for (item of fondeadores(); track item.value) {
               <option [value]="item.value">{{ item.text }}</option>
             }
           </select>
         </div>
+
         <div class="col-md-3">
-          <label class="form-label">Contrato Pasivo</label>
-          <select
-            class="form-select"
+          <label class="form-label" for="sel-contrato-pasivo">Contrato Pasivo</label>
+          <select id="sel-contrato-pasivo" class="form-select"
             [ngModel]="selectedContratoPasivo()"
             (ngModelChange)="selectedContratoPasivo.set($event)"
-            [disabled]="isLoading()"
-          >
-            <option [value]="undefined">[Seleccione]</option>
+            [disabled]="isBusy() || !selectedFondeador()">
+            <option [value]="undefined">— Todos —</option>
             @for (item of contratosPasivos(); track item.value) {
               <option [value]="item.value">{{ item.text }}</option>
             }
           </select>
+          @if (!selectedFondeador()) {
+            <small class="text-muted">Seleccione un fondeador primero</small>
+          }
         </div>
+
         <div class="col-md-3">
-          <label class="form-label">Contrato Activo</label>
-          <select
-            class="form-select"
+          <label class="form-label" for="sel-contrato-activo">Contrato Activo</label>
+          <select id="sel-contrato-activo" class="form-select"
             [ngModel]="selectedContratoActivo()"
             (ngModelChange)="selectedContratoActivo.set($event)"
-            [disabled]="isLoading()"
-          >
-            <option [value]="undefined">[Seleccione]</option>
+            [disabled]="isBusy() || !selectedContratoPasivo()">
+            <option [value]="undefined">— Todos —</option>
             @for (item of contratosActivos(); track item.value) {
               <option [value]="item.value">{{ item.text }}</option>
             }
           </select>
+          @if (!selectedContratoPasivo()) {
+            <small class="text-muted">Seleccione un contrato pasivo primero</small>
+          }
         </div>
+
         <div class="col-md-3">
-          <label class="form-label">Saldos</label>
-          <select
-            class="form-select"
+          <label class="form-label" for="sel-saldo">Saldos</label>
+          <select id="sel-saldo" class="form-select"
             [ngModel]="selectedSaldo()"
             (ngModelChange)="selectedSaldo.set($event)"
-            [disabled]="isLoading()"
-          >
-            <option [value]="undefined">[Seleccione]</option>
+            [disabled]="isBusy()">
+            <option [value]="undefined">— Todos —</option>
             @for (option of saldosOptions; track option.value) {
               <option [value]="option.value">{{ option.label }}</option>
             }
           </select>
         </div>
+
       </div>
 
       <div class="row mt-4">
         <div class="col-12 d-flex gap-2 align-items-center">
 
-          <button
-            class="btn btn-primary"
-            (click)="obtenerDetalle()"
-            [disabled]="isLoading()"
-          >
-            @if (isLoading() && showTables()) {
-              <span class="spinner-border spinner-border-sm me-2"></span>
-              Cargando...
+          <button class="btn btn-primary" (click)="obtenerDetalle()" [disabled]="isBusy()">
+            @if (isLoadingActiva() || isLoadingPasiva()) {
+              <span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>Cargando...
             } @else {
-              <i class="ti-list me-1"></i>
-              Obtener detalle
+              <i class="fa-solid fa-table-list me-1"></i> Obtener detalle
             }
           </button>
 
-          <button
-            class="btn btn-success"
-            (click)="mostrarGraficos()"
-            [disabled]="isLoading()"
-          >
-            @if (isLoading() && showCharts()) {
-              <span class="spinner-border spinner-border-sm me-2"></span>
-              Cargando...
+          <button class="btn btn-success" (click)="mostrarGraficos()" [disabled]="isBusy()">
+            @if (isLoading()) {
+              <span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>Cargando...
             } @else {
-              <i class="ti-bar-chart me-1"></i>
-              Gráficos
+              <i class="fa-solid fa-chart-column me-1"></i> Gráficos
             }
           </button>
 
@@ -101,18 +95,21 @@
     </div>
   </div>
 
-  <!-- TABLAS -->
+  <!-- ── TABLAS ─────────────────────────────────────────────── -->
   @if (showTables()) {
     <div class="row">
+
+      <!-- Cartera Activa -->
       <div class="col-md-6">
         <div class="card mb-4 shadow-sm">
-          <div class="card-header bg-info text-white">
-            <h5 class="mb-0">Contratos Cartera Activa Por Vencer</h5>
+          <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
+            <h5 class="mb-0"><i class="fa-solid fa-arrow-trend-up me-2"></i>Cartera Activa Por Vencer</h5>
+            <span class="badge bg-white text-info">{{ totalActiva() }} registros</span>
           </div>
           <div class="card-body p-0" style="position: relative; min-height: 120px;">
-            @if (isLoading()) {
+            @if (isLoadingActiva()) {
               <div class="chart-loading-overlay">
-                <div class="spinner-border text-primary" role="status"></div>
+                <div class="spinner-border text-primary" aria-hidden="true"></div>
               </div>
             }
             <div class="table-responsive">
@@ -121,8 +118,8 @@
                   <tr>
                     <th>Contrato</th>
                     <th>Vencimiento</th>
-                    <th>Capital</th>
-                    <th>Interés</th>
+                    <th class="text-end">Capital</th>
+                    <th class="text-end">Interés</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -130,32 +127,63 @@
                     <tr>
                       <td>{{ item.contrato }}</td>
                       <td>{{ item.fecVencimiento | date:'dd/MM/yyyy' }}</td>
-                      <td>{{ item.capital | currency }}</td>
-                      <td>{{ item.interes | currency }}</td>
+                      <td class="text-end">{{ item.capital | currency:'MXN':'symbol':'1.2-2' }}</td>
+                      <td class="text-end">{{ item.interes | currency:'MXN':'symbol':'1.2-2' }}</td>
                     </tr>
                   } @empty {
-                    @if (!isLoading()) {
+                    @if (!isLoadingActiva()) {
                       <tr>
-                        <td colspan="4" class="text-center py-4 text-muted">No se encontraron datos</td>
+                        <td colspan="4" class="text-center py-4 text-muted">
+                          <i class="fa-solid fa-inbox fa-2x d-block mb-2"></i>
+                          No se encontraron datos
+                        </td>
                       </tr>
                     }
                   }
                 </tbody>
+                @if (carteraActiva().length > 0) {
+                  <tfoot class="table-totals">
+                    <tr>
+                      <td colspan="2"><strong>Subtotal página</strong></td>
+                      <td class="text-end"><strong>{{ sumCapitalActiva() | currency:'MXN':'symbol':'1.2-2' }}</strong></td>
+                      <td class="text-end"><strong>{{ sumInteresActiva() | currency:'MXN':'symbol':'1.2-2' }}</strong></td>
+                    </tr>
+                  </tfoot>
+                }
               </table>
             </div>
           </div>
+          @if (totalPagesActiva() > 1) {
+            <div class="card-footer d-flex justify-content-between align-items-center py-2">
+              <small class="text-muted">Página {{ pageActiva }} de {{ totalPagesActiva() }}</small>
+              <div class="btn-group btn-group-sm">
+                <button class="btn btn-outline-secondary"
+                  [disabled]="pageActiva <= 1 || isLoadingActiva()"
+                  (click)="prevPageActiva()">
+                  <i class="fa-solid fa-chevron-left"></i>
+                </button>
+                <button class="btn btn-outline-secondary"
+                  [disabled]="pageActiva >= totalPagesActiva() || isLoadingActiva()"
+                  (click)="nextPageActiva()">
+                  <i class="fa-solid fa-chevron-right"></i>
+                </button>
+              </div>
+            </div>
+          }
         </div>
       </div>
 
+      <!-- Cartera Pasiva -->
       <div class="col-md-6">
         <div class="card mb-4 shadow-sm">
-          <div class="card-header bg-warning text-dark">
-            <h5 class="mb-0">Contratos Cartera Pasiva Por Vencer</h5>
+          <div class="card-header bg-warning text-dark d-flex justify-content-between align-items-center">
+            <h5 class="mb-0"><i class="fa-solid fa-arrow-trend-down me-2"></i>Cartera Pasiva Por Vencer</h5>
+            <span class="badge bg-white text-warning">{{ totalPasiva() }} registros</span>
           </div>
           <div class="card-body p-0" style="position: relative; min-height: 120px;">
-            @if (isLoading()) {
+            @if (isLoadingPasiva()) {
               <div class="chart-loading-overlay">
-                <div class="spinner-border text-primary" role="status"></div>
+                <div class="spinner-border text-warning" aria-hidden="true"></div>
               </div>
             }
             <div class="table-responsive">
@@ -164,8 +192,8 @@
                   <tr>
                     <th>Contrato</th>
                     <th>Vencimiento</th>
-                    <th>Capital</th>
-                    <th>Interés</th>
+                    <th class="text-end">Capital</th>
+                    <th class="text-end">Interés</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -173,18 +201,76 @@
                     <tr>
                       <td>{{ item.contrato }}</td>
                       <td>{{ item.fecVencimiento | date:'dd/MM/yyyy' }}</td>
-                      <td>{{ item.capital | currency }}</td>
-                      <td>{{ item.interes | currency }}</td>
+                      <td class="text-end">{{ item.capital | currency:'MXN':'symbol':'1.2-2' }}</td>
+                      <td class="text-end">{{ item.interes | currency:'MXN':'symbol':'1.2-2' }}</td>
                     </tr>
                   } @empty {
-                    @if (!isLoading()) {
+                    @if (!isLoadingPasiva()) {
                       <tr>
-                        <td colspan="4" class="text-center py-4 text-muted">No se encontraron datos</td>
+                        <td colspan="4" class="text-center py-4 text-muted">
+                          <i class="fa-solid fa-inbox fa-2x d-block mb-2"></i>
+                          No se encontraron datos
+                        </td>
                       </tr>
                     }
                   }
                 </tbody>
+                @if (carteraPasiva().length > 0) {
+                  <tfoot class="table-totals">
+                    <tr>
+                      <td colspan="2"><strong>Subtotal página</strong></td>
+                      <td class="text-end"><strong>{{ sumCapitalPasiva() | currency:'MXN':'symbol':'1.2-2' }}</strong></td>
+                      <td class="text-end"><strong>{{ sumInteresPasiva() | currency:'MXN':'symbol':'1.2-2' }}</strong></td>
+                    </tr>
+                  </tfoot>
+                }
               </table>
+            </div>
+          </div>
+          @if (totalPagesPasiva() > 1) {
+            <div class="card-footer d-flex justify-content-between align-items-center py-2">
+              <small class="text-muted">Página {{ pagePasiva }} de {{ totalPagesPasiva() }}</small>
+              <div class="btn-group btn-group-sm">
+                <button class="btn btn-outline-secondary"
+                  [disabled]="pagePasiva <= 1 || isLoadingPasiva()"
+                  (click)="prevPagePasiva()">
+                  <i class="fa-solid fa-chevron-left"></i>
+                </button>
+                <button class="btn btn-outline-secondary"
+                  [disabled]="pagePasiva >= totalPagesPasiva() || isLoadingPasiva()"
+                  (click)="nextPagePasiva()">
+                  <i class="fa-solid fa-chevron-right"></i>
+                </button>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+
+    </div>
+  }
+
+  <!-- ── Skeleton mientras cargan gráficas ─────────────────── -->
+  @if (isLoading()) {
+    <div class="row">
+      @for (_ of [1,2,3,4]; track $index) {
+        <div class="col-md-6 mb-4">
+          <div class="card shadow-sm">
+            <div class="card-body d-flex align-items-center justify-content-center" style="min-height: 420px;">
+              <div class="text-center text-muted">
+                <div class="spinner-border text-primary mb-2" aria-hidden="true"></div>
+                <p class="small mb-0">Cargando gráfico...</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+      <div class="col-12 mb-4">
+        <div class="card shadow-sm">
+          <div class="card-body d-flex align-items-center justify-content-center" style="min-height: 420px;">
+            <div class="text-center text-muted">
+              <div class="spinner-border text-primary mb-2" aria-hidden="true"></div>
+              <p class="small mb-0">Cargando gráfico...</p>
             </div>
           </div>
         </div>
@@ -192,112 +278,66 @@
     </div>
   }
 
-  <!-- GRÁFICOS -->
+  <!-- ── GRÁFICOS ───────────────────────────────────────────── -->
   @if (showCharts()) {
     <div class="row">
 
+      <!-- Pie: Cartera Activa -->
       <div class="col-md-6 mb-4">
         <div class="card shadow-sm h-100">
-          <div class="card-header bg-white border-bottom py-2">
-            <h6 class="mb-0 text-muted">Cartera Activa</h6>
-          </div>
-          <div class="card-body" style="position: relative; min-height: 420px;">
-            @if (isLoading()) {
-              <div class="chart-loading-overlay">
-                <div class="spinner-border text-primary" role="status"></div>
-                <p class="mt-2 text-muted small">Cargando gráfico...</p>
-              </div>
-            }
+          <div class="card-body">
             <highcharts-chart
               [options]="pieChartActivaOptions"
-              style="width: 100%; height: 400px; display: block"
-            ></highcharts-chart>
+              style="width: 100%; height: 400px; display: block">
+            </highcharts-chart>
           </div>
         </div>
       </div>
 
+      <!-- Pie: Cartera Pasiva -->
       <div class="col-md-6 mb-4">
         <div class="card shadow-sm h-100">
-          <div class="card-header bg-white border-bottom py-2">
-            <h6 class="mb-0 text-muted">Cartera Pasiva</h6>
-          </div>
-          <div class="card-body" style="position: relative; min-height: 420px;">
-            @if (isLoading()) {
-              <div class="chart-loading-overlay">
-                <div class="spinner-border text-primary" role="status"></div>
-                <p class="mt-2 text-muted small">Cargando gráfico...</p>
-              </div>
-            }
+          <div class="card-body">
             <highcharts-chart
               [options]="pieChartPasivaOptions"
-              style="width: 100%; height: 400px; display: block"
-            ></highcharts-chart>
+              style="width: 100%; height: 400px; display: block">
+            </highcharts-chart>
           </div>
         </div>
       </div>
 
+      <!-- Barras: Evolución Activo -->
       <div class="col-md-6 mb-4">
         <div class="card shadow-sm h-100">
-          <div class="card-header bg-white border-bottom py-2">
-            <h6 class="mb-0 text-muted">Interés y Capital Activo</h6>
-          </div>
-          <div class="card-body" style="position: relative; min-height: 420px;">
-            @if (isLoading()) {
-              <div class="chart-loading-overlay">
-                <div class="spinner-border text-primary" role="status"></div>
-                <p class="mt-2 text-muted small">Cargando gráfico...</p>
-              </div>
-            }
+          <div class="card-body">
             <highcharts-chart
               [options]="barChartActivaOptions"
-              [update]="updateFlag"
-              (updateChange)="updateFlag = $event"
-              style="width: 100%; height: 400px; display: block"
-            ></highcharts-chart>
+              style="width: 100%; height: 400px; display: block">
+            </highcharts-chart>
           </div>
         </div>
       </div>
 
+      <!-- Barras: Evolución Pasivo -->
       <div class="col-md-6 mb-4">
         <div class="card shadow-sm h-100">
-          <div class="card-header bg-white border-bottom py-2">
-            <h6 class="mb-0 text-muted">Interés y Capital Pasivo</h6>
-          </div>
-          <div class="card-body" style="position: relative; min-height: 420px;">
-            @if (isLoading()) {
-              <div class="chart-loading-overlay">
-                <div class="spinner-border text-primary" role="status"></div>
-                <p class="mt-2 text-muted small">Cargando gráfico...</p>
-              </div>
-            }
+          <div class="card-body">
             <highcharts-chart
               [options]="barChartPasivaOptions"
-              [update]="updateFlag"
-              (updateChange)="updateFlag = $event"
-              style="width: 100%; height: 400px; display: block"
-            ></highcharts-chart>
+              style="width: 100%; height: 400px; display: block">
+            </highcharts-chart>
           </div>
         </div>
       </div>
 
+      <!-- Barras horizontales: Relación Activo vs Pasivo -->
       <div class="col-12 mb-4">
         <div class="card shadow-sm">
-          <div class="card-header bg-white border-bottom py-2">
-            <h6 class="mb-0 text-muted">Relación Activo vs Pasivo</h6>
-          </div>
-          <div class="card-body" style="position: relative; min-height: 420px;">
-            @if (isLoading()) {
-              <div class="chart-loading-overlay">
-                <div class="spinner-border text-primary" role="status"></div>
-                <p class="mt-2 text-muted small">Cargando gráfico...</p>
-              </div>
-            }
+          <div class="card-body">
             <highcharts-chart
               [options]="relationChartOptions"
-              [update]="updateFlag"
-              (updateChange)="updateFlag = $event"
-              style="width: 100%; height: 400px; display: block"
-            ></highcharts-chart>
+              style="width: 100%; height: 400px; display: block">
+            </highcharts-chart>
           </div>
         </div>
       </div>

@@ -1,5 +1,7 @@
-import { Component, OnInit, signal, effect, inject } from '@angular/core';
-import { forkJoin } from 'rxjs';
+import { Component, OnInit, inject, signal, computed, DestroyRef } from '@angular/core';
+import { of } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ReportesService } from '@api/services/reportes.service';
@@ -9,12 +11,10 @@ import { CarteraReporteDto } from '@api/models/carteraReporteDto';
 import { DashboardResponse } from '@api/models/dashboardResponse';
 import { HighchartsChartComponent } from 'highcharts-angular';
 import type { Options as HighchartsOptions } from 'highcharts';
-import { SelectItemDtoListApiResponseDto } from '@api/models/selectItemDtoListApiResponseDto';
-import { CarteraReporteDtoPagedResultDtoApiResponseDto } from '../../../../api/models/carteraReporteDtoPagedResultDtoApiResponseDto';
-import { DashboardResponseApiResponseDto } from '@api/models/dashboardResponseApiResponseDto';
 import { CarteraMensualDto } from '@api/models/carteraMensualDto';
 import { CarteraDto } from '@api/models/carteraDto';
 import { LayoutService } from 'src/app/services/layout.service';
+import { UtilsService } from 'src/app/services/utils.service';
 
 @Component({
   selector: 'app-dashboard-reportes',
@@ -24,9 +24,14 @@ import { LayoutService } from 'src/app/services/layout.service';
   styleUrl: './dashboard.component.css',
 })
 export class DashboardComponent implements OnInit {
-  private layoutService = inject(LayoutService);
-  // Select Lists
-  fondeadores = signal<SelectItemDto[]>([]);
+  private readonly layoutService      = inject(LayoutService);
+  private readonly reportesService    = inject(ReportesService);
+  private readonly selectListsService = inject(SelectListsService);
+  private readonly utilsService       = inject(UtilsService);
+  private readonly destroyRef         = inject(DestroyRef);
+
+  // ── Select Lists ─────────────────────────────────────────────
+  fondeadores      = signal<SelectItemDto[]>([]);
   contratosPasivos = signal<SelectItemDto[]>([]);
   contratosActivos = signal<SelectItemDto[]>([]);
   saldosOptions = [
@@ -34,231 +39,345 @@ export class DashboardComponent implements OnInit {
     { value: 2, label: 'Vencido' },
   ];
 
-  // Filters
-  selectedFondeador = signal<number | undefined>(undefined);
+  // ── Filtros ──────────────────────────────────────────────────
+  selectedFondeador      = signal<number | undefined>(undefined);
   selectedContratoPasivo = signal<number | undefined>(undefined);
   selectedContratoActivo = signal<number | undefined>(undefined);
-  selectedSaldo = signal<number | undefined>(undefined);
+  selectedSaldo          = signal<number | undefined>(undefined);
 
-  // Table Data
-  carteraActiva = signal<CarteraReporteDto[]>([]);
-  carteraPasiva = signal<CarteraReporteDto[]>([]);
-  isLoading = signal<boolean>(false);
+  // ── Estado ───────────────────────────────────────────────────
+  carteraActiva    = signal<CarteraReporteDto[]>([]);
+  carteraPasiva    = signal<CarteraReporteDto[]>([]);
+  isLoading        = signal(false);   // gráficas
+  isLoadingActiva  = signal(false);   // tabla activa
+  isLoadingPasiva  = signal(false);   // tabla pasiva
+  showTables       = signal(false);
+  showCharts       = signal(false);
 
-  // Pagination
-  pageActiva = 1;
+  readonly isBusy = computed(() =>
+    this.isLoading() || this.isLoadingActiva() || this.isLoadingPasiva()
+  );
+
+  // ── Paginación ───────────────────────────────────────────────
+  pageActiva     = 1;
   pageSizeActiva = 10;
-  totalActiva = 0;
+  totalActiva    = signal(0);
 
-  pagePasiva = 1;
+  pagePasiva     = 1;
   pageSizePasiva = 10;
-  totalPasiva = 0;
+  totalPasiva    = signal(0);
 
-  // Chart Options
-  pieChartActivaOptions: HighchartsOptions = {
-    chart: { type: 'pie' },
-    title: { text: 'Cartera Activa' },
-    series: [{ name: 'Monto', type: 'pie', data: [] }],
-  };
-  pieChartPasivaOptions: HighchartsOptions = {
-    chart: { type: 'pie' },
-    title: { text: 'Cartera Pasiva' },
-    series: [{ name: 'Monto', type: 'pie', data: [] }],
-  };
-  barChartActivaOptions: HighchartsOptions = {
-    chart: { type: 'column' },
-    title: { text: 'Interés y Capital Activo' },
-    series: [],
-  };
-  barChartPasivaOptions: HighchartsOptions = {
-    chart: { type: 'column' },
-    title: { text: 'Interés y Capital Pasivo' },
-    series: [],
-  };
-  relationChartOptions: HighchartsOptions = {
-    chart: { type: 'column' },
-    title: { text: 'Relación Activo vs Pasivo' },
-    series: [],
-  };
+  readonly totalPagesActiva = computed(() =>
+    Math.max(1, Math.ceil(this.totalActiva() / this.pageSizeActiva))
+  );
+  readonly totalPagesPasiva = computed(() =>
+    Math.max(1, Math.ceil(this.totalPasiva() / this.pageSizePasiva))
+  );
 
-  updateFlag = false;
+  // ── Totales de tabla (computed) ───────────────────────────────
+  readonly sumCapitalActiva = computed(() =>
+    this.carteraActiva().reduce((s, r) => s + (r.capital ?? 0), 0)
+  );
+  readonly sumInteresActiva = computed(() =>
+    this.carteraActiva().reduce((s, r) => s + (r.interes ?? 0), 0)
+  );
+  readonly sumCapitalPasiva = computed(() =>
+    this.carteraPasiva().reduce((s, r) => s + (r.capital ?? 0), 0)
+  );
+  readonly sumInteresPasiva = computed(() =>
+    this.carteraPasiva().reduce((s, r) => s + (r.interes ?? 0), 0)
+  );
 
-  showTables = signal(false);
-  showCharts = signal(false);
+  // ── Chart Options ─────────────────────────────────────────────
+  pieChartActivaOptions: HighchartsOptions = {};
+  pieChartPasivaOptions: HighchartsOptions = {};
+  barChartActivaOptions: HighchartsOptions = {};
+  barChartPasivaOptions: HighchartsOptions = {};
+  relationChartOptions:  HighchartsOptions = {};
 
-  constructor(
-    private reportesService: ReportesService,
-    private selectListsService: SelectListsService,
-  ) {
-    // Effect to reload dependent dropdowns
-    effect(() => {
-      const fondeadorId = this.selectedFondeador();
-      if (fondeadorId) {
-        this.loadContratosPasivos(fondeadorId);
-      } else {
-        this.contratosPasivos.set([]);
+
+  constructor() {
+    // Fondeador → contratos pasivos (switchMap cancela request anterior)
+    toObservable(this.selectedFondeador).pipe(
+      takeUntilDestroyed(this.destroyRef),
+      switchMap(id => {
         this.selectedContratoPasivo.set(undefined);
-      }
+        this.contratosPasivos.set([]);
+        if (!id) return of(null);
+        return this.selectListsService.getContratosPasivosPorFondeador(id);
+      })
+    ).subscribe(res => {
+      if (res?.data) this.contratosPasivos.set(res.data);
     });
 
-    effect(() => {
-      const pasivoId = this.selectedContratoPasivo();
-      if (pasivoId) {
-        this.loadContratosActivos(pasivoId);
-      } else {
-        this.contratosActivos.set([]);
+    // Contrato Pasivo → contratos activos
+    toObservable(this.selectedContratoPasivo).pipe(
+      takeUntilDestroyed(this.destroyRef),
+      switchMap(id => {
         this.selectedContratoActivo.set(undefined);
-      }
+        this.contratosActivos.set([]);
+        if (!id) return of(null);
+        return this.selectListsService.getContratosActivosPorPasivo(id);
+      })
+    ).subscribe(res => {
+      if (res?.data) this.contratosActivos.set(res.data);
     });
   }
+
   ngOnInit(): void {
     this.layoutService.setTitle('Monitor de Cartera Pasiva');
     this.loadFondeadores();
     this.mostrarGraficos();
   }
 
-  loadFondeadores() {
-    this.selectListsService
-      .getFondeadoresSelectList()
-      .subscribe((res: SelectItemDtoListApiResponseDto) => {
+  // ── Filtros ──────────────────────────────────────────────────
+
+  limpiarFiltros() {
+    this.selectedFondeador.set(undefined);
+    this.selectedContratoPasivo.set(undefined);
+    this.selectedContratoActivo.set(undefined);
+    this.selectedSaldo.set(undefined);
+  }
+
+  // ── Carga de select lists ────────────────────────────────────
+
+  private loadFondeadores() {
+    this.selectListsService.getFondeadoresSelectList()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(res => {
         if (res.data) this.fondeadores.set(res.data);
       });
   }
 
-  loadContratosPasivos(idFondeador: number) {
-    this.selectListsService
-      .getContratosPasivosPorFondeador(idFondeador)
-      .subscribe((res: SelectItemDtoListApiResponseDto) => {
-        if (res.data) this.contratosPasivos.set(res.data);
-      });
-  }
-
-  loadContratosActivos(idContratoPasivo: number) {
-    this.selectListsService
-      .getContratosActivosPorPasivo(idContratoPasivo)
-      .subscribe((res: SelectItemDtoListApiResponseDto) => {
-        if (res.data) this.contratosActivos.set(res.data);
-      });
-  }
+  // ── Vista: Tablas ─────────────────────────────────────────────
 
   obtenerDetalle() {
     this.showTables.set(true);
     this.showCharts.set(false);
-    this.isLoading.set(true);
+    this.pageActiva = 1;
+    this.pagePasiva = 1;
+    this.loadCarteraActiva();
+    this.loadCarteraPasiva();
+  }
 
-    forkJoin({
-      activa: this.reportesService.getCarteraPorVencer(
-        this.pageActiva, this.pageSizeActiva, undefined,
-        this.selectedFondeador(), this.selectedContratoPasivo(),
-        this.selectedContratoActivo(), this.selectedSaldo(),
-      ),
-      pasiva: this.reportesService.getCarteraPasivaPorVencer(
-        this.pagePasiva, this.pageSizePasiva, undefined,
-        this.selectedFondeador(), this.selectedContratoPasivo(),
-        this.selectedContratoActivo(), this.selectedSaldo(),
-      ),
-    }).subscribe({
-      next: ({ activa, pasiva }) => {
-        if (activa.data?.results) {
-          this.carteraActiva.set(activa.data.results);
-          this.totalActiva = activa.data.totalCount || 0;
+  nextPageActiva() {
+    if (this.pageActiva < this.totalPagesActiva()) {
+      this.pageActiva++;
+      this.loadCarteraActiva();
+    }
+  }
+
+  prevPageActiva() {
+    if (this.pageActiva > 1) {
+      this.pageActiva--;
+      this.loadCarteraActiva();
+    }
+  }
+
+  nextPagePasiva() {
+    if (this.pagePasiva < this.totalPagesPasiva()) {
+      this.pagePasiva++;
+      this.loadCarteraPasiva();
+    }
+  }
+
+  prevPagePasiva() {
+    if (this.pagePasiva > 1) {
+      this.pagePasiva--;
+      this.loadCarteraPasiva();
+    }
+  }
+
+  private loadCarteraActiva() {
+    this.isLoadingActiva.set(true);
+    this.reportesService.getCarteraPorVencer(
+      this.pageActiva, this.pageSizeActiva, undefined,
+      this.selectedFondeador(), this.selectedContratoPasivo(),
+      this.selectedContratoActivo(), this.selectedSaldo(),
+    ).pipe(takeUntilDestroyed(this.destroyRef))
+     .subscribe({
+      next: res => {
+        if (res.data?.results) {
+          this.carteraActiva.set(res.data.results);
+          this.totalActiva.set(res.data.totalCount ?? 0);
         }
-        if (pasiva.data?.results) {
-          this.carteraPasiva.set(pasiva.data.results);
-          this.totalPasiva = pasiva.data.totalCount || 0;
-        }
-        this.isLoading.set(false);
+        this.isLoadingActiva.set(false);
       },
-      error: () => this.isLoading.set(false),
+      error: () => {
+        this.isLoadingActiva.set(false);
+        this.utilsService.showNotification('Error', 'Error al cargar cartera activa', 'error');
+      }
     });
   }
 
+  private loadCarteraPasiva() {
+    this.isLoadingPasiva.set(true);
+    this.reportesService.getCarteraPasivaPorVencer(
+      this.pagePasiva, this.pageSizePasiva, undefined,
+      this.selectedFondeador(), this.selectedContratoPasivo(),
+      this.selectedContratoActivo(), this.selectedSaldo(),
+    ).pipe(takeUntilDestroyed(this.destroyRef))
+     .subscribe({
+      next: res => {
+        if (res.data?.results) {
+          this.carteraPasiva.set(res.data.results);
+          this.totalPasiva.set(res.data.totalCount ?? 0);
+        }
+        this.isLoadingPasiva.set(false);
+      },
+      error: () => {
+        this.isLoadingPasiva.set(false);
+        this.utilsService.showNotification('Error', 'Error al cargar cartera pasiva', 'error');
+      }
+    });
+  }
+
+  // ── Vista: Gráficas ───────────────────────────────────────────
+
   mostrarGraficos() {
     this.showTables.set(false);
-    this.showCharts.set(true);
+    this.showCharts.set(false);   // ocultar mientras carga
     this.isLoading.set(true);
-    this.reportesService
-      .getDashboard(
-        this.selectedFondeador(),
-        this.selectedContratoPasivo(),
-        this.selectedContratoActivo(),
-        this.selectedSaldo(),
-      )
-      .subscribe((res: DashboardResponseApiResponseDto) => {
+    this.reportesService.getDashboard(
+      this.selectedFondeador(),
+      this.selectedContratoPasivo(),
+      this.selectedContratoActivo(),
+      this.selectedSaldo(),
+    ).pipe(takeUntilDestroyed(this.destroyRef))
+     .subscribe({
+      next: res => {
         if (res.data) {
-          this.setupCharts(res.data);
+          this.buildCharts(res.data);
+          this.showCharts.set(true);   // mostrar solo cuando hay datos
         }
         this.isLoading.set(false);
-      });
+      },
+      error: () => {
+        this.isLoading.set(false);
+        this.utilsService.showNotification('Error', 'Error al cargar el dashboard', 'error');
+      }
+    });
   }
 
-  setupCharts(data: DashboardResponse) {
-    console.log(data);
-    this.pieChartActivaOptions = this.getPieChartOptions('Cartera Activa', data.activos!);
-    this.pieChartPasivaOptions = this.getPieChartOptions('Cartera Pasiva', data.pasivos!);
-    this.barChartActivaOptions = this.getBarChartOptions(
-      'Interés y Capital Activo',
-      data.activosMensual || [],
-    );
-    this.barChartPasivaOptions = this.getBarChartOptions(
-      'Interés y Capital Pasivo',
-      data.pasivosMensual || [],
-    );
-    this.relationChartOptions = this.getRelationChartOptions(data);
-    this.updateFlag = true;
+  private buildCharts(data: DashboardResponse) {
+    this.pieChartActivaOptions = this.buildPieChart('Cartera Activa',  data.activos!);
+    this.pieChartPasivaOptions = this.buildPieChart('Cartera Pasiva',  data.pasivos!);
+    this.barChartActivaOptions = this.buildBarChart('Evolución Mensual — Activo', data.activosMensual ?? []);
+    this.barChartPasivaOptions = this.buildBarChart('Evolución Mensual — Pasivo', data.pasivosMensual ?? []);
+    this.relationChartOptions  = this.buildRelationChart(data);
+
   }
 
-  getPieChartOptions(title: string, data: CarteraDto): HighchartsOptions {
+  // ── Constructores de opciones Highcharts ─────────────────────
+
+  private buildPieChart(title: string, data: CarteraDto): HighchartsOptions {
+    const capital = data?.capital ?? 0;
+    const interes = data?.interes ?? 0;
     return {
-      chart: { type: 'pie' },
-      title: { text: title },
-      series: [
-        {
-          name: 'Monto',
-          type: 'pie',
-          data: [
-            { name: 'Capital', y: data?.capital || 0 },
-            { name: 'Interés', y: data?.interes || 0 },
-          ],
+      chart:   { type: 'pie' },
+      credits: { enabled: false },
+      title:   { text: title, style: { fontSize: '14px', fontWeight: '600' } },
+      subtitle: {
+        text: `Total: ${this.formatMXN(capital + interes)}`,
+        style: { fontSize: '12px', color: '#6b7280' },
+      },
+      tooltip: {
+        pointFormat: '<b>{point.name}</b>: <b>${point.y:,.2f} MXN</b><br/>({point.percentage:.1f}%)',
+      },
+      plotOptions: {
+        pie: {
+          innerSize: '50%',
+          dataLabels: {
+            enabled: true,
+            format: '<b>{point.name}</b><br/>{point.percentage:.1f}%',
+            distance: 15,
+            style: { fontSize: '12px' },
+          },
         },
+      },
+      series: [{
+        name: 'Monto',
+        type: 'pie',
+        data: [
+          { name: 'Capital', y: capital, color: '#1d6cf5' },
+          { name: 'Interés', y: interes, color: '#27ae60' },
+        ],
+      }],
+    };
+  }
+
+  private buildBarChart(title: string, data: CarteraMensualDto[]): HighchartsOptions {
+    const categories = data.map(d => {
+      if (!d.fecIni) return '';
+      // Parsear sin conversión de zona horaria
+      const [y, m] = d.fecIni.toString().split('T')[0].split('-');
+      return new Intl.DateTimeFormat('es-MX', { month: 'short', year: 'numeric' })
+        .format(new Date(+y, +m - 1, 1));
+    });
+
+    return {
+      chart:   { type: 'column' },
+      credits: { enabled: false },
+      title:   { text: title, style: { fontSize: '14px', fontWeight: '600' } },
+      xAxis:   { categories },
+      yAxis: {
+        title: { text: 'Monto (MXN)' },
+        labels: {
+          formatter: function () {
+            const v = this.value as number;
+            if (Math.abs(v) >= 1_000_000) return `$${(v / 1_000_000).toFixed(1)}M`;
+            if (Math.abs(v) >= 1_000)     return `$${(v / 1_000).toFixed(0)}K`;
+            return `$${v}`;
+          },
+        },
+      },
+      tooltip: { valuePrefix: '$', valueDecimals: 2, valueSuffix: ' MXN', shared: true },
+      plotOptions: {
+        column: { borderRadius: 4, groupPadding: 0.1 },
+      },
+      series: [
+        { name: 'Capital', type: 'column', data: data.map(d => d.capital ?? 0), color: '#1d6cf5' },
+        { name: 'Interés', type: 'column', data: data.map(d => d.interes ?? 0), color: '#27ae60' },
       ],
     };
   }
 
-  getBarChartOptions(title: string, data: CarteraMensualDto[]): HighchartsOptions {
-    const categories = data.map((d) => (d.fecIni ? new Date(d.fecIni).toLocaleDateString() : ''));
-    const capitalData = data.map((d) => d.capital || 0);
-    const interesData = data.map((d) => d.interes || 0);
+  private buildRelationChart(data: DashboardResponse): HighchartsOptions {
+    const aC = data.activos?.capital ?? 0;
+    const aI = data.activos?.interes ?? 0;
+    const pC = data.pasivos?.capital ?? 0;
+    const pI = data.pasivos?.interes ?? 0;
 
     return {
-      chart: { type: 'column' },
-      title: { text: title },
-      xAxis: { categories: categories },
-      yAxis: { title: { text: 'Monto' } },
+      chart:   { type: 'bar' },
+      credits: { enabled: false },
+      title:   { text: 'Relación Activo vs Pasivo', style: { fontSize: '14px', fontWeight: '600' } },
+      xAxis:   { categories: ['Capital', 'Interés', 'Total'] },
+      yAxis: {
+        title: { text: 'Monto (MXN)' },
+        labels: {
+          formatter: function () {
+            const v = this.value as number;
+            if (Math.abs(v) >= 1_000_000) return `$${(v / 1_000_000).toFixed(1)}M`;
+            if (Math.abs(v) >= 1_000)     return `$${(v / 1_000).toFixed(0)}K`;
+            return `$${v}`;
+          },
+        },
+      },
+      tooltip: { valuePrefix: '$', valueDecimals: 2, valueSuffix: ' MXN', shared: true },
+      plotOptions: {
+        bar: { borderRadius: 4, groupPadding: 0.1 },
+      },
       series: [
-        { name: 'Capital', type: 'column', data: capitalData },
-        { name: 'Interés', type: 'column', data: interesData },
+        { name: 'Activo', type: 'bar', data: [aC, aI, aC + aI], color: '#1d6cf5' },
+        { name: 'Pasivo', type: 'bar', data: [pC, pI, pC + pI], color: '#e03232' },
       ],
     };
   }
 
-  getRelationChartOptions(data: DashboardResponse): HighchartsOptions {
-    return {
-      chart: { type: 'column' },
-      title: { text: 'Relación Activo vs Pasivo' },
-      xAxis: { categories: ['Total'] },
-      series: [
-        {
-          name: 'Activo',
-          type: 'column',
-          data: [(data.activos?.capital || 0) + (data.activos?.interes || 0)],
-        },
-        {
-          name: 'Pasivo',
-          type: 'column',
-          data: [(data.pasivos?.capital || 0) + (data.pasivos?.interes || 0)],
-        },
-      ],
-    };
+  // ── Helpers ───────────────────────────────────────────────────
+
+  private formatMXN(value: number): string {
+    return new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' }).format(value);
   }
 }
