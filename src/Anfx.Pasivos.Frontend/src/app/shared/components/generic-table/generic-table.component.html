@@ -1,0 +1,199 @@
+<div class="card">
+  <div class="card-body">
+
+    <!-- ── Toolbar ─────────────────────────────────────────── -->
+    <div class="row mb-3 align-items-center g-2">
+
+      <!-- Búsqueda -->
+      @if (searchable) {
+        <div class="col-12 col-sm-6 col-md-5">
+          <div class="input-group">
+            <input
+              #searchInput
+              type="text"
+              class="form-control"
+              [placeholder]="searchPlaceholder"
+              [value]="searchValue"
+              (keyup.enter)="onSearch(searchInput.value)"
+            />
+            <button class="btn btn-primary" type="button" (click)="onSearch(searchInput.value)">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <span class="d-none d-sm-inline ms-1">Buscar</span>
+            </button>
+          </div>
+        </div>
+      }
+
+      <!-- Botones de toolbar -->
+      <div class="col text-end">
+        @if (showExport) {
+          <button class="btn btn-info me-2" (click)="exportClicked.emit()" [disabled]="exportLoading || loading">
+            <i class="fa-solid fa-file-excel"></i>
+            <span class="d-none d-sm-inline ms-1">Exportar</span>
+          </button>
+        }
+        @if (showNew) {
+          <button class="btn btn-success" (click)="newClicked.emit()">
+            <i class="fa-solid fa-plus"></i>
+            <span class="d-none d-sm-inline ms-1">Nuevo</span>
+          </button>
+        }
+      </div>
+
+    </div>
+
+    <!-- ── Tabla ───────────────────────────────────────────── -->
+    <div class="table-responsive gt-table-wrapper">
+      <table class="table table-list mb-0 gt-table">
+
+        <!-- Encabezado -->
+        <thead>
+          <tr>
+            @for (col of visibleColumns; track col.key) {
+              <th
+                [class]="colVisibilityClass(col)"
+                [class.gt-sortable]="col.sortable"
+                [class.gt-sort-asc]="col.sortable && sortColumn === col.key && sortDirection === 'asc'"
+                [class.gt-sort-desc]="col.sortable && sortColumn === col.key && sortDirection === 'desc'"
+                [style.max-width.px]="col.maxWidth ?? null"
+                [attr.tabindex]="col.sortable ? 0 : null"
+                [attr.role]="col.sortable ? 'button' : null"
+                (click)="onSort(col)"
+                (keydown.enter)="onSort(col)"
+                (keydown.space)="onSort(col)"
+              >
+                <span class="gt-cell-text">{{ col.header }}</span>
+                @if (col.sortable) {
+                  <span class="gt-sort-icon">
+                    @if (sortColumn === col.key) {
+                      <i [class]="sortDirection === 'asc' ? 'fa-solid fa-arrow-up' : 'fa-solid fa-arrow-down'"></i>
+                    } @else {
+                      <i class="fa-solid fa-arrow-up-arrow-down gt-sort-inactive"></i>
+                    }
+                  </span>
+                }
+              </th>
+            }
+            @if (actions.length > 0) {
+              <th class="gt-actions-col text-center">Acciones</th>
+            }
+          </tr>
+        </thead>
+
+        <!-- Cuerpo -->
+        <tbody>
+
+          <!-- Loading -->
+          @if (loading) {
+            <tr>
+              <td [attr.colspan]="visibleColumns.length + (actions.length > 0 ? 1 : 0)" class="text-center py-4">
+                <output>
+                  <div class="spinner-border text-primary" aria-hidden="true"></div>
+                  <span class="visually-hidden">Cargando...</span>
+                </output>
+              </td>
+            </tr>
+          }
+
+          <!-- Sin datos -->
+          @else if (items.length === 0) {
+            <tr>
+              <td [attr.colspan]="visibleColumns.length + (actions.length > 0 ? 1 : 0)" class="text-center py-4 text-muted">
+                <i class="fa-solid fa-inbox fa-2x d-block mb-2"></i>
+                No hay datos disponibles
+              </td>
+            </tr>
+          }
+
+          <!-- Filas -->
+          @else {
+            @for (row of items; track $index) {
+              <tr>
+                @for (col of visibleColumns; track col.key) {
+                  <td
+                    [class]="colVisibilityClass(col)"
+                    [style.max-width.px]="col.maxWidth ?? null"
+                  >
+                    <!-- Wrapper con truncado cuando hay maxWidth -->
+                    <span
+                      [class.gt-cell-truncate]="col.maxWidth"
+                      [title]="col.maxWidth ? resolveValue(row, col.key) : null"
+                    >
+                      @switch (col.type) {
+                        @case ('date') {
+                          {{ resolveValue(row, col.key) | date:'dd/MM/yyyy' }}
+                        }
+                        @case ('boolean') {
+                          @let boolVal = resolveValue(row, col.key);
+                          <span class="badge" [class.bg-success]="boolVal" [class.bg-secondary]="!boolVal">
+                            {{ boolVal ? 'Sí' : 'No' }}
+                          </span>
+                        }
+                        @case ('currency') {
+                          {{ resolveValue(row, col.key) | currency:'MXN':'symbol':'1.2-2' }}
+                        }
+                        @case ('percent') {
+                          {{ resolveValue(row, col.key) | percent:'1.2-2' }}
+                        }
+                        @default {
+                          {{ resolveValue(row, col.key) }}
+                        }
+                      }
+                    </span>
+                  </td>
+                }
+
+                <!-- Acciones por fila -->
+                @if (actions.length > 0) {
+                  <td class="gt-actions-cell text-center">
+                    @for (act of actions; track act.id) {
+                      <button
+                        [class]="'btn btn-sm me-1 ' + act.btnClass"
+                        [title]="act.label"
+                        (click)="onAction(act.id, row)"
+                      >
+                        <i [class]="act.icon"></i>
+                      </button>
+                    }
+                  </td>
+                }
+              </tr>
+            }
+          }
+
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ── Paginación ──────────────────────────────────────── -->
+    @if (totalCount > 0 && !loading) {
+      <div class="row align-items-center mt-3 g-2">
+        <div class="col-12 col-md-6">
+          <small class="text-muted">
+            Mostrando {{ startRecord }} – {{ endRecord }} de {{ totalCount }} registros
+          </small>
+        </div>
+        <div class="col-12 col-md-6">
+          <nav aria-label="Paginación">
+            <ul class="pagination justify-content-start justify-content-md-end mb-0">
+              <li class="page-item" [class.disabled]="currentPage <= 1">
+                <a class="page-link" href="javascript:void(0)" (click)="pagePrev.emit()">
+                  <i class="fa-solid fa-chevron-left"></i>
+                </a>
+              </li>
+              <li class="page-item disabled">
+                <span class="page-link">{{ currentPage }} / {{ totalPages }}</span>
+              </li>
+              <li class="page-item" [class.disabled]="currentPage >= totalPages">
+                <a class="page-link" href="javascript:void(0)" (click)="pageNext.emit()">
+                  <i class="fa-solid fa-chevron-right"></i>
+                </a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+    }
+
+  </div>
+</div>

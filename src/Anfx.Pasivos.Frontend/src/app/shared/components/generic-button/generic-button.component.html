@@ -1,0 +1,16 @@
+<button
+  [type]="type"
+  [class]="btnClass"
+  [disabled]="disabled || loading"
+  (click)="onClick($event)"
+>
+  @if (loading) {
+    <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
+  } @else if (icon) {
+    <i [class]="icon + (label ? ' me-1' : '')"></i>
+  }
+
+  @if (label) {
+    <span>{{ label }}</span>
+  }
+</button>

@@ -1,0 +1,159 @@
+:host {
+  display: block;
+}
+
+/* ── Tabla: separar bordes para poder aplicar border-radius ── */
+.gt-table {
+  border-collapse: separate;
+  border-spacing: 0;
+  width: 100%;
+
+  /* ── Encabezado ─────────────────────────────────────────── */
+  thead tr th {
+    background-color: #ebf5ff;
+    color: #0a0a0a;
+    font-weight: 500;
+    font-size: 14px;
+    height: 40px;
+    padding: 0 16px;
+    vertical-align: middle;
+    border-bottom: 2px solid #c5dcf7;
+    white-space: nowrap;
+  }
+
+  /* ── Ordenamiento ───────────────────────────────────────── */
+  thead tr th.gt-sortable {
+    cursor: pointer;
+    user-select: none;
+
+    &:hover {
+      background-color: #dbeafe;
+    }
+
+    &:focus-visible {
+      outline: 2px solid #3b82f6;
+      outline-offset: -2px;
+    }
+  }
+
+  .gt-sort-icon {
+    margin-left: 6px;
+    font-size: 11px;
+    vertical-align: middle;
+  }
+
+  .gt-sort-inactive {
+    opacity: 0.3;
+  }
+
+  thead tr th.gt-sort-asc,
+  thead tr th.gt-sort-desc {
+    background-color: #dbeafe;
+    color: #1e3a8a;
+  }
+
+  /* Esquinas redondeadas del encabezado */
+  thead tr th:first-child {
+    border-top-left-radius: 12px;
+  }
+
+  thead tr th:last-child {
+    border-top-right-radius: 12px;
+  }
+
+  /* ── Filas del cuerpo ───────────────────────────────────── */
+  tbody tr td {
+    padding: 10px 16px;
+    vertical-align: middle;
+    border-bottom: 1px solid #e2e8f0;
+    font-size: 13px;
+  }
+
+  /* Esquinas redondeadas de la última fila */
+  tbody tr:last-child td:first-child {
+    border-bottom-left-radius: 12px;
+  }
+
+  tbody tr:last-child td:last-child {
+    border-bottom-right-radius: 12px;
+  }
+
+  /* Filas pares (zebra striping) */
+  tbody tr:nth-child(even) td {
+    background-color: #f4f9ff;
+  }
+
+  /* Hover en filas */
+  tbody tr:hover td {
+    background-color: #dbeeff;
+    transition: background-color 0.15s ease;
+  }
+}
+
+/* ── Celda de acciones ───────────────────────────────────── */
+.gt-actions-cell {
+  white-space: nowrap;
+  width: 1%;
+  vertical-align: middle;
+}
+
+/* ── Truncado con ellipsis ───────────────────────────────── */
+.gt-cell-truncate {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Texto de encabezado también truncado si hay maxWidth */
+th .gt-cell-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: inline-block;
+  max-width: 100%;
+  vertical-align: middle;
+}
+
+/* ── Botones de acción ───────────────────────────────────── */
+.btn-action-edit,
+.btn-action-delete {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  border: none;
+  font-size: 13px;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.18);
+    opacity: 0.9;
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: none;
+  }
+}
+
+.btn-action-edit {
+  background: linear-gradient(135deg, #1d6cf5, #1340b0);
+  color: #fff;
+}
+
+.btn-action-delete {
+  background: linear-gradient(135deg, #e03232, #a81414);
+  color: #fff;
+}
+
+/* ── Contenedor con borde y sombra suave ─────────────────── */
+.gt-table-wrapper {
+  border: 1px solid #dbe8f5;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(13, 110, 253, 0.07);
+}

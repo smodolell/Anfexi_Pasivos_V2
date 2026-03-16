@@ -256,9 +256,10 @@ public class Sistema : EndpointGroupBase
         [FromServices] IQueryMediator queryMediator,
         [FromQuery] string? q = null,
         [FromQuery] int page = 1,
-        [FromQuery] int size = 10)
+        [FromQuery] int size = 10,
+        [FromQuery] bool? activo = null)
     {
-        var query = new GetUsuariosQuery(page, size, q);
+        var query = new GetUsuariosQuery(page, size, q, activo);
         var result = await queryMediator.QueryAsync(query);
         return result.ToCustomMinimalApiResult();
     }

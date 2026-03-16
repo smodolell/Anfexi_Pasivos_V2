@@ -122,7 +122,9 @@ public class Colonias : EndpointGroupBase
         [FromServices] IQueryMediator queryMediator,
         [FromQuery] string? q = null,
         [FromQuery] int page = 1,
-        [FromQuery] int size = 10)
+        [FromQuery] int size = 10,
+        [FromQuery] string? sortBy = null,
+        [FromQuery] string? sortDir = null)
     {
         // Validación de parámetros
         if (page < 1 || size < 1)
@@ -135,7 +137,9 @@ public class Colonias : EndpointGroupBase
         {
             SearchTerm = q,
             Page = page,
-            Size = size
+            Size = size,
+            SortBy = sortBy,
+            SortDir = sortDir
         });
 
         return result.ToCustomMinimalApiResult();
