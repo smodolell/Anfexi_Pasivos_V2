@@ -204,6 +204,113 @@ WHERE  pm.IdContrato = {0}";
         AND ta.IdTipoTabla = {2}
         GROUP BY ta.IdContrato, ta.VersionTabla, ta.IdTipoTabla";
 
+
+    private const string DetallePagosAplicadosAMovSql = @"
+SELECT 
+	pp.IdPago,
+	ptp.TipoPago,
+	pcb.CuentaBancaria,
+	pp.Contrato,
+	pp.FecPagoValor,
+	pp.FecPagoRegistro,
+	pp.MontoPago,
+	prpm.CapitalPagado, 
+	prpm.InteresPagado, 
+	prpm.IVAPagado, 
+	prpm.TotalPagado,
+	prpm.Estatus,
+	prpm.CausaCancelacion
+FROM PSV_RelPagoMovimiento prpm
+INNER JOIN PSV_Pago pp ON pp.IdPago = prpm.IdPago
+INNER JOIN PSV_TipoPago ptp ON ptp.IdTipoPago = pp.IdTipoPago
+INNER JOIN PSV_CuentaBancaria pcb ON pcb.IdCuentaBancaria = pp.IdCuentaBancaria
+WHERE prpm.IdMovimiento = {0}
+UNION ALL
+SELECT 
+	-1 IdPago,
+	'' TipoPago,
+	'' CuentaBancaria,
+	'' Contrato,
+	CAST(NULL AS DATETIME) FecPagoValor,
+	CAST(NULL AS DATETIME) FecPagoRegistro,
+	SUM(pp.MontoPago) MontoPago,
+	SUM(prpm.CapitalPagado) CapitalPagado, 
+	SUM(prpm.InteresPagado) InteresPagado, 
+	SUM(prpm.IVAPagado) IVAPagado, 
+	SUM(prpm.TotalPagado) TotalPagado,
+	CAST(0 AS BIT) Estatus,
+	'' CausaCancelacion
+FROM PSV_RelPagoMovimiento prpm
+INNER JOIN PSV_Pago pp ON pp.IdPago = prpm.IdPago
+INNER JOIN PSV_TipoPago ptp ON ptp.IdTipoPago = pp.IdTipoPago
+INNER JOIN PSV_CuentaBancaria pcb ON pcb.IdCuentaBancaria = pp.IdCuentaBancaria
+WHERE prpm.IdMovimiento = {0}
+GROUP BY prpm.IdMovimiento
+";
+
+
+
+    const string DetalleAplicacionDePagoSql = @"
+SELECT
+	pm.IdMovimiento,
+	pf.Fondeador,
+	pc.Contrato,
+	pm.NoPago,
+	pm.Descripcion,
+	pm.FecMovimiento,
+	prpm.CapitalPagado,
+	prpm.InteresPagado,
+	prpm.IVAPagado,
+	prpm.TotalPagado,
+	prpm.Estatus 
+FROM PSV_RelPagoMovimiento prpm
+INNER JOIN PSV_Movimiento pm ON pm.IdMovimiento = prpm.IdMovimiento
+INNER JOIN PSV_Contrato pc ON pc.IdContrato = pm.IdContrato
+INNER JOIN PSV_Fondeador pf ON pf.IdFondeador = pc.IdFondeador
+WHERE prpm.IdPago = {0}
+UNION ALL
+SELECT
+	-1 IdMovimiento,
+	'' Fondeador,
+	'' Contrato,
+	0 NoPago,
+	'' Descripcion,
+	CAST(NULL AS DATETIME) FecMovimiento,
+	SUM(prpm.CapitalPagado) CapitalPagado,
+	SUM(prpm.InteresPagado) InteresPagado,
+	SUM(prpm.IVAPagado) IVAPagado,
+	SUM(prpm.TotalPagado) TotalPagado,
+	prpm.Estatus 
+FROM PSV_RelPagoMovimiento prpm
+INNER JOIN PSV_Movimiento pm ON pm.IdMovimiento = prpm.IdMovimiento
+WHERE prpm.IdPago = {0}
+GROUP BY prpm.Estatus
+
+";
+
+
+    const string DetalleCargosSql = @"
+SELECT pm.IdMovimiento,
+       pm.Descripcion,
+       pm.NoPago,
+       pm.FecMovimiento,
+       pm.Capital,
+       pm.Interes,
+       pm.IVA,
+       pm.Total,
+       pm.SaldoCapital,
+       pm.SaldoInteres,
+       pm.SaldoIVA,
+       pm.SaldoTotal,
+       CAST(0 AS BIT) EsRenta
+FROM   PSV_Movimiento pm
+       INNER JOIN TipoMovimiento tm
+            ON  tm.IdTipoMovimiento = pm.IdTipoMovimiento
+WHERE  pm.IdContrato = {0}
+       AND tm.Capturable = 1
+       AND pm.SaldoTotal = pm.Total
+
+";
     public DatabaseService(
         ApplicationDbContext context,
         ILogger<DatabaseService> logger)
@@ -295,5 +402,64 @@ WHERE  pm.IdContrato = {0}";
         }
     }
 
-   
+    public async Task<List<DetallePagoMovimientoDto>> GetDetallePagosAplicadosAMovAsync(int idMovimiento, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            _logger.LogDebug("Obteniendo detalle de Movimientos {idMovimiento}",idMovimiento);
+
+            var resultados = await _context.Database.SqlQueryRaw<DetallePagoMovimientoDto>(
+                DetallePagosAplicadosAMovSql,
+                idMovimiento
+            ).ToListAsync(cancellationToken);
+
+            return resultados;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, $"Error Obteniendo detalle de Movimientos  {idMovimiento}");
+            throw;
+        }
+    }
+
+    public async Task<List<DetalleMovimientoPagoDto>> GetDetalleAplicacionDePagoAsync(int idPago, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            _logger.LogDebug("Obteniendo detalle de Pagos {idPago}", idPago);
+
+            var resultados = await _context.Database.SqlQueryRaw<DetalleMovimientoPagoDto>(
+                DetalleAplicacionDePagoSql,
+                idPago
+            ).ToListAsync(cancellationToken);
+
+            return resultados;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, $"Error obteniendo Obteniendo detalle de Pagos {idPago}");
+            throw;
+        }
+    }
+
+    public async Task<List<MovimientoItemDto>> GetDetalleCargosAsync(int idContratoPasivo, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            _logger.LogDebug("Obteniendo detalle de cargos {IdContrato}", idContratoPasivo);
+
+            // Usar FromSqlRaw con parámetros posicionales
+            var resultados = await _context.Database.SqlQueryRaw<MovimientoItemDto>(
+                DetalleCargosSql,
+                idContratoPasivo
+            ).ToListAsync(cancellationToken);
+
+            return resultados;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error obteniendo detalle de movimientos para contrato {IdContrato}", idContratoPasivo);
+            throw;
+        }
+    }
 }

@@ -1,10 +1,10 @@
 export const environment = {
   production: false,
-  apiBaseUrl:      'http://localhost:5056',
-  apiAuthUrl:      'http://localhost:5056/api',
-  apiCatalogoUrl:  'http://localhost:5056/api',
-  apiSistemaUrl:   'http://localhost:5056/api',
-  apiCotizadorUrl: 'http://localhost:5056/api',
+  apiBaseUrl:      'https://localhost:7223',
+  apiAuthUrl:      'https://localhost:7223/api',
+  apiCatalogoUrl:  'https://localhost:7223/api',
+  apiSistemaUrl:   'https://localhost:7223/api',
+  apiCotizadorUrl: 'https://localhost:7223/api',
   // ── App metadata ────────────────────────────────────────────
   appName:    'Pasivos',
   appVersion: '1.0.0',         // sincronizar con package.json al hacer release

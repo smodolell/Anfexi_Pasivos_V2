@@ -54,6 +54,17 @@ public class SelectLists : EndpointGroupBase
             .Produces<ApiResponseDto>(StatusCodes.Status401Unauthorized)
             .Produces<ApiResponseDto>(StatusCodes.Status404NotFound)
             .Produces<ApiResponseDto>(StatusCodes.Status500InternalServerError);
+
+
+        group.MapGet("tipo-movimiento/", GetTipoMovimientos)
+            .WithName("GetTipoMovimientos")
+            .WithSummary("Obtiene los tipo de Movimientos del catalogo")
+            .WithDescription("Retorna una lista de tipo de Movimiento")
+            .Produces<ApiResponseDto<List<SelectItemDto>>>(StatusCodes.Status200OK)
+            .Produces<ApiResponseDto>(StatusCodes.Status400BadRequest)
+            .Produces<ApiResponseDto>(StatusCodes.Status401Unauthorized)
+            .Produces<ApiResponseDto>(StatusCodes.Status404NotFound)
+            .Produces<ApiResponseDto>(StatusCodes.Status500InternalServerError);
     }
 
 
@@ -80,11 +91,13 @@ public class SelectLists : EndpointGroupBase
     public async Task<IResult> GetContratosPasivosPorFondeador(
     [FromServices] IQueryMediator queryMediator,
     [FromRoute] int idFondeador,
+    [FromQuery] bool? estatusActivo,
     CancellationToken cancellationToken = default)
     {
         var query = new GetContratoPasivoByIdFondeadorSelectListQuery
         {
-            IdFondeador = idFondeador
+            IdFondeador = idFondeador,
+            EstatusActivo = estatusActivo,
         };
         var result = await queryMediator.QueryAsync(query, cancellationToken);
         return result.ToCustomMinimalApiResult();
@@ -112,6 +125,17 @@ public class SelectLists : EndpointGroupBase
     {
 
         var query = new GetMonedasSelectListQuery();
+        var result = await queryMediator.QueryAsync(query, cancellationToken);
+        return result.ToCustomMinimalApiResult();
+    }
+
+
+    public async Task<IResult> GetTipoMovimientos(
+     [FromServices] IQueryMediator queryMediator,
+     CancellationToken cancellationToken = default)
+    {
+
+        var query = new GetTipoMovimientoSelectListQuery();
         var result = await queryMediator.QueryAsync(query, cancellationToken);
         return result.ToCustomMinimalApiResult();
     }

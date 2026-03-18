@@ -24,10 +24,5 @@
   <ItemGroup>
     <ProjectReference Include="..\Anfx.Pasivos.Domain\Anfx.Pasivos.Domain.csproj" />
   </ItemGroup>
-  
-  
-  <ItemGroup>
-    <Folder Include="Features\Procesos\Queries\" />
-  </ItemGroup>
 
 </Project>

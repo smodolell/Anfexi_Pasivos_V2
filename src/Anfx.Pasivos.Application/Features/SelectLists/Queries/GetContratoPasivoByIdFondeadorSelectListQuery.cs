@@ -3,6 +3,8 @@
 public class GetContratoPasivoByIdFondeadorSelectListQuery : SelectListQueryBase
 {
     public int IdFondeador { get; set; }
+
+    public bool? EstatusActivo { get; set; }
 }
 
 
@@ -17,17 +19,28 @@ public class GetContratoPasivoByIdFondeadorSelectListQueryHandler : IQueryHandle
     public async Task<Result<List<SelectItemDto>>> HandleAsync(GetContratoPasivoByIdFondeadorSelectListQuery message, CancellationToken cancellationToken = default)
     {
 
-        var items = await _context.PSV_Contrato
-            .Where(c => c.IdFondeador == message.IdFondeador)
-           .Select(f => new SelectItemDto
-           {
-               Value = f.IdContrato,
-               Text = f.Contrato
-           }).ToListAsync();
+        var items = _context.PSV_Contrato
+            .Where(c => c.IdFondeador == message.IdFondeador);
 
-        return Result.Success(items);
+        if (message.EstatusActivo.HasValue)
+        {
+            if (message.EstatusActivo.Value)
+            {
+                items = items.Where(r => r.IdEstatusContrato == 2);
+            }
+            else
+            {
+                items = items.Where(r => r.IdEstatusContrato != 2);
+            }
+        }
+        var result = await items.Select(f => new SelectItemDto
+        {
+            Value = f.IdContrato,
+            Text = f.Contrato
+        }).ToListAsync();
+
+        return Result.Success(result);
 
 
     }
 }
-                       
