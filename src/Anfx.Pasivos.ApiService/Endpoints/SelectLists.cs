@@ -65,6 +65,65 @@ public class SelectLists : EndpointGroupBase
             .Produces<ApiResponseDto>(StatusCodes.Status401Unauthorized)
             .Produces<ApiResponseDto>(StatusCodes.Status404NotFound)
             .Produces<ApiResponseDto>(StatusCodes.Status500InternalServerError);
+
+        
+        group.MapGet("tasas/", GetTasas)
+            .WithName("GetTasas")
+            .WithSummary("Obtiene lista de tasas para select")
+            .WithDescription("Retorna un listado de tasas filtradas por el tipo (fija o variable) para ser utilizadas en controles de selección.")
+            .Produces<ApiResponseDto<List<SelectItemDto>>>(StatusCodes.Status200OK)
+            .Produces<ApiResponseDto>(StatusCodes.Status400BadRequest)
+            .Produces<ApiResponseDto>(StatusCodes.Status401Unauthorized)
+            .Produces<ApiResponseDto>(StatusCodes.Status500InternalServerError);
+
+
+        group.MapGet("tipo-terminaciones/", GetTipoTerminaciones)
+            .WithName("GetTipoTerminaciones")
+            .WithSummary("Obtiene lista de tipos de terminación para select")
+            .WithDescription("Retorna un listado de todos los tipos de terminación disponibles para ser utilizados en controles de selección.")
+            .Produces<ApiResponseDto<List<SelectItemDto>>>(StatusCodes.Status200OK)
+            .Produces<ApiResponseDto>(StatusCodes.Status400BadRequest)
+            .Produces<ApiResponseDto>(StatusCodes.Status401Unauthorized)
+            .Produces<ApiResponseDto>(StatusCodes.Status500InternalServerError);
+
+        group.MapGet("tipo-reduccion/", GetTipoReduccion)
+            .WithName("GetTipoReduccion")
+            .WithSummary("Obtiene lista de tipos de reducción para select")
+            .WithDescription("Retorna un listado de los tipos de reducción disponibles (ej. POR MONTO) para ser utilizados en controles de selección.")
+            .Produces<ApiResponseDto<List<SelectItemDto>>>(StatusCodes.Status200OK)
+            .Produces<ApiResponseDto>(StatusCodes.Status400BadRequest)
+            .Produces<ApiResponseDto>(StatusCodes.Status401Unauthorized)
+            .Produces<ApiResponseDto>(StatusCodes.Status500InternalServerError);
+
+
+        group.MapGet("tipo-pagos/", GetTipoPagos)
+            .WithName("GetTipoPagos")
+            .WithSummary("Obtiene lista de tipos de pago para select")
+            .WithDescription("Retorna un listado de todos los tipos de pago disponibles para ser utilizados en controles de selección.")
+            .Produces<ApiResponseDto<List<SelectItemDto>>>(StatusCodes.Status200OK)
+            .Produces<ApiResponseDto>(StatusCodes.Status400BadRequest)
+            .Produces<ApiResponseDto>(StatusCodes.Status401Unauthorized)
+            .Produces<ApiResponseDto>(StatusCodes.Status500InternalServerError);
+
+        group.MapGet("bancos/", GetBancosSelectList)
+            .WithName("GetBancosSelectList")
+            .WithSummary("Obtiene lista de bancos para select")
+            .WithDescription("Retorna un listado de todos los bancos disponibles para ser utilizados en controles de selección.")
+            .Produces<ApiResponseDto<List<SelectItemDto>>>(StatusCodes.Status200OK)
+            .Produces<ApiResponseDto>(StatusCodes.Status400BadRequest)
+            .Produces<ApiResponseDto>(StatusCodes.Status401Unauthorized)
+            .Produces<ApiResponseDto>(StatusCodes.Status500InternalServerError);
+
+        group.MapGet("cuentas-bancarias/{idBanco}", GetCuentaBancariaByBancoIdSelectList)
+            .WithName("GetCuentaBancariaByBancoIdSelectList")
+            .WithSummary("Obtiene lista de cuentas bancarias por banco")
+            .WithDescription("Retorna un listado de cuentas bancarias filtradas por el ID del banco para ser utilizadas en controles de selección dependientes.")
+            .Produces<ApiResponseDto<List<SelectItemDto>>>(StatusCodes.Status200OK)
+            .Produces<ApiResponseDto>(StatusCodes.Status400BadRequest)
+            .Produces<ApiResponseDto>(StatusCodes.Status404NotFound)
+            .Produces<ApiResponseDto>(StatusCodes.Status401Unauthorized)
+            .Produces<ApiResponseDto>(StatusCodes.Status500InternalServerError);
+
     }
 
 
@@ -137,6 +196,69 @@ public class SelectLists : EndpointGroupBase
 
         var query = new GetTipoMovimientoSelectListQuery();
         var result = await queryMediator.QueryAsync(query, cancellationToken);
+        return result.ToCustomMinimalApiResult();
+    }
+
+    public async Task<IResult> GetTasas(
+        [FromServices] IQueryMediator queryMediator,
+        [FromQuery] bool? esVariable,
+        CancellationToken cancellationToken = default)
+    {
+
+        var query = new GetTasaSelectListQuery
+        {
+            EsVariable = esVariable ?? false
+        };
+        var result = await queryMediator.QueryAsync(query, cancellationToken);
+        return result.ToCustomMinimalApiResult();
+    }
+
+    public async Task<IResult> GetTipoTerminaciones(
+    [FromServices] IQueryMediator queryMediator)
+    {
+        var query = new GetTipoTerminacionesSelectListQuery();
+
+        var result = await queryMediator.QueryAsync(query);
+        return result.ToCustomMinimalApiResult();
+    }
+
+
+    public async Task<IResult> GetTipoReduccion(
+        [FromServices] IQueryMediator queryMediator)
+    {
+        var query = new GetTipoReduccionSelectListQuery();
+
+        var result = await queryMediator.QueryAsync(query);
+        return result.ToCustomMinimalApiResult();
+    }
+
+    public async Task<IResult> GetTipoPagos(
+    [FromServices] IQueryMediator queryMediator)
+    {
+        var query = new GetTipoPagoSelectListQuery();
+
+        var result = await queryMediator.QueryAsync(query);
+        return result.ToCustomMinimalApiResult();
+    }
+    public async Task<IResult> GetBancosSelectList(
+    [FromServices] IQueryMediator queryMediator)
+    {
+        var query = new GetBancoSelectListQuery();
+
+        var result = await queryMediator.QueryAsync(query);
+        return result.ToCustomMinimalApiResult();
+    }
+
+    public async Task<IResult> GetCuentaBancariaByBancoIdSelectList(
+    [FromServices] IQueryMediator queryMediator,
+    [FromRoute] int idBanco)
+    {
+        var query = new GetCuentaBancariaByBancoIdSelectListQuery
+        {
+            IdBanco = idBanco
+        };
+
+        var result = await queryMediator.QueryAsync(query);
         return result.ToCustomMinimalApiResult();
     }
 }

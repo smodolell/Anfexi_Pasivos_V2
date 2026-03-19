@@ -13,7 +13,7 @@ public class Procesos : EndpointGroupBase
         var group = groupBuilder.MapGroup("/")
             .WithTags("Procesos");
 
-        group.MapPost("procesos/moratorios", ProcesarMoratorios)
+        group.MapPost("moratorios", ProcesarMoratorios)
             .WithName("ProcesarMoratorios")
             .WithSummary("Procesa moratorios para contratos")
             .WithDescription("Ejecuta para calcular y aplicar moratorios a contratos, de forma global o para un contrato específico.")
@@ -24,16 +24,16 @@ public class Procesos : EndpointGroupBase
             .Produces<ApiResponseDto>(StatusCodes.Status401Unauthorized)
             .Produces<ApiResponseDto>(StatusCodes.Status500InternalServerError);
 
-        group.MapPost("procesos/vencimientos", ProcesarVencimientos)
-    .WithName("ProcesarVencimientos")
-    .WithSummary("Procesa vencimientos de contratos en un rango de fechas")
-    .WithDescription("Ejecuta el procedimiento almacenado usp_PSV_ProcesaVencimientosAsync para generar vencimientos de contratos en el rango de fechas especificado, con filtros opcionales por fondeador y contrato.")
-    .Accepts<ProcesaVencimientoRequest>("application/json")
-    .Produces<ApiResponseDto<ProcesaVencimientoResultDto>>(StatusCodes.Status200OK)
-    .Produces<ApiResponseDto>(StatusCodes.Status400BadRequest)
-    .Produces<ApiResponseDto>(StatusCodes.Status404NotFound)
-    .Produces<ApiResponseDto>(StatusCodes.Status401Unauthorized)
-    .Produces<ApiResponseDto>(StatusCodes.Status500InternalServerError);
+        group.MapPost("vencimientos", ProcesarVencimientos)
+            .WithName("ProcesarVencimientos")
+            .WithSummary("Procesa vencimientos de contratos en un rango de fechas")
+            .WithDescription("Ejecuta el procedimiento almacenado usp_PSV_ProcesaVencimientosAsync para generar vencimientos de contratos en el rango de fechas especificado, con filtros opcionales por fondeador y contrato.")
+            .Accepts<ProcesaVencimientoRequest>("application/json")
+            .Produces<ApiResponseDto<ProcesaVencimientoResultDto>>(StatusCodes.Status200OK)
+            .Produces<ApiResponseDto>(StatusCodes.Status400BadRequest)
+            .Produces<ApiResponseDto>(StatusCodes.Status404NotFound)
+            .Produces<ApiResponseDto>(StatusCodes.Status401Unauthorized)
+            .Produces<ApiResponseDto>(StatusCodes.Status500InternalServerError);
     }
 
 

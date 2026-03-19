@@ -1,10 +1,6 @@
 ﻿using Anfx.Pasivos.Application.Features.Sistema.Commands;
 using Anfx.Pasivos.Application.Features.Sistema.DTOs;
 using Anfx.Pasivos.Application.Features.Sistema.Queries;
-using Anfx.Pasivos.Application.Features.Usuarios.Commands;
-using Anfx.Pasivos.Application.Features.Usuarios.DTOs;
-using Anfx.Pasivos.Application.Features.Usuarios.Queries;
-using Ardalis.Result.AspNetCore;
 using IResult = Microsoft.AspNetCore.Http.IResult;
 
 
@@ -20,7 +16,8 @@ public class Sistema : EndpointGroupBase
             .WithTags("Sistema");
 
 
-        group.MapPost("empresa/", Create)
+        #region Empresa
+        group.MapPost("empresa/", CreateEmpresa)
             .WithName("CreateEmpresa")
             .WithSummary("Crea una nueva empresa")
             .Accepts<EmpresaCreateDto>("application/json")
@@ -29,7 +26,7 @@ public class Sistema : EndpointGroupBase
             .Produces<ProblemDetails>(StatusCodes.Status409Conflict);
 
 
-        group.MapPut("empresa/{id}", Update)
+        group.MapPut("empresa/{id}", UpdateEmpresa)
             .WithName("UpdateEmpresa")
             .WithSummary("Actualiza una empresa existente")
             .Accepts<EmpresaUpdateDto>("application/json")
@@ -40,7 +37,7 @@ public class Sistema : EndpointGroupBase
             .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
             .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError);
 
-        group.MapDelete("empresa/{id}", Delete)
+        group.MapDelete("empresa/{id}", DeleteEmpresa)
             .WithName("DeleteEmpresa")
             .WithSummary("Elimina una empresa")
             .Produces<EmpresaDto>(StatusCodes.Status200OK)
@@ -48,12 +45,12 @@ public class Sistema : EndpointGroupBase
             .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
             .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError);
 
-        group.MapGet("empresa/", GetPaginated)
+        group.MapGet("empresa/", GetEmpresaPaginated)
             .WithSummary("Obtiene empresas paginadas y filtradas")
             .Produces<PagedResultDto<EmpresaDto>>(StatusCodes.Status200OK);
 
 
-        group.MapGet("empresa/all", GetAll)
+        group.MapGet("empresa/all", GetEmpresaAll)
             .WithName("get-all")
             .WithSummary("Obtiene todas las empresas activas")
             .Produces<List<EmpresaDto>>(StatusCodes.Status200OK)
@@ -61,7 +58,7 @@ public class Sistema : EndpointGroupBase
             .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError);
         ;
 
-        group.MapGet("empresa/{id}", GetById)
+        group.MapGet("empresa/{id}", GetEmpresaById)
             .WithName("GetById")
             .WithSummary("Obtiene una empresa por su ID")
             .Produces<EmpresaDto>(StatusCodes.Status200OK)
@@ -70,7 +67,7 @@ public class Sistema : EndpointGroupBase
             .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError);
 
 
-        group.MapGet("empresa/rfc/{rfc}", GetByRfc)
+        group.MapGet("empresa/rfc/{rfc}", GetEmpresaByRfc)
             .WithName("GetEmpresaByRfc")
             .WithSummary("Obtiene una empresa por RFC")
             .Produces<EmpresaDto>(StatusCodes.Status200OK)
@@ -87,73 +84,14 @@ public class Sistema : EndpointGroupBase
             .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError);
 
 
-        group.MapGet("usuarios/all", GetUsuariosAll)
-    .WithName("GetAllUsuarios")
-    .WithSummary("Obtiene todos los usuarios activos")
-    .WithDescription("Obtiene un listado completo de todos los usuarios activos")
-    .Produces<IEnumerable<UsuarioDto>>(StatusCodes.Status200OK)
-    .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
-    .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError);
+        #endregion
 
-        group.MapGet("usuarios/", GetUsuariosPaginados)
-            .WithName("GetUsuariosPaginados")
-            .WithSummary("Obtiene usuarios paginados y filtrados")
-            .WithDescription("Obtiene un listado paginado de usuarios con filtros opcionales")
-            .Produces<PagedResultDto<UsuarioDto>>(StatusCodes.Status200OK)
-            .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
-            .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError);
 
-        group.MapGet("usuarios/{id}", GetUsuarioById)
-            .WithName("GetUsuarioById")
-            .WithSummary("Obtiene un usuario por ID")
-            .WithDescription("Obtiene los detalles de un usuario específico por su ID")
-            .Produces<UsuarioDto>(StatusCodes.Status200OK)
-            .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
-            .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
-            .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError);
 
-        group.MapGet("usuarios/roles", GetUsuarioRoles)
-            .WithName("GetUsuarioRoles")
-            .WithSummary("Obtiene lista de roles para selects")
-            .WithDescription("Obtiene un listado de roles para controles tipo select en formularios de usuario")
-            .Produces<IEnumerable<SelectItemDto>>(StatusCodes.Status200OK)
-            .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
-            .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError);
-
-        group.MapPost("usuarios/", CreateUsuario)
-            .WithName("CreateUsuario")
-            .WithSummary("Crea un nuevo usuario")
-            .WithDescription("Crea un nuevo usuario en el sistema")
-            .Accepts<UsuarioCreateDto>("application/json")
-            .Produces<UsuarioDto>(StatusCodes.Status201Created)
-            .Produces<ValidationProblemDetails>(StatusCodes.Status400BadRequest)
-            .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
-            .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError);
-
-        group.MapPut("usuarios/{id}", UpdateUsuario)
-            .WithName("UpdateUsuario")
-            .WithSummary("Actualiza un usuario existente")
-            .WithDescription("Actualiza los datos de un usuario existente")
-            .Accepts<UsuarioUpdateDto>("application/json")
-            .Produces<UsuarioDto>(StatusCodes.Status200OK)
-            .Produces<ValidationProblemDetails>(StatusCodes.Status400BadRequest)
-            .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
-            .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
-            .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError);
-
-        group.MapDelete("usuarios/{id}", DeleteUsuario)
-            .WithName("DeleteUsuario")
-            .WithSummary("Elimina un usuario")
-            .WithDescription("Elimina lógicamente un usuario (soft delete)")
-            .Produces(StatusCodes.Status200OK)
-            .Produces<ProblemDetails>(StatusCodes.Status400BadRequest)
-            .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
-            .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
-            .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError);
     }
 
     #region Empresa
-    public async Task<IResult> Create(
+    public async Task<IResult> CreateEmpresa(
         [FromServices] ICommandMediator commandMediator,
         [FromBody] EmpresaCreateDto model
     )
@@ -164,7 +102,7 @@ public class Sistema : EndpointGroupBase
         return result.ToCustomMinimalApiResult();
     }
 
-    public async Task<IResult> Update(
+    public async Task<IResult> UpdateEmpresa(
         [FromServices] ICommandMediator commandMediator,
         int id,
         [FromBody] EmpresaUpdateDto model)
@@ -174,7 +112,7 @@ public class Sistema : EndpointGroupBase
         return result.ToCustomMinimalApiResult(); // ✅ Maneja 200, 404, 400, 500
     }
 
-    public async Task<IResult> Delete(
+    public async Task<IResult> DeleteEmpresa(
         [FromServices] ICommandMediator commandMediator,
         int id)
     {
@@ -183,7 +121,7 @@ public class Sistema : EndpointGroupBase
         return result.ToCustomMinimalApiResult();
     }
 
-    public async Task<IResult> Exists(
+    public async Task<IResult> EmpresaExists(
         [FromServices] IQueryMediator queryMediator,
         int id)
     {
@@ -200,7 +138,7 @@ public class Sistema : EndpointGroupBase
         return result.ToCustomMinimalApiResult();
     }
 
-    public async Task<IResult> GetAll(
+    public async Task<IResult> GetEmpresaAll(
         [FromServices] IQueryMediator queryMediator
     )
     {
@@ -210,7 +148,7 @@ public class Sistema : EndpointGroupBase
     }
 
 
-    public async Task<IResult> GetPaginated(
+    public async Task<IResult> GetEmpresaPaginated(
         IQueryMediator queryMediator,
         [FromQuery] string? q = null,
         [FromQuery] int page = 1,
@@ -222,7 +160,7 @@ public class Sistema : EndpointGroupBase
     }
 
 
-    public async Task<IResult> GetById(
+    public async Task<IResult> GetEmpresaById(
         [FromServices] IQueryMediator queryMediator,
         int id)
     {
@@ -231,7 +169,7 @@ public class Sistema : EndpointGroupBase
         return result.ToCustomMinimalApiResult();
     }
 
-    public async Task<IResult> GetByRfc(
+    public async Task<IResult> GetEmpresaByRfc(
         [FromServices] IQueryMediator queryMediator,
         string rfc)
     {
@@ -242,118 +180,6 @@ public class Sistema : EndpointGroupBase
     #endregion
 
 
-    #region Usuarios
 
-    public async Task<IResult> GetUsuariosAll(
-        [FromServices] IQueryMediator queryMediator)
-    {
-        var query = new GetAllUsuariosQuery();
-        var result = await queryMediator.QueryAsync(query);
-        return result.ToCustomMinimalApiResult();
-    }
-
-    public async Task<IResult> GetUsuariosPaginados(
-        [FromServices] IQueryMediator queryMediator,
-        [FromQuery] string? q = null,
-        [FromQuery] int page = 1,
-        [FromQuery] int size = 10,
-        [FromQuery] bool? activo = null)
-    {
-        var query = new GetUsuariosQuery(page, size, q, activo);
-        var result = await queryMediator.QueryAsync(query);
-        return result.ToCustomMinimalApiResult();
-    }
-
-
-    public async Task<IResult> GetUsuarioById(
-        [FromServices] IQueryMediator queryMediator,
-        int id)
-    {
-        var query = new GetUsuarioByIdQuery(id);
-        var result = await queryMediator.QueryAsync(query);
-        return result.ToCustomMinimalApiResult();
-    }
-
-    public async Task<IResult> GetUsuarioRoles(
-        [FromServices] IQueryMediator queryMediator)
-    {
-        var query = new GetRolesQuery();
-        var result = await queryMediator.QueryAsync(query);
-        return result.ToCustomMinimalApiResult();
-    }
-
-    public async Task<IResult> CreateUsuario(
-        [FromServices] ICommandMediator commandMediator,
-        [FromBody] UsuarioCreateDto model)
-    {
-        // Validación de modelo nulo
-        if (model == null)
-        {
-            var validationError = Result<UsuarioDto>.Invalid(new List<ValidationError>
-            {
-                new() {
-                    Identifier = "model",
-                    ErrorMessage = "El modelo no puede ser nulo"
-                }
-            });
-            return validationError.ToCustomMinimalApiResult();
-        }
-
-        var command = new CreateUsuarioCommand(model);
-        var result = await commandMediator.SendAsync(command);
-        return result.ToCustomMinimalApiResult();
-    }
-
-    /// <summary>
-    /// Actualiza un usuario existente
-    /// </summary>
-    public async Task<IResult> UpdateUsuario(
-        [FromServices] ICommandMediator commandMediator,
-        int id,
-        [FromBody] UsuarioUpdateDto model)
-    {
-        // Validaciones
-        if (model == null)
-        {
-            var validationError = Result<UsuarioDto>.Invalid(new List<ValidationError>
-            {
-                new() {
-                    Identifier = "model",
-                    ErrorMessage = "El modelo no puede ser nulo"
-                }
-            });
-            return validationError.ToCustomMinimalApiResult();
-        }
-
-        if (id != model.Id)
-        {
-            var validationError = Result<UsuarioDto>.Invalid(new List<ValidationError>
-            {
-                new() {
-                    Identifier = "id",
-                    ErrorMessage = $"El ID de la ruta ({id}) no coincide con el ID del usuario ({model.Id})"
-                }
-            });
-            return validationError.ToCustomMinimalApiResult();
-        }
-
-        var command = new UpdateUsuarioCommand(model);
-        var result = await commandMediator.SendAsync(command);
-        return result.ToCustomMinimalApiResult();
-    }
-
-    /// <summary>
-    /// Elimina un usuario (soft delete)
-    /// </summary>
-    public async Task<IResult> DeleteUsuario(
-        [FromServices] ICommandMediator commandMediator,
-        int id)
-    {
-        var command = new DeleteUsuarioCommand(id);
-        var result = await commandMediator.SendAsync(command);
-        return result.ToCustomMinimalApiResult();
-    }
-
-    #endregion
 
 }

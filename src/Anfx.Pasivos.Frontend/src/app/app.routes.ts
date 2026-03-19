@@ -72,6 +72,20 @@ export const routes: Routes = [
     loadChildren: () => import('./features/configuracion/configuracion.routes'),
   },
 
+  // Operaciones - PROTEGIDAS
+  {
+    path: 'operaciones',
+    canActivate: [authGuard],
+    loadChildren: () => import('./features/operaciones/operaciones.routes'),
+  },
+
+  // Procesos - PROTEGIDOS
+  {
+    path: 'procesos',
+    canActivate: [authGuard],
+    loadChildren: () => import('./features/procesos/procesos.routes'),
+  },
+
   // Catálogos - PROTEGIDOS
   {
     path: 'catalogos',

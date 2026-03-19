@@ -1,0 +1,255 @@
+<div class="container-fluid mt-4">
+
+  <!-- Breadcrumb -->
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">Operaciones</li>
+      <li class="breadcrumb-item active">Anticipo a Contrato Pasivo</li>
+    </ol>
+  </nav>
+
+  <!-- ── Buscador de Contrato ───────────────────────────────── -->
+  <div class="card shadow-sm border-0 mt-3">
+    <div class="card-header bg-white py-3">
+      <h5 class="mb-0 text-primary">
+        <i class="fa-solid fa-hand-holding-dollar me-2"></i>Anticipo a Contrato Pasivo
+      </h5>
+    </div>
+
+    <div class="card-body">
+
+      @if (loadingCatalogos()) {
+        <div class="d-flex align-items-center gap-2 text-muted">
+          <span class="spinner-border spinner-border-sm"></span>
+          <span>Cargando catálogos...</span>
+        </div>
+      } @else {
+        <div class="row g-3 align-items-end">
+
+          <div class="col-md-5">
+            <label class="form-label fw-semibold">Número de Contrato</label>
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Ingrese el número de contrato..."
+              [(ngModel)]="contratoBusqueda"
+              [ngModelOptions]="{ standalone: true }"
+              (keyup.enter)="onBuscar()"
+            />
+          </div>
+
+          <div class="col-md-2">
+            <button
+              type="button"
+              class="btn btn-primary w-100"
+              [disabled]="!contratoBusqueda.trim() || buscando()"
+              (click)="onBuscar()">
+              @if (buscando()) {
+                <span class="spinner-border spinner-border-sm me-2"></span>
+              } @else {
+                <i class="fa-solid fa-magnifying-glass me-2"></i>
+              }
+              Buscar
+            </button>
+          </div>
+
+        </div>
+
+        @if (errorBusqueda()) {
+          <div class="alert alert-danger mt-3 mb-0">
+            <i class="fa-solid fa-circle-exclamation me-2"></i>{{ errorBusqueda() }}
+          </div>
+        }
+      }
+
+    </div>
+  </div>
+
+  <!-- ── Formulario de Anticipo ──────────────────────────────── -->
+  @if (mostrarFormulario) {
+    <div class="card shadow-sm border-0 mt-4">
+
+      <div class="card-header bg-white py-3 d-flex align-items-center justify-content-between">
+        <h6 class="mb-0 text-secondary fw-semibold">
+          <i class="fa-solid fa-file-contract me-2"></i>Contrato:
+          <span class="text-primary">{{ contratoBusqueda }}</span>
+        </h6>
+        <div class="d-flex align-items-center gap-3">
+          @if (calculandoConfig()) {
+            <span class="d-flex align-items-center gap-2 text-muted small">
+              <span class="spinner-border spinner-border-sm"></span> Calculando...
+            </span>
+          }
+          <button
+            type="button"
+            class="btn btn-success"
+            [disabled]="guardando() || calculandoConfig()"
+            (click)="onConfirmar()">
+            @if (guardando()) {
+              <span class="spinner-border spinner-border-sm me-2"></span>
+            } @else {
+              <i class="fa-solid fa-check me-2"></i>
+            }
+            Confirmar Anticipo
+          </button>
+        </div>
+      </div>
+
+      <div class="card-body p-4">
+        <form [formGroup]="form">
+          <div class="row g-4">
+
+            <!-- Fecha Anticipo -->
+            <div class="col-md-3">
+              <label class="form-label fw-semibold">
+                Fecha Anticipo <span class="text-danger">*</span>
+              </label>
+              <input
+                type="date"
+                class="form-control"
+                [class.is-invalid]="isInvalid('fechaAnticipo')"
+                formControlName="fechaAnticipo"
+              />
+              @if (isInvalid('fechaAnticipo')) {
+                <div class="invalid-feedback">Ingrese la fecha del anticipo.</div>
+              }
+            </div>
+
+            <!-- Anticipo -->
+            <div class="col-md-3">
+              <label class="form-label fw-semibold">
+                Anticipo <span class="text-danger">*</span>
+              </label>
+              <div class="input-group">
+                <span class="input-group-text">$</span>
+                <input
+                  type="number"
+                  class="form-control"
+                  [class.is-invalid]="isInvalid('montoAnticipo')"
+                  formControlName="montoAnticipo"
+                  min="0.01"
+                  step="0.01"
+                />
+              </div>
+              @if (isInvalid('montoAnticipo')) {
+                <div class="invalid-feedback d-block">Ingrese el monto del anticipo.</div>
+              }
+            </div>
+
+            <!-- Tipo -->
+            <div class="col-md-3">
+              <label class="form-label fw-semibold">
+                Tipo <span class="text-danger">*</span>
+              </label>
+              <select
+                class="form-select"
+                [class.is-invalid]="isInvalid('idTipoTerminacion')"
+                formControlName="idTipoTerminacion">
+                <option [ngValue]="null" disabled>-- Seleccione --</option>
+                @for (t of tiposTerminacion(); track t.value) {
+                  <option [ngValue]="t.value">{{ t.text }}</option>
+                }
+              </select>
+              @if (isInvalid('idTipoTerminacion')) {
+                <div class="invalid-feedback">Seleccione el tipo.</div>
+              }
+            </div>
+
+            <!-- Reducción -->
+            <div class="col-md-3">
+              <label class="form-label fw-semibold">
+                Reducción
+                @if (reduccionHabilitada) {
+                  <span class="text-danger">*</span>
+                }
+              </label>
+              <select
+                class="form-select"
+                [class.is-invalid]="isInvalid('idTipoReduccion')"
+                formControlName="idTipoReduccion">
+                <option [ngValue]="null" disabled>
+                  @if (!reduccionHabilitada) {
+                    -- Seleccione primero el tipo --
+                  } @else {
+                    -- Seleccione --
+                  }
+                </option>
+                @for (r of tiposReduccion(); track r.value) {
+                  <option [ngValue]="r.value">{{ r.text }}</option>
+                }
+              </select>
+              @if (isInvalid('idTipoReduccion')) {
+                <div class="invalid-feedback">Seleccione el tipo de reducción.</div>
+              }
+            </div>
+
+            <!-- Interés -->
+            <div class="col-12">
+              <label class="form-label fw-semibold">Interés</label>
+              <div class="row g-3">
+
+                <div class="col-md-3">
+                  <label class="form-label text-muted small">
+                    Monto Interés <span class="text-danger">*</span>
+                  </label>
+                  <div class="input-group">
+                    <span class="input-group-text">$</span>
+                    <input
+                      type="number"
+                      class="form-control"
+                      [class.is-invalid]="isInvalid('montoInteres')"
+                      formControlName="montoInteres"
+                      min="0"
+                      step="0.01"
+                    />
+                  </div>
+                  @if (isInvalid('montoInteres')) {
+                    <div class="invalid-feedback d-block">Requerido.</div>
+                  }
+                </div>
+
+                <div class="col-md-3">
+                  <label class="form-label text-muted small">
+                    IVA Interés <span class="text-danger">*</span>
+                  </label>
+                  <div class="input-group">
+                    <span class="input-group-text">$</span>
+                    <input
+                      type="number"
+                      class="form-control"
+                      [class.is-invalid]="isInvalid('montoIVA_Interes')"
+                      formControlName="montoIVA_Interes"
+                      min="0"
+                      step="0.01"
+                    />
+                  </div>
+                  @if (isInvalid('montoIVA_Interes')) {
+                    <div class="invalid-feedback d-block">Requerido.</div>
+                  }
+                </div>
+
+              </div>
+            </div>
+
+            <!-- Total -->
+            <div class="col-md-3">
+              <label class="form-label fw-semibold">Total</label>
+              <div class="input-group">
+                <span class="input-group-text">$</span>
+                <input
+                  type="number"
+                  class="form-control bg-light"
+                  formControlName="montoTotal"
+                  readonly
+                />
+              </div>
+            </div>
+
+          </div>
+        </form>
+      </div>
+
+    </div>
+  }
+
+</div>

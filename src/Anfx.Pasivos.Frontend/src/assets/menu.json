@@ -52,14 +52,36 @@
       { "id": "empresas",            "label": "Empresas",            "icon": "fa-solid fa-building",            "route": "/admin/empresas",                    "order": 1, "roles": ["Admin", "Webmaster"] },
       { "id": "fondeador",           "label": "Fondeadores",         "icon": "fa-solid fa-hand-holding-dollar",  "route": "/configuracion/fondeador",           "order": 2, "roles": ["Admin", "Webmaster"] },
       { "id": "tipo-credito",        "label": "Tipos de Crédito",    "icon": "fa-solid fa-tag",                  "route": "/configuracion/tipo-credito",        "order": 3, "roles": ["Admin", "Webmaster"] },
-      { "id": "tipo-tabla-amortiza", "label": "Tipo Tabla Amortiza", "icon": "fa-solid fa-table-list",           "route": "/configuracion/tipo-tabla-amortiza", "order": 4, "roles": ["Admin", "Webmaster"] }
+      { "id": "tipo-tabla-amortiza", "label": "Tipo Tabla Amortiza", "icon": "fa-solid fa-table-list", "route": "/configuracion/tipo-tabla-amortiza", "order": 4, "roles": ["Admin", "Webmaster"] }
+    ]
+  },
+  {
+    "id": "operaciones",
+    "label": "Operaciones",
+    "icon": "fa-solid fa-arrows-rotate",
+    "order": 5,
+    "children": [
+      { "id": "asociar-contrato", "label": "Asociar Cto. Activo/Pasivo", "icon": "fa-solid fa-link",                  "route": "/operaciones/asociar-contrato", "order": 1 },
+      { "id": "anticipo",         "label": "Anticipo",                  "icon": "fa-solid fa-hand-holding-dollar",    "route": "/operaciones/anticipo",          "order": 2 },
+      { "id": "caja-manual",     "label": "Caja Manual",               "icon": "fa-solid fa-cash-register",          "route": "/operaciones/caja-manual",       "order": 3 },
+      { "id": "cargo-adicional", "label": "Cargo Adicional",           "icon": "fa-solid fa-receipt",                "route": "/operaciones/cargo-adicional",    "order": 4 }
+    ]
+  },
+  {
+    "id": "procesos",
+    "label": "Procesos",
+    "icon": "fa-solid fa-gears",
+    "order": 6,
+    "children": [
+      { "id": "vencimiento", "label": "Vencimiento", "icon": "fa-solid fa-calendar-check",        "route": "/procesos/vencimiento", "order": 1 },
+      { "id": "moratorios",  "label": "Moratorios",  "icon": "fa-solid fa-triangle-exclamation", "route": "/procesos/moratorios",  "order": 2 }
     ]
   },
   {
     "id": "sistema",
     "label": "Sistema",
     "icon": "fa-solid fa-screwdriver-wrench",
-    "order": 5,
+    "order": 7,
     "roles": ["Admin", "Webmaster"],
     "children": [
       { "id": "usuarios", "label": "Usuarios", "icon": "fa-solid fa-users",       "route": "/admin/usuarios", "order": 1, "roles": ["Admin", "Webmaster"] },

@@ -1,0 +1,238 @@
+<div class="container-fluid mt-4">
+
+  <!-- Breadcrumb -->
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">Operaciones</li>
+      <li class="breadcrumb-item active">Asociar Contrato Activo a Pasivo</li>
+    </ol>
+  </nav>
+
+  <!-- ── Formulario de selección ─────────────────────────────── -->
+  <div class="card shadow-sm border-0 mt-3">
+
+    <div class="card-header bg-white py-3">
+      <h5 class="mb-0 text-primary">
+        <i class="fa-solid fa-link me-2"></i>Asociar Contrato Activo a Pasivo
+      </h5>
+    </div>
+
+    <div class="card-body">
+      <form [formGroup]="form">
+        <div class="row g-3 align-items-end">
+
+          <!-- Fondeador -->
+          <div class="col-md-4">
+            <label for="idFondeador" class="form-label fw-semibold">
+              Fondeador <span class="text-danger">*</span>
+            </label>
+            @if (loadingFondeadores()) {
+              <div class="d-flex align-items-center gap-2 text-muted">
+                <span class="spinner-border spinner-border-sm"></span>
+                <span>Cargando...</span>
+              </div>
+            } @else {
+              <select
+                id="idFondeador"
+                class="form-select"
+                [class.is-invalid]="form.get('idFondeador')!.invalid && form.get('idFondeador')!.touched"
+                formControlName="idFondeador">
+                <option [ngValue]="null" disabled>-- Seleccione un fondeador --</option>
+                @for (item of fondeadores(); track item.value) {
+                  <option [ngValue]="item.value">{{ item.text }}</option>
+                }
+              </select>
+              @if (form.get('idFondeador')!.invalid && form.get('idFondeador')!.touched) {
+                <div class="invalid-feedback">Seleccione un fondeador.</div>
+              }
+            }
+          </div>
+
+          <!-- Contrato Pasivo -->
+          <div class="col-md-5">
+            <label for="idContratoPasivo" class="form-label fw-semibold">
+              Contrato Pasivo <span class="text-danger">*</span>
+            </label>
+            @if (loadingContratos()) {
+              <div class="d-flex align-items-center gap-2 text-muted">
+                <span class="spinner-border spinner-border-sm"></span>
+                <span>Cargando...</span>
+              </div>
+            } @else {
+              <select
+                id="idContratoPasivo"
+                class="form-select"
+                [class.is-invalid]="form.get('idContratoPasivo')!.invalid && form.get('idContratoPasivo')!.touched"
+                formControlName="idContratoPasivo"
+                [attr.disabled]="!form.get('idFondeador')!.value ? true : null">
+                <option [ngValue]="null" disabled>
+                  @if (!form.get('idFondeador')!.value) {
+                    -- Seleccione primero un fondeador --
+                  } @else if (contratosPasivos().length === 0) {
+                    -- Sin contratos disponibles --
+                  } @else {
+                    -- Seleccione un contrato --
+                  }
+                </option>
+                @for (item of contratosPasivos(); track item.value) {
+                  <option [ngValue]="item.value">{{ item.text }}</option>
+                }
+              </select>
+              @if (form.get('idContratoPasivo')!.invalid && form.get('idContratoPasivo')!.touched) {
+                <div class="invalid-feedback">Seleccione un contrato pasivo.</div>
+              }
+            }
+          </div>
+
+          <!-- Botón Preparar -->
+          <div class="col-md-3">
+            <button
+              type="button"
+              class="btn btn-primary w-100"
+              [disabled]="form.invalid || loading()"
+              (click)="onPreparar()">
+              @if (loading() && !preparado()) {
+                <span class="spinner-border spinner-border-sm me-2"></span>
+              } @else {
+                <i class="fa-solid fa-magnifying-glass me-2"></i>
+              }
+              Preparar para asignación
+            </button>
+          </div>
+
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ── Resultados ──────────────────────────────────────────── -->
+  @if (preparado()) {
+    <div class="card shadow-sm border-0 mt-4">
+
+      <div class="card-header bg-white py-3 d-flex align-items-center justify-content-between flex-wrap gap-2">
+
+        <!-- Buscador + contador -->
+        <div class="d-flex align-items-center gap-3">
+          <div class="input-group" style="width: 280px;">
+            <span class="input-group-text bg-white">
+              <i class="fa-solid fa-magnifying-glass text-muted"></i>
+            </span>
+            <input
+              #searchInput
+              type="text"
+              class="form-control border-start-0"
+              placeholder="Buscar contrato..."
+              (input)="onSearch(searchInput.value)"
+            />
+          </div>
+          @if (totalCount() > 0) {
+            <span class="text-muted small">{{ totalCount() }} registro(s)</span>
+          }
+        </div>
+
+        <!-- Seleccionados + Guardar -->
+        <div class="d-flex align-items-center gap-3">
+          @if (totalSeleccionados() > 0) {
+            <span class="badge bg-primary-subtle text-primary fs-6 px-3 py-2">
+              {{ totalSeleccionados() }} seleccionado(s)
+            </span>
+          }
+          <button
+            type="button"
+            class="btn btn-success"
+            [disabled]="totalSeleccionados() === 0 || saving()"
+            (click)="onGuardar()">
+            @if (saving()) {
+              <span class="spinner-border spinner-border-sm me-2"></span>
+            } @else {
+              <i class="fa-solid fa-floppy-disk me-2"></i>
+            }
+            Guardar cambios
+          </button>
+        </div>
+
+      </div>
+
+      <div class="card-body p-0">
+
+        @if (loading()) {
+          <div class="text-center py-5">
+            <span class="spinner-border text-primary"></span>
+          </div>
+        } @else if (items().length === 0) {
+          <div class="text-center text-muted py-5">
+            <i class="fa-solid fa-folder-open fa-2x mb-2"></i>
+            <p class="mb-0">No se encontraron contratos activos</p>
+          </div>
+        } @else {
+
+          <table class="table table-hover mb-0">
+            <thead class="table-light">
+              <tr>
+                <th style="width: 56px;" class="text-center">
+                  <input
+                    #selectAllCb
+                    type="checkbox"
+                    class="form-check-input"
+                    [checked]="allSelected()"
+                    (change)="toggleAll()"
+                    title="Seleccionar todos"
+                  />
+                </th>
+                <th>Contrato</th>
+                <th>Tipo de Crédito</th>
+                <th class="text-end">Capital</th>
+                <th class="d-none d-md-table-cell">Fondeador</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (item of items(); track item.id) {
+                <tr (click)="toggleItem(item)" style="cursor:pointer">
+                  <td class="text-center" (click)="$event.stopPropagation()">
+                    <input
+                      type="checkbox"
+                      class="form-check-input"
+                      [checked]="item.seleccionado"
+                      (change)="toggleItem(item)"
+                    />
+                  </td>
+                  <td>{{ item.contrato }}</td>
+                  <td>{{ item.tipoCredito }}</td>
+                  <td class="text-end">{{ item.capital | number: '1.2-2' }}</td>
+                  <td class="d-none d-md-table-cell">{{ item.fondeador }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+
+          <!-- Paginación -->
+          @if (totalPages() > 1) {
+            <div class="d-flex align-items-center justify-content-between px-3 py-2 border-top">
+              <small class="text-muted">
+                Página {{ currentPage() }} de {{ totalPages() }}
+              </small>
+              <div class="d-flex gap-2">
+                <button
+                  type="button"
+                  class="btn btn-outline-secondary btn-sm"
+                  [disabled]="currentPage() === 1"
+                  (click)="prevPage()">
+                  <i class="fa-solid fa-chevron-left"></i>
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-outline-secondary btn-sm"
+                  [disabled]="currentPage() === totalPages()"
+                  (click)="nextPage()">
+                  <i class="fa-solid fa-chevron-right"></i>
+                </button>
+              </div>
+            </div>
+          }
+
+        }
+      </div>
+    </div>
+  }
+
+</div>

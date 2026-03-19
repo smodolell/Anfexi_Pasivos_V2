@@ -132,7 +132,8 @@ th .gt-cell-text {
 
 /* ── Botones de acción ───────────────────────────────────── */
 .btn-action-edit,
-.btn-action-delete {
+.btn-action-delete,
+.btn-action-info {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -163,6 +164,11 @@ th .gt-cell-text {
 .btn-action-delete {
   background: linear-gradient(135deg, var(--pf-danger), #991b1b);
   color: var(--pf-text-on-dark);
+}
+
+.btn-action-info {
+  background: linear-gradient(135deg, #0ea5e9, #0369a1);
+  color: #fff;
 }
 
 /* ── Contenedor con borde y sombra suave ─────────────────── */

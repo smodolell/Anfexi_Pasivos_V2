@@ -1,5 +1,6 @@
 import { Component, OnInit, inject, signal, ViewChild } from '@angular/core';
-import { UsuarioService } from '../../../services/sistema/usuario.service';
+import { AuthService as AuthApiService } from '../../../../api/services/auth.service';
+import { UsuarioCreateDto, UsuarioUpdateDto } from '../../../../api/models/models';
 import { wasHandledByInterceptor } from '../../../interceptors/auth.interceptor';
 import { UsuarioItemDto, UsuarioDto, CreateUsuarioDto, UpdateUsuarioDto, UsuarioPageQueryDto } from '../../../../types/sistema/usuario.dto';
 import { UtilsService } from '../../../services/utils.service';
@@ -16,7 +17,7 @@ import { ConfirmModalComponent } from '../../../shared/components/confirm-modal/
   templateUrl: './usuario-list.component.html',
 })
 export class UsuarioListComponent implements OnInit {
-  private readonly usuarioService = inject(UsuarioService);
+  private readonly authApiService = inject(AuthApiService);
   private readonly utilsService  = inject(UtilsService);
 
   // ── Tabla ────────────────────────────────────────────────────
@@ -103,14 +104,25 @@ export class UsuarioListComponent implements OnInit {
 
   private load() {
     this.loading.set(true);
-    this.usuarioService.getAll(this.query).subscribe({
+    this.authApiService.getUsuariosPaginados(
+      this.query.q,
+      this.query.page,
+      this.query.size,
+      this.query.activo,
+    ).subscribe({
       next: res => {
         if (res.success) {
-          this.items.set(res.data.results);
-          this.currentPage.set(res.data.currentPage);
-          this.pageSize.set(res.data.pageSize);
-          this.totalCount.set(res.data.totalCount);
-          this.totalPages.set(res.data.totalPages);
+          this.items.set((res.data?.results ?? []).map(u => ({
+            id:             u.id ?? 0,
+            nombreCompleto: u.nombreCompleto ?? '',
+            email:          u.email ?? '',
+            usuarioNombre:  u.usuarioNombre ?? '',
+            rolNombre:      u.rol?.sRol ?? '',
+          })));
+          this.currentPage.set(res.data?.currentPage ?? 1);
+          this.pageSize.set(res.data?.pageSize ?? 10);
+          this.totalCount.set(res.data?.totalCount ?? 0);
+          this.totalPages.set(res.data?.totalPages ?? 0);
         } else {
           this.items.set([]);
           this.utilsService.showNotification('Error', res.errors?.[0] ?? res.message ?? 'Error al cargar usuarios', 'error');
@@ -128,10 +140,10 @@ export class UsuarioListComponent implements OnInit {
   }
 
   private editarUsuario(id: number) {
-    this.usuarioService.getById(id).subscribe({
+    this.authApiService.getUsuarioById(id).subscribe({
       next: res => {
         if (res.success) {
-          this.usuarioSeleccionado = { ...res.data };
+          this.usuarioSeleccionado = { ...res.data } as Partial<UsuarioDto>;
           this.mostrandoFormulario.set(true);
         } else {
           this.utilsService.showNotification('Error', res.errors?.[0] ?? res.message ?? 'Error al cargar el usuario', 'error');
@@ -144,9 +156,24 @@ export class UsuarioListComponent implements OnInit {
   onGuardarUsuario(usuario: CreateUsuarioDto | UpdateUsuarioDto) {
     const id = this.usuarioSeleccionado.id;
     const isUpdate = id != null && id > 0;
+    const payload = usuario as any;
+
     const request$ = isUpdate
-      ? this.usuarioService.update(id, usuario as UpdateUsuarioDto)
-      : this.usuarioService.create(usuario as CreateUsuarioDto);
+      ? this.authApiService.updateUsuario(id, {
+          id,
+          nombreCompleto: payload.nombreCompleto,
+          email:          payload.email,
+          usuarioNombre:  payload.usuarioNombre,
+          rolId:          payload.rolId,
+          contrasena:     payload.contrasenia ?? null,
+        } as UsuarioUpdateDto)
+      : this.authApiService.createUsuario({
+          nombreCompleto: payload.nombreCompleto,
+          email:          payload.email,
+          usuarioNombre:  payload.usuarioNombre,
+          rolId:          payload.rolId,
+          contrasena:     payload.contrasenia ?? '',
+        } as UsuarioCreateDto);
 
     request$.subscribe({
       next: res => {
@@ -174,9 +201,9 @@ export class UsuarioListComponent implements OnInit {
 
   confirmarEliminacion() {
     if (!this.usuarioAEliminar) return;
-    this.usuarioService.delete(this.usuarioAEliminar.id).subscribe({
+    this.authApiService.deleteUsuario(this.usuarioAEliminar.id).subscribe({
       next: res => {
-        if (res.success) {
+        if (res?.success !== false) {
           this.load();
           this.confirmModal.hide();
           this.usuarioAEliminar = null;

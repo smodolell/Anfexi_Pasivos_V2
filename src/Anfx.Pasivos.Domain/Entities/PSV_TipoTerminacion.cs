@@ -1,6 +1,6 @@
 namespace Anfx.Pasivos.Domain.Entities;
 
-public partial class PSV_TipoTerminacion
+public class PSV_TipoTerminacion
 {
     public PSV_TipoTerminacion()
     {

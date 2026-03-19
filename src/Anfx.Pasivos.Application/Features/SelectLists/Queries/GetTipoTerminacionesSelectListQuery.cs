@@ -5,7 +5,7 @@ public class GetTipoTerminacionesSelectListQuery : SelectListQueryBase
 }
 
 
-internal class GetTipoTerminacionesSelectListQueryHandlera : IQueryHandler<GetMonedasSelectListQuery, Result<List<SelectItemDto>>>
+internal class GetTipoTerminacionesSelectListQueryHandlera : IQueryHandler<GetTipoTerminacionesSelectListQuery, Result<List<SelectItemDto>>>
 {
     private readonly IApplicationDbContext _context;
     public GetTipoTerminacionesSelectListQueryHandlera(IApplicationDbContext context)
@@ -13,7 +13,7 @@ internal class GetTipoTerminacionesSelectListQueryHandlera : IQueryHandler<GetMo
         _context = context;
     }
 
-    public async Task<Result<List<SelectItemDto>>> HandleAsync(GetMonedasSelectListQuery message, CancellationToken cancellationToken = default)
+    public async Task<Result<List<SelectItemDto>>> HandleAsync(GetTipoTerminacionesSelectListQuery message, CancellationToken cancellationToken = default)
     {
         var items = await _context.PSV_TipoTerminacion
             .Select(f => new SelectItemDto

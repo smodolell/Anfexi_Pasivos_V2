@@ -18,7 +18,7 @@ public class PSV_RelLineaCreditoTipoCreditoConfiguration : IEntityTypeConfigurat
             .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasOne(e => e.TipoCredito)
-            .WithMany()
+            .WithMany(l=>l.PSV_RelLineaCreditoTipoCredito)
             .HasForeignKey(e => e.IdTipoCredito)
             .OnDelete(DeleteBehavior.Cascade);
     }

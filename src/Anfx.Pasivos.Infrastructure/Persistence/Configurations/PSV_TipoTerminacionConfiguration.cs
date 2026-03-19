@@ -32,7 +32,7 @@ public class PSV_TipoTerminacionConfiguration : IEntityTypeConfiguration<PSV_Tip
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasOne(e => e.PSV_CuentaBancaria)
-            .WithMany()
+            .WithMany(m=>m.PSV_TipoTerminacion)
             .HasForeignKey(e => e.IdCuentaBancariaDeposito)
             .OnDelete(DeleteBehavior.Restrict);
 

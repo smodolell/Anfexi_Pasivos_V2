@@ -19,7 +19,15 @@ import { OpenApiHttpParams, QueryParamStyle } from '../query.params';
 // @ts-ignore
 import { ApiResponseDto } from '../models/apiResponseDto';
 // @ts-ignore
+import { AsignarPasivosResponce } from '../models/asignarPasivosResponce';
+// @ts-ignore
 import { InfoGeneralContratoPasivoDtoApiResponseDto } from '../models/infoGeneralContratoPasivoDtoApiResponseDto';
+// @ts-ignore
+import { MovimientoDetalleDtoApiResponseDto } from '../models/movimientoDetalleDtoApiResponseDto';
+// @ts-ignore
+import { PagoDetalleDtoApiResponseDto } from '../models/pagoDetalleDtoApiResponseDto';
+// @ts-ignore
+import { RelActivoPasivoDtoPagedResultDtoApiResponseDto } from '../models/relActivoPasivoDtoPagedResultDtoApiResponseDto';
 // @ts-ignore
 import { TablaAmortizaItemDtoListApiResponseDto } from '../models/tablaAmortizaItemDtoListApiResponseDto';
 
@@ -37,6 +45,77 @@ export class ContratosService extends BaseService {
 
     constructor(protected httpClient: HttpClient, @Optional() @Inject(BASE_PATH) basePath: string|string[], @Optional() configuration?: Configuration) {
         super(basePath, configuration);
+    }
+
+    /**
+     * Asigna contratos activos a un contrato pasivo
+     * Permite asignar o reasignar contratos activos a un contrato pasivo específico. Si se envía ContratosActivos, se asigna un solo contrato; si se envía ListaContratos, se asignan múltiples contratos.
+     * @endpoint put /api/contratos/contrato-pasivo/{id}/asignar-activos
+     * @param id 
+     * @param asignarPasivosResponce 
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     * @param options additional options
+     */
+    public asignarPasivos(id: number, asignarPasivosResponce: AsignarPasivosResponce, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any>;
+    public asignarPasivos(id: number, asignarPasivosResponce: AsignarPasivosResponce, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
+    public asignarPasivos(id: number, asignarPasivosResponce: AsignarPasivosResponce, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
+    public asignarPasivos(id: number, asignarPasivosResponce: AsignarPasivosResponce, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        if (id === null || id === undefined) {
+            throw new Error('Required parameter id was null or undefined when calling asignarPasivos.');
+        }
+        if (asignarPasivosResponce === null || asignarPasivosResponce === undefined) {
+            throw new Error('Required parameter asignarPasivosResponce was null or undefined when calling asignarPasivos.');
+        }
+
+        let localVarHeaders = this.defaultHeaders;
+
+        const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
+            'application/json'
+        ]);
+        if (localVarHttpHeaderAcceptSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+        }
+
+        const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
+
+        const localVarTransferCache: boolean = options?.transferCache ?? true;
+
+
+        // to determine the Content-Type header
+        const consumes: string[] = [
+            'application/json'
+        ];
+        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+        if (httpContentTypeSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Content-Type', httpContentTypeSelected);
+        }
+
+        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        if (localVarHttpHeaderAcceptSelected) {
+            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+                responseType_ = 'text';
+            } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+                responseType_ = 'json';
+            } else {
+                responseType_ = 'blob';
+            }
+        }
+
+        let localVarPath = `/api/contratos/contrato-pasivo/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: "int32"})}/asignar-activos`;
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<any>('put', `${basePath}${localVarPath}`,
+            {
+                context: localVarHttpContext,
+                body: asignarPasivosResponce,
+                responseType: <any>responseType_,
+                ...(withCredentials ? { withCredentials } : {}),
+                headers: localVarHeaders,
+                observe: observe,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
+                reportProgress: reportProgress
+            }
+        );
     }
 
     /**
@@ -86,6 +165,252 @@ export class ContratosService extends BaseService {
         return this.httpClient.request<InfoGeneralContratoPasivoDtoApiResponseDto>('get', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
+                responseType: <any>responseType_,
+                ...(withCredentials ? { withCredentials } : {}),
+                headers: localVarHeaders,
+                observe: observe,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * Obtiene el detalle de un movimiento
+     * Retorna la información detallada de un movimiento específico, incluyendo los pagos aplicados
+     * @endpoint get /api/contratos/movimiento/{idMovimiento}/detalle
+     * @param idMovimiento 
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     * @param options additional options
+     */
+    public getMovimientoDetalle(idMovimiento: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<MovimientoDetalleDtoApiResponseDto>;
+    public getMovimientoDetalle(idMovimiento: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<MovimientoDetalleDtoApiResponseDto>>;
+    public getMovimientoDetalle(idMovimiento: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<MovimientoDetalleDtoApiResponseDto>>;
+    public getMovimientoDetalle(idMovimiento: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        if (idMovimiento === null || idMovimiento === undefined) {
+            throw new Error('Required parameter idMovimiento was null or undefined when calling getMovimientoDetalle.');
+        }
+
+        let localVarHeaders = this.defaultHeaders;
+
+        const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
+            'application/json'
+        ]);
+        if (localVarHttpHeaderAcceptSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+        }
+
+        const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
+
+        const localVarTransferCache: boolean = options?.transferCache ?? true;
+
+
+        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        if (localVarHttpHeaderAcceptSelected) {
+            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+                responseType_ = 'text';
+            } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+                responseType_ = 'json';
+            } else {
+                responseType_ = 'blob';
+            }
+        }
+
+        let localVarPath = `/api/contratos/movimiento/${this.configuration.encodeParam({name: "idMovimiento", value: idMovimiento, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: "int32"})}/detalle`;
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<MovimientoDetalleDtoApiResponseDto>('get', `${basePath}${localVarPath}`,
+            {
+                context: localVarHttpContext,
+                responseType: <any>responseType_,
+                ...(withCredentials ? { withCredentials } : {}),
+                headers: localVarHeaders,
+                observe: observe,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * Obtiene el detalle de un pago
+     * Retorna la información detallada de un pago específico, incluyendo los movimientos o conceptos asociados.
+     * @endpoint get /api/contratos/pago/{idPago}/detalle
+     * @param idPago 
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     * @param options additional options
+     */
+    public getPagoDetalle(idPago: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<PagoDetalleDtoApiResponseDto>;
+    public getPagoDetalle(idPago: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PagoDetalleDtoApiResponseDto>>;
+    public getPagoDetalle(idPago: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PagoDetalleDtoApiResponseDto>>;
+    public getPagoDetalle(idPago: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        if (idPago === null || idPago === undefined) {
+            throw new Error('Required parameter idPago was null or undefined when calling getPagoDetalle.');
+        }
+
+        let localVarHeaders = this.defaultHeaders;
+
+        const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
+            'application/json'
+        ]);
+        if (localVarHttpHeaderAcceptSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+        }
+
+        const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
+
+        const localVarTransferCache: boolean = options?.transferCache ?? true;
+
+
+        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        if (localVarHttpHeaderAcceptSelected) {
+            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+                responseType_ = 'text';
+            } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+                responseType_ = 'json';
+            } else {
+                responseType_ = 'blob';
+            }
+        }
+
+        let localVarPath = `/api/contratos/pago/${this.configuration.encodeParam({name: "idPago", value: idPago, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: "int32"})}/detalle`;
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<PagoDetalleDtoApiResponseDto>('get', `${basePath}${localVarPath}`,
+            {
+                context: localVarHttpContext,
+                responseType: <any>responseType_,
+                ...(withCredentials ? { withCredentials } : {}),
+                headers: localVarHeaders,
+                observe: observe,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * Obtiene relación activo-pasivo por contrato y fondeador
+     * Retorna información paginada de la relación activo-pasivo, incluyendo contrato, capital, tipo de crédito y fondeador, filtrada por ID de fondeador y ID de contrato con soporte para búsqueda y ordenamiento dinámico
+     * @endpoint get /api/contratos/rel-activo-pasivo
+     * @param idFondeador 
+     * @param idContrato 
+     * @param q 
+     * @param page 
+     * @param size 
+     * @param sortColumn 
+     * @param sortDescending 
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     * @param options additional options
+     */
+    public getRelActivoPasivo(idFondeador: number, idContrato: number, q?: string, page?: number, size?: number, sortColumn?: string, sortDescending?: boolean, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<RelActivoPasivoDtoPagedResultDtoApiResponseDto>;
+    public getRelActivoPasivo(idFondeador: number, idContrato: number, q?: string, page?: number, size?: number, sortColumn?: string, sortDescending?: boolean, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<RelActivoPasivoDtoPagedResultDtoApiResponseDto>>;
+    public getRelActivoPasivo(idFondeador: number, idContrato: number, q?: string, page?: number, size?: number, sortColumn?: string, sortDescending?: boolean, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<RelActivoPasivoDtoPagedResultDtoApiResponseDto>>;
+    public getRelActivoPasivo(idFondeador: number, idContrato: number, q?: string, page?: number, size?: number, sortColumn?: string, sortDescending?: boolean, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        if (idFondeador === null || idFondeador === undefined) {
+            throw new Error('Required parameter idFondeador was null or undefined when calling getRelActivoPasivo.');
+        }
+        if (idContrato === null || idContrato === undefined) {
+            throw new Error('Required parameter idContrato was null or undefined when calling getRelActivoPasivo.');
+        }
+
+        let localVarQueryParameters = new OpenApiHttpParams(this.encoder);
+
+        localVarQueryParameters = this.addToHttpParams(
+            localVarQueryParameters,
+            'idFondeador',
+            <any>idFondeador,
+            QueryParamStyle.Form,
+            true,
+        );
+
+
+        localVarQueryParameters = this.addToHttpParams(
+            localVarQueryParameters,
+            'idContrato',
+            <any>idContrato,
+            QueryParamStyle.Form,
+            true,
+        );
+
+
+        localVarQueryParameters = this.addToHttpParams(
+            localVarQueryParameters,
+            'q',
+            <any>q,
+            QueryParamStyle.Form,
+            true,
+        );
+
+
+        localVarQueryParameters = this.addToHttpParams(
+            localVarQueryParameters,
+            'page',
+            <any>page,
+            QueryParamStyle.Form,
+            true,
+        );
+
+
+        localVarQueryParameters = this.addToHttpParams(
+            localVarQueryParameters,
+            'size',
+            <any>size,
+            QueryParamStyle.Form,
+            true,
+        );
+
+
+        localVarQueryParameters = this.addToHttpParams(
+            localVarQueryParameters,
+            'sortColumn',
+            <any>sortColumn,
+            QueryParamStyle.Form,
+            true,
+        );
+
+
+        localVarQueryParameters = this.addToHttpParams(
+            localVarQueryParameters,
+            'sortDescending',
+            <any>sortDescending,
+            QueryParamStyle.Form,
+            true,
+        );
+
+
+        let localVarHeaders = this.defaultHeaders;
+
+        const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
+            'application/json'
+        ]);
+        if (localVarHttpHeaderAcceptSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+        }
+
+        const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
+
+        const localVarTransferCache: boolean = options?.transferCache ?? true;
+
+
+        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        if (localVarHttpHeaderAcceptSelected) {
+            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+                responseType_ = 'text';
+            } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+                responseType_ = 'json';
+            } else {
+                responseType_ = 'blob';
+            }
+        }
+
+        let localVarPath = `/api/contratos/rel-activo-pasivo`;
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<RelActivoPasivoDtoPagedResultDtoApiResponseDto>('get', `${basePath}${localVarPath}`,
+            {
+                context: localVarHttpContext,
+                params: localVarQueryParameters.toHttpParams(),
                 responseType: <any>responseType_,
                 ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,
