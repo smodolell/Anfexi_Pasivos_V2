@@ -1,9 +1,11 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CatalogosService } from '../../../../api/services/catalogos.service';
 import { BancoDto } from '../../../../api/models/models';
+import { UtilsService } from '../../../services/utils.service';
+import { wasHandledByInterceptor } from '../../../interceptors/auth.interceptor';
 
 @Component({
   selector: 'app-banco-form',
@@ -12,6 +14,8 @@ import { BancoDto } from '../../../../api/models/models';
   templateUrl: './banco-form.component.html'
 })
 export class BancoFormComponent implements OnInit {
+  private readonly utilsService    = inject(UtilsService);
+
   isEditMode = signal(false);
   isLoading = signal(false);
   bancoId = signal<number | null>(null);
@@ -45,12 +49,16 @@ export class BancoFormComponent implements OnInit {
       next: (res) => {
         if (res.success && res.data) {
           this.bancoForm.patchValue(res.data);
+        } else {
+          this.utilsService.showNotification('Error', 'No se pudo cargar el banco', 'error');
         }
         this.isLoading.set(false);
       },
       error: (err) => {
-        console.error('Error al cargar banco:', err);
         this.isLoading.set(false);
+        if (!wasHandledByInterceptor(err)) {
+          this.utilsService.showNotification('Error', 'Error de conexión al cargar el banco', 'error');
+        }
       }
     });
   }
@@ -83,13 +91,14 @@ export class BancoFormComponent implements OnInit {
   }
 
   private handleSuccess(message: string): void {
-    alert(message);
+    this.utilsService.showNotification('Éxito', message, 'success');
     this.router.navigate(['/catalogos/bancos']);
   }
 
   private handleError(err: any): void {
     this.isLoading.set(false);
-    console.error('Error en la operación:', err);
-    alert('Error al procesar la solicitud');
+    if (!wasHandledByInterceptor(err)) {
+      this.utilsService.showNotification('Error', 'Error al procesar la solicitud', 'error');
+    }
   }
 }

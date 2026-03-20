@@ -21,6 +21,8 @@ import { ApiResponseDto } from '../models/apiResponseDto';
 // @ts-ignore
 import { AsignarPasivosResponce } from '../models/asignarPasivosResponce';
 // @ts-ignore
+import { AutocompleteResultDtoListApiResponseDto } from '../models/autocompleteResultDtoListApiResponseDto';
+// @ts-ignore
 import { InfoGeneralContratoPasivoDtoApiResponseDto } from '../models/infoGeneralContratoPasivoDtoApiResponseDto';
 // @ts-ignore
 import { MovimientoDetalleDtoApiResponseDto } from '../models/movimientoDetalleDtoApiResponseDto';
@@ -108,6 +110,72 @@ export class ContratosService extends BaseService {
             {
                 context: localVarHttpContext,
                 body: asignarPasivosResponce,
+                responseType: <any>responseType_,
+                ...(withCredentials ? { withCredentials } : {}),
+                headers: localVarHeaders,
+                observe: observe,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * Autocompleta contratos pasivos
+     * Retorna una lista de contratos pasivos que coinciden con el término de búsqueda, limitado a 15 resultados, para ser utilizado en controles de autocompletado.
+     * @endpoint get /api/contratos/autocomplete
+     * @param search 
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     * @param options additional options
+     */
+    public getAutocompleteContrato(search?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<AutocompleteResultDtoListApiResponseDto>;
+    public getAutocompleteContrato(search?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<AutocompleteResultDtoListApiResponseDto>>;
+    public getAutocompleteContrato(search?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<AutocompleteResultDtoListApiResponseDto>>;
+    public getAutocompleteContrato(search?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+
+        let localVarQueryParameters = new OpenApiHttpParams(this.encoder);
+
+        localVarQueryParameters = this.addToHttpParams(
+            localVarQueryParameters,
+            'search',
+            <any>search,
+            QueryParamStyle.Form,
+            true,
+        );
+
+
+        let localVarHeaders = this.defaultHeaders;
+
+        const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
+            'application/json'
+        ]);
+        if (localVarHttpHeaderAcceptSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+        }
+
+        const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
+
+        const localVarTransferCache: boolean = options?.transferCache ?? true;
+
+
+        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        if (localVarHttpHeaderAcceptSelected) {
+            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+                responseType_ = 'text';
+            } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+                responseType_ = 'json';
+            } else {
+                responseType_ = 'blob';
+            }
+        }
+
+        let localVarPath = `/api/contratos/autocomplete`;
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<AutocompleteResultDtoListApiResponseDto>('get', `${basePath}${localVarPath}`,
+            {
+                context: localVarHttpContext,
+                params: localVarQueryParameters.toHttpParams(),
                 responseType: <any>responseType_,
                 ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,

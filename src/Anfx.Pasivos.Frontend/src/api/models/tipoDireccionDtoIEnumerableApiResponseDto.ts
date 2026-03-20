@@ -13,7 +13,7 @@ import { TipoDireccionDto } from './tipoDireccionDto';
 export interface TipoDireccionDtoIEnumerableApiResponseDto { 
     success?: boolean;
     message?: string | null;
-    data?: Array<TipoDireccionDto> | null;
+    data?: Array<TipoDireccionDto>;
     errors?: Array<string> | null;
     statusCode?: number;
     timestamp?: string;

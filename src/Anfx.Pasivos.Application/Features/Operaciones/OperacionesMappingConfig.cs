@@ -13,6 +13,7 @@ public class OperacionesMappingConfig : IRegister
             .Map(o => o.PSV_EstatusContrato, d => d.PSV_EstatusContrato.EstatusContrato)
             .Map(o => o.Periodicidad, d => d.SB_Periodicidad.DescPeriodicidad)
             .Map(o => o.TipoMoneda, d => d.SB_TipoMoneda.DescTipoMoneda)
+            .Map(o => o.Fondeador, d => d.PSV_Fondeador.Fondeador)
             ;
     }
 }

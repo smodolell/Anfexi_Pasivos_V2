@@ -1,9 +1,9 @@
 import { Component, OnInit, inject, signal, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ColoniaService } from '../../../services/catalogos/colonia.service';
+import { CatalogosService } from '../../../../api/services/catalogos.service';
+import { ColoniaDto, CreateColoniaDto, UpdateColoniaDto } from '../../../../api/models/models';
 import { wasHandledByInterceptor } from '../../../interceptors/auth.interceptor';
-import { ColoniaDto, ColoniaPageQueryDto } from '../../../../types/catalogos/colonia.dto';
 import { UtilsService } from '../../../services/utils.service';
 import { ColoniaFormComponent } from './colonia-form.component';
 import { GenericTableComponent } from '../../../shared/components/generic-table/generic-table.component';
@@ -19,20 +19,20 @@ import { ConfirmModalComponent } from '../../../shared/components/confirm-modal/
 export class ColoniaListComponent implements OnInit {
   @ViewChild('confirmModal') confirmModal!: ConfirmModalComponent;
 
-  private coloniaService = inject(ColoniaService);
-  private utilsService = inject(UtilsService);
+  private catalogosService = inject(CatalogosService);
+  private utilsService     = inject(UtilsService);
 
   items         = signal<ColoniaDto[]>([]);
   loading       = signal<boolean>(false);
   exportLoading = signal<boolean>(false);
-  query: ColoniaPageQueryDto = { q: '', page: 1, size: 10 };
+  query = { q: '', page: 1, size: 10, sortBy: undefined as string | undefined, sortDir: undefined as string | undefined };
 
-  totalCount = signal<number>(0);
-  totalPages = signal<number>(0);
+  totalCount  = signal<number>(0);
+  totalPages  = signal<number>(0);
   currentPage = signal<number>(1);
-  pageSize = signal<number>(10);
+  pageSize    = signal<number>(10);
 
-  sortColumn: string | null = null;
+  sortColumn:    string | null = null;
   sortDirection: SortDirection = 'asc';
 
   coloniaSeleccionada: Partial<ColoniaDto> = {};
@@ -41,11 +41,11 @@ export class ColoniaListComponent implements OnInit {
 
   // ── Configuración de la tabla genérica ───────────────────────
   columns: TableColumn[] = [
-    { key: 'id',          header: 'ID',            type: 'number', sortable: true  },
-    { key: 'sColonia',    header: 'Colonia',        type: 'text',   sortable: true  },
-    { key: 'estado',      header: 'Estado',         type: 'text',   sortable: true  },
-    { key: 'municipio',   header: 'Municipio',      type: 'text',   sortable: true  },
-    { key: 'codigoPostal',header: 'Código Postal',  type: 'text',   sortable: false },
+    { key: 'id',          header: 'ID',           type: 'number', sortable: true  },
+    { key: 'sColonia',    header: 'Colonia',       type: 'text',   sortable: true  },
+    { key: 'estado',      header: 'Estado',        type: 'text',   sortable: true  },
+    { key: 'municipio',   header: 'Municipio',     type: 'text',   sortable: true  },
+    { key: 'codigoPostal',header: 'Código Postal', type: 'text',   sortable: false },
   ];
 
   actions: TableAction[] = [
@@ -58,66 +58,70 @@ export class ColoniaListComponent implements OnInit {
   }
 
   onSearch(value: string) {
-    this.query.q = value;
+    this.query.q    = value;
     this.query.page = 1;
     this.load();
   }
 
   onSort(event: TableSortEvent) {
-    this.sortColumn = event.column;
+    this.sortColumn    = event.column;
     this.sortDirection = event.direction;
-    this.query.sortBy = event.column;
+    this.query.sortBy  = event.column;
     this.query.sortDir = event.direction;
-    this.query.page = 1;
+    this.query.page    = 1;
     this.load();
   }
 
   nextPage() {
     if (this.currentPage() < this.totalPages()) {
-      this.query.page = (this.query.page || 1) + 1;
+      this.query.page++;
       this.load();
     }
   }
 
   prevPage() {
-    if ((this.query.page || 1) > 1) {
-      this.query.page = (this.query.page || 1) - 1;
+    if (this.query.page > 1) {
+      this.query.page--;
       this.load();
     }
   }
 
   onAction(event: TableActionEvent<ColoniaDto>) {
-    if (event.action === 'edit')   this.editarColonia(event.row.id);
-    if (event.action === 'delete') this.delete(event.row.id);
+    if (event.action === 'edit')   this.editarColonia(event.row.id!);
+    if (event.action === 'delete') this.delete(event.row);
   }
 
   mostrarFormularioNuevo() {
-    this.coloniaSeleccionada = { id: 0, sColonia: '', estado: '', municipio: '', codigoPostal: '' };
+    this.coloniaSeleccionada = { sColonia: '', estado: '', municipio: '', codigoPostal: '' };
     this.mostrandoFormulario.set(true);
   }
 
   volverALista() {
     this.mostrandoFormulario.set(false);
-    this.coloniaSeleccionada = { id: 0, sColonia: '', estado: '', municipio: '', codigoPostal: '' };
+    this.coloniaSeleccionada = {};
   }
 
   onGuardarColonia(colonia: any) {
     const isUpdate = typeof colonia.id === 'number' && colonia.id > 0;
     const request$ = isUpdate
-      ? this.coloniaService.update(colonia.id, colonia)
-      : this.coloniaService.create(colonia);
+      ? this.catalogosService.updateColonia(colonia.id, colonia as UpdateColoniaDto)
+      : this.catalogosService.createColonia(colonia as CreateColoniaDto);
 
     request$.subscribe({
-      next: (response) => {
-        if (response.success) {
+      next: (res) => {
+        if (res.success) {
           this.load();
           this.mostrandoFormulario.set(false);
         } else {
-          const msg = response.errors?.[0] ?? response.message ?? 'Error al guardar';
+          const msg = res.errors?.[0] ?? res.message ?? 'Error al guardar';
           this.utilsService.showNotification('Error', msg, 'error');
         }
       },
-      error: (err) => { if (!wasHandledByInterceptor(err)) this.utilsService.showNotification('Error', 'Error de conexión', 'error'); }
+      error: (err) => {
+        if (!wasHandledByInterceptor(err)) {
+          this.utilsService.showNotification('Error', 'Error de conexión', 'error');
+        }
+      }
     });
   }
 
@@ -125,11 +129,11 @@ export class ColoniaListComponent implements OnInit {
 
   onExportar() {
     this.exportLoading.set(true);
-    this.coloniaService.exportar(this.query).subscribe({
-      next: (blob) => {
-        const url = URL.createObjectURL(blob);
+    this.catalogosService.exportColonias(this.query.q || undefined).subscribe({
+      next: (blob: any) => {
+        const url  = URL.createObjectURL(blob as Blob);
         const link = document.createElement('a');
-        link.href = url;
+        link.href  = url;
         const fecha = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
         link.download = `colonias_${fecha}.xlsx`;
         document.body.appendChild(link);
@@ -148,71 +152,31 @@ export class ColoniaListComponent implements OnInit {
     });
   }
 
-  // ── Private ──────────────────────────────────────────────────
-  private load() {
-    this.loading.set(true);
-    this.coloniaService.getAll(this.query).subscribe({
-      next: (response) => {
-        if (response.success) {
-          this.items.set(response.data.results);
-          this.currentPage.set(response.data.currentPage);
-          this.pageSize.set(response.data.pageSize);
-          this.totalCount.set(response.data.totalCount);
-          this.totalPages.set(response.data.totalPages);
-        } else {
-          this.resetPagination();
-          const msg = response.errors?.[0] ?? response.message ?? 'Error al cargar colonias';
-          this.utilsService.showNotification('Error', msg, 'error');
-        }
-        this.loading.set(false);
-      },
-      error: (err) => {
-        this.resetPagination();
-        this.loading.set(false);
-        if (!wasHandledByInterceptor(err)) {
-          this.utilsService.showNotification('Error', 'Error de conexión al cargar colonias', 'error');
-        }
-        console.error(err);
-      }
-    });
-  }
-
-  private editarColonia(id: number) {
-    this.coloniaService.getById(id).subscribe({
-      next: (response) => {
-        if (response.success) {
-          this.coloniaSeleccionada = { ...response.data };
-          this.mostrandoFormulario.set(true);
-        } else {
-          const msg = response.errors?.[0] ?? response.message ?? 'Error al cargar';
-          this.utilsService.showNotification('Error', msg, 'error');
-        }
-      },
-      error: (err) => { if (!wasHandledByInterceptor(err)) this.utilsService.showNotification('Error', 'Error de conexión', 'error'); }
-    });
-  }
-
-  private delete(id: number) {
-    const colonia = this.items().find(c => c.id === id);
-    if (!colonia) return;
-    this.coloniaAEliminar = colonia;
-    this.confirmModal.show();
-  }
-
   confirmarEliminacion() {
     if (!this.coloniaAEliminar) return;
-    this.coloniaService.delete(this.coloniaAEliminar.id).subscribe({
-      next: (response) => {
-        if (response.success) {
+    this.confirmModal.confirmLoading = true;
+
+    this.catalogosService.deleteColonia(this.coloniaAEliminar.id!).subscribe({
+      next: (res) => {
+        this.confirmModal.confirmLoading = false;
+        this.confirmModal.hide();
+        this.coloniaAEliminar = null;
+        if (res.success) {
+          this.utilsService.showNotification('Éxito', 'Colonia eliminada correctamente', 'success');
           this.load();
-          this.confirmModal.hide();
-          this.coloniaAEliminar = null;
         } else {
-          const msg = response.errors?.[0] ?? response.message ?? 'Error al eliminar';
+          const msg = res.errors?.[0] ?? res.message ?? 'Error al eliminar';
           this.utilsService.showNotification('Error', msg, 'error');
         }
       },
-      error: (err) => { if (!wasHandledByInterceptor(err)) this.utilsService.showNotification('Error', 'Error de conexión', 'error'); }
+      error: (err) => {
+        this.confirmModal.confirmLoading = false;
+        this.confirmModal.hide();
+        this.coloniaAEliminar = null;
+        if (!wasHandledByInterceptor(err)) {
+          this.utilsService.showNotification('Error', 'Error de conexión', 'error');
+        }
+      }
     });
   }
 
@@ -220,10 +184,71 @@ export class ColoniaListComponent implements OnInit {
     this.coloniaAEliminar = null;
   }
 
+  // ── Private ──────────────────────────────────────────────────
+  private load() {
+    this.loading.set(true);
+    this.catalogosService
+      .getColoniasPaginados(
+        this.query.q || undefined,
+        this.query.page,
+        this.query.size,
+        this.query.sortBy,
+        this.query.sortDir
+      )
+      .subscribe({
+        next: (res) => {
+
+          if (res.isSuccess && res.value) {
+            this.items.set(res.value.results ?? []);
+            this.currentPage.set(res.value.currentPage ?? this.query.page);
+            this.pageSize.set(res.value.pageSize ?? this.query.size);
+            this.totalCount.set(res.value.totalCount ?? 0);
+            this.totalPages.set(res.value.totalPages ?? 0);
+          } else {
+            this.resetPagination();
+            const msg = res.errors?.[0] ?? 'Error al cargar colonias';
+            this.utilsService.showNotification('Error', msg, 'error');
+          }
+          this.loading.set(false);
+        },
+        error: (err) => {
+          this.resetPagination();
+          this.loading.set(false);
+          if (!wasHandledByInterceptor(err)) {
+            this.utilsService.showNotification('Error', 'Error de conexión al cargar colonias', 'error');
+          }
+        }
+      });
+  }
+
+  private editarColonia(id: number) {
+    this.catalogosService.getColoniaById(id).subscribe({
+      next: (res) => {
+        if (res.success && res.data) {
+          this.coloniaSeleccionada = { ...res.data };
+          this.mostrandoFormulario.set(true);
+        } else {
+          const msg = res.errors?.[0] ?? res.message ?? 'Error al cargar';
+          this.utilsService.showNotification('Error', msg, 'error');
+        }
+      },
+      error: (err) => {
+        if (!wasHandledByInterceptor(err)) {
+          this.utilsService.showNotification('Error', 'Error de conexión', 'error');
+        }
+      }
+    });
+  }
+
+  private delete(colonia: ColoniaDto) {
+    this.coloniaAEliminar = colonia;
+    this.confirmModal.show();
+  }
+
   private resetPagination() {
     this.items.set([]);
-    this.currentPage.set(this.query.page || 1);
-    this.pageSize.set(this.query.size || 10);
+    this.currentPage.set(this.query.page);
+    this.pageSize.set(this.query.size);
     this.totalCount.set(0);
     this.totalPages.set(0);
   }

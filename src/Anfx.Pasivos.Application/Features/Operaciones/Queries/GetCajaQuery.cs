@@ -20,12 +20,14 @@ internal class GetCajaQueryHandler(IApplicationDbContext context,IMapper mapper)
         if (string.IsNullOrEmpty(message.ContratoPasivo))
             return Result.Invalid(new ValidationError("No se estableció la clave de Contrato."));
 
+        var contratoPasivo = message.ContratoPasivo.Split(new[] { " - " }, StringSplitOptions.None)[0];
+
 
         var contrato = await _context.PSV_Contrato
             .Include(i => i.PSV_Fondeador)
-            .FirstOrDefaultAsync(f => f.Contrato.Equals(message.ContratoPasivo));
+            .FirstOrDefaultAsync(f => f.Contrato.Equals(contratoPasivo));
 
-        if (contrato == null) return Result.NotFound("Contrato no encontrado");
+        if (contrato == null) return Result.NotFound($"Contrato Clave:[{contratoPasivo}] no encontrado");
         if (contrato.IdEstatusContrato != 2) return Result.Invalid(new ValidationError("El Contrato no se encuentra Activo"));
         var result = new CajaDto
         {

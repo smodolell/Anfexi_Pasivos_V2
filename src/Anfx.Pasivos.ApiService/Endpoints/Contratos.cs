@@ -2,6 +2,7 @@
 using Anfx.Pasivos.Application.Features.Contratos.Commands;
 using Anfx.Pasivos.Application.Features.Contratos.DTOs;
 using Anfx.Pasivos.Application.Features.Contratos.Queries;
+using Anfx.Pasivos.Domain.Entities;
 using IResult = Microsoft.AspNetCore.Http.IResult;
 
 namespace Anfx.Pasivos.ApiService.Endpoints;
@@ -83,10 +84,17 @@ public class Contratos : EndpointGroupBase
             .Produces<ApiResponseDto>(StatusCodes.Status500InternalServerError);
 
 
+        group.MapGet("autocomplete", GetAutocompleteContrato)
+            .WithName("GetAutocompleteContrato")
+            .WithSummary("Autocompleta contratos pasivos")
+            .WithDescription("Retorna una lista de contratos pasivos que coinciden con el término de búsqueda, limitado a 15 resultados, para ser utilizado en controles de autocompletado.")
+            .Produces<ApiResponseDto<List<AutocompleteResultDto>>>(StatusCodes.Status200OK)
+            .Produces<ApiResponseDto>(StatusCodes.Status400BadRequest)
+            .Produces<ApiResponseDto>(StatusCodes.Status401Unauthorized)
+            .Produces<ApiResponseDto>(StatusCodes.Status500InternalServerError);
 
 
 
-     
     }
 
     public async Task<IResult> GetInfoGeneral(
@@ -101,6 +109,20 @@ public class Contratos : EndpointGroupBase
         };
 
         var result = await queryMediator.QueryAsync(query, cancellationToken);
+
+
+        if (result.IsSuccess)
+        {
+            var queryTabla = new GetGetTablaAmortizaQuery
+            {
+                IdContrato = result.Value.IdContrato,
+                IdTipoTabla = 1
+            };
+            result.Value.TablaAmortiza = await queryMediator.QueryAsync(queryTabla);
+        }
+
+        
+
         return result.ToCustomMinimalApiResult();
     }
 
@@ -196,7 +218,18 @@ public class Contratos : EndpointGroupBase
         return result.ToCustomMinimalApiResult();
     }
 
+    public async Task<IResult> GetAutocompleteContrato(
+    [FromServices] IQueryMediator queryMediator,
+    [FromQuery] string? search)
+    {
+        var query = new GetAutocompleteContratoQuery
+        {
+            Search = search
+        };
 
+        var result = await queryMediator.QueryAsync(query);
+        return result.ToCustomMinimalApiResult();
+    }
 
 
 

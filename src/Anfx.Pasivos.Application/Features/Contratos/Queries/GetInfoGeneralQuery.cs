@@ -27,6 +27,8 @@ public class GetInfoGeneralQueryHandler : IQueryHandler<GetInfoGeneralQuery, Res
     {
         try
         {
+
+            var contratoPasivo = request.ContratoPasivo.Split(new[] { " - " }, StringSplitOptions.None)[0];
             var contrato = await _context.PSV_Contrato
                 .Include(i => i.SB_Periodicidad)
                 .Include(i => i.SB_TipoMoneda)
@@ -34,10 +36,10 @@ public class GetInfoGeneralQueryHandler : IQueryHandler<GetInfoGeneralQuery, Res
                 .Include(i => i.PSV_TipoCredito)
                 .Include(i => i.PSV_TablaAmortiza)
                 .Include(i => i.PSV_Fondeador)
-                .FirstOrDefaultAsync(r => r.Contrato.Equals(request.ContratoPasivo));
+                .FirstOrDefaultAsync(r => r.Contrato.Equals(contratoPasivo));
             if (contrato is null)
             {
-                return Result.NotFound("Contrato no encontrado");
+                return Result.NotFound($"Contrato Clave[{contratoPasivo}] no encontrado");
             }
 
             var hoy = DateTime.Now.Date;

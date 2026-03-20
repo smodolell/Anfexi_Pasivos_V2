@@ -18,7 +18,6 @@ internal class GetAnticipoQueryHandler(IApplicationDbContext context) : IQueryHa
         {
             return Result.NotFound("No se estableció la clave de Contrato.");
         }
-
         var contratoPasivo = message.ContratoPasivo.Split(new[] { " - " }, StringSplitOptions.None)[0];
 
         var itemDb = await _context.PSV_Contrato
@@ -27,12 +26,12 @@ internal class GetAnticipoQueryHandler(IApplicationDbContext context) : IQueryHa
 
         if (itemDb == null)
         {
-            return Result.NotFound("El contrato al que se hace referencia no fue encontrado.");
+            return Result.NotFound($"El contrato Clave:[{contratoPasivo}] no fue encontrado.");
         }
 
         if (itemDb.IdEstatusContrato != 2)
         {
-            return Result.Invalid(new ValidationError("El contrato no esta activo"));
+            return Result.Invalid(new ValidationError($"El contrato Clave:[{contratoPasivo}] no esta activo"));
         }
 
 
@@ -45,6 +44,7 @@ internal class GetAnticipoQueryHandler(IApplicationDbContext context) : IQueryHa
         }
         var result = new AnticipoDto
         {
+            IdContrato = itemDb.IdContrato,
             IdTipoReduccion = 1,
             FechaAnticipo = DateTime.Now
         };

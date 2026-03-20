@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ContratosService } from '../../../../api/services/contratos.service';
@@ -6,22 +6,29 @@ import { InfoGeneralContratoPasivoDto } from '../../../../api/models/infoGeneral
 import { PagoItemDto } from '../../../../api/models/pagoItemDto';
 import { MovimientoItemDto } from '../../../../api/models/movimientoItemDto';
 import { TablaAmortizaItemDto } from '../../../../api/models/tablaAmortizaItemDto';
+import { DetallePagoMovimientoDto } from '../../../../api/models/detallePagoMovimientoDto';
+import { DetalleMovimientoPagoDto } from '../../../../api/models/detalleMovimientoPagoDto';
 import { LayoutService } from '../../../services/layout.service';
 import { GenericTableComponent } from '../../../shared/components/generic-table/generic-table.component';
-import { TableColumn } from '../../../shared/components/generic-table/table-column.model';
-import { SearchInputComponent } from '../../../shared/components/search-input/search-input.component';
+import { TableColumn, TableAction, TableActionEvent } from '../../../shared/components/generic-table/table-column.model';
+import { ContratoAutocompleteComponent } from "src/app/shared/components/contrato-autocomplete/contrato-autocomplete.component";
+import { AutocompleteResultDto } from '../../../../api/models/autocompleteResultDto';
 
 type TabActiva = 'pagos' | 'movimientos' | 'tabla';
 
 @Component({
   selector: 'app-info-general-contrato-pasivo',
-  standalone: true,
-  imports: [CommonModule, FormsModule, GenericTableComponent, SearchInputComponent],
+  imports: [CommonModule, FormsModule, GenericTableComponent,  ContratoAutocompleteComponent],
   templateUrl: './info-general-contrato-pasivo.component.html'
 })
-export class InfoGeneralContratoPasivoComponent implements OnInit {
+export class InfoGeneralContratoPasivoComponent implements OnInit, OnDestroy {
+  @ViewChild('detalleModalEl')     detalleModalEl!: ElementRef<HTMLElement>;
+  @ViewChild('detallePagoModalEl') detallePagoModalEl!: ElementRef<HTMLElement>;
+
   private service       = inject(ContratosService);
   private layoutService = inject(LayoutService);
+  private bsModalDetalle?:     any;
+  private bsModalDetallePago?: any;
 
   // Formulario de búsqueda
   contratoBusqueda = signal('');
@@ -33,12 +40,20 @@ export class InfoGeneralContratoPasivoComponent implements OnInit {
   tablaAmortiza = signal<TablaAmortizaItemDto[]>([]);
 
   // Estado
-  isLoading      = signal(false);
-  isLoadingTabla = signal(false);
-  errorMsg       = signal<string | null>(null);
+  isLoading            = signal(false);
+  isLoadingTabla       = signal(false);
+  isLoadingDetalle     = signal(false);
+  isLoadingDetallePago = signal(false);
+  errorMsg             = signal<string | null>(null);
+
+  // Modal detalle movimiento
+  detalleMovimiento = signal<DetallePagoMovimientoDto[]>([]);
+
+  // Modal detalle pago
+  detallePago = signal<DetalleMovimientoPagoDto[]>([]);
 
   // Tabs
-  activeTab = signal<TabActiva>('pagos');
+  activeTab = signal<TabActiva>('tabla');
   tipoTabla = signal<number>(1);
   tiposTabla = [
     { value: 1, label: 'Actual' },
@@ -59,6 +74,10 @@ export class InfoGeneralContratoPasivoComponent implements OnInit {
     { key: 'saldoPago',            header: 'Saldo',         type: 'currency' },
   ];
 
+  readonly actionsPagos: TableAction[] = [
+    { id: 'detalle', label: 'Detalle de aplicación', icon: 'fa-solid fa-magnifying-glass', btnClass: 'btn-action-info' },
+  ];
+
   readonly columnasMovimientos: TableColumn[] = [
     { key: 'noPago',       header: 'No. Pago' },
     { key: 'descripcion',  header: 'Descripción' },
@@ -70,6 +89,29 @@ export class InfoGeneralContratoPasivoComponent implements OnInit {
     { key: 'saldoCapital', header: 'Saldo Capital', type: 'currency' },
     { key: 'saldoTotal',   header: 'Saldo Total',   type: 'currency' },
     { key: 'esRenta',      header: 'Renta',         type: 'boolean' },
+  ];
+
+  readonly actionsMovimientos: TableAction[] = [
+    {
+      id: 'detalle',
+      label: 'Detalle de pagos',
+      icon: 'fa-solid fa-magnifying-glass',
+      btnClass: 'btn-action-info',
+      disabledFn: (row: MovimientoItemDto) => !row.idMovimiento || row.idMovimiento <= 0,
+    },
+  ];
+
+  readonly columnasDetallePago: TableColumn[] = [
+    { key: 'tipoPago',       header: 'Tipo Pago' },
+    { key: 'cuentaBancaria', header: 'Cuenta Bancaria' },
+    { key: 'contrato',       header: 'Contrato' },
+    { key: 'fecPagoValor',   header: 'Fec. Valor',    type: 'date' },
+    { key: 'fecPagoRegistro',header: 'Fec. Registro', type: 'date' },
+    { key: 'montoPago',      header: 'Monto Pago',    type: 'currency' },
+    { key: 'capitalPagado',  header: 'Capital',       type: 'currency' },
+    { key: 'interesPagado',  header: 'Interés',       type: 'currency' },
+    { key: 'ivaPagado',      header: 'IVA',           type: 'currency' },
+    { key: 'totalPagado',    header: 'Total',         type: 'currency' },
   ];
 
   readonly columnasTablaAmortiza: TableColumn[] = [
@@ -89,8 +131,8 @@ export class InfoGeneralContratoPasivoComponent implements OnInit {
     this.layoutService.setTitle('Información General del Contrato Pasivo');
   }
 
-  onSearch(value: string): void {
-    this.contratoBusqueda.set(value);
+  onContratoSelected(item: AutocompleteResultDto): void {
+    this.contratoBusqueda.set(item.label ?? '');
     this.buscar();
   }
 
@@ -104,7 +146,7 @@ export class InfoGeneralContratoPasivoComponent implements OnInit {
     this.pagos.set([]);
     this.movimientos.set([]);
     this.tablaAmortiza.set([]);
-    this.activeTab.set('pagos');
+    this.activeTab.set('tabla');
 
     this.service.getInfoGeneralContratoPasivo(contrato).subscribe({
       next: (res) => {
@@ -113,7 +155,8 @@ export class InfoGeneralContratoPasivoComponent implements OnInit {
           this.info.set(d);
           this.pagos.set(d.pagos ?? []);
           this.movimientos.set(d.movimientos ?? []);
-          this.idContrato = d.pagos?.[0]?.idContratoPasivo ?? parseInt(contrato, 10) ?? 0;
+          this.tablaAmortiza.set(d.tablaAmortiza?? []);
+          this.idContrato = d.idContrato??0;
         } else {
           this.errorMsg.set(res.message || 'No se encontró información para el contrato.');
         }
@@ -149,5 +192,70 @@ export class InfoGeneralContratoPasivoComponent implements OnInit {
   onTipoTablaChange(): void {
     this.tablaAmortiza.set([]);
     this.loadTabla();
+  }
+
+  onActionMovimiento(event: TableActionEvent<MovimientoItemDto>): void {
+    if (event.action === 'detalle' && event.row.idMovimiento && event.row.idMovimiento > 0) {
+      this.abrirDetalleMovimiento(event.row.idMovimiento);
+    }
+  }
+
+  abrirDetalleMovimiento(idMovimiento: number): void {
+    this.detalleMovimiento.set([]);
+    this.isLoadingDetalle.set(true);
+    this.bsModalDetalle = new (globalThis as any).bootstrap.Modal(this.detalleModalEl.nativeElement);
+    this.bsModalDetalle.show();
+
+    this.service.getMovimientoDetalle(idMovimiento).subscribe({
+      next: (res) => {
+        this.detalleMovimiento.set(res.data?.detalle ?? []);
+        this.isLoadingDetalle.set(false);
+      },
+      error: () => {
+        this.isLoadingDetalle.set(false);
+      }
+    });
+  }
+
+  cerrarDetalleMovimiento(): void {
+    this.bsModalDetalle?.hide();
+  }
+
+  readonly detalleFilas    = computed(() => this.detalleMovimiento().filter(d => d.idPago !== -1));
+  readonly detalleTotales  = computed(() => this.detalleMovimiento().find(d => d.idPago === -1));
+
+  readonly detallePagoFilas    = computed(() => this.detallePago().filter(d => d.idMovimiento !== -1));
+  readonly detallePagoTotales  = computed(() => this.detallePago().find(d => d.idMovimiento === -1));
+
+  onActionPago(event: TableActionEvent<PagoItemDto>): void {
+    if (event.action === 'detalle') {
+      this.abrirDetallePago(event.row.idPago!);
+    }
+  }
+
+  abrirDetallePago(idPago: number): void {
+    this.detallePago.set([]);
+    this.isLoadingDetallePago.set(true);
+    this.bsModalDetallePago = new (globalThis as any).bootstrap.Modal(this.detallePagoModalEl.nativeElement);
+    this.bsModalDetallePago.show();
+
+    this.service.getPagoDetalle(idPago).subscribe({
+      next: (res) => {
+        this.detallePago.set(res.data?.detalle ?? []);
+        this.isLoadingDetallePago.set(false);
+      },
+      error: () => {
+        this.isLoadingDetallePago.set(false);
+      }
+    });
+  }
+
+  cerrarDetallePago(): void {
+    this.bsModalDetallePago?.hide();
+  }
+
+  ngOnDestroy(): void {
+    this.bsModalDetalle?.dispose();
+    this.bsModalDetallePago?.dispose();
   }
 }

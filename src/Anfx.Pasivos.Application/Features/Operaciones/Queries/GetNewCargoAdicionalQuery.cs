@@ -17,6 +17,10 @@ internal class GetNewCargoAdicionalQueryHandler(IApplicationDbContext context) :
         var contrato = await _context.PSV_Contrato.SingleOrDefaultAsync(r => r.IdContrato == message.IdContrato);
         if (contrato == null) return Result.NotFound("Contrato no encontrado");
 
+        if (contrato.IdEstatusContrato != 2)
+        {
+            return Result.Invalid(new ValidationError($"El contrato Clave:[{contrato.Contrato}] no esta activo"));
+        }
 
         var model = new CargoAdicionalDto
         {

@@ -7,6 +7,14 @@ import { isPlatformBrowser } from '@angular/common';
 export class UtilsService {
   constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
 
+  // Confirmación
+  showConfirm(message: string): boolean {
+    if (isPlatformBrowser(this.platformId)) {
+      return window.confirm(message);
+    }
+    return false;
+  }
+
   // Notificaciones
   showNotification(title: string, message: string, type: 'success' | 'error' | 'warning' | 'info' = 'info') {
     if (isPlatformBrowser(this.platformId) && (window as any).showNotification) {

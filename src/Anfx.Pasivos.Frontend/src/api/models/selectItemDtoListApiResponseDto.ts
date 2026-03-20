@@ -13,7 +13,7 @@ import { SelectItemDto } from './selectItemDto';
 export interface SelectItemDtoListApiResponseDto { 
     success?: boolean;
     message?: string | null;
-    data?: Array<SelectItemDto> | null;
+    data?: Array<SelectItemDto>;
     errors?: Array<string> | null;
     statusCode?: number;
     timestamp?: string;

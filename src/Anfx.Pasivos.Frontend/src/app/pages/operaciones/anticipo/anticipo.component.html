@@ -1,5 +1,4 @@
 <div class="container-fluid mt-4">
-
   <!-- Breadcrumb -->
   <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
@@ -17,7 +16,6 @@
     </div>
 
     <div class="card-body">
-
       @if (loadingCatalogos()) {
         <div class="d-flex align-items-center gap-2 text-muted">
           <span class="spinner-border spinner-border-sm"></span>
@@ -25,54 +23,44 @@
         </div>
       } @else {
         <div class="row g-3 align-items-end">
-
           <div class="col-md-5">
-            <label class="form-label fw-semibold">Número de Contrato</label>
-            <input
-              type="text"
-              class="form-control"
+            <app-contrato-autocomplete
               placeholder="Ingrese el número de contrato..."
-              [(ngModel)]="contratoBusqueda"
-              [ngModelOptions]="{ standalone: true }"
-              (keyup.enter)="onBuscar()"
-            />
+              [required]="true"
+              [disabled]="buscando()"
+              (contratoSelected)="onContratoSelected($event)"
+            ></app-contrato-autocomplete>
           </div>
-
-          <div class="col-md-2">
-            <button
-              type="button"
-              class="btn btn-primary w-100"
-              [disabled]="!contratoBusqueda.trim() || buscando()"
-              (click)="onBuscar()">
-              @if (buscando()) {
-                <span class="spinner-border spinner-border-sm me-2"></span>
-              } @else {
-                <i class="fa-solid fa-magnifying-glass me-2"></i>
-              }
-              Buscar
-            </button>
-          </div>
-
+          @if (buscando()) {
+            <div class="col-auto d-flex align-items-end pb-1">
+              <span class="d-flex align-items-center gap-2 text-muted">
+                <span class="spinner-border spinner-border-sm"></span>
+                <span class="small">Buscando...</span>
+              </span>
+            </div>
+          }
         </div>
 
-        @if (errorBusqueda()) {
-          <div class="alert alert-danger mt-3 mb-0">
-            <i class="fa-solid fa-circle-exclamation me-2"></i>{{ errorBusqueda() }}
-          </div>
+        @if (erroresBusqueda().length>0) {
+          <app-form-errors
+            [errors]="erroresBusqueda()"
+            (onClose)="erroresBusqueda.set([])"
+          ></app-form-errors>
         }
-      }
 
+        <app-form-errors [errors]="erroresConfirmacion()" (onClose)="erroresConfirmacion.set([])">
+        </app-form-errors>
+      }
     </div>
   </div>
 
   <!-- ── Formulario de Anticipo ──────────────────────────────── -->
   @if (mostrarFormulario) {
     <div class="card shadow-sm border-0 mt-4">
-
       <div class="card-header bg-white py-3 d-flex align-items-center justify-content-between">
         <h6 class="mb-0 text-secondary fw-semibold">
           <i class="fa-solid fa-file-contract me-2"></i>Contrato:
-          <span class="text-primary">{{ contratoBusqueda }}</span>
+          <span class="text-primary">{{ contratoBusqueda() }}</span>
         </h6>
         <div class="d-flex align-items-center gap-3">
           @if (calculandoConfig()) {
@@ -84,7 +72,8 @@
             type="button"
             class="btn btn-success"
             [disabled]="guardando() || calculandoConfig()"
-            (click)="onConfirmar()">
+            (click)="onConfirmar()"
+          >
             @if (guardando()) {
               <span class="spinner-border spinner-border-sm me-2"></span>
             } @else {
@@ -96,11 +85,18 @@
       </div>
 
       <div class="card-body p-4">
-        <form [formGroup]="form">
-          <div class="row g-4">
+        @if (erroresConfirmacion().length>0) {
+          <app-form-errors
+            [errors]="erroresConfirmacion()"
+            (onClose)="erroresConfirmacion.set([])"
+          ></app-form-errors>
+        }
 
+        <form [formGroup]="form">
+          <!-- Fila 1: Fecha Anticipo · Tipo · Reducción -->
+          <div class="row g-3">
             <!-- Fecha Anticipo -->
-            <div class="col-md-3">
+            <div class="col-md-4">
               <label class="form-label fw-semibold">
                 Fecha Anticipo <span class="text-danger">*</span>
               </label>
@@ -115,36 +111,16 @@
               }
             </div>
 
-            <!-- Anticipo -->
-            <div class="col-md-3">
-              <label class="form-label fw-semibold">
-                Anticipo <span class="text-danger">*</span>
-              </label>
-              <div class="input-group">
-                <span class="input-group-text">$</span>
-                <input
-                  type="number"
-                  class="form-control"
-                  [class.is-invalid]="isInvalid('montoAnticipo')"
-                  formControlName="montoAnticipo"
-                  min="0.01"
-                  step="0.01"
-                />
-              </div>
-              @if (isInvalid('montoAnticipo')) {
-                <div class="invalid-feedback d-block">Ingrese el monto del anticipo.</div>
-              }
-            </div>
-
             <!-- Tipo -->
-            <div class="col-md-3">
+            <div class="col-md-4">
               <label class="form-label fw-semibold">
                 Tipo <span class="text-danger">*</span>
               </label>
               <select
                 class="form-select"
                 [class.is-invalid]="isInvalid('idTipoTerminacion')"
-                formControlName="idTipoTerminacion">
+                formControlName="idTipoTerminacion"
+              >
                 <option [ngValue]="null" disabled>-- Seleccione --</option>
                 @for (t of tiposTerminacion(); track t.value) {
                   <option [ngValue]="t.value">{{ t.text }}</option>
@@ -156,7 +132,7 @@
             </div>
 
             <!-- Reducción -->
-            <div class="col-md-3">
+            <div class="col-md-4">
               <label class="form-label fw-semibold">
                 Reducción
                 @if (reduccionHabilitada) {
@@ -166,7 +142,8 @@
               <select
                 class="form-select"
                 [class.is-invalid]="isInvalid('idTipoReduccion')"
-                formControlName="idTipoReduccion">
+                formControlName="idTipoReduccion"
+              >
                 <option [ngValue]="null" disabled>
                   @if (!reduccionHabilitada) {
                     -- Seleccione primero el tipo --
@@ -182,74 +159,111 @@
                 <div class="invalid-feedback">Seleccione el tipo de reducción.</div>
               }
             </div>
+          </div>
 
-            <!-- Interés -->
-            <div class="col-12">
-              <label class="form-label fw-semibold">Interés</label>
-              <div class="row g-3">
-
-                <div class="col-md-3">
-                  <label class="form-label text-muted small">
-                    Monto Interés <span class="text-danger">*</span>
-                  </label>
-                  <div class="input-group">
-                    <span class="input-group-text">$</span>
-                    <input
-                      type="number"
-                      class="form-control"
-                      [class.is-invalid]="isInvalid('montoInteres')"
-                      formControlName="montoInteres"
-                      min="0"
-                      step="0.01"
-                    />
-                  </div>
-                  @if (isInvalid('montoInteres')) {
-                    <div class="invalid-feedback d-block">Requerido.</div>
-                  }
-                </div>
-
-                <div class="col-md-3">
-                  <label class="form-label text-muted small">
-                    IVA Interés <span class="text-danger">*</span>
-                  </label>
-                  <div class="input-group">
-                    <span class="input-group-text">$</span>
-                    <input
-                      type="number"
-                      class="form-control"
-                      [class.is-invalid]="isInvalid('montoIVA_Interes')"
-                      formControlName="montoIVA_Interes"
-                      min="0"
-                      step="0.01"
-                    />
-                  </div>
-                  @if (isInvalid('montoIVA_Interes')) {
-                    <div class="invalid-feedback d-block">Requerido.</div>
-                  }
-                </div>
-
+          <!-- Fila 2: Anticipo · Interés · IVA Interés · Pena · IVA Pena · Total -->
+          <div class="row g-3 mt-1">
+            <!-- Anticipo -->
+            <div class="col-md-2">
+              <label class="form-label fw-semibold">
+                Anticipo <span class="text-danger">*</span>
+              </label>
+              <div class="input-group">
+                <span class="input-group-text">$</span>
+                <input
+                  type="number"
+                  class="form-control"
+                  [class.is-invalid]="isInvalid('montoAnticipo')"
+                  [class.bg-light]="esLiquidacion"
+                  formControlName="montoAnticipo"
+                  min="0.01"
+                  step="0.01"
+                />
               </div>
+              @if (isInvalid('montoAnticipo')) {
+                <div class="invalid-feedback d-block">Ingrese el monto del anticipo.</div>
+              }
             </div>
 
-            <!-- Total -->
-            <div class="col-md-3">
-              <label class="form-label fw-semibold">Total</label>
+            <!-- Interés -->
+            <div class="col-md-2">
+              <label class="form-label fw-semibold">
+                Interés <span class="text-danger">*</span>
+              </label>
+              <div class="input-group">
+                <span class="input-group-text">$</span>
+                <input
+                  type="number"
+                  class="form-control"
+                  [class.is-invalid]="isInvalid('montoInteres')"
+                  formControlName="montoInteres"
+                  min="0"
+                  step="0.01"
+                />
+              </div>
+              @if (isInvalid('montoInteres')) {
+                <div class="invalid-feedback d-block">Requerido.</div>
+              }
+            </div>
+
+            <!-- IVA Interés (computed) -->
+            <div class="col-md-2">
+              <label class="form-label fw-semibold">IVA Interés</label>
               <div class="input-group">
                 <span class="input-group-text">$</span>
                 <input
                   type="number"
                   class="form-control bg-light"
-                  formControlName="montoTotal"
+                  [value]="montoIVA_Interes()"
                   readonly
                 />
               </div>
             </div>
 
+            <!-- Pena (computed) -->
+            <div class="col-md-2">
+              <label class="form-label fw-semibold">Pena</label>
+              <div class="input-group">
+                <span class="input-group-text">$</span>
+                <input
+                  type="number"
+                  class="form-control bg-light"
+                  [value]="montoPena()"
+                  readonly
+                />
+              </div>
+            </div>
+
+            <!-- IVA Pena (computed) -->
+            <div class="col-md-2">
+              <label class="form-label fw-semibold">IVA Pena</label>
+              <div class="input-group">
+                <span class="input-group-text">$</span>
+                <input
+                  type="number"
+                  class="form-control bg-light"
+                  [value]="montoIVA_Pena()"
+                  readonly
+                />
+              </div>
+            </div>
+
+            <!-- Total (computed) -->
+            <div class="col-md-2">
+              <label class="form-label fw-semibold">Total</label>
+              <div class="input-group">
+                <span class="input-group-text">$</span>
+                <input
+                  type="number"
+                  class="form-control bg-light fw-bold"
+                  [value]="montoTotal()"
+                  readonly
+                />
+              </div>
+            </div>
           </div>
         </form>
       </div>
-
     </div>
   }
-
 </div>

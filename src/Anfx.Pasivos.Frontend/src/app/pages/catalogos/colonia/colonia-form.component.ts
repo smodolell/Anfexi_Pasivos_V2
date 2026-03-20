@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChanges, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { ColoniaDto, CreateColoniaDto, UpdateColoniaDto } from '../../../../types/catalogos/colonia.dto';
+import { ColoniaDto, CreateColoniaDto, UpdateColoniaDto } from '../../../../api/models/models';
 import { UtilsService } from '../../../services/utils.service';
 import { CardComponent } from '../../../shared/components/card/card.component';
 

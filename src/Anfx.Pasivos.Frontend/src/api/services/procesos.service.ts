@@ -46,7 +46,7 @@ export class ProcesosService extends BaseService {
     /**
      * Procesa moratorios para contratos
      * Ejecuta para calcular y aplicar moratorios a contratos, de forma global o para un contrato específico.
-     * @endpoint post /api/procesos/procesos/moratorios
+     * @endpoint post /api/procesos/moratorios
      * @param procesaMoratorioRequest 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -94,7 +94,7 @@ export class ProcesosService extends BaseService {
             }
         }
 
-        let localVarPath = `/api/procesos/procesos/moratorios`;
+        let localVarPath = `/api/procesos/moratorios`;
         const { basePath, withCredentials } = this.configuration;
         return this.httpClient.request<ProcesaMoratorioResultDtoApiResponseDto>('post', `${basePath}${localVarPath}`,
             {
@@ -113,7 +113,7 @@ export class ProcesosService extends BaseService {
     /**
      * Procesa vencimientos de contratos en un rango de fechas
      * Ejecuta el procedimiento almacenado usp_PSV_ProcesaVencimientosAsync para generar vencimientos de contratos en el rango de fechas especificado, con filtros opcionales por fondeador y contrato.
-     * @endpoint post /api/procesos/procesos/vencimientos
+     * @endpoint post /api/procesos/vencimientos
      * @param procesaVencimientoRequest 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
@@ -161,7 +161,7 @@ export class ProcesosService extends BaseService {
             }
         }
 
-        let localVarPath = `/api/procesos/procesos/vencimientos`;
+        let localVarPath = `/api/procesos/vencimientos`;
         const { basePath, withCredentials } = this.configuration;
         return this.httpClient.request<ProcesaVencimientoResultDtoApiResponseDto>('post', `${basePath}${localVarPath}`,
             {

@@ -4,6 +4,8 @@ export * from './anticipoDto';
 export * from './anticipoDtoApiResponseDto';
 export * from './apiResponseDto';
 export * from './asignarPasivosResponce';
+export * from './autocompleteResultDto';
+export * from './autocompleteResultDtoListApiResponseDto';
 export * from './bancoDto';
 export * from './bancoDtoApiResponseDto';
 export * from './bancoListItemDto';

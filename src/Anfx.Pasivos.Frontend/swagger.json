@@ -1243,6 +1243,68 @@
             }
           }
         }
+      },
+      "delete": {
+        "tags": ["Catalogos"],
+        "summary": "Elimina un banco",
+        "description": "Elimina físicamente un banco del catálogo, identificado por su ID. Solo permite eliminar bancos que no tengan cuentas bancarias asociadas.",
+        "operationId": "DeleteBanco",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/api/catalogos/banco": {
@@ -1384,7 +1446,7 @@
         }
       }
     },
-    "/api/catalogos/cuentaBancaria/{id}": {
+    "/api/catalogos/cuenta-bancaria/{id}": {
       "get": {
         "tags": ["Catalogos"],
         "summary": "Obtiene una cuenta bancaria por ID",
@@ -1513,9 +1575,71 @@
             }
           }
         }
+      },
+      "delete": {
+        "tags": ["Catalogos"],
+        "summary": "Elimina una cuenta bancaria",
+        "description": "Elimina físicamente una cuenta bancaria del catálogo. Solo permite eliminar cuentas que no tengan pagos o movimientos asociados.",
+        "operationId": "DeleteCuentaBancaria",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          }
+        }
       }
     },
-    "/api/catalogos/cuentaBancaria": {
+    "/api/catalogos/cuenta-bancaria": {
       "get": {
         "tags": ["Catalogos"],
         "summary": "Obtiene cuentas bancarias paginadas y filtradas",
@@ -1738,6 +1862,68 @@
           },
           "required": true
         },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Catalogos"],
+        "summary": "Elimina un estatus de contrato",
+        "description": "Elimina físicamente un estatus de contrato del catálogo. Los estatus críticos del sistema (CAPTURADO=1, ACTIVO=2, CANCELADO=3, TERMINADO=4) no pueden ser eliminados.",
+        "operationId": "DeleteEstatusContrato",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -2008,6 +2194,68 @@
           },
           "required": true
         },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Catalogos"],
+        "summary": "Elimina un tipo de pago",
+        "description": "Elimina físicamente un tipo de pago del catálogo, identificado por su ID. Solo permite eliminar tipos de pago que no tengan movimientos o pagos asociados.",
+        "operationId": "DeleteTipoPago",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -5070,6 +5318,65 @@
         }
       }
     },
+    "/api/contratos/autocomplete": {
+      "get": {
+        "tags": ["Contratos"],
+        "summary": "Autocompleta contratos pasivos",
+        "description": "Retorna una lista de contratos pasivos que coinciden con el término de búsqueda, limitado a 15 resultados, para ser utilizado en controles de autocompletado.",
+        "operationId": "GetAutocompleteContrato",
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AutocompleteResultDtoListApiResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/operaciones/tipo-movimiento/{id}/config": {
       "get": {
         "tags": ["Operaciones"],
@@ -5920,7 +6227,7 @@
         }
       }
     },
-    "/api/procesos/procesos/moratorios": {
+    "/api/procesos/moratorios": {
       "post": {
         "tags": ["Procesos"],
         "summary": "Procesa moratorios para contratos",
@@ -5990,7 +6297,7 @@
         }
       }
     },
-    "/api/procesos/procesos/vencimientos": {
+    "/api/procesos/vencimientos": {
       "post": {
         "tags": ["Procesos"],
         "summary": "Procesa vencimientos de contratos en un rango de fechas",
@@ -7728,6 +8035,58 @@
         },
         "additionalProperties": false
       },
+      "AutocompleteResultDto": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string",
+            "nullable": true
+          },
+          "value": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "AutocompleteResultDtoListApiResponseDto": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AutocompleteResultDto"
+            }
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "statusCode": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "traceId": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "BancoDto": {
         "required": ["banco"],
         "type": "object",
@@ -8574,8 +8933,7 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/ColoniaDto"
-            },
-            "nullable": true
+            }
           },
           "errors": {
             "type": "array",
@@ -9550,6 +9908,10 @@
       "InfoGeneralContratoPasivoDto": {
         "type": "object",
         "properties": {
+          "idContrato": {
+            "type": "integer",
+            "format": "int32"
+          },
           "contrato": {
             "type": "string",
             "nullable": true
@@ -10666,8 +11028,7 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/RelLineaCreditoTipoCreditoDto"
-            },
-            "nullable": true
+            }
           },
           "errors": {
             "type": "array",
@@ -10780,8 +11141,7 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/RolDto"
-            },
-            "nullable": true
+            }
           },
           "errors": {
             "type": "array",
@@ -10921,8 +11281,7 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/SelectItemDto"
-            },
-            "nullable": true
+            }
           },
           "errors": {
             "type": "array",
@@ -10960,8 +11319,7 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/SelectItemDto"
-            },
-            "nullable": true
+            }
           },
           "errors": {
             "type": "array",
@@ -10999,8 +11357,7 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/SelectItemDto"
-            },
-            "nullable": true
+            }
           },
           "errors": {
             "type": "array",
@@ -11090,8 +11447,7 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/TablaAmortizaItemDto"
-            },
-            "nullable": true
+            }
           },
           "errors": {
             "type": "array",
@@ -11348,8 +11704,7 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/TipoDireccionDto"
-            },
-            "nullable": true
+            }
           },
           "errors": {
             "type": "array",

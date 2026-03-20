@@ -29,3 +29,10 @@
     </div>
   </div>
 </div>
+
+<app-confirm-modal
+  #confirmModal
+  [itemName]="bancoToDelete?.banco ?? undefined"
+  (confirmed)="confirmDelete()"
+  (cancelled)="bancoToDelete = null"
+/>

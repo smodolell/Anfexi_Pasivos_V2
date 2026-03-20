@@ -13,7 +13,7 @@ import { ColoniaDto } from './coloniaDto';
 export interface ColoniaDtoIEnumerableApiResponseDto { 
     success?: boolean;
     message?: string | null;
-    data?: Array<ColoniaDto> | null;
+    data?: Array<ColoniaDto>;
     errors?: Array<string> | null;
     statusCode?: number;
     timestamp?: string;

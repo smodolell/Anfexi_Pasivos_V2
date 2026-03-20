@@ -1,9 +1,10 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CatalogosService } from '../../../../api/services/catalogos.service';
 import { CuentaBancariaDto, BancoListItemDto } from '../../../../api/models/models';
+import { UtilsService } from '../../../services/utils.service';
 
 @Component({
   selector: 'app-cuenta-bancaria-form',
@@ -17,6 +18,8 @@ export class CuentaBancariaFormComponent implements OnInit {
   bancos = signal<BancoListItemDto[]>([]);
 
   cuentaForm: FormGroup;
+
+  private readonly utilsService = inject(UtilsService);
 
   constructor(
     private fb: FormBuilder,
@@ -93,12 +96,13 @@ export class CuentaBancariaFormComponent implements OnInit {
   }
 
   private handleSuccess(message: string): void {
-    alert(message);
+    this.isLoading.set(false);
+    this.utilsService.showNotification('Éxito', message, 'success');
     this.router.navigate(['/catalogos/cuentas-bancarias']);
   }
 
   private handleError(): void {
     this.isLoading.set(false);
-    alert('Error al procesar la solicitud');
+    this.utilsService.showNotification('Error', 'Error al procesar la solicitud', 'error');
   }
 }

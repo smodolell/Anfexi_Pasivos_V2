@@ -24,7 +24,7 @@ internal class AnticipoConfirmCommandHandler(IApplicationDbContext context, IMap
 
     public async Task<Result> HandleAsync(AnticipoConfirmCommand message, CancellationToken cancellationToken = default)
     {
-        if (message.IdTipoReduccion != 1) return Result.Error("No Implementado");
+        if (message.IdTipoReduccion != 1 && !message.EsLiquidacion ) return Result.Error("No Implementado");
 
         var itemDb = _mapper.Map<PSV_Terminacion>(message);
         itemDb.FechaRegistro = DateTime.Now;

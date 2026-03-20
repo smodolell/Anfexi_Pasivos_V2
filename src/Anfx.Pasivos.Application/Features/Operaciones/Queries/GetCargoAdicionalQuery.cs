@@ -22,28 +22,31 @@ internal class GetCargoAdicionalQueryHandler(IApplicationDbContext context, IDat
 
         var contratoPasivo = message.ContratoPasivo.Split(new[] { " - " }, StringSplitOptions.None)[0];
 
-        var itemDb = await _context.PSV_Contrato
+        var contrato = await _context.PSV_Contrato
             .Include(r => r.PSV_Movimiento)
             .Include(r => r.PSV_EstatusContrato)
             .Include(r => r.PSV_TipoCredito)
-            .Include(r => r.SB_Periodicidad)
+            .Include(r => r.PSV_Fondeador)
             .Include(r => r.SB_TipoMoneda)
+            .Include(r => r.SB_Periodicidad)
             .FirstOrDefaultAsync(f => f.Contrato == contratoPasivo);
 
-        if (itemDb == null)
+        if (contrato == null)
         {
             return Result.NotFound("El contrato al que se hace referencia no fue encontrado.");
         }
+        if (contrato.IdEstatusContrato != 2) return Result.Invalid(new ValidationError($"El Contrato clave[{contrato.Contrato}] no se encuentra Activo"));
 
-        var result = _mapper.Map<CargoAdicionalViewDto>(itemDb);
+
+        var result = _mapper.Map<CargoAdicionalViewDto>(contrato);
 
 
-        result.Movimientos = await _databaseService.GetDetalleCargosAsync(itemDb.IdContrato);
+        result.Movimientos = await _databaseService.GetDetalleCargosAsync(contrato.IdContrato);
 
-        var movs = await _databaseService.GetDetalleMovimientosAsync(itemDb.IdContrato);
+        var movs = await _databaseService.GetDetalleMovimientosAsync(contrato.IdContrato);
         var hoy = DateTime.Now.Date;
 
-        result.SaldoVencido = itemDb.PSV_Movimiento
+        result.SaldoVencido = contrato.PSV_Movimiento
             .Where(w => w.FecMovimiento <= hoy && w.SaldoTotal > 0)
             .Sum(s => (decimal?)s.SaldoTotal) ?? 0;
 

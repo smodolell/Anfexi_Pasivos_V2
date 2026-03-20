@@ -204,7 +204,7 @@ export class AsociarContratoComponent implements OnInit {
 
   private cargarContratos(idFondeador: number): void {
     this.loadingContratos.set(true);
-    this.selectSvc.getContratosPasivosPorFondeador(idFondeador).subscribe({
+    this.selectSvc.getContratosPasivosPorFondeador(idFondeador,true).subscribe({
       next: (res) => { this.contratosPasivos.set(res.data ?? []); this.loadingContratos.set(false); },
       error: (err) => {
         this.loadingContratos.set(false);

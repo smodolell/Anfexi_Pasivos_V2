@@ -7,13 +7,13 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { RolDto } from './rolDto';
+import { AutocompleteResultDto } from './autocompleteResultDto';
 
 
-export interface RolDtoIEnumerableApiResponseDto { 
+export interface AutocompleteResultDtoListApiResponseDto { 
     success?: boolean;
     message?: string | null;
-    data?: Array<RolDto>;
+    data?: Array<AutocompleteResultDto>;
     errors?: Array<string> | null;
     statusCode?: number;
     timestamp?: string;

@@ -4,68 +4,74 @@ import { DecimalPipe } from '@angular/common';
 import { forkJoin } from 'rxjs';
 import { OperacionesService } from '../../../../api/services/operaciones.service';
 import { SelectListsService } from '../../../../api/services/selectLists.service';
+import { AutocompleteResultDto } from '../../../../api/models/autocompleteResultDto';
 import { CajaDto } from '../../../../api/models/cajaDto';
 import { MovimientoPagoItem } from '../../../../api/models/movimientoPagoItem';
 import { SelectItemDto } from '../../../../api/models/selectItemDto';
 import { wasHandledByInterceptor } from '../../../interceptors/auth.interceptor';
 import { UtilsService } from '../../../services/utils.service';
+import { ContratoAutocompleteComponent } from '../../../shared/components/contrato-autocomplete/contrato-autocomplete.component';
 import { ConfirmModalComponent } from '../../../shared/components/confirm-modal/confirm-modal.component';
+import { FormErrorsComponent } from '../../../shared/components/form-errors/form-error.component';
+import { ErrorHandlerService } from 'src/app/services/error.services';
 
 @Component({
   selector: 'app-caja-manual',
   standalone: true,
-  imports: [FormsModule, ReactiveFormsModule, DecimalPipe, ConfirmModalComponent],
+  imports: [FormsModule, ReactiveFormsModule, DecimalPipe, ConfirmModalComponent, ContratoAutocompleteComponent, FormErrorsComponent],
   templateUrl: './caja-manual.component.html',
 })
 export class CajaManualComponent {
   private readonly operacionesSvc = inject(OperacionesService);
-  private readonly selectSvc      = inject(SelectListsService);
-  private readonly utilsService   = inject(UtilsService);
-  private readonly fb             = inject(FormBuilder);
+  private readonly selectSvc = inject(SelectListsService);
+  private readonly utilsService = inject(UtilsService);
+  private readonly fb = inject(FormBuilder);
+  private readonly errorSvc = inject(ErrorHandlerService);
 
   @ViewChild('selectAllCb') selectAllCb!: ElementRef<HTMLInputElement>;
   @ViewChild('confirmModal') confirmModal!: ConfirmModalComponent;
 
   // ── Catálogos ────────────────────────────────────────────────
-  tiposPago        = signal<SelectItemDto[]>([]);
-  bancos           = signal<SelectItemDto[]>([]);
+  tiposPago = signal<SelectItemDto[]>([]);
+  bancos = signal<SelectItemDto[]>([]);
   cuentasBancarias = signal<SelectItemDto[]>([]);
-  cargandoCuentas  = signal(false);
+  cargandoCuentas = signal(false);
 
   // ── Estado búsqueda ──────────────────────────────────────────
-  contratoBusqueda = '';
-  buscando         = signal(false);
-  errorBusqueda    = signal<string | null>(null);
+  contratoBusqueda = signal<string>('');
+  buscando = signal(false);
+  erroresBusqueda = signal<string[]>([]);
 
   // ── Datos cargados ───────────────────────────────────────────
-  datosCaja   = signal<CajaDto | null>(null);
+  datosCaja = signal<CajaDto | null>(null);
   movimientos = signal<MovimientoPagoItem[]>([]);
-  guardando   = signal(false);
+  guardando = signal(false);
+  erroresConfirmacion = signal<string[]>([]);
 
   // ── Computed ─────────────────────────────────────────────────
-  totalSeleccionados = computed(() => this.movimientos().filter(m => m.seleccionado).length);
+  totalSeleccionados = computed(() => this.movimientos().filter((m) => m.seleccionado).length);
 
-  allSelected = computed(() =>
-    this.movimientos().length > 0 && this.movimientos().every(m => m.seleccionado)
+  allSelected = computed(
+    () => this.movimientos().length > 0 && this.movimientos().every((m) => m.seleccionado),
   );
 
-  someSelected = computed(() =>
-    this.movimientos().some(m => m.seleccionado) && !this.allSelected()
+  someSelected = computed(
+    () => this.movimientos().some((m) => m.seleccionado) && !this.allSelected(),
   );
 
   montoPago = computed(() =>
     this.movimientos()
-      .filter(m => m.seleccionado)
-      .reduce((sum, m) => sum + (m.saldoTotal ?? 0), 0)
+      .filter((m) => m.seleccionado)
+      .reduce((sum, m) => sum + (m.saldoTotal ?? 0), 0),
   );
 
   // ── Formulario ───────────────────────────────────────────────
   form = this.fb.group({
-    idTipoPago:      [null as number | null, Validators.required],
-    idBanco:         [null as number | null, Validators.required],
-    idCuentaBancaria:[null as number | null, Validators.required],
-    fechaPago:       ['', Validators.required],
-    referencia:      [null as string | null],
+    idTipoPago: [null as number | null, Validators.required],
+    idBanco: [null as number | null, Validators.required],
+    idCuentaBancaria: [null as number | null, Validators.required],
+    fechaPago: ['', Validators.required],
+    referencia: [null as string | null],
   });
 
   constructor() {
@@ -76,7 +82,7 @@ export class CajaManualComponent {
     });
 
     // Cuando cambia el banco → cargar cuentas bancarias de ese banco
-    this.form.get('idBanco')!.valueChanges.subscribe(idBanco => {
+    this.form.get('idBanco')!.valueChanges.subscribe((idBanco) => {
       this.cuentasBancarias.set([]);
       this.form.get('idCuentaBancaria')!.setValue(null, { emitEvent: false });
 
@@ -87,10 +93,14 @@ export class CajaManualComponent {
             this.cuentasBancarias.set(res.data ?? []);
             this.cargandoCuentas.set(false);
           },
-          error: (err) => {
+          error: (err: unknown) => {
             this.cargandoCuentas.set(false);
             if (!wasHandledByInterceptor(err)) {
-              this.utilsService.showNotification('Error', 'Error al cargar cuentas bancarias', 'error');
+              this.utilsService.showNotification(
+                'Error',
+                'Error al cargar cuentas bancarias',
+                'error',
+              );
             }
           },
         });
@@ -109,12 +119,13 @@ export class CajaManualComponent {
 
   // ── Búsqueda ─────────────────────────────────────────────────
 
-  onBuscar(): void {
-    const contrato = this.contratoBusqueda.trim();
+  onContratoSelected(item: AutocompleteResultDto): void {
+    const contrato = item.label?.trim();
     if (!contrato) return;
 
+    this.contratoBusqueda.set(contrato);
     this.buscando.set(true);
-    this.errorBusqueda.set(null);
+    this.erroresBusqueda.set([]);
     this.datosCaja.set(null);
     this.movimientos.set([]);
     this.form.reset();
@@ -124,14 +135,14 @@ export class CajaManualComponent {
 
     if (catalogosYaCargados) {
       this.operacionesSvc.getCajaByContrato(contrato).subscribe({
-        next:  (res) => this.handleCajaResponse(res),
+        next: (res) => this.handleCajaResponse(res),
         error: (err) => this.handleBuscarError(err),
       });
     } else {
       forkJoin({
-        caja:     this.operacionesSvc.getCajaByContrato(contrato),
+        caja: this.operacionesSvc.getCajaByContrato(contrato),
         tipoPago: this.selectSvc.getTipoPagos(),
-        bancos:   this.selectSvc.getBancosSelectList(),
+        bancos: this.selectSvc.getBancosSelectList(),
       }).subscribe({
         next: ({ caja, tipoPago, bancos }) => {
           this.tiposPago.set(tipoPago.data ?? []);
@@ -146,19 +157,22 @@ export class CajaManualComponent {
   // ── Selección de movimientos ─────────────────────────────────
 
   toggleSelectAll(checked: boolean): void {
-    this.movimientos.update(items => items.map(m => ({ ...m, seleccionado: checked })));
+    this.movimientos.update((items) => items.map((m) => ({ ...m, seleccionado: checked })));
   }
 
   toggleMovimiento(index: number, checked: boolean): void {
-    this.movimientos.update(items =>
-      items.map((m, i) => i === index ? { ...m, seleccionado: checked } : m)
+    this.movimientos.update((items) =>
+      items.map((m, i) => (i === index ? { ...m, seleccionado: checked } : m)),
     );
   }
 
   // ── Confirmar (abre modal) ────────────────────────────────────
 
   onConfirmar(): void {
-    if (this.form.invalid) { this.form.markAllAsTouched(); return; }
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
 
     if (this.totalSeleccionados() === 0) {
       this.utilsService.showNotification('Aviso', 'Seleccione al menos un movimiento', 'warning');
@@ -173,39 +187,38 @@ export class CajaManualComponent {
   ejecutarPago(): void {
     this.confirmModal.hide();
 
-    const seleccionados = this.movimientos().filter(m => m.seleccionado);
-    const v    = this.form.getRawValue();
+    const seleccionados = this.movimientos().filter((m) => m.seleccionado);
+    const v = this.form.getRawValue();
     const base = this.datosCaja()!;
 
     const dto: CajaDto = {
-      idContrato:      base.idContrato,
-      idFondeador:     base.idFondeador,
-      idUsuario:       base.idUsuario,
-      contratoPasivo:  base.contratoPasivo,
-      fondeador:       base.fondeador,
-      idTipoPago:      v.idTipoPago!,
-      idBanco:         v.idBanco!,
-      idCuentaBancaria:v.idCuentaBancaria!,
-      fechaPago:       v.fechaPago!,
-      referencia:      v.referencia ?? null,
-      montoPago:       this.montoPago(),
-      movimientos:     seleccionados,
+      idContrato: base.idContrato,
+      idFondeador: base.idFondeador,
+      idUsuario: base.idUsuario,
+      contratoPasivo: base.contratoPasivo,
+      fondeador: base.fondeador,
+      idTipoPago: v.idTipoPago!,
+      idBanco: v.idBanco!,
+      idCuentaBancaria: v.idCuentaBancaria!,
+      fechaPago: v.fechaPago!,
+      referencia: v.referencia ?? null,
+      montoPago: this.montoPago(),
+      movimientos: seleccionados,
     };
 
     this.guardando.set(true);
+    this.erroresConfirmacion.set([]);
     this.operacionesSvc.confirmarPagoCaja(dto).subscribe({
       next: (res) => {
         this.guardando.set(false);
         const msg = res?.message ?? 'Pago de caja procesado correctamente';
         this.utilsService.showNotification('Éxito', msg, 'success');
-        // Recargar la información del contrato
         this.recargarContrato();
       },
-      error: (err) => {
+      error: (err: unknown) => {
         this.guardando.set(false);
         if (!wasHandledByInterceptor(err)) {
-          const msg = err?.error?.message ?? err?.error?.errors?.[0] ?? 'Error al procesar el pago de caja';
-          this.utilsService.showNotification('Error', msg, 'error');
+          this.erroresConfirmacion.set(this.errorSvc.parseError(err));
         }
       },
     });
@@ -214,7 +227,7 @@ export class CajaManualComponent {
   // ── Private ──────────────────────────────────────────────────
 
   private recargarContrato(): void {
-    const contrato = this.contratoBusqueda.trim();
+    const contrato = this.contratoBusqueda().trim();
     if (!contrato) return;
 
     this.movimientos.set([]);
@@ -222,46 +235,45 @@ export class CajaManualComponent {
     this.form.reset();
 
     this.operacionesSvc.getCajaByContrato(contrato).subscribe({
-      next:  (res) => this.handleCajaResponse(res),
-      error: (err) => {
+      next: (res) => this.handleCajaResponse(res),
+      error: (err: unknown) => {
         if (!wasHandledByInterceptor(err)) {
+           this.erroresBusqueda.set(this.errorSvc.parseError(err));
           this.utilsService.showNotification('Error', 'Error al recargar el contrato', 'error');
         }
       },
     });
   }
 
-  private handleCajaResponse(res: { success?: boolean; data?: CajaDto; errors?: string[] | null; message?: string | null }): void {
-    if (res.success && res.data) {
-      this.datosCaja.set(res.data);
-      this.movimientos.set(res.data.movimientos ?? []);
-      this.poblarFormulario(res.data);
-    } else {
-      this.errorBusqueda.set(res.errors?.[0] ?? res.message ?? 'Contrato no encontrado');
-    }
+  private handleCajaResponse(res: { data?: CajaDto }): void {
     this.buscando.set(false);
+    this.datosCaja.set(res.data!);
+    this.movimientos.set(res.data!.movimientos ?? []);
+    this.poblarFormulario(res.data!);
   }
 
   private handleBuscarError(err: unknown): void {
     this.buscando.set(false);
     if (!wasHandledByInterceptor(err)) {
-      this.errorBusqueda.set('Error de conexión al buscar el contrato');
+      this.erroresBusqueda.set(this.errorSvc.parseError(err));
     }
   }
 
   private poblarFormulario(d: CajaDto): void {
     this.form.patchValue({
-      idTipoPago: d.idTipoPago  || null,
-      idBanco:    d.idBanco     || null,
-      fechaPago:  d.fechaPago?.substring(0, 10) ?? '',
-      referencia: d.referencia  ?? null,
+      idTipoPago: d.idTipoPago || null,
+      idBanco: d.idBanco || null,
+      fechaPago: d.fechaPago?.substring(0, 10) ?? '',
+      referencia: d.referencia ?? null,
     });
     // idCuentaBancaria se setea después de que se carguen las cuentas del banco
     if (d.idBanco && d.idCuentaBancaria) {
       this.selectSvc.getCuentaBancariaByBancoIdSelectList(d.idBanco).subscribe({
         next: (res) => {
           this.cuentasBancarias.set(res.data ?? []);
-          this.form.get('idCuentaBancaria')!.setValue(d.idCuentaBancaria ?? null, { emitEvent: false });
+          this.form
+            .get('idCuentaBancaria')!
+            .setValue(d.idCuentaBancaria ?? null, { emitEvent: false });
         },
       });
     }

@@ -18,7 +18,7 @@ public class Catalogos : EndpointGroupBase
     public override void Map(RouteGroupBuilder groupBuilder)
     {
         var group = groupBuilder.MapGroup("/")
-            .RequireAuthorization()
+            //.RequireAuthorization()
         .WithTags("Catalogos");
 
         #region Banco
@@ -55,11 +55,21 @@ public class Catalogos : EndpointGroupBase
             .Produces<ApiResponseDto>(StatusCodes.Status400BadRequest)
             .Produces<ApiResponseDto>(StatusCodes.Status401Unauthorized)
             .Produces<ApiResponseDto>(StatusCodes.Status500InternalServerError);
+
+        group.MapDelete("banco/{id}", DeleteBanco)
+            .WithName("DeleteBanco")
+            .WithSummary("Elimina un banco")
+            .WithDescription("Elimina físicamente un banco del catálogo, identificado por su ID. Solo permite eliminar bancos que no tengan cuentas bancarias asociadas.")
+            .Produces(StatusCodes.Status200OK)
+            .Produces<ApiResponseDto>(StatusCodes.Status404NotFound)
+            .Produces<ApiResponseDto>(StatusCodes.Status400BadRequest)
+            .Produces<ApiResponseDto>(StatusCodes.Status401Unauthorized)
+            .Produces<ApiResponseDto>(StatusCodes.Status500InternalServerError);
         #endregion
 
         #region CuentaBancaria
         // GET by id
-        group.MapGet("cuentaBancaria/{id}", GetCuentasBancariaById)
+        group.MapGet("cuenta-bancaria/{id}", GetCuentasBancariaById)
             .WithName("GetCuentaBancariaById")
             .WithSummary("Obtiene una cuenta bancaria por ID")
             .Produces<ApiResponseDto<CuentaBancariaDto>>(StatusCodes.Status200OK)
@@ -67,13 +77,13 @@ public class Catalogos : EndpointGroupBase
             .Produces<ApiResponseDto>(StatusCodes.Status401Unauthorized)
             .Produces<ApiResponseDto>(StatusCodes.Status500InternalServerError);
 
-        group.MapGet("cuentaBancaria", GetPaginatedCuentasBancaria)
+        group.MapGet("cuenta-bancaria", GetPaginatedCuentasBancaria)
             .WithSummary("Obtiene cuentas bancarias paginadas y filtradas")
             .Produces<ApiResponseDto<PagedResultDto<CuentaBancariaListItemDto>>>(StatusCodes.Status200OK)
             .Produces<ApiResponseDto>(StatusCodes.Status401Unauthorized)
             .Produces<ApiResponseDto>(StatusCodes.Status500InternalServerError);
 
-        group.MapPost("cuentaBancaria", CreateCuentaBancaria)
+        group.MapPost("cuenta-bancaria", CreateCuentaBancaria)
             .WithName("CreateCuentaBancaria")
             .WithSummary("Crea una nueva cuenta bancaria")
             .Accepts<CuentaBancariaDto>("application/json")
@@ -82,10 +92,20 @@ public class Catalogos : EndpointGroupBase
             .Produces<ApiResponseDto<int>>(StatusCodes.Status401Unauthorized)
             .Produces<ApiResponseDto<int>>(StatusCodes.Status500InternalServerError);
 
-        group.MapPut("cuentaBancaria/{id}", UpdateCuentaBancaria)
+        group.MapPut("cuenta-bancaria/{id}", UpdateCuentaBancaria)
             .WithName("UpdateCuentaBancaria")
             .WithSummary("Actualiza una cuenta bancaria")
             .Accepts<CuentaBancariaDto>("application/json")
+            .Produces(StatusCodes.Status200OK)
+            .Produces<ApiResponseDto>(StatusCodes.Status404NotFound)
+            .Produces<ApiResponseDto>(StatusCodes.Status400BadRequest)
+            .Produces<ApiResponseDto>(StatusCodes.Status401Unauthorized)
+            .Produces<ApiResponseDto>(StatusCodes.Status500InternalServerError);
+
+        group.MapDelete("cuenta-bancaria/{id}", DeleteCuentaBancaria)
+            .WithName("DeleteCuentaBancaria")
+            .WithSummary("Elimina una cuenta bancaria")
+            .WithDescription("Elimina físicamente una cuenta bancaria del catálogo. Solo permite eliminar cuentas que no tengan pagos o movimientos asociados.")
             .Produces(StatusCodes.Status200OK)
             .Produces<ApiResponseDto>(StatusCodes.Status404NotFound)
             .Produces<ApiResponseDto>(StatusCodes.Status400BadRequest)
@@ -123,6 +143,16 @@ public class Catalogos : EndpointGroupBase
             .WithName("UpdateEstatusContrato")
             .WithSummary("Actualiza un estatus de contrato")
             .Accepts<EstatusContratoDto>("application/json")
+            .Produces(StatusCodes.Status200OK)
+            .Produces<ApiResponseDto>(StatusCodes.Status404NotFound)
+            .Produces<ApiResponseDto>(StatusCodes.Status400BadRequest)
+            .Produces<ApiResponseDto>(StatusCodes.Status401Unauthorized)
+            .Produces<ApiResponseDto>(StatusCodes.Status500InternalServerError);
+
+        group.MapDelete("estatus-contrato/{id}", DeleteEstatusContrato)
+            .WithName("DeleteEstatusContrato")
+            .WithSummary("Elimina un estatus de contrato")
+            .WithDescription("Elimina físicamente un estatus de contrato del catálogo. Los estatus críticos del sistema (CAPTURADO=1, ACTIVO=2, CANCELADO=3, TERMINADO=4) no pueden ser eliminados.")
             .Produces(StatusCodes.Status200OK)
             .Produces<ApiResponseDto>(StatusCodes.Status404NotFound)
             .Produces<ApiResponseDto>(StatusCodes.Status400BadRequest)
@@ -166,17 +196,28 @@ public class Catalogos : EndpointGroupBase
             .Produces<ApiResponseDto>(StatusCodes.Status400BadRequest)
             .Produces<ApiResponseDto>(StatusCodes.Status401Unauthorized)
             .Produces<ApiResponseDto>(StatusCodes.Status500InternalServerError);
+
+        group.MapDelete("tipo-pago/{id}", DeleteTipoPago)
+            .WithName("DeleteTipoPago")
+            .WithSummary("Elimina un tipo de pago")
+            .WithDescription("Elimina físicamente un tipo de pago del catálogo, identificado por su ID. Solo permite eliminar tipos de pago que no tengan movimientos o pagos asociados.")
+            .Produces(StatusCodes.Status200OK)
+            .Produces<ApiResponseDto>(StatusCodes.Status404NotFound)
+            .Produces<ApiResponseDto>(StatusCodes.Status400BadRequest)
+            .Produces<ApiResponseDto>(StatusCodes.Status401Unauthorized)
+            .Produces<ApiResponseDto>(StatusCodes.Status500InternalServerError);
+
         #endregion
 
         #region TipoDireccion
 
         // GET all
         group.MapGet("tipo-direccion/all", GetTipoDireccionAll)
-            .WithName("GetAllTiposDirecciones")
-            .WithSummary("Obtiene todos los tipos de dirección")
-            .Produces<ApiResponseDto<IEnumerable<TipoDireccionDto>>>(StatusCodes.Status200OK)
-            .Produces<ApiResponseDto>(StatusCodes.Status401Unauthorized)
-            .Produces<ApiResponseDto>(StatusCodes.Status500InternalServerError);
+                .WithName("GetAllTiposDirecciones")
+                .WithSummary("Obtiene todos los tipos de dirección")
+                .Produces<ApiResponseDto<IEnumerable<TipoDireccionDto>>>(StatusCodes.Status200OK)
+                .Produces<ApiResponseDto>(StatusCodes.Status401Unauthorized)
+                .Produces<ApiResponseDto>(StatusCodes.Status500InternalServerError);
 
         // GET paginados
         group.MapGet("tipo-direccion/", GetTipoDireccionPaginados)
@@ -392,6 +433,20 @@ public class Catalogos : EndpointGroupBase
         var result = await commandMediator.SendAsync(command);
         return result.ToCustomMinimalApiResult();
     }
+    public async Task<IResult> DeleteBanco(
+        [FromServices] ICommandMediator commandMediator,
+        [FromRoute] int id
+    )
+    {
+        var command = new DeleteBancoCommand
+        {
+            IdBanco = id
+        };
+
+        var result = await commandMediator.SendAsync(command);
+        return result.ToCustomMinimalApiResult();
+    }
+
     #endregion
 
     #region CuentaBancaria
@@ -446,6 +501,19 @@ public class Catalogos : EndpointGroupBase
         {
             Id = id,
             Model = model
+        };
+
+        var result = await commandMediator.SendAsync(command);
+        return result.ToCustomMinimalApiResult();
+    }
+
+    public async Task<IResult> DeleteCuentaBancaria(
+    [FromServices] ICommandMediator commandMediator,
+    [FromRoute] int id)
+    {
+        var command = new DeleteCuentaBancariaCommand
+        {
+            IdCuentaBancaria = id
         };
 
         var result = await commandMediator.SendAsync(command);
@@ -511,13 +579,26 @@ public class Catalogos : EndpointGroupBase
         var result = await commandMediator.SendAsync(command);
         return result.ToCustomMinimalApiResult();
     }
+
+    public async Task<IResult> DeleteEstatusContrato(
+    [FromServices] ICommandMediator commandMediator,
+    [FromRoute] int id)
+    {
+        var command = new DeleteEstatusContratoCommand
+        {
+            IdEstatusContrato = id
+        };
+
+        var result = await commandMediator.SendAsync(command);
+        return result.ToCustomMinimalApiResult();
+    }
     #endregion
 
     #region TipoPago
 
     public async Task<IResult> GetTipoPagoById(
- [FromServices] IQueryMediator queryMediator,
- int id)
+    [FromServices] IQueryMediator queryMediator,
+    int id)
     {
         var result = await queryMediator.QueryAsync(new GetTipoPagoByIdQuery { Id = id });
         return result.ToCustomMinimalApiResult();
@@ -557,14 +638,27 @@ public class Catalogos : EndpointGroupBase
     }
 
     public async Task<IResult> UpdateTipoPago(
-    [FromServices] ICommandMediator commandMediator,
-  [FromRoute] int id,
-    [FromBody] TipoPagoDto model)
+        [FromServices] ICommandMediator commandMediator,
+        [FromRoute] int id,
+        [FromBody] TipoPagoDto model)
     {
         var command = new UpdateTipoPagoCommand
         {
             Id = id,
             Model = model
+        };
+
+        var result = await commandMediator.SendAsync(command);
+        return result.ToCustomMinimalApiResult();
+    }
+
+    public async Task<IResult> DeleteTipoPago(
+       [FromServices] ICommandMediator commandMediator,
+       [FromRoute] int id)
+    {
+        var command = new DeleteTipoPagoCommand
+        {
+            IdTipoPago = id
         };
 
         var result = await commandMediator.SendAsync(command);
@@ -700,7 +794,7 @@ public class Catalogos : EndpointGroupBase
         // Validación de parámetros
         if (page < 1 || size < 1)
         {
-            return Result.Error("Los parámetros de paginación deben ser mayores a 0")
+            return Result.Invalid(new ValidationError("Los parámetros de paginación deben ser mayores a 0"))
                 .ToCustomMinimalApiResult();
         }
 

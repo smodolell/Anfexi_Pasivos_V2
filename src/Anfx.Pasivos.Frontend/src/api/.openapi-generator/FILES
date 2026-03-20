@@ -12,6 +12,8 @@ models/anticipoDto.ts
 models/anticipoDtoApiResponseDto.ts
 models/apiResponseDto.ts
 models/asignarPasivosResponce.ts
+models/autocompleteResultDto.ts
+models/autocompleteResultDtoListApiResponseDto.ts
 models/bancoDto.ts
 models/bancoDtoApiResponseDto.ts
 models/bancoListItemDto.ts

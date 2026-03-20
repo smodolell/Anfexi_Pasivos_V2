@@ -18,7 +18,9 @@ internal class GetAnticipoConfigQueryHandler(IApplicationDbContext context) : IQ
         {
             return Result.NotFound("No se ha encontrado el tipo de terminación referida.");
         }
-        var pasivo = await _context.PSV_Contrato.SingleOrDefaultAsync(f => f.IdContrato == message.IdContrato);
+        var pasivo = await _context.PSV_Contrato
+            .Include(i => i.PSV_TablaAmortiza)
+            .SingleOrDefaultAsync(f => f.IdContrato == message.IdContrato);
         if (pasivo == null)
         {
             return Result.NotFound("Contrato no encontrado");

@@ -13,26 +13,24 @@
     <div class="card-body">
       <div class="row g-2 align-items-end">
         <div class="col-12 col-md-6 col-lg-4">
-          <label class="form-label fw-bold">Número de Contrato</label>
-          <app-search-input
+          <app-contrato-autocomplete
             placeholder="Ingrese el número de contrato..."
-            [value]="contratoBusqueda()"
-            (search)="onSearch($event)"
-          ></app-search-input>
+            [required]="true"
+            [disabled]="buscando()"
+            (contratoSelected)="onContratoSelected($event)"
+          ></app-contrato-autocomplete>
         </div>
         @if (buscando()) {
-          <div class="col-auto d-flex align-items-center gap-2">
-            <span class="spinner-border spinner-border-sm text-primary"></span>
-            <span class="text-muted small">Buscando...</span>
+          <div class="col-auto d-flex align-items-end pb-1">
+            <span class="d-flex align-items-center gap-2 text-muted">
+              <span class="spinner-border spinner-border-sm"></span>
+              <span class="small">Buscando...</span>
+            </span>
           </div>
         }
       </div>
 
-      @if (errorBusqueda()) {
-        <div class="alert alert-danger mt-3 mb-0">
-          <i class="fa-solid fa-circle-exclamation me-2"></i>{{ errorBusqueda() }}
-        </div>
-      }
+      <app-form-errors [errors]="erroresBusqueda()" (onClose)="erroresBusqueda.set([])"></app-form-errors>
     </div>
   </div>
 
@@ -198,8 +196,8 @@
                 }
               </div>
 
-              <!-- Fila 3: Capital | Interés | IVA | Total -->
-              <div class="col-md-3">
+              <!-- Fila 3: Capital | Interés | IVA Capital | IVA Interés | Total -->
+              <div class="col-md-2">
                 <label class="form-label fw-semibold">Capital</label>
                 <div class="input-group">
                   <span class="input-group-text">$</span>
@@ -207,7 +205,7 @@
                 </div>
               </div>
 
-              <div class="col-md-3">
+              <div class="col-md-2">
                 <label class="form-label fw-semibold">Interés</label>
                 <div class="input-group">
                   <span class="input-group-text">$</span>
@@ -215,32 +213,28 @@
                 </div>
               </div>
 
-              <div class="col-md-3">
-                <label class="form-label fw-semibold">IVA</label>
+              <div class="col-md-2">
+                <label class="form-label fw-semibold">IVA Capital</label>
                 <div class="input-group">
                   <span class="input-group-text">$</span>
-                  <input type="number" class="form-control" formControlName="iva" min="0" step="0.01" />
+                  <input type="number" class="form-control bg-light" [value]="ivaCapital()" readonly />
                 </div>
               </div>
 
-              <div class="col-md-3">
-                <label class="form-label fw-semibold">
-                  Total <span class="text-danger">*</span>
-                </label>
+              <div class="col-md-2">
+                <label class="form-label fw-semibold">IVA Interés</label>
                 <div class="input-group">
                   <span class="input-group-text">$</span>
-                  <input
-                    type="number"
-                    class="form-control"
-                    [class.is-invalid]="isInvalid('total')"
-                    formControlName="total"
-                    min="0.01"
-                    step="0.01"
-                  />
+                  <input type="number" class="form-control bg-light" [value]="ivaInteres()" readonly />
                 </div>
-                @if (isInvalid('total')) {
-                  <div class="invalid-feedback d-block">Ingrese el total.</div>
-                }
+              </div>
+
+              <div class="col-md-4">
+                <label class="form-label fw-semibold">Total</label>
+                <div class="input-group">
+                  <span class="input-group-text">$</span>
+                  <input type="number" class="form-control bg-light fw-bold" [value]="total()" readonly />
+                </div>
               </div>
 
               <div class="col-12 d-flex justify-content-end gap-2">

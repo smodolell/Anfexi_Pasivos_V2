@@ -19,41 +19,25 @@
     <div class="card-body">
 
       <div class="row g-3 align-items-end">
-
         <div class="col-md-5">
-          <label class="form-label fw-semibold">Número de Contrato</label>
-          <input
-            type="text"
-            class="form-control"
+          <app-contrato-autocomplete
             placeholder="Ingrese el número de contrato..."
-            [(ngModel)]="contratoBusqueda"
-            [ngModelOptions]="{ standalone: true }"
-            (keyup.enter)="onBuscar()"
-          />
+            [required]="true"
+            [disabled]="buscando()"
+            (contratoSelected)="onContratoSelected($event)"
+          ></app-contrato-autocomplete>
         </div>
-
-        <div class="col-md-2">
-          <button
-            type="button"
-            class="btn btn-primary w-100"
-            [disabled]="!contratoBusqueda.trim() || buscando()"
-            (click)="onBuscar()">
-            @if (buscando()) {
-              <span class="spinner-border spinner-border-sm me-2"></span>
-            } @else {
-              <i class="fa-solid fa-magnifying-glass me-2"></i>
-            }
-            Buscar
-          </button>
-        </div>
-
+        @if (buscando()) {
+          <div class="col-auto d-flex align-items-end pb-1">
+            <span class="d-flex align-items-center gap-2 text-muted">
+              <span class="spinner-border spinner-border-sm"></span>
+              <span class="small">Buscando...</span>
+            </span>
+          </div>
+        }
       </div>
 
-      @if (errorBusqueda()) {
-        <div class="alert alert-danger mt-3 mb-0">
-          <i class="fa-solid fa-circle-exclamation me-2"></i>{{ errorBusqueda() }}
-        </div>
-      }
+      <app-form-errors [errors]="erroresBusqueda()" (onClose)="erroresBusqueda.set([])"></app-form-errors>
 
     </div>
   </div>
@@ -287,6 +271,9 @@
           </div>
 
         </div>
+
+        <app-form-errors [errors]="erroresConfirmacion()" (onClose)="erroresConfirmacion.set([])"></app-form-errors>
+
       </div>
 
     </div>
@@ -299,7 +286,7 @@
   #confirmModal
   title="Confirmar Pago de Caja"
   message="¿Está seguro que desea registrar el pago con los movimientos seleccionados?"
-  [itemName]="datosCaja()?.contratoPasivo ?? contratoBusqueda"
+  [itemName]="datosCaja()?.contratoPasivo ?? contratoBusqueda()"
   warningText="Una vez procesado, esta operación no se puede deshacer."
   icon="fa-solid fa-cash-register"
   confirmLabel="Confirmar Pago"
