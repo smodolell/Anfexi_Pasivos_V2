@@ -12,7 +12,7 @@ import { ConfirmModalComponent } from '../../../shared/components/confirm-modal/
 @Component({
   selector: 'app-bancos-list',
   standalone: true,
-  imports: [CommonModule, GenericTableComponent],
+  imports: [CommonModule, GenericTableComponent, ConfirmModalComponent],
   templateUrl: './bancos-list.component.html'
 })
 export class BancosListComponent implements OnInit {

@@ -3,12 +3,6 @@ using Anfx.Pasivos.Application.Common.Interfaces;
 using Anfx.Pasivos.Application.Features.Auth.Commands;
 using Anfx.Pasivos.Application.Features.Auth.DTOs;
 using Anfx.Pasivos.Application.Features.Auth.Queries;
-using Anfx.Pasivos.Application.Features.Roles.Commands;
-using Anfx.Pasivos.Application.Features.Roles.DTOs;
-using Anfx.Pasivos.Application.Features.Roles.Queries;
-using Anfx.Pasivos.Application.Features.Usuarios.Commands;
-using Anfx.Pasivos.Application.Features.Usuarios.DTOs;
-using Anfx.Pasivos.Application.Features.Usuarios.Queries;
 using IResult = Microsoft.AspNetCore.Http.IResult;
 
 namespace Anfx.Pasivos.ApiService.Endpoints;
@@ -20,13 +14,15 @@ public class Auth : EndpointGroupBase
     public override void Map(RouteGroupBuilder groupBuilder)
     {
         var group = groupBuilder.MapGroup("/")
-          .WithTags("Auth");
+          .WithTags("Auth")
+          .RequireAuthorization();
 
 
         group.MapPost("/login", Login)
             .WithName("Login")
             .WithSummary("Login por Correo Electronico")
             .WithDescription("Autentica un usuario con email y contraseña")
+            .AllowAnonymous()
             .Accepts<LoginRequestDto>("application/json")
             .Produces<LoginResponse>(StatusCodes.Status200OK)
             .Produces<int>(StatusCodes.Status201Created)
@@ -36,6 +32,7 @@ public class Auth : EndpointGroupBase
 
         group.MapPost("/login/username", LoginByUserName)
             .WithName("LoginByUserName")
+            .AllowAnonymous()
             .WithSummary("Login por Nombre de Usuario")
             .WithDescription("Autentica un usuario con nombre de usuario y contraseña")
             .Accepts<LoginByUsernameRequestDto>("application/json")
@@ -45,20 +42,25 @@ public class Auth : EndpointGroupBase
             .Produces<ApiResponseDto>(StatusCodes.Status500InternalServerError)
             .Produces<ApiResponseDto>(StatusCodes.Status409Conflict);
 
-        group.MapGet("me", GetCurrentUserProfile)
-            .WithName("GetCurrentUserProfile")
-            .WithSummary("Obtiene el perfil del usuario actual")
-            .WithDescription("Retorna los datos del usuario extraídos del token JWT mediante UserContext")
-            .RequireAuthorization() // IMPORTANTE: Solo usuarios con token válido entran aquí
-            .Produces<ApiResponseDto<UserContextDto>>(StatusCodes.Status200OK)
-            .Produces<ApiResponseDto>(StatusCodes.Status401Unauthorized);
-
         group.MapPost("/validate-token", ValidateToken)
+            .WithName("ValidateToken")
+            .AllowAnonymous()
             .WithSummary("Valida un token JWT")
             .Accepts<LoginByUsernameRequestDto>("application/json")
             .Produces<Application.Features.Auth.DTOs.TokenValidationDto>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status400BadRequest)
             .Produces(StatusCodes.Status500InternalServerError);
+
+
+
+        group.MapGet("me", GetCurrentUserProfile)
+            .WithName("GetCurrentUserProfile")
+            .WithSummary("Obtiene el perfil del usuario actual")
+            .WithDescription("Retorna los datos del usuario extraídos del token JWT mediante UserContext")
+            .Produces<ApiResponseDto<UserContextDto>>(StatusCodes.Status200OK)
+            .Produces<ApiResponseDto>(StatusCodes.Status401Unauthorized);
+
+
 
         #region Usuarios
 
@@ -309,7 +311,7 @@ public class Auth : EndpointGroupBase
     public async Task<IResult> GetRolAll(
         [FromServices] IQueryMediator queryMediator)
     {
-        var query = new Application.Features.Roles.Queries.GetRolesQuery(); // Nota: en tu controller usa GetAllRolesQuery, verifica cuál es el correcto
+        var query = new GetRolesQuery(); // Nota: en tu controller usa GetAllRolesQuery, verifica cuál es el correcto
         var result = await queryMediator.QueryAsync(query);
         return result.ToCustomMinimalApiResult();
     }
@@ -321,7 +323,7 @@ public class Auth : EndpointGroupBase
         [FromQuery] int size = 10)
     {
 
-        var query = new Application.Features.Roles.Queries.GetRolesQuery
+        var query = new GetRolesQuery
         {
             Page = page,
             PageSize = size,
@@ -435,7 +437,7 @@ public class Auth : EndpointGroupBase
     public async Task<IResult> GetUsuarioRoles(
         [FromServices] IQueryMediator queryMediator)
     {
-        var query = new Application.Features.Roles.Queries.GetRolesQuery();
+        var query = new GetRolesQuery();
         var result = await queryMediator.QueryAsync(query);
         return result.ToCustomMinimalApiResult();
     }
