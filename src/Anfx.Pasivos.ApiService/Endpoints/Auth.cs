@@ -1,5 +1,7 @@
 ﻿using Anfx.Pasivos.ApiService.Responces.Auth;
+using Anfx.Pasivos.Application.Common.Interfaces;
 using Anfx.Pasivos.Application.Features.Auth.Commands;
+using Anfx.Pasivos.Application.Features.Auth.DTOs;
 using Anfx.Pasivos.Application.Features.Auth.Queries;
 using Anfx.Pasivos.Application.Features.Roles.Commands;
 using Anfx.Pasivos.Application.Features.Roles.DTOs;
@@ -43,7 +45,13 @@ public class Auth : EndpointGroupBase
             .Produces<ApiResponseDto>(StatusCodes.Status500InternalServerError)
             .Produces<ApiResponseDto>(StatusCodes.Status409Conflict);
 
-
+        group.MapGet("me", GetCurrentUserProfile)
+            .WithName("GetCurrentUserProfile")
+            .WithSummary("Obtiene el perfil del usuario actual")
+            .WithDescription("Retorna los datos del usuario extraídos del token JWT mediante UserContext")
+            .RequireAuthorization() // IMPORTANTE: Solo usuarios con token válido entran aquí
+            .Produces<ApiResponseDto<UserContextDto>>(StatusCodes.Status200OK)
+            .Produces<ApiResponseDto>(StatusCodes.Status401Unauthorized);
 
         group.MapPost("/validate-token", ValidateToken)
             .WithSummary("Valida un token JWT")
@@ -182,7 +190,7 @@ public class Auth : EndpointGroupBase
             .Produces<ApiResponseDto>(StatusCodes.Status401Unauthorized)
             .Produces<ApiResponseDto>(StatusCodes.Status500InternalServerError);
 
-        
+
         group.MapPut("rol/{id}", UpdateRol)
             .WithName("UpdateRol")
             .WithSummary("Actualiza un rol existente")
@@ -194,7 +202,7 @@ public class Auth : EndpointGroupBase
             .Produces<ApiResponseDto>(StatusCodes.Status404NotFound)
             .Produces<ApiResponseDto>(StatusCodes.Status500InternalServerError);
 
-        
+
         group.MapDelete("rol/{id}", DeleteRol)
             .WithName("DeleteRol")
             .WithSummary("Elimina un rol")
@@ -210,9 +218,10 @@ public class Auth : EndpointGroupBase
     }
 
 
+    #region Login
     public async Task<IResult> Login(
-      [FromServices] ICommandMediator commandMediator,
-      [FromBody] LoginRequestDto model)
+  [FromServices] ICommandMediator commandMediator,
+  [FromBody] LoginRequestDto model)
     {
 
         var command = new LoginCommand
@@ -223,9 +232,9 @@ public class Auth : EndpointGroupBase
         };
 
         var result = await commandMediator.SendAsync(command);
-        if(result.IsSuccess)
+        if (result.IsSuccess)
         {
-            var r = new LoginResponse(true,new UserInfo(result.Value.Id)
+            var r = new LoginResponse(true, new UserInfo(result.Value.Id)
             {
                 NombreCompleto = result.Value.NombreCompleto,
                 Email = result.Value.Email,
@@ -238,7 +247,7 @@ public class Auth : EndpointGroupBase
             };
             return Results.Ok(r);
         }
-        
+
         return result.ToCustomMinimalApiResult();
     }
 
@@ -258,7 +267,7 @@ public class Auth : EndpointGroupBase
         return result.ToCustomMinimalApiResult();
     }
 
-    public static async Task<IResult> ValidateToken(
+    public async Task<IResult> ValidateToken(
         [FromServices] IQueryMediator queryMediator,
         [FromServices] string token
         )
@@ -267,6 +276,30 @@ public class Auth : EndpointGroupBase
         var result = await queryMediator.QueryAsync(query);
         return result.ToCustomMinimalApiResult();
     }
+
+    public async Task<IResult> GetCurrentUserProfile(
+        [FromServices] IUserContext userContext)
+    {
+        if (!userContext.IsAuthenticated)
+        {
+
+            return Result.Unauthorized("Usuario no autenticado").
+                ToCustomMinimalApiResult();
+        }
+
+        var userDto = new UserContextDto
+        {
+            Id = userContext.UserId,
+            Username = userContext.UserName,
+            Email = userContext.Email,
+            Role = userContext.Role,
+            IsAuthenticated = userContext.IsAuthenticated
+        };
+        return Result.Success(userDto, "Perfil recuperado exitosamente")
+                .ToCustomMinimalApiResult();
+    }
+
+    #endregion
 
     #region Roles
 
@@ -477,4 +510,6 @@ public class Auth : EndpointGroupBase
     }
 
     #endregion
+
+
 }

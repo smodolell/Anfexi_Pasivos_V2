@@ -1,5 +1,4 @@
 ﻿using Anfx.Pasivos.Application.Features.Configuracion.Dtos;
-using Azure.Core;
 
 namespace Anfx.Pasivos.Application.Features.Configuracion.Commands;
 
