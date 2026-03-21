@@ -5,7 +5,7 @@
   <aside class="left-sidebar">
     <div class="scroll-sidebar">
       <nav class="sidebar-nav">
-        <app-sidebar-nav [items]="menuItems" />
+        <app-sidebar-nav [items]="menuItems" (navItemSelected)="onNavItemSelected()" />
       </nav>
     </div>
   </aside>

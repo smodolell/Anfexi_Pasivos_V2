@@ -1,6 +1,6 @@
 import {
   Component, Input, OnInit, inject,
-  signal, ChangeDetectionStrategy, DestroyRef,
+  signal, ChangeDetectionStrategy, DestroyRef, output,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router, NavigationEnd } from '@angular/router';
@@ -20,6 +20,9 @@ export class SidebarNavComponent implements OnInit {
   /** Ítems de menú ya filtrados por rol. Provistos por el layout padre. */
   @Input() items: MenuItem[] = [];
 
+  /** Emite cuando el usuario hace clic en un enlace hijo — el layout padre cierra el overlay mobile */
+  navItemSelected = output<void>();
+
   private readonly router     = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
 
@@ -36,6 +39,10 @@ export class SidebarNavComponent implements OnInit {
 
   toggleGroup(id: string): void {
     this.activeGroup.update(v => (v === id ? null : id));
+  }
+
+  onNavItemSelected(): void {
+    this.navItemSelected.emit();
   }
 
   /** True si algún hijo del grupo coincide con la URL actual. */

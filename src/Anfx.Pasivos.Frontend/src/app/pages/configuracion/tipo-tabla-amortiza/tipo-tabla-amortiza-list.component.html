@@ -1,29 +1,27 @@
 <div class="container-fluid">
-  <div class="row">
-    <div class="col-12">
-      <app-generic-table
-        [columns]="columns"
-        [items]="items()"
-        [loading]="loading()"
-        [actions]="actions"
-        [totalCount]="totalCount()"
-        [currentPage]="currentPage()"
-        [totalPages]="totalPages()"
-        [pageSize]="pageSize()"
-        [sortColumn]="sortColumn"
-        [sortDirection]="sortDirection"
-        [searchable]="true"
-        [searchPlaceholder]="'Buscar tipo de tabla amortización...'"
-        [searchValue]="searchValue"
-        [showNew]="true"
-        [showExport]="false"
-        (searchChanged)="onSearch($event)"
-        (sortChanged)="onSort($event)"
-        (actionCalled)="onAction($event)"
-        (pageNext)="nextPage()"
-        (pagePrev)="prevPage()"
-        (newClicked)="onNuevo()"
-      />
-    </div>
-  </div>
+  <app-card [title]="'Tipos de Tabla de Amortización'" [icon]="'fa-solid fa-table'" variant="primary">
+    <app-generic-table
+      [columns]="columns"
+      [items]="items()"
+      [loading]="loading()"
+      [actions]="actions"
+      [totalCount]="totalCount()"
+      [currentPage]="currentPage()"
+      [totalPages]="totalPages()"
+      [pageSize]="pageSize()"
+      [sortColumn]="sortColumn"
+      [sortDirection]="sortDirection"
+      [searchable]="true"
+      [searchPlaceholder]="'Buscar tipo de tabla amortización...'"
+      [searchValue]="searchValue"
+      [showNew]="true"
+      [showExport]="false"
+      (searchChanged)="onSearch($event)"
+      (sortChanged)="onSort($event)"
+      (actionCalled)="onAction($event)"
+      (pageNext)="nextPage()"
+      (pagePrev)="prevPage()"
+      (newClicked)="onNuevo()"
+    />
+  </app-card>
 </div>

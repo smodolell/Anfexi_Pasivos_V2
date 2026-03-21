@@ -2,7 +2,7 @@
   {
     "id": "reportes",
     "label": "Reportes",
-    "icon": "fa-solid fa-chart-line",
+    "icon": "fa-solid fa-file-alt",
     "order": 1,
     "children": [
       {
@@ -17,14 +17,14 @@
   {
     "id": "catalogos",
     "label": "Catálogos",
-    "icon": "fa-solid fa-book-open",
+    "icon": "fa-solid fa-book",
     "order": 2,
     "children": [
       { "id": "bancos",            "label": "Bancos",            "icon": "fa-solid fa-building-columns",  "route": "/catalogos/bancos",             "order": 1 },
       { "id": "cuentas-bancarias", "label": "Cuentas Bancarias", "icon": "fa-solid fa-credit-card",       "route": "/catalogos/cuentas-bancarias",  "order": 2 },
       { "id": "colonias",          "label": "Colonia",           "icon": "fa-solid fa-map-location-dot",  "route": "/catalogos/colonias",           "order": 4 },
       { "id": "estatus-contrato",  "label": "Estatus Contrato",  "icon": "fa-solid fa-file-circle-check", "route": "/catalogos/estatus-contrato",   "order": 5 },
-      { "id": "tipo-pago",         "label": "Tipos de Pago",     "icon": "fa-solid fa-money-bill-wave",   "route": "/catalogos/tipo-pago",          "order": 6 }
+      { "id": "tipo-pago",         "label": "Tipos de Pago",     "icon": "fa-solid fa-money-check-dollar","route": "/catalogos/tipo-pago",          "order": 6 }
     ]
   },
   {
@@ -45,25 +45,25 @@
   {
     "id": "configuracion",
     "label": "Configuración",
-    "icon": "fa-solid fa-gear",
+    "icon": "fa-solid fa-gears",
     "order": 4,
     "roles": ["Admin", "Webmaster"],
     "children": [
-      { "id": "empresas",            "label": "Empresas",            "icon": "fa-solid fa-building",            "route": "/admin/empresas",                    "order": 1, "roles": ["Admin", "Webmaster"] },
+      { "id": "empresas",            "label": "Empresas",            "icon": "fa-solid fa-building",             "route": "/admin/empresas",                    "order": 1, "roles": ["Admin", "Webmaster"] },
       { "id": "fondeador",           "label": "Fondeadores",         "icon": "fa-solid fa-hand-holding-dollar",  "route": "/configuracion/fondeador",           "order": 2, "roles": ["Admin", "Webmaster"] },
-      { "id": "tipo-credito",        "label": "Tipos de Crédito",    "icon": "fa-solid fa-tag",                  "route": "/configuracion/tipo-credito",        "order": 3, "roles": ["Admin", "Webmaster"] },
+      { "id": "tipo-credito",        "label": "Tipos de Crédito",    "icon": "fa-solid fa-file-invoice-dollar",  "route": "/configuracion/tipo-credito",        "order": 3, "roles": ["Admin", "Webmaster"] },
       { "id": "tipo-tabla-amortiza", "label": "Tipo Tabla Amortiza", "icon": "fa-solid fa-table-list",           "route": "/configuracion/tipo-tabla-amortiza", "order": 4, "roles": ["Admin", "Webmaster"] }
     ]
   },
   {
     "id": "sistema",
     "label": "Sistema",
-    "icon": "fa-solid fa-screwdriver-wrench",
+    "icon": "fa-solid fa-laptop-code",
     "order": 5,
     "roles": ["Admin", "Webmaster"],
     "children": [
-      { "id": "usuarios", "label": "Usuarios", "icon": "fa-solid fa-users",       "route": "/admin/usuarios", "order": 1, "roles": ["Admin", "Webmaster"] },
-      { "id": "roles",    "label": "Roles",    "icon": "fa-solid fa-user-shield",  "route": "/admin/roles",    "order": 2, "roles": ["Admin", "Webmaster"] }
+      { "id": "usuarios", "label": "Usuarios", "icon": "fa-solid fa-users",      "route": "/admin/usuarios", "order": 1, "roles": ["Admin", "Webmaster"] },
+      { "id": "roles",    "label": "Roles",    "icon": "fa-solid fa-user-shield", "route": "/admin/roles",    "order": 2, "roles": ["Admin", "Webmaster"] }
     ]
   }
 ]

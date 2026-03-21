@@ -1,47 +1,41 @@
 <div class="container-fluid">
-  <div class="row">
-    <div class="col-12">
-
-      @if (!mostrandoFormulario()) {
-
-        <!-- Tabla genérica -->
-        <app-generic-table
-          [columns]="columns"
-          [items]="items()"
-          [loading]="loading()"
-          [actions]="actions"
-          [totalCount]="totalCount()"
-          [currentPage]="currentPage()"
-          [totalPages]="totalPages()"
-          [pageSize]="pageSize()"
-          [searchable]="true"
-          [searchPlaceholder]="'Buscar colonia, estado, municipio...'"
-          [searchValue]="query.q ?? ''"
-          [showNew]="true"
-          [showExport]="true"
-          [exportLoading]="exportLoading()"
-          [sortColumn]="sortColumn"
-          [sortDirection]="sortDirection"
-          (searchChanged)="onSearch($event)"
-          (sortChanged)="onSort($event)"
-          (actionCalled)="onAction($event)"
-          (pageNext)="nextPage()"
-          (pagePrev)="prevPage()"
-          (newClicked)="mostrarFormularioNuevo()"
-          (exportClicked)="onExportar()"
-        />
-
-      } @else {
-        <app-colonia-form
-          [colonia]="coloniaSeleccionada"
-          (guardar)="onGuardarColonia($event)"
-          (cancelar)="onCancelarEdicion()"
-          (volverALista)="volverALista()"
-        />
-      }
-
-    </div>
-  </div>
+  @if (!mostrandoFormulario()) {
+    <app-card [title]="'Colonias'" [icon]="'fa-solid fa-map-pin'" variant="primary">
+      <!-- Tabla genérica -->
+      <app-generic-table
+        [columns]="columns"
+        [items]="items()"
+        [loading]="loading()"
+        [actions]="actions"
+        [totalCount]="totalCount()"
+        [currentPage]="currentPage()"
+        [totalPages]="totalPages()"
+        [pageSize]="pageSize()"
+        [searchable]="true"
+        [searchPlaceholder]="'Buscar colonia, estado, municipio...'"
+        [searchValue]="query.q ?? ''"
+        [showNew]="true"
+        [showExport]="true"
+        [exportLoading]="exportLoading()"
+        [sortColumn]="sortColumn"
+        [sortDirection]="sortDirection"
+        (searchChanged)="onSearch($event)"
+        (sortChanged)="onSort($event)"
+        (actionCalled)="onAction($event)"
+        (pageNext)="nextPage()"
+        (pagePrev)="prevPage()"
+        (newClicked)="mostrarFormularioNuevo()"
+        (exportClicked)="onExportar()"
+      />
+    </app-card>
+  } @else {
+    <app-colonia-form
+      [colonia]="coloniaSeleccionada"
+      (guardar)="onGuardarColonia($event)"
+      (cancelar)="onCancelarEdicion()"
+      (volverALista)="volverALista()"
+    />
+  }
 </div>
 
 <app-confirm-modal

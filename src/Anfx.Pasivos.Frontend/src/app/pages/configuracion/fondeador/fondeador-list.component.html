@@ -1,29 +1,25 @@
 <div class="container-fluid">
-  <div class="row">
-    <div class="col-12">
-
-      <app-generic-table
-        [columns]="columns"
-        [items]="fondeadores()"
-        [loading]="loading()"
-        [actions]="actions"
-        [totalCount]="totalCount()"
-        [currentPage]="currentPage()"
-        [totalPages]="totalPages()"
-        [pageSize]="pageSize()"
-        [searchable]="true"
-        [searchPlaceholder]="'Buscar fondeador...'"
-        [searchValue]="query.q"
-        [showNew]="true"
-        (searchChanged)="onSearch($event)"
-        (actionCalled)="onAction($event)"
-        (pageNext)="nextPage()"
-        (pagePrev)="prevPage()"
-        (newClicked)="onNuevo()">
-      </app-generic-table>
-
-    </div>
-  </div>
+  <app-card [title]="'Fondeadores'" [icon]="'fa-solid fa-money-bill-wave'" variant="primary">
+    <app-generic-table
+      [columns]="columns"
+      [items]="fondeadores()"
+      [loading]="loading()"
+      [actions]="actions"
+      [totalCount]="totalCount()"
+      [currentPage]="currentPage()"
+      [totalPages]="totalPages()"
+      [pageSize]="pageSize()"
+      [searchable]="true"
+      [searchPlaceholder]="'Buscar fondeador...'"
+      [searchValue]="query.q"
+      [showNew]="true"
+      (searchChanged)="onSearch($event)"
+      (actionCalled)="onAction($event)"
+      (pageNext)="nextPage()"
+      (pagePrev)="prevPage()"
+      (newClicked)="onNuevo()">
+    </app-generic-table>
+  </app-card>
 </div>
 
 <app-confirm-modal

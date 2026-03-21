@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CatalogosService } from '../../../../api/services/catalogos.service';
+import { CardComponent } from '../../../shared/components/card/card.component';
 import { CuentaBancariaDto, BancoListItemDto } from '../../../../api/models/models';
 
 @Component({
   selector: 'app-cuenta-bancaria-form',
-  imports: [CommonModule, RouterModule, ReactiveFormsModule],
+  imports: [CommonModule, RouterModule, ReactiveFormsModule, CardComponent],
   templateUrl: './cuenta-bancaria-form.component.html'
 })
 export class CuentaBancariaFormComponent implements OnInit {

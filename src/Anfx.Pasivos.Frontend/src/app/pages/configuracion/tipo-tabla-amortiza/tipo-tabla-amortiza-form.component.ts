@@ -4,11 +4,12 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ConfiguracionesService } from '../../../../api/services/configuraciones.service';
 import { TipoTablaAmortizaDto } from '../../../../api/models/tipoTablaAmortizaDto';
+import { CardComponent } from '../../../shared/components/card/card.component';
 
 @Component({
   selector: 'app-tipo-tabla-amortiza-form',
   standalone: true,
-  imports: [CommonModule, RouterModule, ReactiveFormsModule],
+  imports: [CommonModule, RouterModule, ReactiveFormsModule, CardComponent],
   templateUrl: './tipo-tabla-amortiza-form.component.html'
 })
 export class TipoTablaAmortizaFormComponent implements OnInit {

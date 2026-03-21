@@ -5,11 +5,12 @@ import { EmpresaDto, CreateEmpresaDto, UpdateEmpresaDto, TipoDireccionItemDto } 
 import { UtilsService } from '../../../services/utils.service';
 import { EmpresaService } from '../../../services/sistema/empresa.service';
 import { ColoniaAutoCompleteComponent, ColoniaModel } from "../../../shared/components/colonia-auto-complete/colonia-auto-complete.component";
+import { CardComponent } from '../../../shared/components/card/card.component';
 
 @Component({
   selector: 'app-empresa-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, ColoniaAutoCompleteComponent],
+  imports: [CommonModule, ReactiveFormsModule, ColoniaAutoCompleteComponent, CardComponent],
   templateUrl: './empresa-form.component.html'
 })
 export class EmpresaFormComponent implements OnInit {

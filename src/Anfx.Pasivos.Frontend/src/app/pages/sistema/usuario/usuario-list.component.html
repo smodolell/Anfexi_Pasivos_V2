@@ -1,44 +1,40 @@
 <div class="container-fluid">
-  <div class="row">
-    <div class="col-12">
+  @if (!mostrandoFormulario()) {
+    <app-card [title]="'Usuarios'" [icon]="'fa-solid fa-users'" variant="primary">
+      <app-generic-table
+        [columns]="columns"
+        [actions]="actions"
+        [items]="items()"
+        [loading]="loading()"
+        [totalCount]="totalCount()"
+        [currentPage]="currentPage()"
+        [totalPages]="totalPages()"
+        [pageSize]="pageSize()"
+        [showNew]="true"
+        (actionCalled)="onAction($event)"
+        (searchChanged)="onSearch($event)"
+        (pageNext)="onPageNext()"
+        (pagePrev)="onPagePrev()"
+        (newClicked)="onNuevo()">
 
-      @if (!mostrandoFormulario()) {
-        <app-generic-table
-          [columns]="columns"
-          [actions]="actions"
-          [items]="items()"
-          [loading]="loading()"
-          [totalCount]="totalCount()"
-          [currentPage]="currentPage()"
-          [totalPages]="totalPages()"
-          [pageSize]="pageSize()"
-          [showNew]="true"
-          (actionCalled)="onAction($event)"
-          (searchChanged)="onSearch($event)"
-          (pageNext)="onPageNext()"
-          (pagePrev)="onPagePrev()"
-          (newClicked)="onNuevo()">
+        <app-filter-activo
+          slot="filters"
+          label="Solo activos"
+          [(value)]="query.activo"
+          (changed)="onActivoChange()">
+        </app-filter-activo>
 
-          <app-filter-activo
-            slot="filters"
-            label="Solo activos"
-            [(value)]="query.activo"
-            (changed)="onActivoChange()">
-          </app-filter-activo>
-
-        </app-generic-table>
-      } @else {
-        <app-usuario-form
-          [usuario]="usuarioSeleccionado"
-          [isFromProfile]="false"
-          (guardar)="onGuardarUsuario($event)"
-          (cancelar)="onCancelarEdicion()"
-          (volverALista)="volverALista()">
-        </app-usuario-form>
-      }
-
-    </div>
-  </div>
+      </app-generic-table>
+    </app-card>
+  } @else {
+    <app-usuario-form
+      [usuario]="usuarioSeleccionado"
+      [isFromProfile]="false"
+      (guardar)="onGuardarUsuario($event)"
+      (cancelar)="onCancelarEdicion()"
+      (volverALista)="volverALista()">
+    </app-usuario-form>
+  }
 </div>
 
 <app-confirm-modal

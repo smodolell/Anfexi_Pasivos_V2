@@ -9,7 +9,7 @@
           <app-search-input
             placeholder="Ej: 1234"
             [value]="contratoBusqueda()"
-            (search)="onSearch($event)"
+            (searched)="onSearch($event)"
           ></app-search-input>
         </div>
         @if (isLoading()) {

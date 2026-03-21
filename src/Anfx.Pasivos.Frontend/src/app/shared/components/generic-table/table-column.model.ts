@@ -33,14 +33,16 @@ export interface TableAction {
   id: string;
   /** Texto del tooltip */
   label: string;
-  /** Clase de ícono FontAwesome, ej: 'fa-solid fa-edit' */
+  /** Clase de ícono FontAwesome, ej: 'fa-solid fa-pen-clip' */
   icon: string;
-  /** Clase CSS del botón Bootstrap, ej: 'btn-primary', 'btn-danger' */
-  btnClass: string;
+  /** Variante semántica del botón — mapea a .edit-btn, .delete-btn, etc. */
+  variant: 'edit' | 'delete' | 'config' | 'info' | 'warning';
   /** Función opcional que deshabilita el botón por fila */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   disabledFn?: (row: any) => boolean;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export interface TableActionEvent<T = any> {
   action: string;
   row: T;

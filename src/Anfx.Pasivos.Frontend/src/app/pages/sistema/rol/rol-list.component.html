@@ -1,34 +1,32 @@
 <div class="container-fluid">
-  <div class="row">
-    <div class="col-12">
-      @if (!mostrandoFormulario()) {
-        <app-generic-table
-          [columns]="columns"
-          [actions]="actions"
-          [items]="items()"
-          [loading]="loading()"
-          [totalCount]="totalCount()"
-          [currentPage]="currentPage()"
-          [totalPages]="totalPages()"
-          [pageSize]="pageSize()"
-          [showNew]="true"
-          (actionCalled)="onAction($event)"
-          (searchChanged)="onSearch($event)"
-          (pageNext)="onPageNext()"
-          (pagePrev)="onPagePrev()"
-          (newClicked)="onNuevo()"
-        >
-        </app-generic-table>
-      } @else {
-        <app-rol-form
-          [rol]="rolSeleccionado"
-          (guardar)="onGuardarRol($event)"
-          (cancelar)="onCancelarEdicion()"
-          (volverALista)="volverALista()">
-        </app-rol-form>
-      }
-    </div>
-  </div>
+  @if (!mostrandoFormulario()) {
+    <app-card [title]="'Roles'" [icon]="'fa-solid fa-user-shield'" variant="primary">
+      <app-generic-table
+        [columns]="columns"
+        [actions]="actions"
+        [items]="items()"
+        [loading]="loading()"
+        [totalCount]="totalCount()"
+        [currentPage]="currentPage()"
+        [totalPages]="totalPages()"
+        [pageSize]="pageSize()"
+        [showNew]="true"
+        (actionCalled)="onAction($event)"
+        (searchChanged)="onSearch($event)"
+        (pageNext)="onPageNext()"
+        (pagePrev)="onPagePrev()"
+        (newClicked)="onNuevo()"
+      >
+      </app-generic-table>
+    </app-card>
+  } @else {
+    <app-rol-form
+      [rol]="rolSeleccionado"
+      (guardar)="onGuardarRol($event)"
+      (cancelar)="onCancelarEdicion()"
+      (volverALista)="volverALista()">
+    </app-rol-form>
+  }
 </div>
 
 <app-confirm-modal

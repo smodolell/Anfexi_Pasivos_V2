@@ -1,44 +1,40 @@
 <div class="container-fluid">
-  <div class="row">
-    <div class="col-12">
-
-      @if (!mostrandoFormulario()) {
-        <app-generic-table
-          [columns]="columns"
-          [items]="items()"
-          [loading]="loading()"
-          [actions]="actions"
-          [totalCount]="totalCount()"
-          [currentPage]="currentPage()"
-          [totalPages]="totalPages()"
-          [pageSize]="pageSize()"
-          [sortColumn]="sortColumn"
-          [sortDirection]="sortDirection"
-          [searchable]="true"
-          [searchPlaceholder]="'Buscar tipo de dirección...'"
-          [searchValue]="searchValue"
-          [showNew]="true"
-          [showExport]="true"
-          [exportLoading]="loading()"
-          (searchChanged)="onSearch($event)"
-          (sortChanged)="onSort($event)"
-          (actionCalled)="onAction($event)"
-          (pageNext)="nextPage()"
-          (pagePrev)="prevPage()"
-          (newClicked)="onNuevo()"
-          (exportClicked)="onExportar()"
-        />
-      } @else {
-        <app-tipodireccion-form
-          [tipoDireccion]="tipoDireccionSeleccionado"
-          (guardar)="onGuardarTipoDireccion($event)"
-          (cancelar)="onCancelarEdicion()"
-          (volverALista)="volverALista()"
-        />
-      }
-
-    </div>
-  </div>
+  @if (!mostrandoFormulario()) {
+    <app-card [title]="'Tipos de Dirección'" [icon]="'fa-solid fa-map-location-dot'" variant="primary">
+      <app-generic-table
+        [columns]="columns"
+        [items]="items()"
+        [loading]="loading()"
+        [actions]="actions"
+        [totalCount]="totalCount()"
+        [currentPage]="currentPage()"
+        [totalPages]="totalPages()"
+        [pageSize]="pageSize()"
+        [sortColumn]="sortColumn"
+        [sortDirection]="sortDirection"
+        [searchable]="true"
+        [searchPlaceholder]="'Buscar tipo de dirección...'"
+        [searchValue]="searchValue"
+        [showNew]="true"
+        [showExport]="true"
+        [exportLoading]="loading()"
+        (searchChanged)="onSearch($event)"
+        (sortChanged)="onSort($event)"
+        (actionCalled)="onAction($event)"
+        (pageNext)="nextPage()"
+        (pagePrev)="prevPage()"
+        (newClicked)="onNuevo()"
+        (exportClicked)="onExportar()"
+      />
+    </app-card>
+  } @else {
+    <app-tipodireccion-form
+      [tipoDireccion]="tipoDireccionSeleccionado"
+      (guardar)="onGuardarTipoDireccion($event)"
+      (cancelar)="onCancelarEdicion()"
+      (volverALista)="volverALista()"
+    />
+  }
 </div>
 
 <app-confirm-modal

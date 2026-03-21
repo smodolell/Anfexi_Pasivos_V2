@@ -23,8 +23,10 @@
                     [routerLink]="child.route"
                     routerLinkActive="active"
                     [routerLinkActiveOptions]="{ exact: false }"
+                    (click)="onNavItemSelected()"
                   >
-                    <i [class]="child.icon"></i> {{ child.label }}
+                    <i [class]="child.icon"></i>
+                    <span>{{ child.label }}</span>
                   </a>
                 </li>
               }
@@ -40,6 +42,7 @@
             routerLinkActive="active"
             [routerLinkActiveOptions]="{ exact: false }"
             class="waves-effect waves-dark"
+            (click)="onNavItemSelected()"
           >
             <i [class]="item.icon"></i>
             <span class="hide-menu">{{ item.label }}</span>

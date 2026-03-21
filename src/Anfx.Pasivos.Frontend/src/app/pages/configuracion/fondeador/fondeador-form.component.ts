@@ -4,11 +4,12 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ConfiguracionesService } from '../../../../api/services/configuraciones.service';
 import { FondeadorEditDto } from '../../../../api/models/fondeadorEditDto';
+import { CardComponent } from '../../../shared/components/card/card.component';
 
 @Component({
   selector: 'app-fondeador-form',
   standalone: true,
-  imports: [CommonModule, RouterModule, ReactiveFormsModule],
+  imports: [CommonModule, RouterModule, ReactiveFormsModule, CardComponent],
   templateUrl: './fondeador-form.component.html'
 })
 export class FondeadorFormComponent implements OnInit {

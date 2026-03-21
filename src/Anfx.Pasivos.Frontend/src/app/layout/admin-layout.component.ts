@@ -81,6 +81,11 @@ export class AdminLayoutComponent implements OnInit, OnDestroy {
     return current.snapshot.data['title'] ?? null;
   }
 
+  onNavItemSelected(): void {
+    // Cierra el overlay mobile del sidebar (clase añadida por custom.min.js o show-sidebar)
+    this.renderer.removeClass(this.document.body, 'show-sidebar');
+  }
+
   private addBodyClasses(): void {
     const body = this.document.body;
     if (body) {

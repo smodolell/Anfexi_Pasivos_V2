@@ -14,7 +14,8 @@ td, th, label, div, li {
   /* ── Brand ──────────────────────────────────────────────── */
   --pf-primary:           #004b8d;
   --pf-primary-hover:     #015baa;
-  --pf-primary-active:    #013d74;
+  --pf-primary-active:    #00325d;
+  --pf-primary-border:    #00325d;
   --pf-primary-light:     #e8f1fb;
   --pf-primary-dim:       #dbeafe;
 
@@ -39,8 +40,9 @@ td, th, label, div, li {
 
   /* ── Card ───────────────────────────────────────────────── */
   --pf-card-border:       #e0e6ed;
-  --pf-card-radius:       6px;
-  --pf-card-shadow:       0 1px 4px rgba(0, 0, 0, 0.06);
+  --pf-card-radius:       12px;
+  --pf-card-shadow:       0 2px 8px rgba(0, 0, 0, 0.08);
+  --pf-card-shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.12);
 
   /* ── Sidebar ────────────────────────────────────────────── */
   --pf-sidebar-icon:      #6badde;
@@ -63,8 +65,8 @@ td, th, label, div, li {
 
 /* ============================================================
    OVERRIDES de clases Bootstrap (bg-*, text-*, border-*, btn-*)
-   Se necesitan porque el tema compilado (style.min.css) define
-   los valores como colores literales, no como CSS vars.
+   Se necesitan porque Bootstrap 5.3 compila los colores como
+   literales en algunas clases utilitarias.
    ============================================================ */
 
 /* ── Fondos ─────────────────────────────────────────────────── */
@@ -95,26 +97,26 @@ td, th, label, div, li {
 
 /* ── btn-primary ────────────────────────────────────────────── */
 .btn-primary {
-  background-color: var(--pf-primary);
-  border-color:     var(--pf-primary-active);
-  color:            var(--pf-text-on-dark);
+  background:   linear-gradient(135deg, var(--pf-primary-hover), var(--pf-primary-active));
+  border-color: var(--pf-primary-active);
+  color:        var(--pf-text-on-dark);
 }
 .btn-primary:hover {
-  background-color: var(--pf-primary-hover);
-  border-color:     var(--pf-primary-hover);
-  color:            var(--pf-text-on-dark);
+  background:   linear-gradient(135deg, #0169c4, var(--pf-primary-hover));
+  border-color: var(--pf-primary-hover);
+  color:        var(--pf-text-on-dark);
 }
 .btn-primary:focus {
-  background-color: var(--pf-primary-hover);
-  border-color:     var(--pf-primary-hover);
-  color:            var(--pf-text-on-dark);
-  box-shadow:       0 0 0 0.25rem rgba(0, 75, 141, 0.25);
+  background:   linear-gradient(135deg, #0169c4, var(--pf-primary-hover));
+  border-color: var(--pf-primary-hover);
+  color:        var(--pf-text-on-dark);
+  box-shadow:   0 0 0 0.25rem rgba(0, 75, 141, 0.25);
 }
 .btn-primary.disabled,
 .btn-primary:disabled {
-  background-color: #5a85b5;
-  border-color:     #5a85b5;
-  color:            var(--pf-text-on-dark);
+  background:   #186bb4;
+  border-color: #186bb4;
+  color:        var(--pf-text-on-dark);
 }
 
 /* ── btn-success ────────────────────────────────────────────── */
@@ -145,13 +147,18 @@ td, th, label, div, li {
 
 /* ── Card base ──────────────────────────────────────────────── */
 .card {
-  border:        1px solid var(--pf-card-border);
+  border:        none;
   border-radius: var(--pf-card-radius);
+  box-shadow:    var(--pf-card-shadow);
+  transition:    box-shadow 0.3s ease;
+}
+.card:hover {
+  box-shadow:    var(--pf-card-shadow-hover);
 }
 
 .card-header {
-  font-weight:   500;
-  border-bottom: 1px solid var(--pf-card-border);
+  font-weight:   600;
+  border-bottom: 2px solid #e8ecf1;
 }
 
 /* Asegurar que card-header coloreado tenga texto blanco */
@@ -169,3 +176,202 @@ td, th, label, div, li {
   border-style: solid !important;
   border-width: 1px  !important;
 }
+
+/* ── Form controls base ─────────────────────────────────────── */
+.form-control,
+.form-select {
+  border-color:  #d1d9e0;
+  border-radius: 8px;
+  min-height:    42px;
+  padding:       10px 15px;
+  font-size:     14px;
+  transition:    border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+/* ── Focus ring — anula el azul Bootstrap con color de marca ─── */
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--pf-primary-hover) !important;
+  box-shadow:   0 0 0 0.2rem rgba(0, 75, 141, 0.12) !important;
+  outline: none;
+}
+
+/* ── Botones: hover lift + shadow ───────────────────────────── */
+.btn {
+  border-radius: 8px;
+  font-size:     14px;
+  transition:    background-color 0.2s ease, border-color 0.2s ease,
+                 box-shadow 0.2s ease, transform 0.2s ease;
+}
+.btn:not(:disabled):hover {
+  transform:  translateY(-1px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+}
+.btn:active {
+  transform:  translateY(0);
+  box-shadow: none;
+}
+
+/* ============================================================
+   DESIGN TOKENS — Profuturo (Alerta compatibility layer)
+   Tokens --color-*, --space-*, --font-*, --border-radius-*,
+   --shadow-*, --gradient-*, --transition-* usados por los
+   componentes compartidos portados desde Alerta_Frontend.
+   ============================================================ */
+:root {
+  /* ── Colores primarios ───────────────────────────────────── */
+  --color-primary:          #004b8d;
+  --color-primary-medium:   #3182ce;
+  --color-primary-dark:     #2c5aa0;
+  --color-primary-darker:   #2a4e7c;
+  --color-primary-hover:    #015baa;
+  --color-primary-disabled: #186bb4;
+  --color-primary-accent:   #4299e1;
+  --color-primary-light:    #b8d4fe;
+
+  /* ── Success ─────────────────────────────────────────────── */
+  --color-success:          #48bb78;
+  --color-success-dark:     #38a169;
+  --color-success-darker:   #2f855a;
+
+  /* ── Danger ──────────────────────────────────────────────── */
+  --color-danger:           #f56565;
+  --color-danger-dark:      #e53e3e;
+  --color-danger-darker:    #c53030;
+
+  /* ── Warning ─────────────────────────────────────────────── */
+  --color-warning:          #ed8936;
+  --color-warning-dark:     #dd6b20;
+
+  /* ── Purple ──────────────────────────────────────────────── */
+  --color-purple:           #667eea;
+  --color-purple-dark:      #5a67d8;
+
+  /* ── Neutros ─────────────────────────────────────────────── */
+  --color-white:            #ffffff;
+  --color-gray-100:         #f8f9fa;
+  --color-gray-200:         #e9ecef;
+  --color-gray-300:         #dee2e6;
+  --color-gray-400:         #cbd5e0;
+  --color-gray-500:         #adb5bd;
+  --color-gray-550:         #a0aec0;
+  --color-gray-600:         #6c757d;
+  --color-gray-650:         #718096;
+  --color-gray-700:         #495057;
+  --color-gray-750:         #4a5568;
+  --color-gray-800:         #343a40;
+  --color-gray-900:         #212529;
+  --color-gray-disabled:    #cfcfcf;
+
+  /* ── Texto ───────────────────────────────────────────────── */
+  --color-text-primary:     #212529;
+  --color-text-secondary:   #6c757d;
+  --color-text-muted:       #a0aec0;
+  --color-text-heading:     #495057;
+  --color-text-title:       #2c3e50;
+  --color-text-input-label: #5a6c7d;
+
+  /* ── Fondo ───────────────────────────────────────────────── */
+  --color-bg-main:          #f8f9fa;
+  --color-bg-body:          #f8f9fa;
+  --color-bg-card:          #ffffff;
+  --color-bg-subtle:        #f8f9fa;
+  --color-bg-surface:       #fbfcfd;
+  --color-bg-table-alt:     #f7fafc;
+  --color-bg-table-hover:   #f0f4ff;
+  --color-bg-table-head:    #edf2f7;
+
+  /* ── Bordes ──────────────────────────────────────────────── */
+  --color-border:           #dee2e6;
+  --color-border-default:   #dee2e6;
+  --color-border-light:     #e0e6ed;
+  --color-border-focus:     #b8d4fe;
+  --color-border-subtle:    #e8ecf1;
+
+  /* ── Tipografía ──────────────────────────────────────────── */
+  --font-family-base:       'Roboto', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  --font-size-xs:           0.75rem;
+  --font-size-sm:           0.813rem;
+  --font-size-base:         0.875rem;
+  --font-size-md:           0.938rem;
+  --font-size-lg:           1rem;
+  --font-size-xl:           1.125rem;
+  --font-weight-normal:     400;
+  --font-weight-medium:     500;
+  --font-weight-semibold:   600;
+  --font-weight-bold:       700;
+
+  /* ── Espaciado (escala 4px) ──────────────────────────────── */
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  20px;
+  --space-6:  24px;
+  --space-8:  32px;
+
+  /* ── Radios ──────────────────────────────────────────────── */
+  --border-radius-sm:   4px;
+  --border-radius:      6px;
+  --border-radius-md:   8px;
+  --border-radius-lg:   10px;
+  --border-radius-xl:   12px;
+  --border-radius-full: 50%;
+
+  /* ── Sombras ─────────────────────────────────────────────── */
+  --shadow-xs:   0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-sm:   0 2px 4px rgba(0, 0, 0, 0.08);
+  --shadow-md:   0 2px 8px rgba(0, 0, 0, 0.08);
+  --shadow-lg:   0 4px 12px rgba(0, 0, 0, 0.15);
+  --shadow-xl:   0 10px 30px rgba(0, 0, 0, 0.3);
+  --shadow-card: 0 2px 10px rgba(0, 0, 0, 0.1);
+  --shadow-focus-primary: 0 0 0 3px rgba(66, 153, 225, 0.1);
+
+  /* ── Gradientes ──────────────────────────────────────────── */
+  --gradient-primary: linear-gradient(135deg, #3182ce, #2c5aa0);
+  --gradient-success: linear-gradient(135deg, #48bb78, #38a169);
+  --gradient-danger:  linear-gradient(135deg, #f56565, #e53e3e);
+  --gradient-surface: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  --gradient-header:  linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+
+  /* ── Transiciones ────────────────────────────────────────── */
+  --transition-fast:   all 0.15s linear;
+  --transition-base:   all 0.2s ease;
+  --transition-normal: all 0.3s ease;
+}
+
+/* ============================================================
+   BOTONES DE ACCIÓN — usados por ActionButtonComponent
+   (portados desde admin-layout de Alerta_Frontend)
+   ============================================================ */
+.action-btn {
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: var(--border-radius-md);
+  cursor: pointer;
+  transition: var(--transition-base);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-white);
+  font-size: var(--font-size-base);
+}
+.action-btn i { line-height: 1; }
+.action-btn:hover:not(:disabled) { transform: scale(1.05); box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
+.action-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.edit-btn   { background: var(--color-primary-accent); }
+.edit-btn:hover:not(:disabled)   { background: var(--color-primary-medium); }
+
+.delete-btn { background: var(--color-danger); }
+.delete-btn:hover:not(:disabled) { background: var(--color-danger-dark); }
+
+.config-btn { background: var(--color-purple); }
+.config-btn:hover:not(:disabled) { background: var(--color-purple-dark); }
+
+.info-btn   { background: var(--color-primary-accent); }
+.info-btn:hover:not(:disabled)   { background: var(--color-primary-medium); }
+
+.warning-btn { background: var(--color-warning); }
+.warning-btn:hover:not(:disabled) { background: var(--color-warning-dark); }

@@ -5,11 +5,13 @@ import { UsuarioService } from '../../../services/sistema/usuario.service';
 import { UsuarioFormData, UsuarioDto, CreateUsuarioDto, UpdateUsuarioDto, RolItemDto } from '../../../../types/sistema/usuario.dto';
 import { UtilsService } from '../../../services/utils.service';
 import { CardComponent } from '../../../shared/components/card/card.component';
+import { FormCheckComponent } from '../../../shared/components/form-check/form-check.component';
+import { FormFieldComponent } from '../../../shared/components/form-field/form-field.component';
 
 @Component({
   selector: 'app-usuario-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, CardComponent],
+  imports: [CommonModule, ReactiveFormsModule, CardComponent, FormCheckComponent, FormFieldComponent],
   templateUrl: './usuario-form.component.html'
 })
 export class UsuarioFormComponent implements OnInit {

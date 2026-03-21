@@ -37,14 +37,14 @@ export type CardVariant = 'primary' | 'success' | 'warning' | 'info' | 'danger' 
   imports: [CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="gc-card card">
+    <div class="gc-card">
 
       <!-- Header personalizado (slot="header") -->
       <ng-content select="[slot=header]"></ng-content>
 
-      <!-- Header declarativo (cuando se usan inputs title/icon/variant) -->
+      <!-- Título declarativo: fondo de color según variante, texto blanco -->
       @if (title) {
-        <div class="gc-card__header card-header gc-header--{{ variant }}">
+        <div class="gc-card__title-area gc-header--{{ variant }}">
           <div class="d-flex align-items-center gap-2 flex-grow-1 min-w-0">
             @if (icon) {
               <i [class]="icon + ' gc-card__icon flex-shrink-0'"></i>
@@ -52,7 +52,7 @@ export type CardVariant = 'primary' | 'success' | 'warning' | 'info' | 'danger' 
             <div class="min-w-0">
               <h5 class="gc-card__title mb-0 text-truncate">{{ title }}</h5>
               @if (subtitle) {
-                <small class="gc-card__subtitle opacity-75">{{ subtitle }}</small>
+                <small class="gc-card__subtitle">{{ subtitle }}</small>
               }
             </div>
           </div>
@@ -81,47 +81,61 @@ export type CardVariant = 'primary' | 'success' | 'warning' | 'info' | 'danger' 
   styles: [`
     :host { display: block; }
 
+    /* ── Card base ─────────────────────────────────── */
     .gc-card {
-      border-radius: 12px;
+      border-radius: var(--pf-card-radius, 12px);
       overflow: hidden;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.07);
-      border: 1px solid var(--pf-card-border);
+      background: #fff;
+      border: none;
+      box-shadow: var(--pf-card-shadow, 0 2px 8px rgba(0, 0, 0, 0.08));
+      transition: box-shadow 0.3s ease;
+    }
+    .gc-card:hover {
+      box-shadow: var(--pf-card-shadow-hover, 0 4px 12px rgba(0, 0, 0, 0.12));
     }
 
-    .gc-card__header {
+    /* ── Título area ────────────────────────────────── */
+    .gc-card__title-area {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 12px;
-      padding: 14px 20px;
-      color: #fff;
+      padding: 12px 20px;
     }
 
-    .gc-card__icon { font-size: 1.15rem; }
+    /* Texto blanco sobre todos los headers con gradiente */
+    .gc-card__icon     { font-size: 1.1rem; color: #fff; }
+    .gc-card__title    { font-size: 1rem; font-weight: 600; color: #fff; }
+    .gc-card__subtitle { font-size: 0.8rem; display: block; color: rgba(255,255,255,0.82); }
 
-    .gc-card__title { font-size: 1rem; font-weight: 600; }
+    /* ── Headers con gradiente — mismos valores que WrapKit / Alerta PLD ── */
+    .gc-header--warning   { background: linear-gradient(135deg, #ed8936, #dd6b20); }
+    .gc-header--info      { background: linear-gradient(135deg, #4299e1, #3182ce); }
+    .gc-header--primary   { background: linear-gradient(135deg, #015baa, #00325d); }
+    .gc-header--success   { background: linear-gradient(135deg, #48bb78, #38a169); }
+    .gc-header--danger    { background: linear-gradient(135deg, #f56565, #e53e3e); }
+    .gc-header--secondary { background: linear-gradient(135deg, #718096, #4a5568); }
 
-    .gc-card__subtitle { font-size: 0.8rem; display: block; }
+    /* ── Variantes sin gradiente (neutras) ── */
+    .gc-header--light {
+      background: var(--pf-bg-subtle);
+      border-bottom: 1px solid var(--pf-border);
+      .gc-card__title, .gc-card__icon { color: var(--pf-text-base); }
+      .gc-card__subtitle              { color: var(--pf-text-muted); }
+    }
+    .gc-header--none {
+      background: transparent;
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+      .gc-card__title, .gc-card__icon { color: var(--pf-text-base); }
+      .gc-card__subtitle              { color: var(--pf-text-muted); }
+    }
 
-    /* ── Variantes de color ───────────────────────── */
-    .gc-header--primary   { background: linear-gradient(135deg, var(--pf-primary), var(--pf-primary-active)); }
-    .gc-header--success   { background: linear-gradient(135deg, var(--pf-success), #126832); }
-    .gc-header--warning   { background: linear-gradient(135deg, var(--pf-warning), #92400e); }
-    .gc-header--info      { background: linear-gradient(135deg, var(--pf-info), #025180); }
-    .gc-header--danger    { background: linear-gradient(135deg, var(--pf-danger), #991b1b); }
-    .gc-header--secondary { background: linear-gradient(135deg, #7f8c8d, #5d6d7e); }
-    .gc-header--light     { background: var(--pf-primary-light); color: #1a1a2e !important;
-                            border-bottom: 1px solid var(--pf-border); }
-    .gc-header--light .gc-card__title,
-    .gc-header--light .gc-card__subtitle { color: #1a1a2e; }
-    .gc-header--none      { display: none; }
-
-    /* ── Footer slot ─────────────────────────────── */
+    /* ── Footer slot ──────────────────────────────── */
     ::ng-deep [slot=footer] {
       display: block;
       padding: 12px 20px;
       background: #f8fafc;
-      border-top: 1px solid var(--pf-card-border);
+      border-top: 1px solid rgba(0, 0, 0, 0.06);
     }
   `],
 })

@@ -8,11 +8,12 @@ import { TipoDireccionFormComponent } from './tipodireccion-form.component';
 import { ConfirmModalComponent } from '../../../shared/components/confirm-modal/confirm-modal.component';
 import { GenericTableComponent } from '../../../shared/components/generic-table/generic-table.component';
 import { TableColumn, TableAction, TableActionEvent, TableSortEvent, SortDirection } from '../../../shared/components/generic-table/table-column.model';
+import { CardComponent } from '../../../shared/components/card/card.component';
 
 @Component({
   selector: 'app-tipodireccion-list',
   standalone: true,
-  imports: [CommonModule, TipoDireccionFormComponent, ConfirmModalComponent, GenericTableComponent],
+  imports: [CommonModule, TipoDireccionFormComponent, ConfirmModalComponent, GenericTableComponent, CardComponent],
   templateUrl: './tipodireccion-list.component.html'
 })
 export class TipoDireccionListComponent implements OnInit {
@@ -45,8 +46,8 @@ export class TipoDireccionListComponent implements OnInit {
   ];
 
   actions: TableAction[] = [
-    { id: 'edit',   label: 'Editar',   icon: 'fa-solid fa-pen-clip',  btnClass: 'btn-action-edit'   },
-    { id: 'delete', label: 'Eliminar', icon: 'fa-solid fa-trash-can', btnClass: 'btn-action-delete' },
+    { id: 'edit',   label: 'Editar',   icon: 'fa-solid fa-pen-clip',  variant: 'edit'   },
+    { id: 'delete', label: 'Eliminar', icon: 'fa-solid fa-trash-can', variant: 'delete' },
   ];
 
   ngOnInit() {

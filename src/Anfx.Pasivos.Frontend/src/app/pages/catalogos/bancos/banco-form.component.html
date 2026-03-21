@@ -6,38 +6,38 @@
     </ol>
   </nav>
 
-  <div class="card shadow-sm border-0 mt-4">
-    <div class="card-header bg-white py-3">
-      <h4 class="mb-0 text-primary">
-        <i class="bi bi-bank me-2"></i>
-        {{ isEditMode() ? 'Editar Banco' : 'Nuevo Banco' }}
-      </h4>
-    </div>
-    <div class="card-body p-4">
-      <form [formGroup]="bancoForm" (ngSubmit)="onSubmit()">
-        <div class="row">
-          <div class="col-md-12 mb-3">
-            <label class="form-label fw-bold">Nombre del Banco *</label>
-            <input 
-              type="text" 
-              formControlName="banco" 
-              class="form-control" 
-              [class.is-invalid]="isInvalid('banco')"
-              placeholder="Ej: Banco de México">
-            <div class="invalid-feedback">El nombre del banco es obligatorio (máx 100 caracteres).</div>
-          </div>
-        </div>
+  <app-card
+    [title]="isEditMode() ? 'Editar Banco' : 'Nuevo Banco'"
+    [icon]="isEditMode() ? 'fa-solid fa-pen-clip' : 'fa-solid fa-building-columns'"
+    [variant]="isEditMode() ? 'warning' : 'info'">
 
-        <div class="d-flex justify-content-end gap-2 mt-4 border-top pt-3">
-          <button type="button" class="btn btn-light" routerLink="/catalogos/bancos">Cancelar</button>
-          <button type="submit" class="btn btn-primary px-4" [disabled]="bancoForm.invalid || isLoading()">
-            @if (isLoading()) {
-              <span class="spinner-border spinner-border-sm me-2"></span>
-            }
-            {{ isEditMode() ? 'Guardar Cambios' : 'Registrar Banco' }}
-          </button>
+    <form id="bancoFormEl" [formGroup]="bancoForm" (ngSubmit)="onSubmit()">
+      <div class="row">
+        <div class="col-md-12 mb-3">
+          <label for="banco" class="form-label fw-bold">Nombre del Banco *</label>
+          <input
+            type="text"
+            id="banco"
+            formControlName="banco"
+            class="form-control"
+            [class.is-invalid]="isInvalid('banco')"
+            placeholder="Ej: Banco de México">
+          <div class="invalid-feedback">El nombre del banco es obligatorio (máx 100 caracteres).</div>
         </div>
-      </form>
+      </div>
+    </form>
+
+    <div slot="footer" class="d-flex justify-content-end gap-2">
+      <a routerLink="/catalogos/bancos" class="btn btn-outline-secondary">
+        <i class="fa fa-times me-1"></i> Cancelar
+      </a>
+      <button type="submit" form="bancoFormEl" class="btn btn-primary" [disabled]="bancoForm.invalid || isLoading()">
+        @if (isLoading()) {
+          <span class="spinner-border spinner-border-sm me-1"></span>
+        }
+        <i class="fa fa-save me-1"></i> {{ isEditMode() ? 'Guardar Cambios' : 'Registrar Banco' }}
+      </button>
     </div>
-  </div>
+
+  </app-card>
 </div>

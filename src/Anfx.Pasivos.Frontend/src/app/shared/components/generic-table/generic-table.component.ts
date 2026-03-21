@@ -1,130 +1,132 @@
-import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
-import { CommonModule, DatePipe, CurrencyPipe, PercentPipe } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { TableColumn, TableAction, TableActionEvent, TableSortEvent, SortDirection } from './table-column.model';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  input,
+  output,
+} from '@angular/core';
+import { CommonModule, CurrencyPipe, DatePipe, PercentPipe } from '@angular/common';
+import {
+  SortDirection,
+  TableAction,
+  TableActionEvent,
+  TableColumn,
+  TableSortEvent,
+} from './table-column.model';
 import { SearchInputComponent } from '../search-input/search-input.component';
 import { GenericButtonComponent } from '../generic-button/generic-button.component';
+import { ActionButtonComponent } from '../action-button/action-button.component';
 
 @Component({
   selector: 'app-generic-table',
   standalone: true,
-  imports: [CommonModule, FormsModule, DatePipe, CurrencyPipe, PercentPipe, SearchInputComponent, GenericButtonComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [CommonModule, DatePipe, CurrencyPipe, PercentPipe, SearchInputComponent, GenericButtonComponent, ActionButtonComponent],
   templateUrl: './generic-table.component.html',
   styleUrl: './generic-table.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GenericTableComponent {
-  /** Definición de columnas */
-  @Input() columns: TableColumn[] = [];
-  /** Datos a mostrar */
-  @Input() items: any[] = [];
-  /** Estado de carga */
-  @Input() loading = false;
-  /** Botones de acción por fila */
-  @Input() actions: TableAction[] = [];
+  // ── Datos ────────────────────────────────────────────────────
+  columns = input<TableColumn[]>([]);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  items   = input<any[]>([]);
+  loading = input(false);
+  actions = input<TableAction[]>([]);
 
-  // ── Paginación ──────────────────────────────────────────────
-  @Input() totalCount = 0;
-  @Input() currentPage = 1;
-  @Input() totalPages = 1;
-  @Input() pageSize = 10;
+  // ── Paginación ───────────────────────────────────────────────
+  totalCount           = input(0);
+  currentPage          = input(1);
+  totalPages           = input(1);
+  pageSize             = input(10);
+  showPageSizeSelector = input(false);
 
-  /** Muestra selector de filas por página (10 / 25 / 50 / 100) */
-  @Input() showPageSizeSelector = false;
-
-  // ── Búsqueda ────────────────────────────────────────────────
-  @Input() searchable = true;
-  @Input() searchPlaceholder = 'Buscar...';
-  @Input() searchValue = '';
+  // ── Búsqueda ─────────────────────────────────────────────────
+  searchable        = input(true);
+  searchPlaceholder = input('Buscar...');
+  searchValue       = input('');
 
   // ── Empty state ──────────────────────────────────────────────
-  /** Mensaje cuando la tabla no tiene datos (sin búsqueda activa) */
-  @Input() emptyMessage = 'No hay registros disponibles';
-  /** Ícono FontAwesome para el empty state (sin búsqueda activa) */
-  @Input() emptyIcon = 'fa-solid fa-box-open';
+  emptyMessage = input('No hay registros disponibles');
+  emptyIcon    = input('fa-solid fa-box-open');
 
-  // ── Ordenamiento server-side ─────────────────────────────────
-  @Input() sortColumn: string | null = null;
-  @Input() sortDirection: SortDirection = 'asc';
+  // ── Ordenamiento ─────────────────────────────────────────────
+  sortColumn    = input<string | null>(null);
+  sortDirection = input<SortDirection>('asc');
 
-  // ── Acciones de toolbar ──────────────────────────────────────
-  @Input() showNew = true;
-  @Input() showExport = false;
-  @Input() exportLoading = false;
+  // ── Toolbar ──────────────────────────────────────────────────
+  showNew       = input(true);
+  showExport    = input(false);
+  exportLoading = input(false);
 
   // ── Skeleton ─────────────────────────────────────────────────
-  @Input() skeletonRowCount = 10;
+  skeletonRowCount = input(8);
 
-  get skeletonRows(): number[] {
-    return Array.from({ length: this.skeletonRowCount }, (_, i) => i);
-  }
+  // ── Computed ─────────────────────────────────────────────────
+  skeletonRows = computed(() =>
+    Array.from({ length: this.skeletonRowCount() }, (_, i) => i)
+  );
 
-  // ── Eventos ──────────────────────────────────────────────────
-  @Output() actionCalled    = new EventEmitter<TableActionEvent>();
-  @Output() pageNext        = new EventEmitter<void>();
-  @Output() pagePrev        = new EventEmitter<void>();
-  @Output() searchChanged   = new EventEmitter<string>();
-  @Output() clearSearch     = new EventEmitter<void>();
-  @Output() sortChanged     = new EventEmitter<TableSortEvent>();
-  @Output() newClicked      = new EventEmitter<void>();
-  @Output() exportClicked   = new EventEmitter<void>();
-  @Output() pageSizeChanged = new EventEmitter<number>();
+  visibleColumns = computed(() =>
+    this.columns().filter(c => c.visible !== false)
+  );
+
+  startRecord = computed(() =>
+    this.totalCount() === 0 ? 0 : (this.currentPage() - 1) * this.pageSize() + 1
+  );
+
+  endRecord = computed(() =>
+    Math.min(this.currentPage() * this.pageSize(), this.totalCount())
+  );
+
+  hasActiveSearch = computed(() => !!this.searchValue()?.trim());
 
   readonly pageSizeOptions = [10, 25, 50, 100];
 
-  get visibleColumns(): TableColumn[] {
-    return this.columns.filter(c => c.visible !== false);
-  }
+  // ── Eventos ──────────────────────────────────────────────────
+  actionCalled    = output<TableActionEvent>();
+  pageNext        = output<void>();
+  pagePrev        = output<void>();
+  searchChanged   = output<string>();
+  clearSearch     = output<void>();
+  sortChanged     = output<TableSortEvent>();
+  newClicked      = output<void>();
+  exportClicked   = output<void>();
+  pageSizeChanged = output<number>();
 
-  get startRecord(): number {
-    return this.totalCount === 0 ? 0 : (this.currentPage - 1) * this.pageSize + 1;
-  }
-
-  get endRecord(): number {
-    return Math.min(this.currentPage * this.pageSize, this.totalCount);
-  }
-
-  get hasActiveSearch(): boolean {
-    return !!this.searchValue?.trim();
-  }
-
-  onAction(actionId: string, row: any) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  onAction(actionId: string, row: any): void {
     this.actionCalled.emit({ action: actionId, row });
   }
 
-  onSearch(value: string) {
+  onSearch(value: string): void {
     this.searchChanged.emit(value);
   }
 
-  onClearSearch() {
+  onClearSearch(): void {
     this.clearSearch.emit();
     this.searchChanged.emit('');
   }
 
-  onSort(col: TableColumn) {
+  onSort(col: TableColumn): void {
     if (!col.sortable) return;
     const direction: SortDirection =
-      this.sortColumn === col.key && this.sortDirection === 'asc' ? 'desc' : 'asc';
+      this.sortColumn() === col.key && this.sortDirection() === 'asc' ? 'desc' : 'asc';
     this.sortChanged.emit({ column: col.key, direction });
   }
 
-  onPageSizeChange(event: Event) {
+  onPageSizeChange(event: Event): void {
     const value = Number((event.target as HTMLSelectElement).value);
     this.pageSizeChanged.emit(value);
   }
 
-  /**
-   * Resuelve el valor de una propiedad con soporte a dot-notation.
-   * Ej: key='address.city' => item.address.city
-   */
+  /** Resuelve dot-notation: 'address.city' => item.address.city */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   resolveValue(item: any, key: string): any {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access
     return key.split('.').reduce((obj, k) => obj?.[k] ?? '', item);
   }
 
-  /**
-   * Devuelve las clases Bootstrap para ocultar la columna
-   * por debajo del breakpoint indicado en col.hideBelow.
-   */
+  /** Clases Bootstrap para ocultar columna por breakpoint */
   colVisibilityClass(col: TableColumn): string {
     const map: Record<string, string> = {
       sm: 'd-none d-sm-table-cell',

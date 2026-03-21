@@ -1,12 +1,9 @@
-<div class="card">
-  <div class="card-header {{ empresa.id ? 'bg-warning' : 'bg-info' }} text-white">
-    <h4 class="card-title">
-      {{ empresa.id ? 'Editar' : 'Nueva' }} Empresa
-    </h4>
- </div>
-  <div class="card-body {{ empresa.id ? 'border-warning' : 'border-info' }}">
-   
-    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+<app-card
+  [title]="empresa.id ? 'Editar Empresa' : 'Nueva Empresa'"
+  [icon]="empresa.id ? 'fa-solid fa-pen-clip' : 'fa-solid fa-building-user'"
+  [variant]="empresa.id ? 'warning' : 'info'">
+
+  <form id="empresaFormEl" [formGroup]="form" (ngSubmit)="onSubmit()">
       <div class="row">
         <div class="col-md-6">
           <div class="mb-3">
@@ -280,18 +277,15 @@
         </div>
       </div>
       
-      <div class="row">
-        <div class="col-12">
-          <div class="d-flex justify-content-end gap-2">
-            <button type="button" class="btn btn-secondary" (click)="onCancel()">
-              <i class="fa fa-times"></i> Cancelar
-            </button>
-            <button type="submit" class="btn btn-primary" [disabled]="form.invalid">
-              <i class="fa fa-save"></i> Guardar
-            </button>
-          </div>
-        </div>
-      </div>
     </form>
+
+  <div slot="footer" class="d-flex justify-content-end gap-2">
+    <button type="button" class="btn btn-outline-secondary" (click)="onCancel()">
+      <i class="fa fa-times me-1"></i> Cancelar
+    </button>
+    <button type="submit" form="empresaFormEl" class="btn btn-primary" [disabled]="form.invalid">
+      <i class="fa fa-save me-1"></i> Guardar
+    </button>
   </div>
-</div>
+
+</app-card>

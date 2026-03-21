@@ -8,11 +8,12 @@ import { EmpresaDto } from '../../../../types/sistema/empresa.dto';
 import { ConfirmModalComponent } from '../../../shared/components/confirm-modal/confirm-modal.component';
 import { GenericTableComponent } from '../../../shared/components/generic-table/generic-table.component';
 import { TableColumn, TableAction, TableActionEvent, TableSortEvent, SortDirection } from '../../../shared/components/generic-table/table-column.model';
+import { CardComponent } from '../../../shared/components/card/card.component';
 
 @Component({
   selector: 'app-empresa-list',
   standalone: true,
-  imports: [CommonModule, EmpresaFormComponent, ConfirmModalComponent, GenericTableComponent],
+  imports: [CommonModule, EmpresaFormComponent, ConfirmModalComponent, GenericTableComponent, CardComponent],
   templateUrl: './empresa-list.component.html'
 })
 export class EmpresaListComponent implements OnInit {
@@ -48,8 +49,8 @@ export class EmpresaListComponent implements OnInit {
   ];
 
   actions: TableAction[] = [
-    { id: 'edit',   label: 'Editar',   icon: 'fa-solid fa-pen-clip',  btnClass: 'btn-action-edit'   },
-    { id: 'delete', label: 'Eliminar', icon: 'fa-solid fa-trash-can', btnClass: 'btn-action-delete' },
+    { id: 'edit',   label: 'Editar',   icon: 'fa-solid fa-pen-clip',  variant: 'edit'   },
+    { id: 'delete', label: 'Eliminar', icon: 'fa-solid fa-trash-can', variant: 'delete' },
   ];
 
   ngOnInit() {

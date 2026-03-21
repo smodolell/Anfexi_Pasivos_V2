@@ -1,85 +1,58 @@
 <div class="container mt-4">
   <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-      <li class="breadcrumb-item">
-        <a routerLink="/configuracion/tipo-tabla-amortiza">Tipos de Tabla Amortización</a>
-      </li>
+      <li class="breadcrumb-item"><a routerLink="/configuracion/tipo-tabla-amortiza">Tipos de Tabla Amortización</a></li>
       <li class="breadcrumb-item active">{{ isEditMode() ? 'Editar' : 'Nuevo' }}</li>
     </ol>
   </nav>
 
-  <div class="card shadow-sm border-0 mt-3">
-    <div class="card-header bg-white py-3">
-      <h4 class="mb-0 text-primary">
-        <i class="ti-layout-list-thumb me-2"></i>
-        {{ isEditMode() ? 'Editar Tipo Tabla Amortización' : 'Nuevo Tipo Tabla Amortización' }}
-      </h4>
-    </div>
-    <div class="card-body p-4">
+  <app-card
+    [title]="isEditMode() ? 'Editar Tipo Tabla Amortización' : 'Nuevo Tipo Tabla Amortización'"
+    [icon]="isEditMode() ? 'fa-solid fa-pen-clip' : 'fa-solid fa-table-list'"
+    [variant]="isEditMode() ? 'warning' : 'info'">
 
-      @if (errorMsg()) {
-        <div class="alert alert-danger">{{ errorMsg() }}</div>
-      }
+    @if (errorMsg()) {
+      <div class="alert alert-danger">{{ errorMsg() }}</div>
+    }
 
-      <form [formGroup]="form" (ngSubmit)="onSubmit()">
-        <div class="row g-3">
+    <form id="tipoTablaFormEl" [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="row g-3">
 
-          <!-- Nombre -->
-          <div class="col-md-12">
-            <label class="form-label fw-bold">Tipo Tabla Amortización <span class="text-danger">*</span></label>
-            <input
-              type="text"
-              formControlName="tipoTablaAmortiza"
-              class="form-control"
-              [class.is-invalid]="isInvalid('tipoTablaAmortiza')"
-              placeholder="Ej: Tabla Francesa"
-            />
-            <div class="invalid-feedback">Campo obligatorio (máx. 200 caracteres).</div>
-          </div>
-
-          <!-- Es Capitalizable -->
-          <div class="col-md-6">
-            <div class="form-check mt-2">
-              <input
-                type="checkbox"
-                formControlName="esCapitalizable"
-                class="form-check-input"
-                id="esCapitalizableCheck"
-              />
-              <label class="form-check-label fw-bold" for="esCapitalizableCheck">Es Capitalizable</label>
-            </div>
-          </div>
-
-          <!-- Activo -->
-          <div class="col-md-6">
-            <div class="form-check mt-2">
-              <input
-                type="checkbox"
-                formControlName="activo"
-                class="form-check-input"
-                id="activoCheck"
-              />
-              <label class="form-check-label fw-bold" for="activoCheck">Activo</label>
-            </div>
-          </div>
-
+        <div class="col-md-12">
+          <label for="tipoTablaAmortiza" class="form-label fw-bold">Tipo Tabla Amortización <span class="text-danger">*</span></label>
+          <input type="text" id="tipoTablaAmortiza" formControlName="tipoTablaAmortiza" class="form-control"
+            [class.is-invalid]="isInvalid('tipoTablaAmortiza')" placeholder="Ej: Tabla Francesa" />
+          <div class="invalid-feedback">Campo obligatorio (máx. 200 caracteres).</div>
         </div>
 
-        <div class="d-flex justify-content-end gap-2 mt-4 border-top pt-3">
-          <a routerLink="/configuracion/tipo-tabla-amortiza" class="btn btn-light">Cancelar</a>
-          <button
-            type="submit"
-            class="btn btn-primary px-4"
-            [disabled]="form.invalid || isLoading()"
-          >
-            @if (isLoading()) {
-              <span class="spinner-border spinner-border-sm me-2"></span>
-            }
-            {{ isEditMode() ? 'Guardar Cambios' : 'Registrar' }}
-          </button>
+        <div class="col-md-6">
+          <div class="form-check mt-2">
+            <input type="checkbox" formControlName="esCapitalizable" class="form-check-input" id="esCapitalizableCheck" />
+            <label class="form-check-label fw-bold" for="esCapitalizableCheck">Es Capitalizable</label>
+          </div>
         </div>
-      </form>
 
+        <div class="col-md-6">
+          <div class="form-check mt-2">
+            <input type="checkbox" formControlName="activo" class="form-check-input" id="activoCheck" />
+            <label class="form-check-label fw-bold" for="activoCheck">Activo</label>
+          </div>
+        </div>
+
+      </div>
+    </form>
+
+    <div slot="footer" class="d-flex justify-content-end gap-2">
+      <a routerLink="/configuracion/tipo-tabla-amortiza" class="btn btn-outline-secondary">
+        <i class="fa fa-times me-1"></i> Cancelar
+      </a>
+      <button type="submit" form="tipoTablaFormEl" class="btn btn-primary" [disabled]="form.invalid || isLoading()">
+        @if (isLoading()) {
+          <span class="spinner-border spinner-border-sm me-1"></span>
+        }
+        <i class="fa fa-save me-1"></i> {{ isEditMode() ? 'Guardar Cambios' : 'Registrar' }}
+      </button>
     </div>
-  </div>
+
+  </app-card>
 </div>

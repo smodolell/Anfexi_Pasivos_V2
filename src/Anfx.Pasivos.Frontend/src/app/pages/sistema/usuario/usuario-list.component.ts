@@ -8,11 +8,12 @@ import { GenericTableComponent } from '../../../shared/components/generic-table/
 import { TableColumn, TableAction, TableActionEvent } from '../../../shared/components/generic-table/table-column.model';
 import { FilterActivoComponent } from '../../../shared/components/filter-activo/filter-activo.component';
 import { ConfirmModalComponent } from '../../../shared/components/confirm-modal/confirm-modal.component';
+import { CardComponent } from '../../../shared/components/card/card.component';
 
 @Component({
   selector: 'app-usuario-list',
   standalone: true,
-  imports: [UsuarioFormComponent, GenericTableComponent, FilterActivoComponent, ConfirmModalComponent],
+  imports: [UsuarioFormComponent, GenericTableComponent, FilterActivoComponent, ConfirmModalComponent, CardComponent],
   templateUrl: './usuario-list.component.html',
 })
 export class UsuarioListComponent implements OnInit {
@@ -29,8 +30,8 @@ export class UsuarioListComponent implements OnInit {
   ];
 
   actions: TableAction[] = [
-    { id: 'edit',   label: 'Editar',   icon: 'fa-solid fa-user-pen',  btnClass: 'btn-outline-primary' },
-    { id: 'delete', label: 'Eliminar', icon: 'fa-solid fa-user-minus', btnClass: 'btn-outline-danger'  },
+    { id: 'edit',   label: 'Editar',   icon: 'fa-solid fa-user-pen',  variant: 'edit'   },
+    { id: 'delete', label: 'Eliminar', icon: 'fa-solid fa-user-minus', variant: 'delete' },
   ];
 
   // ── Estado ───────────────────────────────────────────────────

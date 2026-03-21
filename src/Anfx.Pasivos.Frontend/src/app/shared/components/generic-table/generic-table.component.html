@@ -1,64 +1,60 @@
 <!-- ── Toolbar ─────────────────────────────────────────── -->
 <div class="gt-toolbar mb-3">
   <!-- Búsqueda + badge de resultados -->
-  @if (searchable) {
+  @if (searchable()) {
     <div class="gt-toolbar__search">
       <app-search-input
-        [placeholder]="searchPlaceholder"
-        [value]="searchValue"
-        (search)="onSearch($event)"
-      >
-      </app-search-input>
-      @if (hasActiveSearch && !loading) {
+        [placeholder]="searchPlaceholder()"
+        [value]="searchValue()"
+        (searched)="onSearch($event)"
+        (cleared)="onClearSearch()"
+      ></app-search-input>
+      @if (hasActiveSearch() && !loading()) {
         <span class="gt-results-badge">
-          {{ totalCount }} {{ totalCount === 1 ? 'resultado' : 'resultados' }}
+          {{ totalCount() }} {{ totalCount() === 1 ? 'resultado' : 'resultados' }}
         </span>
       }
     </div>
   }
 
-  <!-- Filtros extra proyectados por el padre (slot=filters) -->
+  <!-- Filtros extra proyectados por el padre -->
   <ng-content select="[slot=filters]"></ng-content>
 
   <!-- Botones de toolbar -->
   <div class="gt-toolbar__actions">
-    @if (showExport) {
+    @if (showExport()) {
       <app-button
         icon="fa-solid fa-file-export"
         label="Exportar"
         variant="info"
-        [loading]="exportLoading"
-        [disabled]="exportLoading || loading"
+        [loading]="exportLoading()"
+        [disabled]="exportLoading() || loading()"
         (clicked)="exportClicked.emit()"
-      >
-      </app-button>
+      ></app-button>
     }
-    @if (showNew) {
+    @if (showNew()) {
       <app-button
         icon="fa-solid fa-circle-plus"
         label="Nuevo"
         variant="success"
         (clicked)="newClicked.emit()"
-      >
-      </app-button>
+      ></app-button>
     }
   </div>
 </div>
 
 <!-- ── Tabla ───────────────────────────────────────────── -->
 <div class="table-responsive gt-table-wrapper">
-  <table class="table table-list mb-0 gt-table">
+  <table class="table mb-0 gt-table">
     <!-- Encabezado -->
     <thead>
       <tr>
-        @for (col of visibleColumns; track col.key) {
+        @for (col of visibleColumns(); track col.key) {
           <th
             [class]="colVisibilityClass(col)"
             [class.gt-sortable]="col.sortable"
-            [class.gt-sort-asc]="col.sortable && sortColumn === col.key && sortDirection === 'asc'"
-            [class.gt-sort-desc]="
-              col.sortable && sortColumn === col.key && sortDirection === 'desc'
-            "
+            [class.gt-sort-asc]="col.sortable && sortColumn() === col.key && sortDirection() === 'asc'"
+            [class.gt-sort-desc]="col.sortable && sortColumn() === col.key && sortDirection() === 'desc'"
             [style.max-width.px]="col.maxWidth ?? null"
             [attr.tabindex]="col.sortable ? 0 : null"
             [attr.role]="col.sortable ? 'button' : null"
@@ -69,12 +65,8 @@
             <span class="gt-cell-text">{{ col.header }}</span>
             @if (col.sortable) {
               <span class="gt-sort-icon">
-                @if (sortColumn === col.key) {
-                  <i
-                    [class]="
-                      sortDirection === 'asc' ? 'fa-solid fa-arrow-up' : 'fa-solid fa-arrow-down'
-                    "
-                  ></i>
+                @if (sortColumn() === col.key) {
+                  <i [class]="sortDirection() === 'asc' ? 'fa-solid fa-arrow-up' : 'fa-solid fa-arrow-down'"></i>
                 } @else {
                   <i class="fa-solid fa-arrow-up-arrow-down gt-sort-inactive"></i>
                 }
@@ -82,7 +74,7 @@
             }
           </th>
         }
-        @if (actions.length > 0) {
+        @if (actions().length > 0) {
           <th class="gt-actions-col text-center">Acciones</th>
         }
       </tr>
@@ -91,23 +83,24 @@
     <!-- Cuerpo -->
     <tbody>
       <!-- Skeleton loading -->
-      @if (loading) {
-        @for (i of skeletonRows; track i) {
-          <tr class="gt-skeleton-row" [style.--sk-delay]="i * 80 + 'ms'">
-            @for (col of visibleColumns; track col.key) {
+      @if (loading()) {
+        @for (i of skeletonRows(); track i) {
+          <tr class="gt-skeleton-row" [style.--sk-delay]="i * 60 + 'ms'">
+            @for (col of visibleColumns(); track col.key) {
               <td [class]="colVisibilityClass(col)" [style.max-width.px]="col.maxWidth ?? null">
                 <span
                   class="gt-skeleton-cell"
-                  [style.width]="55 + ((col.key.length * 7 + i * 11) % 35) + '%'"
-                >
-                </span>
+                  [style.width]="50 + ((col.key.length * 7 + i * 11) % 40) + '%'"
+                ></span>
               </td>
             }
-            @if (actions.length > 0) {
+            @if (actions().length > 0) {
               <td class="gt-actions-cell text-center">
-                @for (act of actions; track act.id) {
-                  <span class="gt-skeleton-btn me-1"></span>
-                }
+                <div class="actions">
+                  @for (act of actions(); track act.id) {
+                    <span class="gt-skeleton-btn"></span>
+                  }
+                </div>
               </td>
             }
           </tr>
@@ -115,28 +108,24 @@
       }
 
       <!-- Sin datos -->
-      @else if (items.length === 0) {
+      @else if (items().length === 0) {
         <tr>
           <td
-            [attr.colspan]="visibleColumns.length + (actions.length > 0 ? 1 : 0)"
+            [attr.colspan]="visibleColumns().length + (actions().length > 0 ? 1 : 0)"
             class="gt-empty-state"
           >
-            @if (hasActiveSearch) {
-              <!-- Sin resultados de búsqueda -->
+            @if (hasActiveSearch()) {
               <i class="fa-solid fa-magnifying-glass gt-empty-icon gt-empty-icon--search"></i>
-              <p class="gt-empty-title">
-                Sin resultados para <strong>"{{ searchValue }}"</strong>
-              </p>
+              <p class="gt-empty-title">Sin resultados para <strong>"{{ searchValue() }}"</strong></p>
               <p class="gt-empty-subtitle">Intenta con otros términos de búsqueda</p>
               <button class="btn btn-sm btn-outline-secondary mt-2" (click)="onClearSearch()">
                 <i class="fa-solid fa-xmark me-1"></i>Limpiar búsqueda
               </button>
             } @else {
-              <!-- Sin registros -->
-              <i [class]="emptyIcon + ' gt-empty-icon'"></i>
-              <p class="gt-empty-title">{{ emptyMessage }}</p>
+              <i [class]="emptyIcon() + ' gt-empty-icon'"></i>
+              <p class="gt-empty-title">{{ emptyMessage() }}</p>
               <p class="gt-empty-subtitle">Aún no hay registros en este catálogo</p>
-              @if (showNew) {
+              @if (showNew()) {
                 <button class="btn btn-sm btn-success mt-2" (click)="newClicked.emit()">
                   <i class="fa-solid fa-circle-plus me-1"></i>Crear primero
                 </button>
@@ -146,13 +135,12 @@
         </tr>
       }
 
-      <!-- Filas -->
+      <!-- Filas de datos -->
       @else {
-        @for (row of items; track $index) {
+        @for (row of items(); track $index) {
           <tr>
-            @for (col of visibleColumns; track col.key) {
+            @for (col of visibleColumns(); track col.key) {
               <td [class]="colVisibilityClass(col)" [style.max-width.px]="col.maxWidth ?? null">
-                <!-- Wrapper con truncado cuando hay maxWidth -->
                 <span
                   [class.gt-cell-truncate]="col.maxWidth"
                   [title]="col.maxWidth ? resolveValue(row, col.key) : null"
@@ -163,11 +151,7 @@
                     }
                     @case ('boolean') {
                       @let boolVal = resolveValue(row, col.key);
-                      <span
-                        class="badge"
-                        [class.bg-success]="boolVal"
-                        [class.bg-secondary]="!boolVal"
-                      >
+                      <span class="badge" [class.bg-success]="boolVal" [class.bg-secondary]="!boolVal">
                         {{ boolVal ? 'Sí' : 'No' }}
                       </span>
                     }
@@ -186,19 +170,19 @@
             }
 
             <!-- Acciones por fila -->
-            @if (actions.length > 0) {
+            @if (actions().length > 0) {
               <td class="gt-actions-cell text-center">
-                @for (act of actions; track act.id) {
-                  <button
-                    [class]="'btn btn-sm me-1 ' + act.btnClass"
-                    [title]="act.label"
-                    [attr.aria-label]="act.label"
-                    [disabled]="act.disabledFn ? act.disabledFn(row) : false"
-                    (click)="onAction(act.id, row)"
-                  >
-                    <i [class]="act.icon"></i>
-                  </button>
-                }
+                <div class="actions">
+                  @for (act of actions(); track act.id) {
+                    <app-action-button
+                      [icon]="act.icon"
+                      [variant]="act.variant"
+                      [title]="act.label"
+                      [disabled]="act.disabledFn ? act.disabledFn(row) : false"
+                      (clicked)="onAction(act.id, row)"
+                    ></app-action-button>
+                  }
+                </div>
               </td>
             }
           </tr>
@@ -209,19 +193,20 @@
 </div>
 
 <!-- ── Paginación ──────────────────────────────────────── -->
-@if (totalCount > 0 && !loading) {
-  <div class="row align-items-center mt-3 g-2">
+@if (totalCount() > 0 && !loading()) {
+  <div class="gt-pagination mt-3">
     <!-- Info + selector de page size -->
-    <div class="col-12 col-md-6 d-flex align-items-center gap-3">
+    <div class="gt-pagination__info">
       <small class="text-muted">
-        Mostrando {{ startRecord }} – {{ endRecord }} de {{ totalCount }} registros
+        Mostrando <strong>{{ startRecord() }}</strong>–<strong>{{ endRecord() }}</strong>
+        de <strong>{{ totalCount() }}</strong> registros
       </small>
-      @if (showPageSizeSelector) {
-        <label class="d-flex align-items-center gap-2 mb-0">
+      @if (showPageSizeSelector()) {
+        <label class="gt-page-size-label">
           <small class="text-muted text-nowrap">Filas:</small>
           <select
             class="form-select form-select-sm gt-page-size-select"
-            [value]="pageSize"
+            [value]="pageSize()"
             (change)="onPageSizeChange($event)"
           >
             @for (size of pageSizeOptions; track size) {
@@ -233,34 +218,22 @@
     </div>
 
     <!-- Controles de página -->
-    <div class="col-12 col-md-6">
-      <nav aria-label="Paginación de tabla">
-        <ul class="pagination justify-content-start justify-content-md-end mb-0">
-          <li class="page-item" [class.disabled]="currentPage <= 1">
-            <a
-              class="page-link"
-              href="javascript:void(0)"
-              aria-label="Página anterior"
-              (click)="pagePrev.emit()"
-            >
-              <i class="fa-solid fa-chevron-left"></i>
-            </a>
-          </li>
-          <li class="page-item disabled">
-            <span class="page-link">{{ currentPage }} / {{ totalPages }}</span>
-          </li>
-          <li class="page-item" [class.disabled]="currentPage >= totalPages">
-            <a
-              class="page-link"
-              href="javascript:void(0)"
-              aria-label="Página siguiente"
-              (click)="pageNext.emit()"
-            >
-              <i class="fa-solid fa-chevron-right"></i>
-            </a>
-          </li>
-        </ul>
-      </nav>
-    </div>
+    <nav aria-label="Paginación de tabla">
+      <ul class="pagination mb-0">
+        <li class="page-item" [class.disabled]="currentPage() <= 1">
+          <a class="page-link" href="javascript:void(0)" aria-label="Página anterior" (click)="pagePrev.emit()">
+            <i class="fa-solid fa-chevron-left"></i>
+          </a>
+        </li>
+        <li class="page-item disabled">
+          <span class="page-link gt-page-indicator">{{ currentPage() }} / {{ totalPages() }}</span>
+        </li>
+        <li class="page-item" [class.disabled]="currentPage() >= totalPages()">
+          <a class="page-link" href="javascript:void(0)" aria-label="Página siguiente" (click)="pageNext.emit()">
+            <i class="fa-solid fa-chevron-right"></i>
+          </a>
+        </li>
+      </ul>
+    </nav>
   </div>
 }

@@ -1,41 +1,37 @@
 <div class="container-fluid">
-  <div class="row">
-    <div class="col-12">
-
-      @if (!mostrandoFormulario()) {
-        <app-generic-table
-          [columns]="columns"
-          [items]="items()"
-          [loading]="loading()"
-          [actions]="actions"
-          [totalCount]="totalCount()"
-          [currentPage]="currentPage()"
-          [totalPages]="totalPages()"
-          [pageSize]="pageSize()"
-          [sortColumn]="sortColumn"
-          [sortDirection]="sortDirection"
-          [searchable]="true"
-          [searchPlaceholder]="'Buscar tipo de pago...'"
-          [searchValue]="searchValue"
-          [showNew]="true"
-          [showExport]="false"
-          (searchChanged)="onSearch($event)"
-          (sortChanged)="onSort($event)"
-          (actionCalled)="onAction($event)"
-          (pageNext)="nextPage()"
-          (pagePrev)="prevPage()"
-          (newClicked)="onNuevo()"
-        />
-      } @else {
-        <app-tipo-pago-form
-          [tipoPago]="tipoPagoSeleccionado"
-          (guardar)="onGuardar($event)"
-          (cancelar)="onCancelar()"
-        />
-      }
-
-    </div>
-  </div>
+  @if (!mostrandoFormulario()) {
+    <app-card [title]="'Tipos de Pago'" [icon]="'fa-solid fa-money-check-dollar'" variant="primary">
+      <app-generic-table
+        [columns]="columns"
+        [items]="items()"
+        [loading]="loading()"
+        [actions]="actions"
+        [totalCount]="totalCount()"
+        [currentPage]="currentPage()"
+        [totalPages]="totalPages()"
+        [pageSize]="pageSize()"
+        [sortColumn]="sortColumn"
+        [sortDirection]="sortDirection"
+        [searchable]="true"
+        [searchPlaceholder]="'Buscar tipo de pago...'"
+        [searchValue]="searchValue"
+        [showNew]="true"
+        [showExport]="false"
+        (searchChanged)="onSearch($event)"
+        (sortChanged)="onSort($event)"
+        (actionCalled)="onAction($event)"
+        (pageNext)="nextPage()"
+        (pagePrev)="prevPage()"
+        (newClicked)="onNuevo()"
+      />
+    </app-card>
+  } @else {
+    <app-tipo-pago-form
+      [tipoPago]="tipoPagoSeleccionado"
+      (guardar)="onGuardar($event)"
+      (cancelar)="onCancelar()"
+    />
+  }
 </div>
 
 <app-confirm-modal

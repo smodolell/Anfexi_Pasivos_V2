@@ -7,11 +7,12 @@ import { GenericTableComponent } from '../../../shared/components/generic-table/
 import { TableColumn, TableAction, TableActionEvent } from '../../../shared/components/generic-table/table-column.model';
 import { RolDto, RolPageQueryDto, CreateRolDto, UpdateRolDto } from '../../../../types/sistema/rol.dto';
 import { ConfirmModalComponent } from '../../../shared/components/confirm-modal/confirm-modal.component';
+import { CardComponent } from '../../../shared/components/card/card.component';
 
 @Component({
   selector: 'app-rol-list',
   standalone: true,
-  imports: [RolFormComponent, GenericTableComponent, ConfirmModalComponent],
+  imports: [RolFormComponent, GenericTableComponent, ConfirmModalComponent, CardComponent],
   templateUrl: './rol-list.component.html',
 })
 export class RolListComponent implements OnInit {
@@ -25,8 +26,8 @@ export class RolListComponent implements OnInit {
   ];
 
   actions: TableAction[] = [
-    { id: 'edit',   label: 'Editar',   icon: 'fa-solid fa-pen-to-square', btnClass: 'btn-outline-primary' },
-    { id: 'delete', label: 'Eliminar', icon: 'fa-solid fa-trash-can',     btnClass: 'btn-outline-danger'  },
+    { id: 'edit',   label: 'Editar',   icon: 'fa-solid fa-pen-to-square', variant: 'edit'   },
+    { id: 'delete', label: 'Eliminar', icon: 'fa-solid fa-trash-can',     variant: 'delete' },
   ];
 
   // ── Estado ───────────────────────────────────────────────────

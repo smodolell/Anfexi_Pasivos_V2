@@ -6,40 +6,34 @@
     </ol>
   </nav>
 
-  <div class="card shadow-sm border-0">
-    <div class="card-header bg-white py-3 border-bottom">
-      <h4 class="mb-0 text-primary">
-        <i class="bi" [ngClass]="isEditMode() ? 'bi-pencil-square' : 'bi-plus-circle'"></i>
-        {{ isEditMode() ? 'Actualizar Estatus de Contrato' : 'Registrar Nuevo Estatus de Contrato' }}
-      </h4>
-    </div>
-    <div class="card-body p-4">
-      <form [formGroup]="estatusForm" (ngSubmit)="onSubmit()">
-        <div class="row">
-          <div class="col-md-12 mb-3">
-            <label class="form-label fw-bold">Nombre del Estatus <span class="text-danger">*</span></label>
-            <input 
-              type="text" 
-              formControlName="estatusContrato" 
-              class="form-control shadow-none" 
-              [class.is-invalid]="isInvalid('estatusContrato')"
-              placeholder="Ej: Activo, Cancelado, Pendiente...">
-            <div class="invalid-feedback">El nombre del estatus es obligatorio.</div>
-          </div>
-        </div>
+  <app-card
+    [title]="isEditMode() ? 'Actualizar Estatus de Contrato' : 'Registrar Nuevo Estatus de Contrato'"
+    [icon]="isEditMode() ? 'fa-solid fa-pen-clip' : 'fa-solid fa-file-circle-check'"
+    [variant]="isEditMode() ? 'warning' : 'info'">
 
-        <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
-          <button type="button" class="btn btn-light" routerLink="/catalogos/estatus-contrato">Cancelar</button>
-          <button type="submit" class="btn btn-primary px-4 shadow-sm" [disabled]="estatusForm.invalid || isLoading()">
-            @if (isLoading()) {
-              <span class="spinner-border spinner-border-sm me-2"></span>
-              Procesando...
-            } @else {
-              <i class="bi bi-save me-2"></i> {{ isEditMode() ? 'Guardar Cambios' : 'Registrar Estatus' }}
-            }
-          </button>
+    <form id="estatusFormEl" [formGroup]="estatusForm" (ngSubmit)="onSubmit()">
+      <div class="row">
+        <div class="col-md-12 mb-3">
+          <label for="estatusContrato" class="form-label fw-bold">Nombre del Estatus <span class="text-danger">*</span></label>
+          <input type="text" id="estatusContrato" formControlName="estatusContrato" class="form-control"
+            [class.is-invalid]="isInvalid('estatusContrato')"
+            placeholder="Ej: Activo, Cancelado, Pendiente...">
+          <div class="invalid-feedback">El nombre del estatus es obligatorio.</div>
         </div>
-      </form>
+      </div>
+    </form>
+
+    <div slot="footer" class="d-flex justify-content-end gap-2">
+      <a routerLink="/catalogos/estatus-contrato" class="btn btn-outline-secondary">
+        <i class="fa fa-times me-1"></i> Cancelar
+      </a>
+      <button type="submit" form="estatusFormEl" class="btn btn-primary" [disabled]="estatusForm.invalid || isLoading()">
+        @if (isLoading()) {
+          <span class="spinner-border spinner-border-sm me-1"></span>
+        }
+        <i class="fa fa-save me-1"></i> {{ isEditMode() ? 'Guardar Cambios' : 'Registrar Estatus' }}
+      </button>
     </div>
-  </div>
+
+  </app-card>
 </div>

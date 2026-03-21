@@ -1,0 +1,22 @@
+<div class="si-wrapper" [class.si-focused]="focused">
+  <i class="fa-solid fa-magnifying-glass si-icon" aria-hidden="true"></i>
+  <input
+    #inputRef
+    class="si-input"
+    type="text"
+    [placeholder]="placeholder()"
+    [attr.aria-label]="label()"
+    [(ngModel)]="term"
+    (focus)="focused = true"
+    (blur)="focused = false"
+    (input)="onInput()"
+    (keydown.enter)="onEnter()"
+    (keydown.escape)="clear()"
+    autocomplete="off"
+  />
+  @if (term) {
+    <button class="si-clear" type="button" aria-label="Limpiar búsqueda" (click)="clear()">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+  }
+</div>

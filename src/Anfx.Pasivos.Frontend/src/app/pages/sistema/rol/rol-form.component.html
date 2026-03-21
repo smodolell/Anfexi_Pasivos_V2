@@ -5,7 +5,7 @@
       [icon]="rol.id ? 'fa-solid fa-pen-clip' : 'fa-solid fa-shield-halved'"
       [variant]="rol.id ? 'warning' : 'info'">
 
-      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <form id="rolFormEl" [formGroup]="form" (ngSubmit)="onSubmit()">
         <div class="row">
           <div class="col-md-6">
             <div class="mb-3">

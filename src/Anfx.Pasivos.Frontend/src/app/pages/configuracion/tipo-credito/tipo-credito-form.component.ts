@@ -5,11 +5,12 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ConfiguracionesService } from '../../../../api/services/configuraciones.service';
 import { TipoCreditoDto } from '../../../../api/models/tipoCreditoDto';
 import { TipoTablaAmortizaListItemDto } from '../../../../api/models/tipoTablaAmortizaListItemDto';
+import { CardComponent } from '../../../shared/components/card/card.component';
 
 @Component({
   selector: 'app-tipo-credito-form',
   standalone: true,
-  imports: [CommonModule, RouterModule, ReactiveFormsModule],
+  imports: [CommonModule, RouterModule, ReactiveFormsModule, CardComponent],
   templateUrl: './tipo-credito-form.component.html'
 })
 export class TipoCreditoFormComponent implements OnInit {

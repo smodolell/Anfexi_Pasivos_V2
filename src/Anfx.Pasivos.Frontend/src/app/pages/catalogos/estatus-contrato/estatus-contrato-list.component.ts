@@ -7,11 +7,12 @@ import { UtilsService } from '../../../services/utils.service';
 import { GenericTableComponent } from '../../../shared/components/generic-table/generic-table.component';
 import { TableColumn, TableAction, TableActionEvent, TableSortEvent, SortDirection } from '../../../shared/components/generic-table/table-column.model';
 import { wasHandledByInterceptor } from '../../../interceptors/auth.interceptor';
+import { CardComponent } from '../../../shared/components/card/card.component';
 
 @Component({
   selector: 'app-estatus-contrato-list',
   standalone: true,
-  imports: [CommonModule, GenericTableComponent],
+  imports: [CommonModule, GenericTableComponent, CardComponent],
   templateUrl: './estatus-contrato-list.component.html'
 })
 export class EstatusContratoListComponent implements OnInit {
@@ -39,7 +40,7 @@ export class EstatusContratoListComponent implements OnInit {
   ];
 
   actions: TableAction[] = [
-    { id: 'edit', label: 'Editar', icon: 'fa-solid fa-pen-clip', btnClass: 'btn-action-edit' },
+    { id: 'edit', label: 'Editar', icon: 'fa-solid fa-pen-clip', variant: 'edit' },
   ];
 
   ngOnInit() {
