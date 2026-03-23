@@ -1,307 +1,150 @@
-/* You can add global styles to this file, and also import other style files */
-body,
-p, span, a, button, input, select, textarea,
-h1, h2, h3, h4, h5, h6,
-td, th, label, div, li {
-  font-family: 'Roboto', sans-serif;
-}
+// ============================================================
+// GLOBAL STYLES — Profuturo Pasivos Frontend
+// Tokens idénticos a Alerta_Frontend (_variables.scss)
+// Sin variables --pf-* heredadas (eliminadas).
+// ============================================================
 
-/* ============================================================
-   PALETA DE COLORES — Profuturo Pasivos
-   Todos los componentes deben referenciar estas variables.
-   ============================================================ */
+// ------------------------------------------------------------
+// CSS CUSTOM PROPERTIES (Design Tokens)
+// ------------------------------------------------------------
 :root {
-  /* ── Brand ──────────────────────────────────────────────── */
-  --pf-primary:           #004b8d;
-  --pf-primary-hover:     #015baa;
-  --pf-primary-active:    #00325d;
-  --pf-primary-border:    #00325d;
-  --pf-primary-light:     #e8f1fb;
-  --pf-primary-dim:       #dbeafe;
+  // ── Colores principales ───────────────────────────────────
+  --color-primary:           #004b8d;
+  --color-primary-medium:    #3182ce;
+  --color-primary-dark:      #2c5aa0;
+  --color-primary-darker:    #2a4e7c;
+  --color-primary-hover:     #015baa;
+  --color-primary-disabled:  #186bb4;
+  --color-primary-accent:    #4299e1;
+  --color-primary-light:     #b8d4fe;
 
-  /* ── Semánticos ─────────────────────────────────────────── */
-  --pf-info:              #0369a1;
-  --pf-info-light:        #e0f2fe;
-  --pf-success:           #15803d;
-  --pf-success-light:     #dcfce7;
-  --pf-warning:           #d97706;
-  --pf-warning-light:     #fef3c7;
-  --pf-danger:            #b91c1c;
-  --pf-danger-light:      #fee2e2;
+  // Bootstrap/legacy
+  --bs-primary:              #004b8d;
+  --bs-primary-rgb:          0, 75, 141;
+  --bs-success-rgb:          72, 187, 120;
+  --bs-danger-rgb:           245, 101, 101;
+  --color-blue-bs5:          #0d6efd;
+  --color-blue-bs5-dark:     #0a58ca;
+  --color-blue-bootstrap:    #007bff;
+  --color-blue-material:     #1976d2;
 
-  /* ── Neutros / superficie ───────────────────────────────── */
-  --pf-border:            #dbe8f5;
-  --pf-border-strong:     #c5dcf7;
-  --pf-bg-subtle:         #f4f9ff;
-  --pf-bg-table-head:     #ebf5ff;
-  --pf-text-muted:        #6b7280;
-  --pf-text-base:         #1f2937;
-  --pf-text-on-dark:      #ffffff;
+  // ── Success ───────────────────────────────────────────────
+  --color-success:           #48bb78;
+  --color-success-dark:      #38a169;
+  --color-success-darker:    #2f855a;
+  --color-success-bs:        #28a745;
+  --color-success-bright:    #22c55e;
 
-  /* ── Card ───────────────────────────────────────────────── */
-  --pf-card-border:       #e0e6ed;
-  --pf-card-radius:       12px;
-  --pf-card-shadow:       0 2px 8px rgba(0, 0, 0, 0.08);
-  --pf-card-shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.12);
+  // ── Danger ────────────────────────────────────────────────
+  --color-danger:            #f56565;
+  --color-danger-dark:       #e53e3e;
+  --color-danger-darker:     #c53030;
+  --color-danger-bs:         #dc3545;
+  --color-danger-bs-dark:    #c82333;
+  --color-danger-bs-darker:  #bd2130;
 
-  /* ── Sidebar ────────────────────────────────────────────── */
-  --pf-sidebar-icon:      #6badde;
-  --pf-sidebar-icon-hover:#3d8fd4;
-  --pf-sidebar-sub-icon:  #7dd3c0;
-  --pf-sidebar-sub-hover: #5bbcaa;
+  // ── Warning ───────────────────────────────────────────────
+  --color-warning:           #ed8936;
+  --color-warning-bs:        #ffc107;
+  --color-warning-dark:      #dd6b20;
 
-  /* ── Bootstrap 5 CSS var overrides ─────────────────────── */
-  --bs-primary:           #004b8d;
-  --bs-primary-rgb:       0, 75, 141;
-  --bs-info:              #0369a1;
-  --bs-info-rgb:          3, 105, 161;
-  --bs-success:           #15803d;
-  --bs-success-rgb:       21, 128, 61;
-  --bs-warning:           #d97706;
-  --bs-warning-rgb:       217, 119, 6;
-  --bs-danger:            #b91c1c;
-  --bs-danger-rgb:        185, 28, 28;
-}
+  // ── Purple (config-btn, btn-action-view) ──────────────────
+  --color-purple:            #667eea;
+  --color-purple-dark:       #5a67d8;
 
-/* ============================================================
-   OVERRIDES de clases Bootstrap (bg-*, text-*, border-*, btn-*)
-   Se necesitan porque Bootstrap 5.3 compila los colores como
-   literales en algunas clases utilitarias.
-   ============================================================ */
+  // ── Info ──────────────────────────────────────────────────
+  --color-info:              #17a2b8;
 
-/* ── Fondos ─────────────────────────────────────────────────── */
-.bg-primary { background-color: var(--pf-primary)  !important; }
-.bg-info    { background-color: var(--pf-info)     !important; }
-.bg-success { background-color: var(--pf-success)  !important; }
-.bg-warning { background-color: var(--pf-warning)  !important; }
-.bg-danger  { background-color: var(--pf-danger)   !important; }
+  // ── Tabs legacy ───────────────────────────────────────────
+  --color-tab-accent:        #fb9678;
 
-/* ── Textos ─────────────────────────────────────────────────── */
-.text-primary { color: var(--pf-primary)  !important; }
-.text-info    { color: var(--pf-info)     !important; }
-.text-success { color: var(--pf-success)  !important; }
-.text-warning { color: var(--pf-warning)  !important; }
-.text-danger  { color: var(--pf-danger)   !important; }
+  // ── Botones contextuales ──────────────────────────────────
+  --color-btn-email:         #3b82f6;
+  --color-btn-email-dark:    #2563eb;
+  --color-btn-pdf:           #10b981;
+  --color-btn-pdf-dark:      #059669;
+  --color-btn-primary-alt:   #0376db;
+  --color-btn-primary-alt-dark: #0159a5;
 
-/* Fix: badges con bg-white sobre header de color */
-.badge.bg-white.text-info    { color: var(--pf-info)    !important; }
-.badge.bg-white.text-warning { color: var(--pf-warning) !important; }
-.badge.bg-white.text-primary { color: var(--pf-primary) !important; }
+  // ── Paleta Slate ──────────────────────────────────────────
+  --color-slate-900:         #1e293b;
+  --color-slate-500:         #64748b;
+  --color-slate-300:         #cbd5e1;
+  --color-slate-100:         #f1f5f9;
+  --color-slate-50:          #f8fafc;
 
-/* ── Bordes ─────────────────────────────────────────────────── */
-.border-primary { border-color: var(--pf-primary)  !important; }
-.border-info    { border-color: var(--pf-info)     !important; }
-.border-warning { border-color: var(--pf-warning)  !important; }
-.border-success { border-color: var(--pf-success)  !important; }
-.border-danger  { border-color: var(--pf-danger)   !important; }
+  // ── Neutros / Grises ──────────────────────────────────────
+  --color-white:             #ffffff;
+  --color-gray-100:          #f8f9fa;
+  --color-gray-150:          #f0f0f0;
+  --color-gray-200:          #e9ecef;
+  --color-gray-250:          #e2e8f0;
+  --color-gray-300:          #dee2e6;
+  --color-gray-350:          #e0e6ed;
+  --color-gray-400:          #cbd5e0;
+  --color-gray-450:          #d1d9e0;
+  --color-gray-500:          #adb5bd;
+  --color-gray-550:          #a0aec0;
+  --color-gray-600:          #6c757d;
+  --color-gray-650:          #718096;
+  --color-gray-700:          #495057;
+  --color-gray-750:          #4a5568;
+  --color-gray-800:          #343a40;
+  --color-gray-850:          #2d3748;
+  --color-gray-900:          #212529;
+  --color-gray-disabled:     #cfcfcf;
 
-/* ── btn-primary ────────────────────────────────────────────── */
-.btn-primary {
-  background:   linear-gradient(135deg, var(--pf-primary-hover), var(--pf-primary-active));
-  border-color: var(--pf-primary-active);
-  color:        var(--pf-text-on-dark);
-}
-.btn-primary:hover {
-  background:   linear-gradient(135deg, #0169c4, var(--pf-primary-hover));
-  border-color: var(--pf-primary-hover);
-  color:        var(--pf-text-on-dark);
-}
-.btn-primary:focus {
-  background:   linear-gradient(135deg, #0169c4, var(--pf-primary-hover));
-  border-color: var(--pf-primary-hover);
-  color:        var(--pf-text-on-dark);
-  box-shadow:   0 0 0 0.25rem rgba(0, 75, 141, 0.25);
-}
-.btn-primary.disabled,
-.btn-primary:disabled {
-  background:   #186bb4;
-  border-color: #186bb4;
-  color:        var(--pf-text-on-dark);
-}
+  // ── Texto ─────────────────────────────────────────────────
+  --color-text-primary:      #212529;
+  --color-text-secondary:    #6c757d;
+  --color-text-muted:        #a0aec0;
+  --color-text-heading:      #495057;
+  --color-text-title:        #2c3e50;
+  --color-text-input-label:  #5a6c7d;
 
-/* ── btn-success ────────────────────────────────────────────── */
-.btn-success {
-  background-color: var(--pf-success);
-  border-color:     #126832;
-  color:            var(--pf-text-on-dark);
-}
-.btn-success:hover,
-.btn-success:focus {
-  background-color: #126832;
-  border-color:     #126832;
-  color:            var(--pf-text-on-dark);
-}
+  // ── Fondo ─────────────────────────────────────────────────
+  --color-bg-main:           #f8f9fa;
+  --color-bg-body:           #f8f9fa;
+  --color-bg-card:           #ffffff;
+  --color-bg-subtle:         #f8f9fa;
+  --color-bg-surface:        #fbfcfd;
+  --color-bg-table-alt:      #f7fafc;
+  --color-bg-table-hover:    #f8fafb;
+  --color-bg-table-head:     #edf2f7;
+  --color-bg-verified:       #f0fdf4;
+  --color-bg-pld-warning:    #fff3cd;
+  --color-bg-pld-success:    #e6f4ea;
+  --color-bg-date-hover:     #e3f2fd;
 
-/* ── btn-danger ─────────────────────────────────────────────── */
-.btn-danger {
-  background-color: var(--pf-danger);
-  border-color:     #991b1b;
-  color:            var(--pf-text-on-dark);
-}
-.btn-danger:hover,
-.btn-danger:focus {
-  background-color: #991b1b;
-  border-color:     #991b1b;
-  color:            var(--pf-text-on-dark);
-}
+  // ── Bordes ────────────────────────────────────────────────
+  --color-border:            #dee2e6;
+  --color-border-default:    #dee2e6;
+  --color-border-light:      #e0e6ed;
+  --color-border-focus:      #b8d4fe;
+  --color-border-subtle:     #e8ecf1;
+  --color-border-tab:        #ddd;
+  --color-date-border:       #ced4da;
+  --color-date-focus:        #80bdff;
 
-/* ── Card base ──────────────────────────────────────────────── */
-.card {
-  border:        none;
-  border-radius: var(--pf-card-radius);
-  box-shadow:    var(--pf-card-shadow);
-  transition:    box-shadow 0.3s ease;
-}
-.card:hover {
-  box-shadow:    var(--pf-card-shadow-hover);
-}
+  // ── Tipografía ────────────────────────────────────────────
+  --font-family-base:        'Roboto', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  --font-size-xs:            0.75rem;
+  --font-size-sm:            0.813rem;
+  --font-size-base:          0.875rem;
+  --font-size-md:            0.938rem;
+  --font-size-lg:            1rem;
+  --font-size-xl:            1.125rem;
+  --font-size-2xl:           1.25rem;
+  --font-size-3xl:           1.5rem;
+  --font-size-4xl:           1.75rem;
+  --font-size-display:       2.5rem;
 
-.card-header {
-  font-weight:   600;
-  border-bottom: 2px solid #e8ecf1;
-}
+  --font-weight-normal:      400;
+  --font-weight-medium:      500;
+  --font-weight-semibold:    600;
+  --font-weight-bold:        700;
 
-/* Asegurar que card-header coloreado tenga texto blanco */
-.card-header.bg-primary,
-.card-header.bg-info,
-.card-header.bg-success,
-.card-header.bg-warning,
-.card-header.bg-danger {
-  color: var(--pf-text-on-dark) !important;
-}
-
-/* ── Borders info/warning (usados en form-card bodies) ──────── */
-.border-info,
-.border-warning {
-  border-style: solid !important;
-  border-width: 1px  !important;
-}
-
-/* ── Form controls base ─────────────────────────────────────── */
-.form-control,
-.form-select {
-  border-color:  #d1d9e0;
-  border-radius: 8px;
-  min-height:    42px;
-  padding:       10px 15px;
-  font-size:     14px;
-  transition:    border-color 0.15s ease, box-shadow 0.15s ease;
-}
-
-/* ── Focus ring — anula el azul Bootstrap con color de marca ─── */
-.form-control:focus,
-.form-select:focus {
-  border-color: var(--pf-primary-hover) !important;
-  box-shadow:   0 0 0 0.2rem rgba(0, 75, 141, 0.12) !important;
-  outline: none;
-}
-
-/* ── Botones: hover lift + shadow ───────────────────────────── */
-.btn {
-  border-radius: 8px;
-  font-size:     14px;
-  transition:    background-color 0.2s ease, border-color 0.2s ease,
-                 box-shadow 0.2s ease, transform 0.2s ease;
-}
-.btn:not(:disabled):hover {
-  transform:  translateY(-1px);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
-}
-.btn:active {
-  transform:  translateY(0);
-  box-shadow: none;
-}
-
-/* ============================================================
-   DESIGN TOKENS — Profuturo (Alerta compatibility layer)
-   Tokens --color-*, --space-*, --font-*, --border-radius-*,
-   --shadow-*, --gradient-*, --transition-* usados por los
-   componentes compartidos portados desde Alerta_Frontend.
-   ============================================================ */
-:root {
-  /* ── Colores primarios ───────────────────────────────────── */
-  --color-primary:          #004b8d;
-  --color-primary-medium:   #3182ce;
-  --color-primary-dark:     #2c5aa0;
-  --color-primary-darker:   #2a4e7c;
-  --color-primary-hover:    #015baa;
-  --color-primary-disabled: #186bb4;
-  --color-primary-accent:   #4299e1;
-  --color-primary-light:    #b8d4fe;
-
-  /* ── Success ─────────────────────────────────────────────── */
-  --color-success:          #48bb78;
-  --color-success-dark:     #38a169;
-  --color-success-darker:   #2f855a;
-
-  /* ── Danger ──────────────────────────────────────────────── */
-  --color-danger:           #f56565;
-  --color-danger-dark:      #e53e3e;
-  --color-danger-darker:    #c53030;
-
-  /* ── Warning ─────────────────────────────────────────────── */
-  --color-warning:          #ed8936;
-  --color-warning-dark:     #dd6b20;
-
-  /* ── Purple ──────────────────────────────────────────────── */
-  --color-purple:           #667eea;
-  --color-purple-dark:      #5a67d8;
-
-  /* ── Neutros ─────────────────────────────────────────────── */
-  --color-white:            #ffffff;
-  --color-gray-100:         #f8f9fa;
-  --color-gray-200:         #e9ecef;
-  --color-gray-300:         #dee2e6;
-  --color-gray-400:         #cbd5e0;
-  --color-gray-500:         #adb5bd;
-  --color-gray-550:         #a0aec0;
-  --color-gray-600:         #6c757d;
-  --color-gray-650:         #718096;
-  --color-gray-700:         #495057;
-  --color-gray-750:         #4a5568;
-  --color-gray-800:         #343a40;
-  --color-gray-900:         #212529;
-  --color-gray-disabled:    #cfcfcf;
-
-  /* ── Texto ───────────────────────────────────────────────── */
-  --color-text-primary:     #212529;
-  --color-text-secondary:   #6c757d;
-  --color-text-muted:       #a0aec0;
-  --color-text-heading:     #495057;
-  --color-text-title:       #2c3e50;
-  --color-text-input-label: #5a6c7d;
-
-  /* ── Fondo ───────────────────────────────────────────────── */
-  --color-bg-main:          #f8f9fa;
-  --color-bg-body:          #f8f9fa;
-  --color-bg-card:          #ffffff;
-  --color-bg-subtle:        #f8f9fa;
-  --color-bg-surface:       #fbfcfd;
-  --color-bg-table-alt:     #f7fafc;
-  --color-bg-table-hover:   #f0f4ff;
-  --color-bg-table-head:    #edf2f7;
-
-  /* ── Bordes ──────────────────────────────────────────────── */
-  --color-border:           #dee2e6;
-  --color-border-default:   #dee2e6;
-  --color-border-light:     #e0e6ed;
-  --color-border-focus:     #b8d4fe;
-  --color-border-subtle:    #e8ecf1;
-
-  /* ── Tipografía ──────────────────────────────────────────── */
-  --font-family-base:       'Roboto', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  --font-size-xs:           0.75rem;
-  --font-size-sm:           0.813rem;
-  --font-size-base:         0.875rem;
-  --font-size-md:           0.938rem;
-  --font-size-lg:           1rem;
-  --font-size-xl:           1.125rem;
-  --font-weight-normal:     400;
-  --font-weight-medium:     500;
-  --font-weight-semibold:   600;
-  --font-weight-bold:       700;
-
-  /* ── Espaciado (escala 4px) ──────────────────────────────── */
+  // ── Espaciado (escala 4px) ────────────────────────────────
   --space-1:  4px;
   --space-2:  8px;
   --space-3:  12px;
@@ -310,7 +153,7 @@ td, th, label, div, li {
   --space-6:  24px;
   --space-8:  32px;
 
-  /* ── Radios ──────────────────────────────────────────────── */
+  // ── Radios ────────────────────────────────────────────────
   --border-radius-sm:   4px;
   --border-radius:      6px;
   --border-radius-md:   8px;
@@ -318,32 +161,205 @@ td, th, label, div, li {
   --border-radius-xl:   12px;
   --border-radius-full: 50%;
 
-  /* ── Sombras ─────────────────────────────────────────────── */
+  // ── Sombras ───────────────────────────────────────────────
   --shadow-xs:   0 1px 2px rgba(0, 0, 0, 0.04);
   --shadow-sm:   0 2px 4px rgba(0, 0, 0, 0.08);
   --shadow-md:   0 2px 8px rgba(0, 0, 0, 0.08);
   --shadow-lg:   0 4px 12px rgba(0, 0, 0, 0.15);
   --shadow-xl:   0 10px 30px rgba(0, 0, 0, 0.3);
   --shadow-card: 0 2px 10px rgba(0, 0, 0, 0.1);
-  --shadow-focus-primary: 0 0 0 3px rgba(66, 153, 225, 0.1);
 
-  /* ── Gradientes ──────────────────────────────────────────── */
+  --shadow-focus-primary: 0 0 0 3px rgba(66, 153, 225, 0.1);
+  --shadow-focus-blue:    0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+  --shadow-focus-danger:  0 0 0 0.25rem rgba(220, 53, 69, 0.25);
+
+  // ── Gradientes ────────────────────────────────────────────
   --gradient-primary: linear-gradient(135deg, #3182ce, #2c5aa0);
   --gradient-success: linear-gradient(135deg, #48bb78, #38a169);
   --gradient-danger:  linear-gradient(135deg, #f56565, #e53e3e);
   --gradient-surface: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
   --gradient-header:  linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
 
-  /* ── Transiciones ────────────────────────────────────────── */
+  // ── Layout ────────────────────────────────────────────────
+  --header-height:   60px;
+  --footer-height:   60px;
+  --sidebar-width:   250px;
+
+  // ── Z-index ───────────────────────────────────────────────
+  --z-table-header:   10;
+  --z-modal-backdrop: 1050;
+  --z-modal:          1055;
+
+  // ── Transiciones ──────────────────────────────────────────
   --transition-fast:   all 0.15s linear;
   --transition-base:   all 0.2s ease;
   --transition-normal: all 0.3s ease;
 }
 
-/* ============================================================
-   BOTONES DE ACCIÓN — usados por ActionButtonComponent
-   (portados desde admin-layout de Alerta_Frontend)
-   ============================================================ */
+// ------------------------------------------------------------
+// RESET BASE
+// ------------------------------------------------------------
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-lg);
+  line-height: 1.6;
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-body);
+  margin: 0;
+}
+
+// Bootstrap 5 agrega text-decoration:underline por defecto a <a>.
+// Restauramos el comportamiento de navegación lateral.
+.topbar a,
+.left-sidebar a,
+.sidebar-nav a {
+  text-decoration: none;
+}
+
+// ------------------------------------------------------------
+// INPUTS GLOBALES (aplica en admin y login layout)
+// ------------------------------------------------------------
+.form-control,
+.form-select {
+  padding: 0.375rem var(--space-3);
+  border: 1px solid var(--color-gray-650);
+  border-radius: var(--border-radius-md);
+  font-size: 1rem;
+  transition: var(--transition-normal);
+  min-height: 38px;
+}
+
+.form-control:focus,
+.form-select:focus {
+  outline: none;
+  border-color: var(--color-primary-accent);
+  background: var(--color-white);
+  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.28);
+}
+
+.input-group-text {
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-gray-650);
+  border-radius: var(--border-radius-md);
+  color: var(--color-text-input-label);
+  font-weight: var(--font-weight-medium);
+}
+
+// ------------------------------------------------------------
+// CARDS GLOBALES
+// ------------------------------------------------------------
+.card {
+  border: none;
+  border-radius: var(--border-radius-xl);
+  box-shadow: var(--shadow-md);
+  transition: box-shadow 0.3s ease;
+}
+
+.card:hover {
+  box-shadow: var(--shadow-lg);
+}
+
+.card-header {
+  font-weight: var(--font-weight-semibold);
+  border-bottom: 2px solid var(--color-border-subtle);
+}
+
+.card-header.bg-primary,
+.card-header.bg-info,
+.card-header.bg-success,
+.card-header.bg-warning,
+.card-header.bg-danger {
+  color: var(--color-white) !important;
+}
+
+// ------------------------------------------------------------
+// BOOTSTRAP OVERRIDES — usa --color-* (sin --pf-*)
+// ------------------------------------------------------------
+
+// Fondos utilitarios
+.bg-primary { background-color: var(--color-primary)      !important; }
+.bg-info    { background-color: var(--color-info)         !important; }
+.bg-success { background-color: var(--color-success-bs)   !important; }
+.bg-warning { background-color: var(--color-warning-bs)   !important; }
+.bg-danger  { background-color: var(--color-danger-bs)    !important; }
+
+// Textos utilitarios
+.text-primary { color: var(--color-primary)              !important; }
+.text-info    { color: var(--color-info)                 !important; }
+.text-success { color: var(--color-success-bs)           !important; }
+.text-warning { color: var(--color-warning-dark)         !important; }
+.text-danger  { color: var(--color-danger-bs)            !important; }
+
+// Badges sobre header coloreado
+.badge.bg-white.text-info    { color: var(--color-info)     !important; }
+.badge.bg-white.text-warning { color: var(--color-warning)  !important; }
+.badge.bg-white.text-primary { color: var(--color-primary)  !important; }
+
+// Bordes
+.border-primary { border-color: var(--color-primary)     !important; }
+.border-info    { border-color: var(--color-info)         !important; }
+.border-warning { border-color: var(--color-warning)      !important; }
+.border-success { border-color: var(--color-success-bs)   !important; }
+.border-danger  { border-color: var(--color-danger-bs)    !important; }
+
+// Bordes info/warning en form-card
+.border-info,
+.border-warning {
+  border-style: solid !important;
+  border-width: 1px  !important;
+}
+
+// Botones base
+.btn {
+  border-radius: var(--border-radius-md);
+  font-size: var(--font-size-base);
+  transition: var(--transition-normal);
+}
+
+.btn:not(:disabled):hover {
+  transform:  translateY(-1px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+}
+
+.btn:active {
+  transform:  translateY(0);
+  box-shadow: none;
+}
+
+// ------------------------------------------------------------
+// CLASES UTILITARIAS
+// ------------------------------------------------------------
+.icon-xl   { font-size: 3rem; }
+.icon-lg   { font-size: 2rem; }
+.icon-md   { font-size: 1.5rem; }
+.icon-sm   { font-size: 1rem; }
+
+.table-text-sm { font-size: var(--font-size-base) !important; }
+.table-text-xs { font-size: var(--font-size-sm)   !important; }
+
+.cursor-pointer { cursor: pointer; }
+.cursor-default { cursor: default; }
+
+.text-uppercase { text-transform: uppercase; }
+.text-title     { color: var(--color-text-title); }
+
+.bg-verified    { background-color: var(--color-bg-verified);    }
+.bg-pld-warning { background-color: var(--color-bg-pld-warning); }
+.bg-pld-success { background-color: var(--color-bg-pld-success); }
+.bg-white       { background-color: var(--color-white); }
+
+.col-shrink     { width: 1%; white-space: nowrap; }
+.no-wrap        { white-space: nowrap; }
+
+// ------------------------------------------------------------
+// BOTONES DE ACCIÓN — usados por ActionButtonComponent
+// (clases globales porque ViewEncapsulation.None no alcanza
+//  a componentes con encapsulación propia)
+// ------------------------------------------------------------
 .action-btn {
   width: 36px;
   height: 36px;
@@ -357,21 +373,25 @@ td, th, label, div, li {
   color: var(--color-white);
   font-size: var(--font-size-base);
 }
+
 .action-btn i { line-height: 1; }
-.action-btn:hover:not(:disabled) { transform: scale(1.05); box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
+.action-btn:hover:not(:disabled) { transform: scale(1.05); box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); }
 .action-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-.edit-btn   { background: var(--color-primary-accent); }
-.edit-btn:hover:not(:disabled)   { background: var(--color-primary-medium); }
+.edit-btn    { background: var(--color-primary-accent); }
+.edit-btn:hover:not(:disabled)    { background: var(--color-primary-medium); }
 
-.delete-btn { background: var(--color-danger); }
-.delete-btn:hover:not(:disabled) { background: var(--color-danger-dark); }
+.delete-btn  { background: var(--color-danger); }
+.delete-btn:hover:not(:disabled)  { background: var(--color-danger-dark); }
 
-.config-btn { background: var(--color-purple); }
-.config-btn:hover:not(:disabled) { background: var(--color-purple-dark); }
+.config-btn  { background: var(--color-purple); }
+.config-btn:hover:not(:disabled)  { background: var(--color-purple-dark); }
 
-.info-btn   { background: var(--color-primary-accent); }
-.info-btn:hover:not(:disabled)   { background: var(--color-primary-medium); }
+.info-btn    { background: var(--color-primary-accent); }
+.info-btn:hover:not(:disabled)    { background: var(--color-primary-medium); }
 
 .warning-btn { background: var(--color-warning); }
 .warning-btn:hover:not(:disabled) { background: var(--color-warning-dark); }
+
+.success-btn { background: var(--color-success); }
+.success-btn:hover:not(:disabled) { background: var(--color-success-dark); }

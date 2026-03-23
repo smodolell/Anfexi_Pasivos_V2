@@ -1,11 +1,20 @@
 <div id="main-wrapper">
 
-  <app-topbar />
+  <app-topbar
+    [isMiniSidebar]="isMiniSidebar()"
+    (toggleSidebar)="onToggleSidebar()"
+    (toggleMobileNav)="onToggleMobileNav()"
+  />
 
   <aside class="left-sidebar">
     <div class="scroll-sidebar">
       <nav class="sidebar-nav">
-        <app-sidebar-nav [items]="menuItems" (navItemSelected)="onNavItemSelected()" />
+        <app-sidebar-nav
+          [items]="menuItems"
+          [isMini]="isMiniSidebar()"
+          [isMobileNavOpen]="isMobileNavOpen()"
+          (navItemSelected)="onNavItemSelected()"
+        />
       </nav>
     </div>
   </aside>

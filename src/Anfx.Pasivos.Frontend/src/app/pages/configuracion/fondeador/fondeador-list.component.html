@@ -1,5 +1,7 @@
-<div class="container-fluid">
-  <app-card [title]="'Fondeadores'" [icon]="'fa-solid fa-money-bill-wave'" variant="primary">
+<div class="card">
+  <div class="card-body">
+    <h1 class="page-title">Fondeadores</h1>
+
     <app-generic-table
       [columns]="columns"
       [items]="fondeadores()"
@@ -19,7 +21,7 @@
       (pagePrev)="prevPage()"
       (newClicked)="onNuevo()">
     </app-generic-table>
-  </app-card>
+  </div>
 </div>
 
 <app-confirm-modal

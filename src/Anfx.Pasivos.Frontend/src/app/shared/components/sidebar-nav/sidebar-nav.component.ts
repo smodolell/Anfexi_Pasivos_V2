@@ -1,6 +1,6 @@
 import {
-  Component, Input, OnInit, inject,
-  signal, ChangeDetectionStrategy, DestroyRef, output,
+  Component, OnInit, inject,
+  signal, ChangeDetectionStrategy, DestroyRef, output, input,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router, NavigationEnd } from '@angular/router';
@@ -18,7 +18,9 @@ import { MenuItem } from '../../models/menu-item.model';
 })
 export class SidebarNavComponent implements OnInit {
   /** Ítems de menú ya filtrados por rol. Provistos por el layout padre. */
-  @Input() items: MenuItem[] = [];
+  items           = input<MenuItem[]>([]);
+  isMini          = input<boolean>(true);
+  isMobileNavOpen = input<boolean>(false);
 
   /** Emite cuando el usuario hace clic en un enlace hijo — el layout padre cierra el overlay mobile */
   navItemSelected = output<void>();
@@ -51,9 +53,13 @@ export class SidebarNavComponent implements OnInit {
     return item.children?.some(c => c.route && url.startsWith(c.route)) ?? false;
   }
 
+  isSubmenuOpen(item: MenuItem): boolean {
+    return (!this.isMini() || this.isMobileNavOpen()) && this.activeGroup() === item.id;
+  }
+
   private syncActiveGroup(): void {
     const url = this.router.url;
-    const active = this.items.find(item =>
+    const active = this.items().find(item =>
       item.children?.some(c => c.route && url.startsWith(c.route)),
     );
     if (active) this.activeGroup.set(active.id);

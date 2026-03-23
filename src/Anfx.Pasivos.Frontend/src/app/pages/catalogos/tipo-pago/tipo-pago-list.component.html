@@ -1,6 +1,9 @@
-<div class="container-fluid">
-  @if (!mostrandoFormulario()) {
-    <app-card [title]="'Tipos de Pago'" [icon]="'fa-solid fa-money-check-dollar'" variant="primary">
+<div class="card">
+  <div class="card-body">
+
+    @if (!mostrandoFormulario()) {
+      <h1 class="page-title">Tipos de Pago</h1>
+
       <app-generic-table
         [columns]="columns"
         [items]="items()"
@@ -24,21 +27,24 @@
         (pagePrev)="prevPage()"
         (newClicked)="onNuevo()"
       />
-    </app-card>
-  } @else {
-    <app-tipo-pago-form
-      [tipoPago]="tipoPagoSeleccionado"
-      (guardar)="onGuardar($event)"
-      (cancelar)="onCancelar()"
-    />
-  }
-</div>
+    }
 
-<app-confirm-modal
-  #confirmModal
-  title="Confirmar eliminación"
-  message="¿Está seguro que desea eliminar el tipo de pago?"
-  [itemName]="tipoPagoAEliminar?.tipoPago"
-  (confirmed)="confirmarEliminacion()"
-  (cancelled)="cancelarEliminacion()"
-/>
+    @if (mostrandoFormulario()) {
+      <app-tipo-pago-form
+        [tipoPago]="tipoPagoSeleccionado"
+        (guardar)="onGuardar($event)"
+        (cancelar)="onCancelar()"
+      />
+    }
+
+  </div>
+
+  <app-confirm-modal
+    #confirmModal
+    title="Confirmar eliminación"
+    message="¿Está seguro que desea eliminar el tipo de pago?"
+    [itemName]="tipoPagoAEliminar?.tipoPago"
+    (confirmed)="confirmarEliminacion()"
+    (cancelled)="cancelarEliminacion()"
+  />
+</div>

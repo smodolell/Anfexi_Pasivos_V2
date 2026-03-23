@@ -5,7 +5,9 @@
     <div class="navbar-header">
       <a class="navbar-brand" href="javascript:void(0)">
         <b><img src="assets/images/logo-light-icon.png" alt="homepage" class="light-logo" /></b>
-        <span class="hidden-xs"><span class="font-bold">Profuturo</span>&nbsp;Admin</span>
+        <span [class.d-none]="isMiniSidebar()">
+          <span class="font-bold">Profuturo</span>&nbsp;Pasivos
+        </span>
       </a>
     </div>
 
@@ -14,12 +16,16 @@
       <!-- Toggles de sidebar -->
       <ul class="navbar-nav me-auto">
         <li class="nav-item">
-          <a class="nav-link nav-toggler d-block d-md-none waves-effect waves-dark" href="javascript:void(0)">
+          <a class="nav-link nav-toggler d-block d-md-none waves-effect waves-dark"
+             href="javascript:void(0)"
+             (click)="toggleMobileNav.emit(); $event.preventDefault()">
             <i class="ti-menu"></i>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link sidebartoggler d-none d-lg-block d-md-block waves-effect waves-dark" href="javascript:void(0)">
+          <a class="nav-link sidebartoggler d-none d-lg-block d-md-block waves-effect waves-dark"
+             href="javascript:void(0)"
+             (click)="toggleSidebar.emit(); $event.preventDefault()">
             <i class="icon-menu"></i>
           </a>
         </li>
@@ -35,10 +41,11 @@
             aria-haspopup="true"
             aria-expanded="false"
           >
-            <img src="assets/images/users/1.jpg" alt="Usuario" />
+            <img src="assets/images/users/1.jpg" alt="Usuario" class="">
             <span class="hidden-md-down">
               &nbsp;{{ currentUser?.nombreCompleto }}<i class="fa fa-angle-down"></i>
             </span>
+            <img src="assets/images/LogoAnfexiP.png" alt="Anfexi" class="ms-2">
           </a>
           <div class="dropdown-menu dropdown-menu-end animated flipInY">
             <a routerLink="/admin/profile" class="dropdown-item">

@@ -1,6 +1,9 @@
-<div class="container-fluid">
-  @if (!mostrandoFormulario()) {
-    <app-card [title]="'Tipos de Dirección'" [icon]="'fa-solid fa-map-location-dot'" variant="primary">
+<div class="card">
+  <div class="card-body">
+
+    @if (!mostrandoFormulario()) {
+      <h1 class="page-title">Tipos de Dirección</h1>
+
       <app-generic-table
         [columns]="columns"
         [items]="items()"
@@ -26,22 +29,25 @@
         (newClicked)="onNuevo()"
         (exportClicked)="onExportar()"
       />
-    </app-card>
-  } @else {
-    <app-tipodireccion-form
-      [tipoDireccion]="tipoDireccionSeleccionado"
-      (guardar)="onGuardarTipoDireccion($event)"
-      (cancelar)="onCancelarEdicion()"
-      (volverALista)="volverALista()"
-    />
-  }
-</div>
+    }
 
-<app-confirm-modal
-  #confirmModal
-  title="Confirmar eliminación"
-  message="¿Está seguro que desea eliminar el tipo de dirección?"
-  [itemName]="tipoDireccionAEliminar?.sTipoDireccion"
-  (confirmed)="confirmarEliminacion()"
-  (cancelled)="cancelarEliminacion()"
-/>
+    @if (mostrandoFormulario()) {
+      <app-tipodireccion-form
+        [tipoDireccion]="tipoDireccionSeleccionado"
+        (guardar)="onGuardarTipoDireccion($event)"
+        (cancelar)="onCancelarEdicion()"
+        (volverALista)="volverALista()"
+      />
+    }
+
+  </div>
+
+  <app-confirm-modal
+    #confirmModal
+    title="Confirmar eliminación"
+    message="¿Está seguro que desea eliminar el tipo de dirección?"
+    [itemName]="tipoDireccionAEliminar?.sTipoDireccion"
+    (confirmed)="confirmarEliminacion()"
+    (cancelled)="cancelarEliminacion()"
+  />
+</div>

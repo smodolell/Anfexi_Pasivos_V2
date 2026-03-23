@@ -1,5 +1,7 @@
-<div class="container-fluid">
-  <app-card [title]="'Estatus de Contrato'" [icon]="'fa-solid fa-clipboard-list'" variant="primary">
+<div class="card">
+  <div class="card-body">
+    <h1 class="page-title">Estatus de Contrato</h1>
+
     <app-generic-table
       [columns]="columns"
       [items]="items()"
@@ -23,5 +25,5 @@
       (pagePrev)="prevPage()"
       (newClicked)="onNuevo()"
     />
-  </app-card>
+  </div>
 </div>

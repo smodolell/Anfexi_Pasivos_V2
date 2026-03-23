@@ -1,5 +1,5 @@
 <ul id="sidebarnav">
-  @for (item of items; track item.id) {
+  @for (item of items(); track item.id) {
 
     @if (!item.disabled) {
 
@@ -9,13 +9,19 @@
           <a
             class="has-arrow waves-effect waves-dark"
             href="javascript:void(0)"
+            [class.active]="isGroupActive(item)"
             [attr.aria-expanded]="activeGroup() === item.id"
-            (click)="toggleGroup(item.id)"
+            (click)="toggleGroup(item.id); $event.preventDefault()"
           >
             <i [class]="item.icon"></i>
             <span class="hide-menu">{{ item.label }}</span>
           </a>
-          <ul [class.in]="activeGroup() === item.id" class="collapse">
+          <ul
+            class="collapse"
+            [class.in]="isSubmenuOpen(item)"
+            [class.show]="isSubmenuOpen(item)"
+            [attr.aria-expanded]="activeGroup() === item.id"
+          >
             @for (child of item.children; track child.id) {
               @if (!child.disabled) {
                 <li>
@@ -25,7 +31,7 @@
                     [routerLinkActiveOptions]="{ exact: false }"
                     (click)="onNavItemSelected()"
                   >
-                    <i [class]="child.icon"></i>
+                    @if (child.icon) { <i [class]="child.icon"></i> }
                     <span>{{ child.label }}</span>
                   </a>
                 </li>

@@ -9,12 +9,11 @@ import { ColoniaFormComponent } from './colonia-form.component';
 import { GenericTableComponent } from '../../../shared/components/generic-table/generic-table.component';
 import { TableColumn, TableAction, TableActionEvent, TableSortEvent, SortDirection } from '../../../shared/components/generic-table/table-column.model';
 import { ConfirmModalComponent } from '../../../shared/components/confirm-modal/confirm-modal.component';
-import { CardComponent } from '../../../shared/components/card/card.component';
 
 @Component({
   selector: 'app-colonia-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, ColoniaFormComponent, GenericTableComponent, ConfirmModalComponent, CardComponent],
+  imports: [CommonModule, FormsModule, ColoniaFormComponent, GenericTableComponent, ConfirmModalComponent],
   templateUrl: './colonia-list.component.html'
 })
 export class ColoniaListComponent implements OnInit {

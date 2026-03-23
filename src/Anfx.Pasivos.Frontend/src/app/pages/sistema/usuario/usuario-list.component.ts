@@ -8,12 +8,11 @@ import { GenericTableComponent } from '../../../shared/components/generic-table/
 import { TableColumn, TableAction, TableActionEvent } from '../../../shared/components/generic-table/table-column.model';
 import { FilterActivoComponent } from '../../../shared/components/filter-activo/filter-activo.component';
 import { ConfirmModalComponent } from '../../../shared/components/confirm-modal/confirm-modal.component';
-import { CardComponent } from '../../../shared/components/card/card.component';
 
 @Component({
   selector: 'app-usuario-list',
   standalone: true,
-  imports: [UsuarioFormComponent, GenericTableComponent, FilterActivoComponent, ConfirmModalComponent, CardComponent],
+  imports: [UsuarioFormComponent, GenericTableComponent, FilterActivoComponent, ConfirmModalComponent],
   templateUrl: './usuario-list.component.html',
 })
 export class UsuarioListComponent implements OnInit {

@@ -1,7 +1,9 @@
-<div class="container-fluid">
-  @if (!mostrandoFormulario()) {
-    <app-card [title]="'Colonias'" [icon]="'fa-solid fa-map-pin'" variant="primary">
-      <!-- Tabla genérica -->
+<div class="card">
+  <div class="card-body">
+
+    @if (!mostrandoFormulario()) {
+      <h1 class="page-title">Colonias</h1>
+
       <app-generic-table
         [columns]="columns"
         [items]="items()"
@@ -27,22 +29,25 @@
         (newClicked)="mostrarFormularioNuevo()"
         (exportClicked)="onExportar()"
       />
-    </app-card>
-  } @else {
-    <app-colonia-form
-      [colonia]="coloniaSeleccionada"
-      (guardar)="onGuardarColonia($event)"
-      (cancelar)="onCancelarEdicion()"
-      (volverALista)="volverALista()"
-    />
-  }
-</div>
+    }
 
-<app-confirm-modal
-  #confirmModal
-  title="Confirmar eliminación"
-  message="¿Está seguro que desea eliminar la colonia?"
-  [itemName]="coloniaAEliminar?.sColonia"
-  (confirmed)="confirmarEliminacion()"
-  (cancelled)="cancelarEliminacion()">
-</app-confirm-modal>
+    @if (mostrandoFormulario()) {
+      <app-colonia-form
+        [colonia]="coloniaSeleccionada"
+        (guardar)="onGuardarColonia($event)"
+        (cancelar)="onCancelarEdicion()"
+        (volverALista)="volverALista()"
+      />
+    }
+
+  </div>
+
+  <app-confirm-modal
+    #confirmModal
+    title="Confirmar eliminación"
+    message="¿Está seguro que desea eliminar la colonia?"
+    [itemName]="coloniaAEliminar?.sColonia"
+    (confirmed)="confirmarEliminacion()"
+    (cancelled)="cancelarEliminacion()">
+  </app-confirm-modal>
+</div>

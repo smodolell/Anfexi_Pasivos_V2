@@ -8,12 +8,11 @@ import { TipoPagoFormComponent } from './tipo-pago-form.component';
 import { ConfirmModalComponent } from '../../../shared/components/confirm-modal/confirm-modal.component';
 import { GenericTableComponent } from '../../../shared/components/generic-table/generic-table.component';
 import { TableColumn, TableAction, TableActionEvent, TableSortEvent, SortDirection } from '../../../shared/components/generic-table/table-column.model';
-import { CardComponent } from '../../../shared/components/card/card.component';
 
 @Component({
   selector: 'app-tipo-pago-list',
   standalone: true,
-  imports: [CommonModule, TipoPagoFormComponent, ConfirmModalComponent, GenericTableComponent, CardComponent],
+  imports: [CommonModule, TipoPagoFormComponent, ConfirmModalComponent, GenericTableComponent],
   templateUrl: './tipo-pago-list.component.html'
 })
 export class TipoPagoListComponent implements OnInit {

@@ -73,7 +73,7 @@ let _uid = 0;
     .form-check-input { cursor: pointer; }
     .form-check-label {
       font-size: 0.9rem;
-      color: var(--pf-text-base);
+      color: var(--color-text-primary);
       cursor: pointer;
       user-select: none;
       padding-left: 0.25em;   /* gap extra entre toggle y texto */
@@ -104,13 +104,13 @@ export class FormCheckComponent implements ControlValueAccessor {
 
   get colorValue(): string {
     const map: Record<string, string> = {
-      primary: 'var(--pf-primary)',
-      success: 'var(--pf-success)',
-      warning: 'var(--pf-warning)',
-      info:    'var(--pf-info)',
-      danger:  'var(--pf-danger)',
+      primary: 'var(--color-primary)',
+      success: 'var(--color-success)',
+      warning: 'var(--color-warning)',
+      info:    'var(--color-info)',
+      danger:  'var(--color-danger-bs)',
     };
-    return map[this.color] ?? 'var(--pf-success)';
+    return map[this.color] ?? 'var(--color-success)';
   }
   value = false;
   isDisabled = false;

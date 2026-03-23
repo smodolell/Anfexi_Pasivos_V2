@@ -8,12 +8,11 @@ import { EmpresaDto } from '../../../../types/sistema/empresa.dto';
 import { ConfirmModalComponent } from '../../../shared/components/confirm-modal/confirm-modal.component';
 import { GenericTableComponent } from '../../../shared/components/generic-table/generic-table.component';
 import { TableColumn, TableAction, TableActionEvent, TableSortEvent, SortDirection } from '../../../shared/components/generic-table/table-column.model';
-import { CardComponent } from '../../../shared/components/card/card.component';
 
 @Component({
   selector: 'app-empresa-list',
   standalone: true,
-  imports: [CommonModule, EmpresaFormComponent, ConfirmModalComponent, GenericTableComponent, CardComponent],
+  imports: [CommonModule, EmpresaFormComponent, ConfirmModalComponent, GenericTableComponent],
   templateUrl: './empresa-list.component.html'
 })
 export class EmpresaListComponent implements OnInit {

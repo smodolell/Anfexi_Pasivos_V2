@@ -1,6 +1,9 @@
-<div class="container-fluid">
-  @if (!mostrandoFormulario()) {
-    <app-card [title]="'Roles'" [icon]="'fa-solid fa-user-shield'" variant="primary">
+<div class="card">
+  <div class="card-body">
+
+    @if (!mostrandoFormulario()) {
+      <h1 class="page-title">Roles</h1>
+
       <app-generic-table
         [columns]="columns"
         [actions]="actions"
@@ -18,23 +21,26 @@
         (newClicked)="onNuevo()"
       >
       </app-generic-table>
-    </app-card>
-  } @else {
-    <app-rol-form
-      [rol]="rolSeleccionado"
-      (guardar)="onGuardarRol($event)"
-      (cancelar)="onCancelarEdicion()"
-      (volverALista)="volverALista()">
-    </app-rol-form>
-  }
-</div>
+    }
 
-<app-confirm-modal
-  #confirmModal
-  title="Confirmar eliminación"
-  message="¿Está seguro que desea eliminar el rol?"
-  [itemName]="rolAEliminar?.sRol"
-  (confirmed)="confirmarEliminacion()"
-  (cancelled)="cancelarEliminacion()"
->
-</app-confirm-modal>
+    @if (mostrandoFormulario()) {
+      <app-rol-form
+        [rol]="rolSeleccionado"
+        (guardar)="onGuardarRol($event)"
+        (cancelar)="onCancelarEdicion()"
+        (volverALista)="volverALista()">
+      </app-rol-form>
+    }
+
+  </div>
+
+  <app-confirm-modal
+    #confirmModal
+    title="Confirmar eliminación"
+    message="¿Está seguro que desea eliminar el rol?"
+    [itemName]="rolAEliminar?.sRol"
+    (confirmed)="confirmarEliminacion()"
+    (cancelled)="cancelarEliminacion()"
+  >
+  </app-confirm-modal>
+</div>

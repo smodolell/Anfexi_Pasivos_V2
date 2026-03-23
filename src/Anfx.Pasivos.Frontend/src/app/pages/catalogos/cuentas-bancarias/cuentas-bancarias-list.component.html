@@ -1,5 +1,7 @@
-<div class="container-fluid">
-  <app-card [title]="'Cuentas Bancarias'" [icon]="'fa-solid fa-credit-card'" variant="primary">
+<div class="card">
+  <div class="card-body">
+    <h1 class="page-title">Cuentas Bancarias</h1>
+
     <app-generic-table
       [columns]="columns"
       [items]="items()"
@@ -23,5 +25,5 @@
       (pagePrev)="prevPage()"
       (newClicked)="onNuevo()"
     />
-  </app-card>
+  </div>
 </div>

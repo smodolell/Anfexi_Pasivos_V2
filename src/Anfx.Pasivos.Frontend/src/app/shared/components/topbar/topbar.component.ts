@@ -1,6 +1,6 @@
 import {
   Component, OnInit, OnDestroy,
-  inject, signal, ChangeDetectionStrategy, ChangeDetectorRef,
+  inject, signal, ChangeDetectionStrategy, ChangeDetectorRef, input, output,
 } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -19,6 +19,10 @@ export class TopbarComponent implements OnInit, OnDestroy {
   private readonly authService = inject(AuthService);
   private readonly cdr         = inject(ChangeDetectorRef);
   private readonly destroy$    = new Subject<void>();
+
+  isMiniSidebar    = input<boolean>(true);
+  toggleSidebar    = output<void>();
+  toggleMobileNav  = output<void>();
 
   currentUser: User | null = null;
   showLogoutModal = signal(false);

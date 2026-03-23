@@ -84,12 +84,12 @@ let _fid = 0;
       display: block;
       font-weight: 600;
       font-size: 0.875rem;
-      color: var(--pf-text-base);
+      color: var(--color-text-primary);
       margin-bottom: 0.35rem;
     }
 
     .pf-field__required {
-      color: var(--pf-danger);
+      color: var(--color-danger-bs);
       margin-left: 2px;
     }
 
@@ -98,7 +98,7 @@ let _fid = 0;
       border-radius: 6px;
       border: 1px solid #ced4da;
       font-size: 0.9rem;
-      color: var(--pf-text-base);
+      color: var(--color-text-primary);
       background-color: #fff;
       transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 
@@ -110,24 +110,24 @@ let _fid = 0;
       /* ── Estado focus (anula Bootstrap default azul) ── */
       &:focus {
         outline: none;
-        border-color: var(--pf-primary-hover);
+        border-color: var(--color-primary-accent);
         box-shadow: 0 0 0 0.2rem rgba(0, 75, 141, 0.15);
       }
 
       /* ── Estado inválido ─────────────────────── */
       &.is-invalid {
-        border-color: var(--pf-danger);
+        border-color: var(--color-danger-bs);
 
         &:focus {
-          border-color: var(--pf-danger);
+          border-color: var(--color-danger-bs);
           box-shadow: 0 0 0 0.2rem rgba(185, 28, 28, 0.15);
         }
       }
 
       /* ── Estado deshabilitado ────────────────── */
       &:disabled {
-        background-color: var(--pf-bg-subtle);
-        color: var(--pf-text-muted);
+        background-color: var(--color-bg-subtle);
+        color: var(--color-text-muted);
         cursor: not-allowed;
         opacity: 1;
       }
@@ -136,7 +136,7 @@ let _fid = 0;
     /* ── Mensaje de error ────────────────────── */
     .pf-field__error {
       font-size: 0.8rem;
-      color: var(--pf-danger);
+      color: var(--color-danger-bs);
       margin-top: 0.25rem;
     }
   `]

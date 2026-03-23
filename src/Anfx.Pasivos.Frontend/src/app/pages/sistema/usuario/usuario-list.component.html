@@ -1,6 +1,9 @@
-<div class="container-fluid">
-  @if (!mostrandoFormulario()) {
-    <app-card [title]="'Usuarios'" [icon]="'fa-solid fa-users'" variant="primary">
+<div class="card">
+  <div class="card-body">
+
+    @if (!mostrandoFormulario()) {
+      <h1 class="page-title">Usuarios</h1>
+
       <app-generic-table
         [columns]="columns"
         [actions]="actions"
@@ -25,23 +28,26 @@
         </app-filter-activo>
 
       </app-generic-table>
-    </app-card>
-  } @else {
-    <app-usuario-form
-      [usuario]="usuarioSeleccionado"
-      [isFromProfile]="false"
-      (guardar)="onGuardarUsuario($event)"
-      (cancelar)="onCancelarEdicion()"
-      (volverALista)="volverALista()">
-    </app-usuario-form>
-  }
-</div>
+    }
 
-<app-confirm-modal
-  #confirmModal
-  title="Confirmar eliminación"
-  message="¿Está seguro que desea eliminar el usuario?"
-  [itemName]="usuarioAEliminar?.nombreCompleto"
-  (confirmed)="confirmarEliminacion()"
-  (cancelled)="cancelarEliminacion()">
-</app-confirm-modal>
+    @if (mostrandoFormulario()) {
+      <app-usuario-form
+        [usuario]="usuarioSeleccionado"
+        [isFromProfile]="false"
+        (guardar)="onGuardarUsuario($event)"
+        (cancelar)="onCancelarEdicion()"
+        (volverALista)="volverALista()">
+      </app-usuario-form>
+    }
+
+  </div>
+
+  <app-confirm-modal
+    #confirmModal
+    title="Confirmar eliminación"
+    message="¿Está seguro que desea eliminar el usuario?"
+    [itemName]="usuarioAEliminar?.nombreCompleto"
+    (confirmed)="confirmarEliminacion()"
+    (cancelled)="cancelarEliminacion()">
+  </app-confirm-modal>
+</div>

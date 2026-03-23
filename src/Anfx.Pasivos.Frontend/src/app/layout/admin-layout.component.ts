@@ -1,6 +1,6 @@
 import {
-  Component, OnInit, OnDestroy,
-  inject, Renderer2, ChangeDetectorRef, ViewEncapsulation,
+  Component, OnInit, OnDestroy, HostListener,
+  inject, Renderer2, ChangeDetectorRef, ViewEncapsulation, signal,
 } from '@angular/core';
 import { RouterOutlet, Router, RouterModule, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { CommonModule, DOCUMENT } from '@angular/common';
@@ -24,6 +24,9 @@ import { FooterComponent } from '../shared/components/footer/footer.component';
 export class AdminLayoutComponent implements OnInit, OnDestroy {
   currentTitle = '';
   menuItems: MenuItem[] = [];
+
+  isMiniSidebar    = signal(true);
+  isMobileNavOpen  = signal(false);
 
   private readonly renderer      = inject(Renderer2);
   private readonly document      = inject(DOCUMENT);
@@ -65,8 +68,8 @@ export class AdminLayoutComponent implements OnInit, OnDestroy {
       this.loadScriptsSequentially([
         'assets/dist/js/perfect-scrollbar.jquery.min.js',
         'assets/dist/js/waves.js',
-        'assets/dist/js/custom.min.js',
       ]);
+      this.applyMiniSidebar(window.innerWidth < 1170);
     }
   }
 
@@ -75,15 +78,54 @@ export class AdminLayoutComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
+  @HostListener('window:resize', ['$event'])
+  onResize(event: Event): void {
+    const width = (event.target as Window).innerWidth;
+    this.applyMiniSidebar(width < 1170);
+    if (width >= 768) {
+      this.isMobileNavOpen.set(false);
+      this.renderer.removeClass(this.document.body, 'show-sidebar');
+    }
+  }
+
+  onToggleSidebar(): void {
+    const mini = !this.isMiniSidebar();
+    this.isMiniSidebar.set(mini);
+    if (mini) {
+      this.renderer.addClass(this.document.body, 'mini-sidebar');
+    } else {
+      this.renderer.removeClass(this.document.body, 'mini-sidebar');
+    }
+  }
+
+  onToggleMobileNav(): void {
+    const open = !this.isMobileNavOpen();
+    this.isMobileNavOpen.set(open);
+    if (open) {
+      this.renderer.addClass(this.document.body, 'show-sidebar');
+    } else {
+      this.renderer.removeClass(this.document.body, 'show-sidebar');
+    }
+  }
+
+  onNavItemSelected(): void {
+    this.isMobileNavOpen.set(false);
+    this.renderer.removeClass(this.document.body, 'show-sidebar');
+  }
+
+  private applyMiniSidebar(mini: boolean): void {
+    this.isMiniSidebar.set(mini);
+    if (mini) {
+      this.renderer.addClass(this.document.body, 'mini-sidebar');
+    } else {
+      this.renderer.removeClass(this.document.body, 'mini-sidebar');
+    }
+  }
+
   private extractTitle(route: ActivatedRoute): string | null {
     let current = route;
     while (current.firstChild) current = current.firstChild;
     return current.snapshot.data['title'] ?? null;
-  }
-
-  onNavItemSelected(): void {
-    // Cierra el overlay mobile del sidebar (clase añadida por custom.min.js o show-sidebar)
-    this.renderer.removeClass(this.document.body, 'show-sidebar');
   }
 
   private addBodyClasses(): void {

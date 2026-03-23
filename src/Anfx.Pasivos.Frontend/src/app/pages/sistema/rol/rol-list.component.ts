@@ -7,12 +7,11 @@ import { GenericTableComponent } from '../../../shared/components/generic-table/
 import { TableColumn, TableAction, TableActionEvent } from '../../../shared/components/generic-table/table-column.model';
 import { RolDto, RolPageQueryDto, CreateRolDto, UpdateRolDto } from '../../../../types/sistema/rol.dto';
 import { ConfirmModalComponent } from '../../../shared/components/confirm-modal/confirm-modal.component';
-import { CardComponent } from '../../../shared/components/card/card.component';
 
 @Component({
   selector: 'app-rol-list',
   standalone: true,
-  imports: [RolFormComponent, GenericTableComponent, ConfirmModalComponent, CardComponent],
+  imports: [RolFormComponent, GenericTableComponent, ConfirmModalComponent],
   templateUrl: './rol-list.component.html',
 })
 export class RolListComponent implements OnInit {

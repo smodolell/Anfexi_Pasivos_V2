@@ -7,12 +7,11 @@ import { UtilsService } from '../../../services/utils.service';
 import { GenericTableComponent } from '../../../shared/components/generic-table/generic-table.component';
 import { TableColumn, TableAction, TableActionEvent, TableSortEvent, SortDirection } from '../../../shared/components/generic-table/table-column.model';
 import { wasHandledByInterceptor } from '../../../interceptors/auth.interceptor';
-import { CardComponent } from '../../../shared/components/card/card.component';
 
 @Component({
   selector: 'app-cuentas-bancarias-list',
   standalone: true,
-  imports: [CommonModule, GenericTableComponent, CardComponent],
+  imports: [CommonModule, GenericTableComponent],
   templateUrl: './cuentas-bancarias-list.component.html'
 })
 export class CuentasBancariasListComponent implements OnInit {
