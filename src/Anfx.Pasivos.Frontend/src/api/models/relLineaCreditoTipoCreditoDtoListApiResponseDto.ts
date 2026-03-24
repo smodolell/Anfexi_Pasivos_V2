@@ -13,7 +13,7 @@ import { RelLineaCreditoTipoCreditoDto } from './relLineaCreditoTipoCreditoDto';
 export interface RelLineaCreditoTipoCreditoDtoListApiResponseDto { 
     success?: boolean;
     message?: string | null;
-    data?: Array<RelLineaCreditoTipoCreditoDto> | null;
+    data?: Array<RelLineaCreditoTipoCreditoDto>;
     errors?: Array<string> | null;
     statusCode?: number;
     timestamp?: string;

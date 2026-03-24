@@ -5,12 +5,9 @@
     <div class="card-body">
       <div class="row g-2 align-items-end">
         <div class="col-12 col-md-6 col-lg-4">
-          <label class="form-label fw-bold">Número de Contrato</label>
-          <app-search-input
-            placeholder="Ej: 1234"
-            [value]="contratoBusqueda()"
-            (searched)="onSearch($event)"
-          ></app-search-input>
+          <app-contrato-autocomplete
+            (contratoSelected)="onContratoSelected($event)"
+          ></app-contrato-autocomplete>
         </div>
         @if (isLoading()) {
           <div class="col-auto d-flex align-items-center gap-2">
@@ -131,12 +128,11 @@
         <li class="nav-item">
           <button
             class="nav-link"
-            [class.active]="activeTab() === 'pagos'"
-            (click)="setTab('pagos')"
+            [class.active]="activeTab() === 'tabla'"
+            (click)="setTab('tabla')"
           >
-            <i class="ti-money me-1"></i>
-            Pagos
-            <span class="badge bg-info text-dark ms-1">{{ pagos().length }}</span>
+            <i class="ti-list me-1"></i>
+            Tabla de Amortización
           </button>
         </li>
         <li class="nav-item">
@@ -153,11 +149,12 @@
         <li class="nav-item">
           <button
             class="nav-link"
-            [class.active]="activeTab() === 'tabla'"
-            (click)="setTab('tabla')"
+            [class.active]="activeTab() === 'pagos'"
+            (click)="setTab('pagos')"
           >
-            <i class="ti-list me-1"></i>
-            Tabla de Amortización
+            <i class="ti-money me-1"></i>
+            Pagos
+            <span class="badge bg-info text-dark ms-1">{{ pagos().length }}</span>
           </button>
         </li>
       </ul>
@@ -168,10 +165,12 @@
       <app-generic-table
         [columns]="columnasPagos"
         [items]="pagos()"
+        [actions]="actionsPagos"
         [searchable]="false"
         [showNew]="false"
         emptyMessage="Sin pagos registrados"
         emptyIcon="fa-solid fa-money-bill-wave"
+        (actionCalled)="onActionPago($event)"
       ></app-generic-table>
     }
 
@@ -180,10 +179,12 @@
       <app-generic-table
         [columns]="columnasMovimientos"
         [items]="movimientos()"
+        [actions]="actionsMovimientos"
         [searchable]="false"
         [showNew]="false"
         emptyMessage="Sin movimientos registrados"
         emptyIcon="fa-solid fa-arrow-right-arrow-left"
+        (actionCalled)="onActionMovimiento($event)"
       ></app-generic-table>
     }
 
@@ -216,4 +217,175 @@
 
   }
 
+</div>
+
+<!-- MODAL: Detalle de Pagos aplicados al Movimiento -->
+<div #detalleModalEl class="modal fade" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title">
+          <i class="fa-solid fa-magnifying-glass me-2"></i>
+          Detalle de Pagos aplicados al Movimiento
+        </h5>
+        <button type="button" class="btn-close btn-close-white" (click)="cerrarDetalleMovimiento()" aria-label="Cerrar"></button>
+      </div>
+
+      <div class="modal-body p-3">
+
+        @if (isLoadingDetalle()) {
+          <div class="text-center py-4">
+            <div class="spinner-border text-primary" role="status"></div>
+            <p class="mt-2 text-muted small">Cargando detalle...</p>
+          </div>
+        }
+
+        @if (!isLoadingDetalle() && detalleMovimiento().length === 0) {
+          <div class="text-center py-4 text-muted">
+            <i class="fa-solid fa-circle-info fa-2x mb-2"></i>
+            <p>Sin pagos aplicados para este movimiento.</p>
+          </div>
+        }
+
+        @if (!isLoadingDetalle() && detalleMovimiento().length > 0) {
+          <div class="table-responsive">
+            <table class="table table-sm table-hover align-middle mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th>ID Pago</th>
+                  <th>Tipo Pago</th>
+                  <th>Cuenta Bancaria</th>
+                  <th>Contrato</th>
+                  <th>Fec. Valor</th>
+                  <th>Fec. Registro</th>
+                  <th class="text-end">Monto Pago</th>
+                  <th class="text-end">Capital</th>
+                  <th class="text-end">Interés</th>
+                  <th class="text-end">IVA</th>
+                  <th class="text-end">Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (fila of detalleFilas(); track fila.idPago) {
+                  <tr>
+                    <td>{{ fila.idPago }}</td>
+                    <td>{{ fila.tipoPago || '—' }}</td>
+                    <td>{{ fila.cuentaBancaria || '—' }}</td>
+                    <td>{{ fila.contrato || '—' }}</td>
+                    <td>{{ fila.fecPagoValor | date:'dd/MM/yyyy' }}</td>
+                    <td>{{ fila.fecPagoRegistro | date:'dd/MM/yyyy' }}</td>
+                    <td class="text-end">{{ fila.montoPago | currency:'MXN':'symbol':'1.2-2' }}</td>
+                    <td class="text-end">{{ fila.capitalPagado | currency:'MXN':'symbol':'1.2-2' }}</td>
+                    <td class="text-end">{{ fila.interesPagado | currency:'MXN':'symbol':'1.2-2' }}</td>
+                    <td class="text-end">{{ fila.ivaPagado | currency:'MXN':'symbol':'1.2-2' }}</td>
+                    <td class="text-end">{{ fila.totalPagado | currency:'MXN':'symbol':'1.2-2' }}</td>
+                  </tr>
+                }
+                @if (detalleTotales()) {
+                  <tr class="table-primary fw-bold border-top border-2">
+                    <td colspan="6" class="text-end">Total</td>
+                    <td class="text-end">{{ detalleTotales()!.montoPago | currency:'MXN':'symbol':'1.2-2' }}</td>
+                    <td class="text-end">{{ detalleTotales()!.capitalPagado | currency:'MXN':'symbol':'1.2-2' }}</td>
+                    <td class="text-end">{{ detalleTotales()!.interesPagado | currency:'MXN':'symbol':'1.2-2' }}</td>
+                    <td class="text-end">{{ detalleTotales()!.ivaPagado | currency:'MXN':'symbol':'1.2-2' }}</td>
+                    <td class="text-end">{{ detalleTotales()!.totalPagado | currency:'MXN':'symbol':'1.2-2' }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="cerrarDetalleMovimiento()">Cerrar</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Detalle de Aplicación de Pago -->
+<div #detallePagoModalEl class="modal fade" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title">
+          <i class="fa-solid fa-magnifying-glass me-2"></i>
+          Detalle de Aplicación de Pago
+        </h5>
+        <button type="button" class="btn-close btn-close-white" (click)="cerrarDetallePago()" aria-label="Cerrar"></button>
+      </div>
+
+      <div class="modal-body p-3">
+
+        @if (isLoadingDetallePago()) {
+          <div class="text-center py-4">
+            <div class="spinner-border text-primary" role="status"></div>
+            <p class="mt-2 text-muted small">Cargando detalle...</p>
+          </div>
+        }
+
+        @if (!isLoadingDetallePago() && detallePago().length === 0) {
+          <div class="text-center py-4 text-muted">
+            <i class="fa-solid fa-circle-info fa-2x mb-2"></i>
+            <p>Sin movimientos aplicados para este pago.</p>
+          </div>
+        }
+
+        @if (!isLoadingDetallePago() && detallePago().length > 0) {
+          <div class="table-responsive">
+            <table class="table table-sm table-hover align-middle mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th>No. Pago</th>
+                  <th>Fondeador</th>
+                  <th>Contrato</th>
+                  <th>Descripción</th>
+                  <th>Fec. Movimiento</th>
+                  <th class="text-end">Capital</th>
+                  <th class="text-end">Interés</th>
+                  <th class="text-end">IVA</th>
+                  <th class="text-end">Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (fila of detallePagoFilas(); track fila.idMovimiento) {
+                  <tr>
+                    <td>{{ fila.noPago }}</td>
+                    <td>{{ fila.fondeador || '—' }}</td>
+                    <td>{{ fila.contrato || '—' }}</td>
+                    <td>{{ fila.descripcion || '—' }}</td>
+                    <td>{{ fila.fecMovimiento | date:'dd/MM/yyyy' }}</td>
+                    <td class="text-end">{{ fila.capitalPagado | currency:'MXN':'symbol':'1.2-2' }}</td>
+                    <td class="text-end">{{ fila.interesPagado | currency:'MXN':'symbol':'1.2-2' }}</td>
+                    <td class="text-end">{{ fila.ivaPagado | currency:'MXN':'symbol':'1.2-2' }}</td>
+                    <td class="text-end">{{ fila.totalPagado | currency:'MXN':'symbol':'1.2-2' }}</td>
+                  </tr>
+                }
+                @if (detallePagoTotales()) {
+                  <tr class="table-primary fw-bold border-top border-2">
+                    <td colspan="5" class="text-end">Total</td>
+                    <td class="text-end">{{ detallePagoTotales()!.capitalPagado | currency:'MXN':'symbol':'1.2-2' }}</td>
+                    <td class="text-end">{{ detallePagoTotales()!.interesPagado | currency:'MXN':'symbol':'1.2-2' }}</td>
+                    <td class="text-end">{{ detallePagoTotales()!.ivaPagado | currency:'MXN':'symbol':'1.2-2' }}</td>
+                    <td class="text-end">{{ detallePagoTotales()!.totalPagado | currency:'MXN':'symbol':'1.2-2' }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="cerrarDetallePago()">Cerrar</button>
+      </div>
+
+    </div>
+  </div>
 </div>

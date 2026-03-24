@@ -25,3 +25,4 @@ internal class GetMonedasSelectListQueryHandler : IQueryHandler<GetMonedasSelect
 
     }
 }
+

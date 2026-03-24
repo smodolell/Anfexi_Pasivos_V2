@@ -1,0 +1,16 @@
+@if (totalCount() > 0) {
+  <div class="table-footer">
+    <div class="showing-text">
+      Mostrando del <strong>{{ firstItem() }}</strong> al <strong>{{ lastItem() }}</strong> de <strong>{{ totalCount() }}</strong> registros
+    </div>
+    <div class="pagination">
+      <button class="page-btn" [class.disabled]="currentPage() <= 1" (click)="prev.emit()">
+        Anterior
+      </button>
+      <button class="page-btn active">{{ currentPage() }}</button>
+      <button class="page-btn" [class.disabled]="currentPage() >= totalPages()" (click)="next.emit()">
+        Siguiente
+      </button>
+    </div>
+  </div>
+}

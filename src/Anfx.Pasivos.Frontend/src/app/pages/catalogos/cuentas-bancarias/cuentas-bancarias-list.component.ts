@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, ViewChild, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { CatalogosService } from '../../../../api/services/catalogos.service';
@@ -7,17 +7,22 @@ import { UtilsService } from '../../../services/utils.service';
 import { GenericTableComponent } from '../../../shared/components/generic-table/generic-table.component';
 import { TableColumn, TableAction, TableActionEvent, TableSortEvent, SortDirection } from '../../../shared/components/generic-table/table-column.model';
 import { wasHandledByInterceptor } from '../../../interceptors/auth.interceptor';
+import { ConfirmModalComponent } from '../../../shared/components/confirm-modal/confirm-modal.component';
 
 @Component({
   selector: 'app-cuentas-bancarias-list',
   standalone: true,
-  imports: [CommonModule, GenericTableComponent],
+  imports: [CommonModule, GenericTableComponent, ConfirmModalComponent],
   templateUrl: './cuentas-bancarias-list.component.html'
 })
 export class CuentasBancariasListComponent implements OnInit {
+  @ViewChild('confirmModal') confirmModal!: ConfirmModalComponent;
+
   private readonly catalogosService = inject(CatalogosService);
   private readonly utilsService     = inject(UtilsService);
   private readonly router           = inject(Router);
+
+  cuentaToDelete: CuentaBancariaListItemDto | null = null;
 
   items       = signal<CuentaBancariaListItemDto[]>([]);
   loading     = signal(false);
@@ -40,7 +45,8 @@ export class CuentasBancariasListComponent implements OnInit {
   ];
 
   actions: TableAction[] = [
-    { id: 'edit', label: 'Editar', icon: 'fa-solid fa-pen-clip', variant: 'edit' },
+    { id: 'edit',   label: 'Editar',   icon: 'fa-solid fa-pen-clip', btnClass: 'btn-action-edit'   },
+    { id: 'delete', label: 'Eliminar', icon: 'fa-solid fa-trash',    btnClass: 'btn-action-delete' },
   ];
 
   ngOnInit() {
@@ -77,6 +83,37 @@ export class CuentasBancariasListComponent implements OnInit {
     if (event.action === 'edit') {
       this.router.navigate(['/catalogos/cuentas-bancarias/edit', event.row.id]);
     }
+    if (event.action === 'delete') {
+      this.cuentaToDelete = event.row;
+      this.confirmModal.show();
+    }
+  }
+
+  confirmDelete() {
+    if (!this.cuentaToDelete) return;
+    this.confirmModal.confirmLoading = true;
+
+    this.catalogosService.deleteCuentaBancaria(this.cuentaToDelete.id!).subscribe({
+      next: (res: any) => {
+        this.confirmModal.confirmLoading = false;
+        this.confirmModal.hide();
+        this.cuentaToDelete = null;
+        if (res?.success === false) {
+          this.utilsService.showNotification('Error', res.message ?? 'No se pudo eliminar la cuenta bancaria', 'error');
+        } else {
+          this.utilsService.showNotification('Éxito', 'Cuenta bancaria eliminada correctamente', 'success');
+          this.load();
+        }
+      },
+      error: (err) => {
+        this.confirmModal.confirmLoading = false;
+        this.confirmModal.hide();
+        this.cuentaToDelete = null;
+        if (!wasHandledByInterceptor(err)) {
+          this.utilsService.showNotification('Error', 'Error de conexión al eliminar la cuenta bancaria', 'error');
+        }
+      }
+    });
   }
 
   private load() {

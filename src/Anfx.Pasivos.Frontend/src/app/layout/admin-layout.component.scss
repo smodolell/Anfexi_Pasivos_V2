@@ -4,6 +4,20 @@
 // ============================================================
 
 // ------------------------------------------------------------
+// SIDEBAR SCROLL — reemplaza perfect-scrollbar con CSS nativo
+// ------------------------------------------------------------
+.scroll-sidebar {
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;                      // Firefox
+  scrollbar-color: rgba(255,255,255,.2) transparent;
+
+  &::-webkit-scrollbar       { width: 4px; }
+  &::-webkit-scrollbar-track { background: transparent; }
+  &::-webkit-scrollbar-thumb { background: rgba(255,255,255,.2); border-radius: 4px; }
+}
+
+// ------------------------------------------------------------
 // TABLE LIST — anchos de columnas fijas
 // ------------------------------------------------------------
 .table-list > thead > tr > th:first-child,
@@ -600,9 +614,19 @@ input[iscurrency] { text-align: right; }
 // ------------------------------------------------------------
 // CONTENT AREA
 // ------------------------------------------------------------
+.page-wrapper {
+  display:        flex;
+  flex-direction: column;
+  min-height:     100vh;
+}
+
+.page-wrapper > .container-fluid {
+  flex: 1;
+}
+
 .admin-main {
   padding:    0;
-  min-height: 300px;
+  min-height: 0;
 }
 
 // ------------------------------------------------------------
@@ -619,7 +643,16 @@ input[iscurrency] { text-align: right; }
 
 // ------------------------------------------------------------
 // FOOTER
+// El tema aplica margin-left al .footer igual que al .page-wrapper.
+// Al estar dentro del .page-wrapper, se cancela ese margen para que
+// ocupe el 100% del área de contenido en cualquier estado del sidebar.
 // ------------------------------------------------------------
+.page-wrapper > app-footer .footer,
+.page-wrapper .footer {
+  margin-left: 0 !important;
+  width: 100%;
+}
+
 .footer-inner {
   display: flex;
   align-items: center;

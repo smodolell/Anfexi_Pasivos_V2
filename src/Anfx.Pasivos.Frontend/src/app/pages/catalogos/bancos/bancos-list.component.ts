@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, ViewChild, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { CatalogosService } from '../../../../api/services/catalogos.service';
@@ -7,17 +7,22 @@ import { UtilsService } from '../../../services/utils.service';
 import { GenericTableComponent } from '../../../shared/components/generic-table/generic-table.component';
 import { TableColumn, TableAction, TableActionEvent, TableSortEvent, SortDirection } from '../../../shared/components/generic-table/table-column.model';
 import { wasHandledByInterceptor } from '../../../interceptors/auth.interceptor';
+import { ConfirmModalComponent } from '../../../shared/components/confirm-modal/confirm-modal.component';
 
 @Component({
   selector: 'app-bancos-list',
   standalone: true,
-  imports: [CommonModule, GenericTableComponent],
+  imports: [CommonModule, GenericTableComponent, ConfirmModalComponent],
   templateUrl: './bancos-list.component.html'
 })
 export class BancosListComponent implements OnInit {
+  @ViewChild('confirmModal') confirmModal!: ConfirmModalComponent;
+
   private readonly catalogosService = inject(CatalogosService);
   private readonly utilsService     = inject(UtilsService);
   private readonly router           = inject(Router);
+
+  bancoToDelete: BancoListItemDto | null = null;
 
   items       = signal<BancoListItemDto[]>([]);
   loading     = signal(false);
@@ -41,7 +46,8 @@ export class BancosListComponent implements OnInit {
   ];
 
   actions: TableAction[] = [
-    { id: 'edit', label: 'Editar', icon: 'fa-solid fa-pen-clip', variant: 'edit' },
+    { id: 'edit',   label: 'Editar',   icon: 'fa-solid fa-pen-clip', btnClass: 'btn-action-edit'   },
+    { id: 'delete', label: 'Eliminar', icon: 'fa-solid fa-trash',    btnClass: 'btn-action-delete' },
   ];
 
   ngOnInit() {
@@ -85,6 +91,41 @@ export class BancosListComponent implements OnInit {
     if (event.action === 'edit') {
       this.router.navigate(['/catalogos/bancos/edit', event.row.id]);
     }
+    if (event.action === 'delete') {
+      this.delete(event.row);
+    }
+  }
+
+  private delete(item: BancoListItemDto) {
+    this.bancoToDelete = item;
+    this.confirmModal.show();
+  }
+
+  confirmDelete() {
+    if (!this.bancoToDelete) return;
+    this.confirmModal.confirmLoading = true;
+
+    this.catalogosService.deleteBanco(this.bancoToDelete.id!).subscribe({
+      next: (res: any) => {
+        this.confirmModal.confirmLoading = false;
+        this.confirmModal.hide();
+        this.bancoToDelete = null;
+        if (res?.success === false) {
+          this.utilsService.showNotification('Error', res.message ?? 'No se pudo eliminar el banco', 'error');
+        } else {
+          this.utilsService.showNotification('Éxito', 'Banco eliminado correctamente', 'success');
+          this.load();
+        }
+      },
+      error: (err) => {
+        this.confirmModal.confirmLoading = false;
+        this.confirmModal.hide();
+        this.bancoToDelete = null;
+        if (!wasHandledByInterceptor(err)) {
+          this.utilsService.showNotification('Error', 'Error de conexión al eliminar el banco', 'error');
+        }
+      }
+    });
   }
 
   // ── Private ──────────────────────────────────────────────────

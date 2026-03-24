@@ -1,5 +1,5 @@
 import { Injectable, Inject, isDevMode } from '@angular/core';
-import { BehaviorSubject, firstValueFrom } from 'rxjs';
+import { BehaviorSubject, Subject, firstValueFrom } from 'rxjs';
 import { Router } from '@angular/router';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { API_AUTH_URL } from '../api.config';
@@ -18,17 +18,33 @@ export interface LoginCredentials {
   recuerdame?: boolean;
 }
 
-type LoginResult = { success: boolean; message: string; user?: User; errors?: string[] };
+type LoginResult  = { success: boolean; message: string; user?: User; errors?: string[] };
 type ApiLoginResponse = { token: string; user: User; message?: string; errors?: string[] };
+
+/** Segundos antes de expirar en los que se lanza el refresh proactivo */
+const REFRESH_BEFORE_EXPIRY_S = 60;
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
+  // ── Estado ────────────────────────────────────────────────
   private currentUserSubject     = new BehaviorSubject<User | null>(null);
   private isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
-  private storageListenerRegistered = false;
 
   readonly currentUser$     = this.currentUserSubject.asObservable();
   readonly isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
+
+  // ── Token en memoria (nunca en storage) ──────────────────
+  private _token: string | null = null;
+
+  // ── Refresh proactivo ─────────────────────────────────────
+  private refreshTimer: ReturnType<typeof setTimeout> | null = null;
+  private refreshInProgress = false;
+  private refreshQueue      = new Subject<boolean>();
+
+  // ── Cross-tab logout ──────────────────────────────────────
+  private storageListenerRegistered = false;
+  /** Clave usada SOLO para señalizar logout entre pestañas (no guarda el token) */
+  private static readonly SESSION_KEY = 'pf_session';
 
   constructor(
     private readonly router: Router,
@@ -36,33 +52,10 @@ export class AuthService {
     @Inject(API_AUTH_URL) private readonly apiBaseUrl: string,
   ) {
     this.checkStoredAuth();
-  }
-
-  // ── Inicialización ────────────────────────────────────────────
-
-  private checkStoredAuth(): void {
-    // Primero buscar en localStorage (recuerdame=true), luego en sessionStorage
-    const storedUser  = localStorage.getItem('currentUser')  ?? sessionStorage.getItem('currentUser');
-    const storedToken = localStorage.getItem('authToken')     ?? sessionStorage.getItem('authToken');
-
-    if (storedUser && storedToken) {
-      try {
-        if (this.isTokenExpired(storedToken)) {
-          this.clearAuth();
-          return;
-        }
-        const user = JSON.parse(storedUser) as User;
-        this.currentUserSubject.next(user);
-        this.isAuthenticatedSubject.next(true);
-      } catch {
-        this.clearAuth();
-      }
-    }
-
     this.setupStorageListener();
   }
 
-  // ── Login ─────────────────────────────────────────────────────
+  // ── Login ─────────────────────────────────────────────────
 
   async login(credentials: LoginCredentials): Promise<LoginResult> {
     try {
@@ -70,99 +63,136 @@ export class AuthService {
         this.http.post<ApiLoginResponse>(`${this.apiBaseUrl}/auth/login`, credentials),
       );
 
-      this.clearAuth();
-
-      // recuerdame=true → localStorage (persiste entre sesiones)
-      // recuerdame=false → sessionStorage (se limpia al cerrar el navegador)
-      const storage = credentials.recuerdame ? localStorage : sessionStorage;
-      storage.setItem('currentUser', JSON.stringify(res.user));
-      storage.setItem('authToken', res.token);
-
+      this._token = res.token;
       this.currentUserSubject.next(res.user);
       this.isAuthenticatedSubject.next(true);
+
+      // Persiste SOLO el usuario (no el token) para restaurar UI entre recargas
+      const storage = credentials.recuerdame ? localStorage : sessionStorage;
+      storage.setItem('currentUser', JSON.stringify(res.user));
+      // Señal de sesión activa para cross-tab sync
+      localStorage.setItem(AuthService.SESSION_KEY, '1');
+
+      this.scheduleProactiveRefresh();
 
       return { success: true, message: res.message ?? 'Login exitoso', user: res.user };
     } catch (err) {
       const error = err as HttpErrorResponse;
-
-      // status 0 → sin red; cualquier otro → error del servidor
       const message = error.status === 0
         ? 'No se pudo conectar con el servidor. Verifique su conexión a internet.'
         : error.error?.message ?? 'Error en el servidor';
-
-      const errors: string[] = error.error?.errors ?? [];
-      return { success: false, message, errors };
+      return { success: false, message, errors: error.error?.errors ?? [] };
     }
   }
 
-  // ── Logout ────────────────────────────────────────────────────
+  // ── Logout ────────────────────────────────────────────────
 
   logout(): void {
     this.clearAuth();
     this.router.navigate(['/auth/login']);
   }
 
-  // ── Estado ────────────────────────────────────────────────────
+  // ── Estado ────────────────────────────────────────────────
 
-  isAuthenticated(): boolean {
-    return this.isAuthenticatedSubject.value;
-  }
-
-  getCurrentUser(): User | null {
-    return this.currentUserSubject.value;
-  }
-
+  isAuthenticated(): boolean { return this.isAuthenticatedSubject.value; }
+  getCurrentUser(): User | null { return this.currentUserSubject.value; }
   isAdmin(): boolean {
     const role = this.currentUserSubject.value?.role;
     return role === 'Admin' || role === 'Webmaster';
   }
+  hasRole(role: string): boolean { return this.currentUserSubject.value?.role === role; }
 
-  hasRole(role: string): boolean {
-    return this.currentUserSubject.value?.role === role;
-  }
+  // ── Token ─────────────────────────────────────────────────
 
-  // ── Token ─────────────────────────────────────────────────────
-
-  getAuthToken(): string | null {
-    return localStorage.getItem('authToken') ?? sessionStorage.getItem('authToken');
-  }
+  /** Retorna el token en memoria — nunca desde storage */
+  getAuthToken(): string | null { return this._token; }
 
   isTokenExpired(token?: string): boolean {
-    const t = token ?? this.getAuthToken();
+    const t = token ?? this._token;
     if (!t) return true;
-
     try {
       const parts = t.split('.');
       if (parts.length !== 3) return true;
-
       const payload = JSON.parse(atob(parts[1])) as { exp?: number };
       return payload.exp != null && payload.exp < Math.floor(Date.now() / 1000);
-    } catch {
-      return true;
-    }
+    } catch { return true; }
   }
 
-  // ── Guard helper ──────────────────────────────────────────────
+  // ── Guard helper ──────────────────────────────────────────
 
   async checkAuthentication(): Promise<boolean> {
-    const token = this.getAuthToken();
-    if (!token || this.isTokenExpired(token)) {
-      this.clearAuth();
-      return false;
-    }
-    if (!this.isAuthenticated()) {
-      this.checkStoredAuth();
-    }
-    return this.isAuthenticated();
+    if (this._token && !this.isTokenExpired()) return this.isAuthenticated();
+    // Token expirado o ausente en memoria → limpiar
+    this.clearAuth();
+    return false;
   }
 
-  // ── Internos ──────────────────────────────────────────────────
+  // ── Refresh proactivo ─────────────────────────────────────
+
+  private scheduleProactiveRefresh(): void {
+    this.cancelRefreshTimer();
+    if (!this._token) return;
+
+    try {
+      const parts = this._token.split('.');
+      const payload = JSON.parse(atob(parts[1])) as { exp?: number };
+      if (!payload.exp) return;
+
+      const msUntilRefresh = (payload.exp - Math.floor(Date.now() / 1000) - REFRESH_BEFORE_EXPIRY_S) * 1000;
+      if (msUntilRefresh <= 0) { this.performRefresh(); return; }
+
+      this.refreshTimer = setTimeout(() => this.performRefresh(), msUntilRefresh);
+      if (isDevMode()) console.log(`[AuthService] Refresh en ${Math.round(msUntilRefresh / 1000)}s`);
+    } catch { /* token inválido, no programar */ }
+  }
+
+  private async performRefresh(): Promise<void> {
+    if (this.refreshInProgress) {
+      await firstValueFrom(this.refreshQueue);
+      return;
+    }
+    this.refreshInProgress = true;
+    try {
+      const res = await firstValueFrom(
+        this.http.post<ApiLoginResponse>(`${this.apiBaseUrl}/auth/refresh`, {}),
+      );
+      this._token = res.token;
+      this.scheduleProactiveRefresh();
+      this.refreshQueue.next(true);
+    } catch {
+      if (isDevMode()) console.warn('[AuthService] Refresh fallido — cerrando sesión');
+      this.logout();
+      this.refreshQueue.next(false);
+    } finally {
+      this.refreshInProgress = false;
+    }
+  }
+
+  private cancelRefreshTimer(): void {
+    if (this.refreshTimer) { clearTimeout(this.refreshTimer); this.refreshTimer = null; }
+  }
+
+  // ── Internos ──────────────────────────────────────────────
+
+  private checkStoredAuth(): void {
+    // Al recargar la página el token en memoria se pierde → requiere nuevo login.
+    // Solo restauramos el nombre de usuario para mejorar UX (ej. en guards).
+    const storedUser = localStorage.getItem('currentUser') ?? sessionStorage.getItem('currentUser');
+    if (storedUser) {
+      try {
+        // Sin token en memoria no autenticamos — el guard redirigirá al login.
+        // Limpiamos el estado guardado para que no haya inconsistencias.
+        this.clearAuth();
+      } catch { this.clearAuth(); }
+    }
+  }
 
   private clearAuth(): void {
+    this._token = null;
+    this.cancelRefreshTimer();
     localStorage.removeItem('currentUser');
-    localStorage.removeItem('authToken');
+    localStorage.removeItem(AuthService.SESSION_KEY);
     sessionStorage.removeItem('currentUser');
-    sessionStorage.removeItem('authToken');
     this.currentUserSubject.next(null);
     this.isAuthenticatedSubject.next(false);
   }
@@ -171,22 +201,14 @@ export class AuthService {
     if (this.storageListenerRegistered) return;
     this.storageListenerRegistered = true;
 
-    // El evento 'storage' se dispara en otras pestañas cuando localStorage cambia.
-    // Si el token o usuario se eliminan (logout en otra pestaña), se cierra sesión aquí también.
     globalThis.addEventListener('storage', (event) => {
-      if (event.key !== 'currentUser' && event.key !== 'authToken') return;
-
-      if (event.newValue === null) {
-        this.clearAuth();
+      // Otra pestaña hizo logout → sincronizar
+      if (event.key === AuthService.SESSION_KEY && event.newValue === null) {
+        this._token = null;
+        this.cancelRefreshTimer();
+        this.currentUserSubject.next(null);
+        this.isAuthenticatedSubject.next(false);
         this.router.navigate(['/auth/login']);
-      } else if (event.key === 'currentUser') {
-        try {
-          const user = JSON.parse(event.newValue) as User;
-          this.currentUserSubject.next(user);
-          this.isAuthenticatedSubject.next(true);
-        } catch {
-          if (isDevMode()) console.error('[AuthService] Error al sincronizar usuario entre pestañas');
-        }
       }
     });
   }

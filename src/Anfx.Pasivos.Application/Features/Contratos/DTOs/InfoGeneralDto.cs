@@ -1,28 +1,31 @@
-﻿namespace Anfx.Pasivos.Application.Features.Contratos.DTOs;
+﻿using Anfx.Pasivos.Application.Features.Procesos.Commands;
+
+namespace Anfx.Pasivos.Application.Features.Contratos.DTOs;
 
 public class InfoGeneralContratoPasivoDto
 {
-    public string Contrato { get; set; }
-    public string TipoCredito { get; set; }
-    public string PSV_EstatusContratoEstatusContrato { get; set; }
-    public Nullable<decimal> CapitalFinanciado { get; set; }
-    public string Periodicidad { get; set; }
-    public Nullable<int> Plazo { get; set; }
-    public string TipoMoneda { get; set; }
-    public Nullable<System.DateTime> FecInicioContrato { get; set; }
-    public Nullable<System.DateTime> FecPrimeraRenta { get; set; }
-    public Nullable<System.DateTime> FecActivacion { get; set; }
-    public Nullable<System.DateTime> FecFinContrato { get; set; }
-    public string Tasa { get; set; }
-    public Nullable<decimal> SaldoInsoluto { get; set; }
-    public Nullable<decimal> TasaIva { get; set; }
-    public Nullable<System.DateTime> FechaCierre { get; set; }
-    public Nullable<bool> TasaEsVariable { get; set; }
-    public string Fondeador { get; set; }
-    public Decimal SaldoVencido { get; set; }
-    public string EstatusContrato { get; set; }
-    public List<TablaAmortizaItemDto> TablaAmortiza { get; set; }
-    public List<MovimientoItemDto> Movimientos { get; set; }
-    public List<PagoItemDto> Pagos { get; set; }
+    public int IdContrato { get; set; }
+    public string Contrato { get; set; } = string.Empty;
+    public string TipoCredito { get; set; } = string.Empty;
+    public string PSV_EstatusContratoEstatusContrato { get; set; } = string.Empty;
+    public decimal? CapitalFinanciado { get; set; }
+    public string Periodicidad { get; set; } = string.Empty;
+    public int? Plazo { get; set; }
+    public string TipoMoneda { get; set; } = string.Empty;
+    public DateTime? FecInicioContrato { get; set; }
+    public DateTime? FecPrimeraRenta { get; set; }
+    public DateTime? FecActivacion { get; set; }
+    public DateTime? FecFinContrato { get; set; }
+    public string Tasa { get; set; } = string.Empty;
+    public decimal? SaldoInsoluto { get; set; }
+    public decimal? TasaIva { get; set; }
+    public DateTime? FechaCierre { get; set; }
+    public bool? TasaEsVariable { get; set; }
+    public string Fondeador { get; set; } = string.Empty;
+    public decimal SaldoVencido { get; set; }
+    public string EstatusContrato { get; set; } = string.Empty;
+    public List<TablaAmortizaItemDto> TablaAmortiza { get; set; } = new();
+    public List<MovimientoItemDto> Movimientos { get; set; } = new();
+    public List<PagoItemDto> Pagos { get; set; } = new();
 
 }

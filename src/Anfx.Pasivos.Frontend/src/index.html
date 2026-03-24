@@ -18,57 +18,5 @@
     </div>
   </div>
   <app-root></app-root>
-<script type="text/javascript">
-    // Función global para mostrar notificaciones
-    window.showNotification = function(title, message, type = 'info') {
-      if (typeof $.toast !== 'undefined') {
-        $.toast({
-          heading: title || 'Mensaje',
-          text: message,
-          position: 'top-right',
-          loaderBg: '#ff6849',
-          icon: type,
-          hideAfter: 3500,
-          stack: 6
-        });
-      } else {
-        // Fallback si toast no está disponible
-        alert(message);
-      }
-    };
-
-    // Función global para manejar el preloader
-    window.hidePreloader = function() {
-      const preloader = document.querySelector('.preloader');
-      if (preloader) {
-        preloader.style.opacity = '0';
-        setTimeout(() => {
-          preloader.style.display = 'none';
-        }, 500);
-      }
-    };
-
-    window.showPreloader = function() {
-      const preloader = document.querySelector('.preloader');
-      if (preloader) {
-        preloader.style.opacity = '1';
-        preloader.style.display = 'block';
-      }
-    };
-
-    // Función global para agregar clases al body
-    window.addBodyClass = function(className) {
-      if (document.body) {
-        document.body.classList.add(className);
-      }
-    };
-
-    // Función global para remover clases del body
-    window.removeBodyClass = function(className) {
-      if (document.body) {
-        document.body.classList.remove(className);
-      }
-    };
-  </script>
 </body>
 </html>

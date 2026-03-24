@@ -1,0 +1,237 @@
+// ============================================================
+// input-datepicker.component.scss
+// Usa CSS custom properties de src/styles.scss.
+// ============================================================
+
+.input-datepicker-container { position: relative; display: inline-block; width: 100%; }
+.input-wrapper              { position: relative; display: flex; align-items: center; }
+
+// ------------------------------------------------------------
+// INPUT DE FECHA
+// ------------------------------------------------------------
+.date-input {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--border-radius-md);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-normal);
+  line-height: 1.5;
+  color: var(--color-text-heading);
+  background-clip: padding-box;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  font-family: inherit;
+  border: 1px solid #ced4da;
+  background-color: var(--color-white);
+}
+
+.date-input:focus {
+  color: var(--color-text-heading);
+  background-color: var(--color-white);
+  border-color: #80bdff;
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.date-input:disabled {
+  background-color: var(--color-gray-200);
+  opacity: 1;
+}
+
+.date-input.is-invalid           { border-color: var(--color-danger-bs); }
+.date-input.date-input-invalid   { border-color: var(--color-danger-bs); box-shadow: var(--shadow-focus-danger); }
+
+// Limpiar validación hasta que el usuario interactúe
+.date-input.is-invalid.ng-untouched { border-color: #ced4da !important; box-shadow: none !important; }
+.date-input.ng-untouched            { border-color: #ced4da !important; box-shadow: none !important; }
+
+.date-input::placeholder { color: var(--color-gray-600); opacity: 1; }
+
+// ------------------------------------------------------------
+// ICONO DEL CALENDARIO
+// ------------------------------------------------------------
+.calendar-icon {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: var(--color-gray-600);
+  font-size: var(--font-size-lg);
+  z-index: var(--z-icon, 2);
+}
+
+.calendar-icon:hover:not(.disabled) { color: var(--color-text-heading); }
+.calendar-icon.disabled             { cursor: not-allowed; opacity: 0.5; }
+
+// ------------------------------------------------------------
+// DROPDOWN DEL CALENDARIO
+// ------------------------------------------------------------
+.calendar-dropdown {
+  position: fixed;
+  min-width: 260px;
+  width: max-content;
+  background: var(--color-gray-100);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-md);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15), 0 4px 10px rgba(0, 0, 0, 0.1);
+  z-index: var(--z-modal-backdrop);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: opacity 0.2s ease, visibility 0.2s ease, transform 0.2s ease;
+}
+
+.calendar-dropdown.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+// Cabecera del calendario
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-white);
+  border-radius: var(--border-radius-md) var(--border-radius-md) 0 0;
+}
+
+.month-year {
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-lg);
+  color: #333;
+}
+
+.navigation-buttons { display: flex; gap: var(--space-1); }
+
+.nav-btn {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: var(--color-gray-200);
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-gray-600);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+
+  &:hover:not(:disabled) { background: var(--color-border); color: #333; }
+  &:disabled             { opacity: 0.5; cursor: not-allowed; }
+}
+
+// Encabezados de días
+.days-header {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 1px;
+  padding: 0;
+  border-bottom: none;
+  background: var(--color-white);
+}
+
+.day-header {
+  text-align: center;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-gray-600);
+  padding: var(--space-1) 0;
+}
+
+// Grid de días
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 1px;
+  padding: var(--space-2);
+  background: var(--color-white);
+  border-radius: 0 0 var(--border-radius-md) var(--border-radius-md);
+
+  &.with-footer { border-radius: 0; }
+}
+
+.calendar-day {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-base);
+  cursor: pointer;
+  border-radius: var(--border-radius-sm);
+  color: #333;
+  transition: var(--transition-base);
+
+  &:hover:not(.disabled) { background: #e3f2fd; color: var(--color-blue-material); }
+  &.other-month          { color: var(--color-gray-500); }
+  &.selected             { background: #e3f2fd; color: var(--color-blue-material); font-weight: var(--font-weight-semibold); }
+  &.today                { background: #e3f2fd; color: var(--color-blue-material); font-weight: var(--font-weight-medium); }
+  &.disabled             { color: var(--color-gray-500); cursor: not-allowed; opacity: 0.5; }
+}
+
+// Pie del calendario
+.calendar-footer {
+  display: flex;
+  justify-content: space-between;
+  padding: var(--space-2) var(--space-4);
+  border-top: 1px solid var(--color-border);
+  background: var(--color-white);
+  border-radius: 0 0 var(--border-radius-md) var(--border-radius-md);
+}
+
+.footer-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: var(--font-size-base);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--border-radius-sm);
+  transition: background-color 0.2s ease;
+
+  &:hover:not(:disabled) { background: var(--color-gray-100); }
+  &:disabled             { opacity: 0.5; cursor: not-allowed; }
+}
+
+.clear-btn {
+  color: var(--color-danger-bs);
+  &:hover:not(:disabled) { background: #f8d7da; }
+}
+
+.today-btn {
+  color: var(--color-blue-material);
+  &:hover:not(:disabled) { background: #e3f2fd; }
+}
+
+// ------------------------------------------------------------
+// FEEDBACK DE VALIDACIÓN
+// ------------------------------------------------------------
+.invalid-feedback {
+  display: none;
+  width: 100%;
+  margin-top: 0.25rem;
+  font-size: 80%;
+  color: #e46a76;
+
+  &.d-block { display: block !important; }
+}
+
+// ------------------------------------------------------------
+// RESPONSIVE
+// ------------------------------------------------------------
+@media (max-width: 576px) {
+  .calendar-dropdown {
+    width: 90vw;
+    max-width: 320px;
+
+    &.show {
+      top: 50% !important;
+      left: 50% !important;
+      transform: translate(-50%, -50%);
+    }
+  }
+
+  .calendar-day { width: 28px; height: 28px; font-size: var(--font-size-xs); }
+}

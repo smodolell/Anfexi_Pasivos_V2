@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { LayoutService } from '../../../services/layout.service';
@@ -24,7 +24,7 @@ import { UsuarioDto, CreateUsuarioDto, UpdateUsuarioDto } from '../../../../type
               <h3 class="profile-name">{{ currentUser?.nombreCompleto || 'Usuario' }}</h3>
               <p class="profile-role">{{ currentUser?.rol || 'Administrador' }}</p>
             </div>
-            
+
             <div class="profile-stats">
               <div class="stat-item">
                 <span class="stat-number">15</span>
@@ -41,15 +41,15 @@ import { UsuarioDto, CreateUsuarioDto, UpdateUsuarioDto } from '../../../../type
             </div>
           </div>
         </div>
-        
+
         <div class="col-md-8">
           <div class="profile-content">
             <h4 class="section-title">Información Personal</h4>
             <p class="section-description">
               Actualiza tu información personal y de contacto. Los campos marcados con * son obligatorios.
             </p>
-            
-            <app-usuario-form 
+
+            <app-usuario-form
               [usuario]="userData"
               [isFromProfile]="true"
               (guardar)="onGuardarUsuario($event)"
@@ -161,6 +161,8 @@ import { UsuarioDto, CreateUsuarioDto, UpdateUsuarioDto } from '../../../../type
   `]
 })
 export class ProfileComponent implements OnInit {
+
+private readonly layoutService = inject(LayoutService);
   currentUser: any = null;
   userData: Partial<UsuarioDto> = {
     nombreCompleto: '',
@@ -170,12 +172,10 @@ export class ProfileComponent implements OnInit {
     rolId: 0
   };
 
-  constructor(private layoutService: LayoutService) { }
-
   ngOnInit() {
     // Cambiar el título del layout
     this.layoutService.setTitle('Mi Perfil');
-    
+
     // Simular datos del usuario actual (en un caso real vendría del AuthService)
     this.currentUser = {
       nombreCompleto: 'Juan Pérez',

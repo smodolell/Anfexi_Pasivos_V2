@@ -1,0 +1,30 @@
+<div #modalEl class="modal fade" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow">
+      <div class="modal-header border-0">
+        <h5 class="modal-title">
+          <i class="ti-alert text-warning me-2"></i>Confirmar Eliminación
+        </h5>
+        <button type="button" class="btn-close" (click)="onCancel()" aria-label="Close"></button>
+      </div>
+      <div class="modal-body px-4 py-3">
+        <p class="mb-2">
+          ¿Está seguro que desea eliminar {{ itemLabel() }}
+          @if (itemName()) { <strong>{{ itemName() }}</strong> }?
+        </p>
+        <div class="alert alert-danger d-flex align-items-center py-2 mb-0">
+          <i class="ti-info-alt me-2"></i>
+          <small>Esta acción no se puede deshacer.</small>
+        </div>
+      </div>
+      <div class="modal-footer border-0">
+        <button type="button" class="btn btn-outline-secondary" (click)="onCancel()">
+          <i class="ti-close"></i> Cancelar
+        </button>
+        <button type="button" class="btn btn-danger" (click)="onConfirm()">
+          <i class="ti-trash"></i> Eliminar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

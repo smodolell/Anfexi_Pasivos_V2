@@ -1,0 +1,65 @@
+<div class="container-fluid mt-4">
+
+  <!-- Breadcrumb -->
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">
+        <a routerLink="/configuracion/fondeador">Fondeadores</a>
+      </li>
+      @if (fondeadorTitulo()) {
+        <li class="breadcrumb-item">{{ fondeadorTitulo() }}</li>
+      }
+      <li class="breadcrumb-item active">Líneas de Crédito</li>
+    </ol>
+  </nav>
+
+  <!-- Card -->
+  <div class="card shadow-sm border-0 mt-3">
+
+    <div class="card-header bg-white py-3 d-flex align-items-center gap-3">
+      <button type="button" class="btn btn-light btn-sm" (click)="volver()">
+        <i class="fa-solid fa-arrow-left me-1"></i> Volver
+      </button>
+      <div>
+        <h5 class="mb-0 text-primary">
+          <i class="fa-solid fa-money-check-dollar me-2"></i>Líneas de Crédito
+        </h5>
+        @if (fondeadorTitulo()) {
+          <small class="text-muted">{{ fondeadorTitulo() }}</small>
+        }
+      </div>
+    </div>
+
+    <div class="card-body p-0">
+      <app-generic-table
+        [columns]="columns"
+        [items]="items()"
+        [loading]="loading()"
+        [actions]="actions"
+        [totalCount]="totalCount()"
+        [currentPage]="currentPage()"
+        [totalPages]="totalPages()"
+        [pageSize]="pageSize()"
+        [searchable]="true"
+        [searchPlaceholder]="'Buscar línea de crédito...'"
+        [showNew]="true"
+        (searchChanged)="onSearch($event)"
+        (actionCalled)="onAction($event)"
+        (pageNext)="nextPage()"
+        (pagePrev)="prevPage()"
+        (newClicked)="onNuevo()">
+      </app-generic-table>
+    </div>
+
+  </div>
+</div>
+
+<app-confirm-modal
+  #confirmModal
+  title="Eliminar Línea de Crédito"
+  [message]="'¿Está seguro de que desea eliminar la línea de crédito #' + (lineaAEliminar?.id ?? '') + '? Esta acción no se puede deshacer.'"
+  confirmLabel="Eliminar"
+  confirmClass="btn-danger"
+  (confirmed)="confirmarEliminacion()"
+  (cancelled)="cancelarEliminacion()">
+</app-confirm-modal>

@@ -3,8 +3,10 @@ import {
   provideBrowserGlobalErrorListeners,
   provideZonelessChangeDetection,
 } from '@angular/core';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
+import { provideToastr } from 'ngx-toastr';
 
 import { routes } from './app.routes';
 import { API_AUTH_URL, API_CATALOGO_URL, API_COTIZADOR_URL, API_SISTEMA_URL } from './api.config';
@@ -18,6 +20,14 @@ export const appConfig: ApplicationConfig = {
     provideHighcharts(),
     provideBrowserGlobalErrorListeners(),
     provideZonelessChangeDetection(),
+    provideAnimationsAsync(),
+    provideToastr({
+      timeOut:          3500,
+      positionClass:    'toast-top-right',
+      preventDuplicates: true,
+      progressBar:      true,
+      closeButton:      true,
+    }),
     provideRouter(routes),
     provideHttpClient(withFetch(), withInterceptors([AuthInterceptor])),
     provideApi({

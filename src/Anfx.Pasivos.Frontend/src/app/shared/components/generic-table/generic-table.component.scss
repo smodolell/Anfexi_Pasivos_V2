@@ -137,6 +137,8 @@
 .gt-actions-cell {
   white-space: nowrap;
 
+  // Los botones usan las clases globales .action-btn .edit-btn/.delete-btn
+  // definidas en admin-layout.component.scss (ViewEncapsulation.None)
   .actions {
     display: flex;
     align-items: center;

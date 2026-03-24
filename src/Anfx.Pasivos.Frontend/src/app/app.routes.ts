@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { AdminLayoutComponent } from './layout/admin-layout.component';
 import { LoginLayoutComponent } from './layout/login-layout.component';
 import { authGuard } from './guards/auth.guard';
+import { noAuthGuard } from './guards/no-auth.guard';
 
 export const routes: Routes = [
   // Ruta raíz → login
@@ -70,6 +71,20 @@ export const routes: Routes = [
     path: 'configuracion',
     canActivate: [authGuard],
     loadChildren: () => import('./features/configuracion/configuracion.routes'),
+  },
+
+  // Operaciones - PROTEGIDAS
+  {
+    path: 'operaciones',
+    canActivate: [authGuard],
+    loadChildren: () => import('./features/operaciones/operaciones.routes'),
+  },
+
+  // Procesos - PROTEGIDOS
+  {
+    path: 'procesos',
+    canActivate: [authGuard],
+    loadChildren: () => import('./features/procesos/procesos.routes'),
   },
 
   // Catálogos - PROTEGIDOS
@@ -169,10 +184,11 @@ export const routes: Routes = [
     ],
   },
 
-  // Autenticación
+  // Autenticación — noAuthGuard evita que un usuario autenticado vuelva al login
   {
     path: 'auth',
     component: LoginLayoutComponent,
+    canActivate: [noAuthGuard],
     children: [
       { path: '', redirectTo: '/auth/login', pathMatch: 'full' },
       {

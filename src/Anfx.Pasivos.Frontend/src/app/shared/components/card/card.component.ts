@@ -1,7 +1,15 @@
-import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-export type CardVariant = 'primary' | 'success' | 'warning' | 'info' | 'danger' | 'secondary' | 'light' | 'none';
+export type CardVariant =
+  | 'primary'
+  | 'success'
+  | 'warning'
+  | 'info'
+  | 'danger'
+  | 'secondary'
+  | 'light'
+  | 'none';
 
 /**
  * Card genérica con proyección de contenido.
@@ -38,21 +46,20 @@ export type CardVariant = 'primary' | 'success' | 'warning' | 'info' | 'danger' 
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="gc-card">
-
       <!-- Header personalizado (slot="header") -->
       <ng-content select="[slot=header]"></ng-content>
 
       <!-- Título declarativo: fondo de color según variante, texto blanco -->
-      @if (title) {
-        <div class="gc-card__title-area gc-header--{{ variant }}">
+      @if (title()) {
+        <div class="gc-card__title-area gc-header--{{ variant() }}">
           <div class="d-flex align-items-center gap-2 flex-grow-1 min-w-0">
-            @if (icon) {
+            @if (icon()) {
               <i [class]="icon + ' gc-card__icon flex-shrink-0'"></i>
             }
             <div class="min-w-0">
-              <h5 class="gc-card__title mb-0 text-truncate">{{ title }}</h5>
-              @if (subtitle) {
-                <small class="gc-card__subtitle">{{ subtitle }}</small>
+              <h5 class="gc-card__title mb-0 text-truncate">{{ title() }}</h5>
+              @if (subtitle()) {
+                <small class="gc-card__subtitle">{{ subtitle() }}</small>
               }
             </div>
           </div>
@@ -62,8 +69,8 @@ export type CardVariant = 'primary' | 'success' | 'warning' | 'info' | 'danger' 
       }
 
       <!-- Body -->
-      <div class="card-body" [class.p-0]="noPadding">
-        @if (loading) {
+      <div class="card-body" [class.p-0]="noPadding()">
+        @if (loading()) {
           <div class="text-center py-5">
             <div class="spinner-border text-primary" role="status">
               <span class="visually-hidden">Cargando...</span>
@@ -75,81 +82,117 @@ export type CardVariant = 'primary' | 'success' | 'warning' | 'info' | 'danger' 
 
       <!-- Footer opcional (slot="footer") -->
       <ng-content select="[slot=footer]"></ng-content>
-
     </div>
   `,
-  styles: [`
-    :host { display: block; }
+  styles: [
+    `
+      :host {
+        display: block;
+      }
 
-    /* ── Card base ─────────────────────────────────── */
-    .gc-card {
-      border-radius: var(--border-radius-xl);
-      overflow: hidden;
-      background: #fff;
-      border: none;
-      box-shadow: var(--shadow-md);
-      transition: box-shadow 0.3s ease;
-    }
-    .gc-card:hover {
-      box-shadow: var(--shadow-lg);
-    }
+      /* ── Card base ─────────────────────────────────── */
+      .gc-card {
+        border-radius: var(--border-radius-xl);
+        overflow: hidden;
+        background: #fff;
+        border: none;
+        box-shadow: var(--shadow-md);
+        transition: box-shadow 0.3s ease;
+      }
+      .gc-card:hover {
+        box-shadow: var(--shadow-lg);
+      }
 
-    /* ── Título area ────────────────────────────────── */
-    .gc-card__title-area {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      padding: 12px 20px;
-    }
+      /* ── Título area ────────────────────────────────── */
+      .gc-card__title-area {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 12px 20px;
+      }
 
-    /* Texto blanco sobre todos los headers con gradiente */
-    .gc-card__icon     { font-size: 1.1rem; color: #fff; }
-    .gc-card__title    { font-size: 1rem; font-weight: 600; color: #fff; }
-    .gc-card__subtitle { font-size: 0.8rem; display: block; color: rgba(255,255,255,0.82); }
+      /* Texto blanco sobre todos los headers con gradiente */
+      .gc-card__icon {
+        font-size: 1.1rem;
+        color: #fff;
+      }
+      .gc-card__title {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #fff;
+      }
+      .gc-card__subtitle {
+        font-size: 0.8rem;
+        display: block;
+        color: rgba(255, 255, 255, 0.82);
+      }
 
-    /* ── Headers con gradiente — mismos valores que WrapKit / Alerta PLD ── */
-    .gc-header--warning   { background: linear-gradient(135deg, #ed8936, #dd6b20); }
-    .gc-header--info      { background: linear-gradient(135deg, #4299e1, #3182ce); }
-    .gc-header--primary   { background: linear-gradient(135deg, #015baa, #00325d); }
-    .gc-header--success   { background: linear-gradient(135deg, #48bb78, #38a169); }
-    .gc-header--danger    { background: linear-gradient(135deg, #f56565, #e53e3e); }
-    .gc-header--secondary { background: linear-gradient(135deg, #718096, #4a5568); }
+      /* ── Headers con gradiente — mismos valores que WrapKit / Alerta PLD ── */
+      .gc-header--warning {
+        background: linear-gradient(135deg, #ed8936, #dd6b20);
+      }
+      .gc-header--info {
+        background: linear-gradient(135deg, #4299e1, #3182ce);
+      }
+      .gc-header--primary {
+        background: linear-gradient(135deg, #015baa, #00325d);
+      }
+      .gc-header--success {
+        background: linear-gradient(135deg, #48bb78, #38a169);
+      }
+      .gc-header--danger {
+        background: linear-gradient(135deg, #f56565, #e53e3e);
+      }
+      .gc-header--secondary {
+        background: linear-gradient(135deg, #718096, #4a5568);
+      }
 
-    /* ── Variantes sin gradiente (neutras) ── */
-    .gc-header--light {
-      background: var(--color-bg-subtle);
-      border-bottom: 1px solid var(--color-border-light);
-      .gc-card__title, .gc-card__icon { color: var(--color-text-primary); }
-      .gc-card__subtitle              { color: var(--color-text-muted); }
-    }
-    .gc-header--none {
-      background: transparent;
-      border-bottom: 1px solid rgba(0,0,0,0.06);
-      .gc-card__title, .gc-card__icon { color: var(--color-text-primary); }
-      .gc-card__subtitle              { color: var(--color-text-muted); }
-    }
+      /* ── Variantes sin gradiente (neutras) ── */
+      .gc-header--light {
+        background: var(--color-bg-subtle);
+        border-bottom: 1px solid var(--color-border-light);
+        .gc-card__title,
+        .gc-card__icon {
+          color: var(--color-text-primary);
+        }
+        .gc-card__subtitle {
+          color: var(--color-text-muted);
+        }
+      }
+      .gc-header--none {
+        background: transparent;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+        .gc-card__title,
+        .gc-card__icon {
+          color: var(--color-text-primary);
+        }
+        .gc-card__subtitle {
+          color: var(--color-text-muted);
+        }
+      }
 
-    /* ── Footer slot ──────────────────────────────── */
-    ::ng-deep [slot=footer] {
-      display: block;
-      padding: 12px 20px;
-      background: #f8fafc;
-      border-top: 1px solid rgba(0, 0, 0, 0.06);
-    }
-  `],
+      /* ── Footer slot ──────────────────────────────── */
+      ::ng-deep [slot='footer'] {
+        display: block;
+        padding: 12px 20px;
+        background: #f8fafc;
+        border-top: 1px solid rgba(0, 0, 0, 0.06);
+      }
+    `,
+  ],
 })
 export class CardComponent {
   /** Título mostrado en el header declarativo */
-  @Input() title?: string;
+  title = input<string>();
   /** Subtítulo opcional bajo el título */
-  @Input() subtitle?: string;
+  subtitle = input<string>();
   /** Clase de ícono FontAwesome, ej: 'fa-solid fa-user' */
-  @Input() icon?: string;
+  icon = input<string>();
   /** Color del header */
-  @Input() variant: CardVariant = 'primary';
+  variant = input<CardVariant>('primary');
   /** Muestra spinner en el body y oculta el contenido */
-  @Input() loading = false;
+  loading = input(false);
   /** Elimina el padding del card-body (útil para tablas flush) */
-  @Input() noPadding = false;
+  noPadding = input(false);
 }

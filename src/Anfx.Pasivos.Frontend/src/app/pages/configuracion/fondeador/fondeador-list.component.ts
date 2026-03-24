@@ -31,8 +31,9 @@ export class FondeadorListComponent implements OnInit {
   ];
 
   actions: TableAction[] = [
-    { id: 'edit',   label: 'Editar',   icon: 'fa-solid fa-pen-to-square', variant: 'edit'   },
-    { id: 'delete', label: 'Eliminar', icon: 'fa-solid fa-trash-can',     variant: 'delete',
+    { id: 'edit',   label: 'Editar',            icon: 'fa-solid fa-pen-to-square',       variant: 'edit'   },
+    { id: 'lineas', label: 'Líneas de Crédito', icon: 'fa-solid fa-money-check-dollar',  variant: 'info'   },
+    { id: 'delete', label: 'Eliminar',          icon: 'fa-solid fa-trash-can',           variant: 'delete',
       disabledFn: (row: FondeadorListItemDto) => (row.lineasCredito ?? 0) > 0 || (row.contratos ?? 0) > 0 },
   ];
 
@@ -44,7 +45,8 @@ export class FondeadorListComponent implements OnInit {
   currentPage  = signal(1);
   pageSize     = signal(10);
 
-  query = { q: '', page: 1, size: 10 };
+  query        = { q: '', page: 1, size: 10 };
+  searchValue  = '';
 
   // ── Modal eliminación ─────────────────────────────────────────
   fondeadorAEliminar: FondeadorListItemDto | null = null;
@@ -56,6 +58,7 @@ export class FondeadorListComponent implements OnInit {
   // ── Eventos GenericTable ──────────────────────────────────────
 
   onSearch(q: string) {
+    this.searchValue = q;
     this.query.q    = q;
     this.query.page = 1;
     this.load();
@@ -63,6 +66,10 @@ export class FondeadorListComponent implements OnInit {
 
   onAction(event: TableActionEvent<FondeadorListItemDto>) {
     if (event.action === 'edit')   this.router.navigate(['/configuracion/fondeador/edit', event.row.id]);
+    if (event.action === 'lineas') this.router.navigate(
+      ['/configuracion/fondeador', event.row.id, 'lineas-credito'],
+      { state: { titulo: event.row.titulo } }
+    );
     if (event.action === 'delete') this.iniciarEliminacion(event.row);
   }
 

@@ -1,0 +1,124 @@
+<div class="container-fluid mt-4">
+
+  <!-- Breadcrumb -->
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">Procesos</li>
+      <li class="breadcrumb-item active">Moratorios</li>
+    </ol>
+  </nav>
+
+  <div class="card shadow-sm border-0 mt-3">
+    <div class="card-header bg-white py-3">
+      <h5 class="mb-0 text-primary">
+        <i class="fa-solid fa-triangle-exclamation me-2"></i>Proceso de Moratorios
+      </h5>
+    </div>
+
+    <div class="card-body p-4">
+      <form [formGroup]="form">
+        <div class="row g-3 align-items-end">
+
+          <!-- Contrato -->
+          <div class="col-md-3">
+            <label class="form-label fw-semibold">Contrato</label>
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Número de contrato (opcional)..."
+              formControlName="contratoPasivo"
+            />
+            <small class="text-muted">Dejar vacío para procesar todos los contratos</small>
+          </div>
+
+          <!-- Fecha de Corte -->
+          <div class="col-md-3">
+            <label class="form-label fw-semibold">
+              Fecha de Corte <span class="text-danger">*</span>
+            </label>
+            <input
+              type="date"
+              class="form-control"
+              [class.is-invalid]="isInvalid('fechaProcesamiento')"
+              formControlName="fechaProcesamiento"
+            />
+            @if (isInvalid('fechaProcesamiento')) {
+              <div class="invalid-feedback">Ingrese la fecha de corte.</div>
+            }
+          </div>
+
+          <!-- Botones -->
+          <div class="col-md-auto d-flex gap-2">
+            <button
+              type="button"
+              class="btn btn-primary"
+              [disabled]="procesando()"
+              (click)="onProcesar()">
+              @if (procesando()) {
+                <span class="spinner-border spinner-border-sm me-2"></span>Procesando...
+              } @else {
+                <i class="fa-solid fa-play me-2"></i>Procesar
+              }
+            </button>
+            <button
+              type="button"
+              class="btn btn-outline-secondary"
+              [disabled]="procesando()"
+              (click)="onLimpiar()">
+              <i class="fa-solid fa-broom me-2"></i>Limpiar
+            </button>
+          </div>
+
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Resultado -->
+  @if (resultado()) {
+    <div class="card shadow-sm border-0 mt-4 border-start border-4 border-success">
+      <div class="card-body d-flex align-items-center gap-3 py-3">
+        <div class="rounded-circle bg-success bg-opacity-10 p-3">
+          <i class="fa-solid fa-circle-check text-success fa-lg"></i>
+        </div>
+        <div>
+          <div class="fw-semibold text-success">Proceso completado</div>
+          <div class="text-muted small">{{ resultado() }}</div>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Errores -->
+  @if (errores().length > 0) {
+    <div class="card shadow-sm border-0 mt-3 border-start border-4 border-warning">
+      <div class="card-body py-3">
+        <div class="d-flex align-items-center gap-2 mb-2">
+          <i class="fa-solid fa-circle-exclamation text-warning"></i>
+          <span class="fw-semibold text-warning">Advertencias / Errores del proceso</span>
+        </div>
+        <ul class="mb-0 ps-3">
+          @for (error of errores(); track $index) {
+            <li class="text-muted small">{{ error }}</li>
+          }
+        </ul>
+      </div>
+    </div>
+  }
+
+</div>
+
+<app-confirm-modal
+  #confirmModal
+  title="Confirmar Proceso de Moratorios"
+  message="¿Está seguro que desea ejecutar el proceso de moratorios con los parámetros indicados?"
+  warningText="Esta operación calculará y aplicará moratorios a los contratos seleccionados."
+  icon="fa-solid fa-triangle-exclamation"
+  confirmLabel="Procesar"
+  confirmIcon="fa-solid fa-play"
+  confirmVariant="primary"
+  cancelLabel="Cancelar"
+  [confirmLoading]="procesando()"
+  (confirmed)="ejecutarProceso()"
+  (cancelled)="confirmModal.hide()">
+</app-confirm-modal>

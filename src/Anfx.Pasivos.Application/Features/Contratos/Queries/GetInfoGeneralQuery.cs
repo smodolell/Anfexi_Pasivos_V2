@@ -27,16 +27,19 @@ public class GetInfoGeneralQueryHandler : IQueryHandler<GetInfoGeneralQuery, Res
     {
         try
         {
+
+            var contratoPasivo = request.ContratoPasivo.Split(new[] { " - " }, StringSplitOptions.None)[0];
             var contrato = await _context.PSV_Contrato
                 .Include(i => i.SB_Periodicidad)
                 .Include(i => i.SB_TipoMoneda)
                 .Include(i => i.PSV_EstatusContrato)
                 .Include(i => i.PSV_TipoCredito)
                 .Include(i => i.PSV_TablaAmortiza)
-                .FirstOrDefaultAsync(r => r.Contrato.Equals(request.ContratoPasivo));
+                .Include(i => i.PSV_Fondeador)
+                .FirstOrDefaultAsync(r => r.Contrato.Equals(contratoPasivo));
             if (contrato is null)
             {
-                return Result.NotFound("Contrato no encontrado");
+                return Result.NotFound($"Contrato Clave[{contratoPasivo}] no encontrado");
             }
 
             var hoy = DateTime.Now.Date;
@@ -69,40 +72,4 @@ public class GetInfoGeneralQueryHandler : IQueryHandler<GetInfoGeneralQuery, Res
 }
 
 
-public class GetGetTablaAmortizaQuery : IQuery<Result<List<TablaAmortizaItemDto>>>
-{
-    public int IdContrato { get; set; }
-    public int IdTipoTabla { get; set; }
 
-}
-
-
-
-internal class GetGetTablaAmortizaQueryHandler : IQueryHandler<GetGetTablaAmortizaQuery, Result<List<TablaAmortizaItemDto>>>
-{
-    private readonly IApplicationDbContext _context;
-    private readonly IDatabaseService _databaseService;
-    public GetGetTablaAmortizaQueryHandler(IApplicationDbContext context, IDatabaseService databaseService)
-    {
-        _context = context;
-        _databaseService = databaseService;
-    }
-    public async Task<Result<List<TablaAmortizaItemDto>>> HandleAsync(GetGetTablaAmortizaQuery request, CancellationToken cancellationToken)
-    {
-        try
-        {
-            var contrato = await _context.PSV_Contrato.SingleOrDefaultAsync(r => r.IdContrato == request.IdContrato);
-            if (contrato == null)
-            {
-                return Result.NotFound("Contrato no encontrado");
-            }
-
-            var result = await _databaseService.GetDetalleTablaAmortizaAsync(request.IdContrato, contrato.VersionTabla ?? 1, request.IdTipoTabla);
-            return Result.Success(result);
-        }
-        catch (Exception ex)
-        {
-            return Result.Error(ex.Message);
-        }
-    }
-}

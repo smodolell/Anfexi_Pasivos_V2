@@ -1,6 +1,5 @@
 ﻿namespace Anfx.Pasivos.Application.Features.Auth.DTOs;
 
-
 public class UsuarioLoginDto
 {
     public int Id { get; set; }
@@ -11,14 +10,4 @@ public class UsuarioLoginDto
     public string RefreshToken { get; set; } = string.Empty;
     public DateTime TokenExpiration { get; set; }
     public string Role { get; set; } = string.Empty;
-}
-
-
-
-
-public class TokenValidationDto
-{
-    public bool IsValid { get; set; }
-    public string? ErrorMessage { get; set; }
-    public UsuarioLoginDto? User { get; set; }
 }

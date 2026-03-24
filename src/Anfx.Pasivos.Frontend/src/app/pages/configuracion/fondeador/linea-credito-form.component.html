@@ -1,0 +1,212 @@
+<div class="container-fluid mt-4">
+
+  <!-- Breadcrumb -->
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">
+        <a routerLink="/configuracion/fondeador">Fondeadores</a>
+      </li>
+      <li class="breadcrumb-item">
+        <a (click)="volverALista()" style="cursor:pointer">Líneas de Crédito</a>
+      </li>
+      <li class="breadcrumb-item active">{{ isEditMode() ? 'Editar' : 'Nueva' }}</li>
+    </ol>
+  </nav>
+
+  <!-- Card -->
+  <div class="card shadow-sm border-0 mt-3">
+
+    <div class="card-header bg-white py-3 d-flex align-items-center gap-3">
+      <button type="button" class="btn btn-light btn-sm" (click)="volverALista()">
+        <i class="fa-solid fa-arrow-left me-1"></i> Volver
+      </button>
+      <div>
+        <h5 class="mb-0 text-primary">
+          <i class="fa-solid fa-money-check-dollar me-2"></i>
+          {{ isEditMode() ? 'Editar Línea de Crédito' : 'Nueva Línea de Crédito' }}
+        </h5>
+        @if (fondeadorTitulo()) {
+          <small class="text-muted">{{ fondeadorTitulo() }}</small>
+        }
+      </div>
+    </div>
+
+    <div class="card-body p-4">
+
+      @if (errorMsg()) {
+        <div class="alert alert-danger">{{ errorMsg() }}</div>
+      }
+
+      @if (isLoading()) {
+        <div class="text-center py-5">
+          <span class="spinner-border text-primary"></span>
+        </div>
+      } @else {
+        <form [formGroup]="form" (ngSubmit)="onSubmit()">
+          <div class="row g-3">
+
+            <!-- ── Fila 1 ──────────────────────────────────────────────── -->
+
+            <!-- Fondeador -->
+            <div class="col-md-3">
+              <label class="form-label fw-semibold">Fondeador</label>
+              <input type="text" class="form-control bg-light" formControlName="idFondeador" readonly />
+            </div>
+
+            <!-- Moneda -->
+            <div class="col-md-3">
+              <label class="form-label fw-semibold">Moneda <span class="text-danger">*</span></label>
+              <select class="form-select" formControlName="idMoneda"
+                [class.is-invalid]="isInvalid('idMoneda')">
+                <option [ngValue]="null" disabled>Seleccionar...</option>
+                @for (m of monedas(); track m.value) {
+                  <option [value]="m.value">{{ m.text }}</option>
+                }
+              </select>
+              @if (isInvalid('idMoneda')) {
+                <div class="invalid-feedback">Seleccione una moneda.</div>
+              }
+            </div>
+
+            <!-- Fecha de Aprobación -->
+            <div class="col-md-3">
+              <label class="form-label fw-semibold">Fecha de Aprobación <span class="text-danger">*</span></label>
+              <input type="date" class="form-control" formControlName="fechaAprobacion"
+                [class.is-invalid]="isInvalid('fechaAprobacion')" />
+              @if (isInvalid('fechaAprobacion')) {
+                <div class="invalid-feedback">La fecha de aprobación es requerida.</div>
+              }
+            </div>
+
+            <!-- Plazo Máximo -->
+            <div class="col-md-3">
+              <label class="form-label fw-semibold">Plazo Máximo <small class="text-muted">(meses)</small></label>
+              <input type="number" class="form-control" formControlName="plazoMaximo"
+                min="0" step="1" placeholder="0" />
+            </div>
+
+            <!-- ── Fila 2 ──────────────────────────────────────────────── -->
+
+            <!-- Monto Aprobado -->
+            <div class="col-md-3">
+              <label class="form-label fw-semibold">Monto Aprobado <span class="text-danger">*</span></label>
+              <input type="number" class="form-control" formControlName="montoAprobado"
+                min="0.01" step="0.01" placeholder="0.00"
+                [class.is-invalid]="isInvalid('montoAprobado')" />
+              @if (isInvalid('montoAprobado')) {
+                <div class="invalid-feedback">Ingrese un monto mayor a 0.</div>
+              }
+            </div>
+
+            <!-- Monto Dispuesto (readonly) -->
+            <div class="col-md-3">
+              <label class="form-label fw-semibold">Monto Dispuesto</label>
+              <input type="number" class="form-control bg-light" formControlName="montoDispuesto" readonly />
+            </div>
+
+            <!-- Monto Disponible (readonly) -->
+            <div class="col-md-3">
+              <label class="form-label fw-semibold">Monto Disponible</label>
+              <input type="number" class="form-control bg-light" formControlName="montoDisponible" readonly />
+            </div>
+
+            <!-- Es Revolvente -->
+            <div class="col-md-3 d-flex align-items-end pb-1">
+              <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" role="switch"
+                  id="esRevolvente" formControlName="esRevolvente" />
+                <label class="form-check-label" for="esRevolvente">Es Revolvente</label>
+              </div>
+            </div>
+
+            <!-- ── Fila 3 ──────────────────────────────────────────────── -->
+
+            <!-- Fecha Máx. Disposición -->
+            <div class="col-md-3">
+              <label class="form-label fw-semibold">Fecha Máx. Disposición</label>
+              <input type="date" class="form-control" formControlName="fechaMaxDisposicion" />
+            </div>
+
+            <!-- Fecha Últ. Disposición (readonly) -->
+            <div class="col-md-3">
+              <label class="form-label fw-semibold">Fecha Últ. Disposición</label>
+              <input type="date" class="form-control bg-light" formControlName="fechaUltimaDisposicion" readonly />
+            </div>
+
+            <!-- Fecha Últ. Ampliación (readonly) -->
+            <div class="col-md-3">
+              <label class="form-label fw-semibold">Fecha Últ. Ampliación</label>
+              <input type="date" class="form-control bg-light" formControlName="fechaAmpliacion" readonly />
+            </div>
+
+            <!-- Monto Restaurado Revolvente (readonly) -->
+            <div class="col-md-3">
+              <label class="form-label fw-semibold">Monto Restaurado Revolvente</label>
+              <input type="number" class="form-control bg-light" formControlName="montoRevolvente" readonly />
+            </div>
+
+            <!-- ── Fila 4 ──────────────────────────────────────────────── -->
+
+            <!-- No. Disposiciones (readonly) -->
+            <div class="col-md-3">
+              <label class="form-label fw-semibold">No. Disposiciones</label>
+              <input type="number" class="form-control bg-light" formControlName="noDisposiciones" readonly />
+            </div>
+
+            <!-- Tipo de Tasa -->
+            <div class="col-md-3 d-flex align-items-end pb-1">
+              <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" role="switch"
+                  id="tipoTasa" formControlName="tipoTasa" />
+                <label class="form-check-label" for="tipoTasa">
+                  {{ form.get('tipoTasa')?.value ? 'Tasa Variable' : 'Tasa Fija' }}
+                </label>
+              </div>
+            </div>
+
+            <!-- Tasa (select) -->
+            <div class="col-md-3">
+              <label class="form-label fw-semibold">Tasa <span class="text-danger">*</span></label>
+              <select class="form-select" formControlName="idTasa"
+                [class.is-invalid]="isInvalid('idTasa')">
+                <option [ngValue]="null" disabled>Seleccionar...</option>
+                @for (t of tasas(); track t.value) {
+                  <option [value]="t.value">{{ t.text }}</option>
+                }
+              </select>
+              @if (isInvalid('idTasa')) {
+                <div class="invalid-feedback">Seleccione una tasa.</div>
+              }
+            </div>
+
+            <!-- Tasa Valor -->
+            <div class="col-md-3">
+              <label class="form-label fw-semibold">Tasa Valor (%) <span class="text-danger">*</span></label>
+              <input type="number" class="form-control" formControlName="tasa"
+                min="0" step="0.0001" placeholder="0.0000"
+                [class.is-invalid]="isInvalid('tasa')" />
+              @if (isInvalid('tasa')) {
+                <div class="invalid-feedback">Ingrese el valor de la tasa.</div>
+              }
+            </div>
+
+          </div>
+
+          <!-- Footer -->
+          <div class="d-flex justify-content-end gap-2 mt-4 border-top pt-3">
+            <button type="button" class="btn btn-light" (click)="volverALista()">Cancelar</button>
+            <button type="submit" class="btn btn-primary px-4"
+              [disabled]="form.invalid || isLoading()">
+              @if (isLoading()) {
+                <span class="spinner-border spinner-border-sm me-2"></span>
+              }
+              {{ isEditMode() ? 'Guardar Cambios' : 'Registrar Línea de Crédito' }}
+            </button>
+          </div>
+
+        </form>
+      }
+
+    </div>
+  </div>
+</div>

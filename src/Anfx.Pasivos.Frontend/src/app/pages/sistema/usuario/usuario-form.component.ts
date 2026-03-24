@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, ValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
-import { UsuarioService } from '../../../services/sistema/usuario.service';
+import { AuthService as AuthApiService } from '../../../../api/services/auth.service';
 import { UsuarioFormData, UsuarioDto, CreateUsuarioDto, UpdateUsuarioDto, RolItemDto } from '../../../../types/sistema/usuario.dto';
 import { UtilsService } from '../../../services/utils.service';
 import { CardComponent } from '../../../shared/components/card/card.component';
@@ -16,7 +16,7 @@ import { FormFieldComponent } from '../../../shared/components/form-field/form-f
 })
 export class UsuarioFormComponent implements OnInit {
   private utilsService = inject(UtilsService);
-  private usuarioService = inject(UsuarioService);
+  private authApiService = inject(AuthApiService);
   private fb = inject(FormBuilder);
 
   @Input() usuario: UsuarioFormData = {
@@ -112,9 +112,9 @@ export class UsuarioFormComponent implements OnInit {
 
   private cargarRoles() {
     this.loadingRoles.set(true);
-    this.usuarioService.getRolesSelectList().subscribe({
-      next: (roles) => {
-        this.roles.set(roles.data);
+    this.authApiService.getUsuarioRoles().subscribe({
+      next: (res) => {
+        this.roles.set((res.data ?? []) as RolItemDto[]);
         this.loadingRoles.set(false);
         // Habilitar el campo rolId cuando se carguen los roles
         this.usuarioForm.get('rolId')?.enable();

@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 
 @Component({
   selector: 'app-filter-activo',
@@ -7,13 +7,13 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
     <button
       type="button"
       class="fav-pill"
-      [class.fav-pill--on]="value"
+      [class.fav-pill--on]="value()"
       (click)="toggle()"
-      [attr.aria-pressed]="value"
-      [title]="value ? 'Mostrando solo activos' : 'Mostrando todos'"
+      [attr.aria-pressed]="value()"
+      [title]="value() ? 'Mostrando solo activos' : 'Mostrando todos'"
     >
-      <i class="fav-pill__icon" [class]="value ? 'fa-solid fa-circle-check' : 'fa-regular fa-circle'"></i>
-      <span class="fav-pill__label">{{ label }}</span>
+      <i class="fav-pill__icon" [class]="value() ? 'fa-solid fa-circle-check' : 'fa-regular fa-circle'"></i>
+      <span class="fav-pill__label">{{ label() }}</span>
     </button>
   `,
   styles: [`
@@ -64,12 +64,12 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
   `],
 })
 export class FilterActivoComponent {
-  @Input() value: boolean | undefined = true;
-  @Input() label   = 'Solo activos';
-  @Input() inputId = 'filter-activo';
+  value   = input<boolean | undefined>(true);
+  label   = input('Solo activos');
+  inputId = input('filter-activo');
 
-  @Output() valueChange = new EventEmitter<boolean>();
-  @Output() changed     = new EventEmitter<boolean>();
+  valueChange = output<boolean>();
+  changed     = output<boolean>();
 
   toggle() {
     const next = !this.value;

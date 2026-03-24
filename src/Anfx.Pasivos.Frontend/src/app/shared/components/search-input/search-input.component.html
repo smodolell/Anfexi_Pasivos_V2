@@ -1,5 +1,5 @@
 <div class="si-wrapper" [class.si-focused]="focused">
-  <i class="fa-solid fa-magnifying-glass si-icon" aria-hidden="true"></i>
+  <i class="fas fa-search si-icon" aria-hidden="true"></i>
   <input
     #inputRef
     class="si-input"
@@ -16,7 +16,7 @@
   />
   @if (term) {
     <button class="si-clear" type="button" aria-label="Limpiar búsqueda" (click)="clear()">
-      <i class="fa-solid fa-xmark"></i>
+      <i class="fas fa-times"></i>
     </button>
   }
 </div>

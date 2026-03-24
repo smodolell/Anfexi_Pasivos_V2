@@ -1,5 +1,4 @@
 using Anfx.Pasivos.Application.Features.Sistema.DTOs;
-using Azure.Core;
 
 namespace Anfx.Pasivos.Application.Features.Sistema.Queries;
 

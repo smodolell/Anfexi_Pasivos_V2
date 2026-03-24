@@ -1,0 +1,99 @@
+<div class="input-datepicker-container">
+  <!-- Input Field -->
+  <div class="input-wrapper">
+    <input 
+      #dateInput
+      type="text" 
+      class="form-control date-input"
+      [class.is-invalid]="isFieldInvalid"
+      [placeholder]="placeholder"
+      [readonly]="readonly"
+      [disabled]="disabled"
+      [value]="inputValue()"
+      (input)="onInputChange($event)"
+      (keydown)="onKeyDown($event)"
+      (focus)="onInputFocus()"
+      (blur)="onInputBlur()"
+      maxlength="10">
+    
+    <!-- Calendar Icon -->
+    <div class="calendar-icon" 
+         (click)="toggleCalendar()"
+         [class.disabled]="disabled || readonly">
+      <i class="fa fa-calendar"></i>
+    </div>
+  </div>
+
+  <!-- Error Message -->
+  @if (isFieldInvalid && getFieldError()) {
+    <div class="invalid-feedback d-block">
+      {{ getFieldError() }}
+    </div>
+  }
+
+  <!-- Calendar Dropdown -->
+  @if (isOpen()) {
+    <div class="calendar-dropdown show"
+         [style.top]="dropdownStyle().top"
+         [style.left]="dropdownStyle().left">
+    
+    <!-- Calendar Header -->
+    <div class="calendar-header">
+      <div class="month-year">{{ getMonthYearText() }}</div>
+      <div class="navigation-buttons">
+        <button type="button" 
+                class="nav-btn" 
+                (click)="navigateMonth('prev')"
+                [disabled]="disabled">
+          <i class="fa fa-chevron-left"></i>
+        </button>
+        <button type="button" 
+                class="nav-btn" 
+                (click)="navigateMonth('next')"
+                [disabled]="disabled">
+          <i class="fa fa-chevron-right"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Days of Week -->
+    <div class="days-header">
+      @for (day of weekDays; track day) {
+        <div class="day-header">{{ day }}</div>
+      }
+    </div>
+
+    <!-- Calendar Grid -->
+    <div class="calendar-grid" [class.with-footer]="showFooter">
+      @for (day of getCalendarDays(); track day.getTime()) {
+        <div class="calendar-day"
+             [class.other-month]="!isCurrentMonth(day)"
+             [class.selected]="isSelected(day)"
+             [class.today]="isToday(day)"
+             [class.disabled]="isDisabled(day)"
+             (click)="!isDisabled(day) && selectDate(day)">
+          {{ day.getDate() }}
+        </div>
+      }
+    </div>
+
+    <!-- Calendar Footer -->
+    @if (showFooter) {
+      <div class="calendar-footer">
+        <button type="button" 
+                class="footer-btn clear-btn" 
+                (click)="clearDate()"
+                [disabled]="disabled">
+          Borrar
+        </button>
+        <button type="button" 
+                class="footer-btn today-btn" 
+                (click)="selectToday()"
+                [disabled]="disabled">
+          Hoy
+        </button>
+      </div>
+    }
+    </div>
+  }
+</div>

@@ -20,4 +20,18 @@ public interface IDatabaseService
         CancellationToken cancellationToken = default
     );
 
+    Task<List<DetallePagoMovimientoDto>> GetDetallePagosAplicadosAMovAsync(
+        int idMovimiento,
+        CancellationToken cancellationToken = default
+    );
+
+    Task<List<DetalleMovimientoPagoDto>> GetDetalleAplicacionDePagoAsync(
+         int idPago,
+         CancellationToken cancellationToken = default
+     );
+
+    Task<List<MovimientoItemDto>> GetDetalleCargosAsync(
+            int idContratoPasivo,
+            CancellationToken cancellationToken = default
+    );
 }

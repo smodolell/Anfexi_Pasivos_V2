@@ -1,12 +1,11 @@
-import { Component, Input, OnInit, forwardRef, inject, signal, OnDestroy } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormControl } from '@angular/forms';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, DestroyRef, Input, OnInit, forwardRef, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormsModule } from '@angular/forms';
+
 import { ColoniaService } from '../../../services/catalogos/colonia.service';
 import { UtilsService } from '../../../services/utils.service';
 import { SelectItemDto } from '../../../../types/selectitem.dto';
-import { ColoniaComponentDto } from '../../../../types/catalogos/colonia.dto';
-import { debounceTime, distinctUntilChanged, switchMap, takeUntil, Subject, timer } from 'rxjs';
+import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 
 export interface ColoniaModel {
   codigoPostal: string;
@@ -18,7 +17,8 @@ export interface ColoniaModel {
 @Component({
   selector: 'app-colonia-auto',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [FormsModule],
   templateUrl: './colonia-auto-complete.component.html',
   providers: [
     {
@@ -28,18 +28,18 @@ export interface ColoniaModel {
     }
   ]
 })
-export class ColoniaAutoCompleteComponent implements OnInit, OnDestroy, ControlValueAccessor {
-  @Input() required: boolean = false;
-  @Input() codigoPostalRequired: boolean = false;
-  @Input() labelCodigoPostal: string = 'Código Postal';
-  @Input() labelEstado: string = 'Estado';
-  @Input() labelMunicipio: string = 'Municipio';
-  @Input() labelColonia: string = 'Colonia';
+export class ColoniaAutoCompleteComponent implements OnInit, ControlValueAccessor {
+  @Input() required = false;
+  @Input() codigoPostalRequired = false;
+  @Input() labelCodigoPostal = 'Código Postal';
+  @Input() labelEstado = 'Estado';
+  @Input() labelMunicipio = 'Municipio';
+  @Input() labelColonia = 'Colonia';
 
-  private coloniaService = inject(ColoniaService);
-  private utilsService = inject(UtilsService);
-  private destroy$ = new Subject<void>();
-  private codigoPostalDebounce$ = new Subject<string>();
+  private readonly coloniaService          = inject(ColoniaService);
+  private readonly utilsService            = inject(UtilsService);
+  private readonly destroyRef              = inject(DestroyRef);
+  private readonly codigoPostalDebounce$   = new Subject<string>();
 
   // Signals para el estado del componente
   codigoPostal = signal<string>('');
@@ -48,28 +48,23 @@ export class ColoniaAutoCompleteComponent implements OnInit, OnDestroy, ControlV
   coloniaId = signal<number | null>(null);
   colonias = signal<SelectItemDto[]>([]);
   codigosPostales = signal<SelectItemDto[]>([]);
-
+  
   // Estados de carga
   loadingCodigosPostales = signal<boolean>(false);
   loadingColonias = signal<boolean>(false);
   loadingById = signal<boolean>(false);
-
+  
   // Estados de autocompletado
   showCodigosPostales = signal<boolean>(false);
   showColonias = signal<boolean>(false);
-
+  
   // ControlValueAccessor
-  private onChange = (value: ColoniaModel) => {};
+  private onChange = (_value: ColoniaModel) => {};
   private onTouched = () => {};
 
   ngOnInit(): void {
     this.setupCodigoPostalAutocomplete();
     this.setupCodigoPostalDebounce();
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 
   private setupCodigoPostalAutocomplete(): void {
@@ -83,15 +78,14 @@ export class ColoniaAutoCompleteComponent implements OnInit, OnDestroy, ControlV
       .pipe(
         debounceTime(300),
         distinctUntilChanged(),
-        takeUntil(this.destroy$)
+        takeUntilDestroyed(this.destroyRef)
       )
       .subscribe(value => {
         if (value && value.length >= 3) {
           this.loadingCodigosPostales.set(true);
           this.showCodigosPostales.set(true);
-
+          
           this.coloniaService.getCodigosPostales(value)
-            .pipe(takeUntil(this.destroy$))
             .subscribe({
               next: (response) => {
                 this.loadingCodigosPostales.set(false);
@@ -101,10 +95,8 @@ export class ColoniaAutoCompleteComponent implements OnInit, OnDestroy, ControlV
                   this.codigosPostales.set([]);
                 }
               },
-              error: (error) => {
+              error: () => {
                 this.loadingCodigosPostales.set(false);
-                this.utilsService.showNotification('Error', 'Error al cargar códigos postales', 'error');
-                console.error('Error:', error);
               }
             });
         } else {
@@ -114,11 +106,11 @@ export class ColoniaAutoCompleteComponent implements OnInit, OnDestroy, ControlV
       });
   }
 
-  onCodigoPostalInput(event: any): void {
-    const value = event.target.value;
+  onCodigoPostalInput(event: Event): void {
+    const value = (event.target as HTMLInputElement).value;
     this.codigoPostal.set(value);
     this.updateModel();
-
+    
     // Emitir valor para el debounce
     this.codigoPostalDebounce$.next(value);
   }
@@ -135,8 +127,8 @@ export class ColoniaAutoCompleteComponent implements OnInit, OnDestroy, ControlV
     }, 200);
   }
 
-  onColoniaSelect(event: any): void {
-    const coloniaId = parseInt(event.target.value);
+  onColoniaSelect(event: Event): void {
+    const coloniaId = parseInt((event.target as HTMLSelectElement).value);
     this.coloniaId.set(coloniaId);
     this.updateModel();
   }
@@ -156,10 +148,8 @@ export class ColoniaAutoCompleteComponent implements OnInit, OnDestroy, ControlV
           this.utilsService.showNotification('Error', 'Error al cargar colonias', 'error');
         }
       },
-      error: (error) => {
+      error: () => {
         this.loadingColonias.set(false);
-        this.utilsService.showNotification('Error', 'Error de conexión al cargar colonias', 'error');
-        console.error('Error:', error);
       }
     });
   }
@@ -180,10 +170,8 @@ export class ColoniaAutoCompleteComponent implements OnInit, OnDestroy, ControlV
           this.utilsService.showNotification('Error', 'Error al cargar datos de colonia', 'error');
         }
       },
-      error: (error) => {
+      error: () => {
         this.loadingById.set(false);
-        this.utilsService.showNotification('Error', 'Error de conexión al cargar datos de colonia', 'error');
-        console.error('Error:', error);
       }
     });
   }
@@ -227,7 +215,7 @@ export class ColoniaAutoCompleteComponent implements OnInit, OnDestroy, ControlV
     this.onTouched = fn;
   }
 
-  setDisabledState(isDisabled: boolean): void {
+  setDisabledState(_isDisabled: boolean): void {
     // Implementar si es necesario
   }
 

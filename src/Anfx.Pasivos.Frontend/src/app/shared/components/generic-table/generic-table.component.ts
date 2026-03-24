@@ -34,10 +34,10 @@ export class GenericTableComponent {
   actions = input<TableAction[]>([]);
 
   // ── Paginación ───────────────────────────────────────────────
-  totalCount           = input(0);
-  currentPage          = input(1);
-  totalPages           = input(1);
-  pageSize             = input(10);
+  totalCount          = input(0);
+  currentPage         = input(1);
+  totalPages          = input(1);
+  pageSize            = input(10);
   showPageSizeSelector = input(false);
 
   // ── Búsqueda ─────────────────────────────────────────────────
@@ -47,15 +47,15 @@ export class GenericTableComponent {
 
   // ── Empty state ──────────────────────────────────────────────
   emptyMessage = input('No hay registros disponibles');
-  emptyIcon    = input('fa-solid fa-box-open');
+  emptyIcon    = input('fas fa-box-open');
 
   // ── Ordenamiento ─────────────────────────────────────────────
   sortColumn    = input<string | null>(null);
   sortDirection = input<SortDirection>('asc');
 
   // ── Toolbar ──────────────────────────────────────────────────
-  showNew       = input(true);
-  showExport    = input(false);
+  showNew      = input(true);
+  showExport   = input(false);
   exportLoading = input(false);
 
   // ── Skeleton ─────────────────────────────────────────────────

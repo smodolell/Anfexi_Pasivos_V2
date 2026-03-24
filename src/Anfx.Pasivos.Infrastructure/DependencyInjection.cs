@@ -40,6 +40,7 @@ public static class DependencyInjection
         services.AddScoped<IConsecutivoService, ConsecutivoService>();
         services.AddScoped<IPaginator, Paginator>();
         services.AddScoped<IDynamicSorter, DynamicSorter>();
+        services.AddScoped<IUserContext, UserContext>();
         services.AddScoped<IJwtService, JwtService>();
         services.AddScoped<IDatabaseService, DatabaseService>();
         services.AddScoped<IExcelExportService, ExcelExportService>();

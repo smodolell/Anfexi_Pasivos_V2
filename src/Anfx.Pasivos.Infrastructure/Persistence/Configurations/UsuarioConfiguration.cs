@@ -12,47 +12,46 @@ public class UsuarioConfiguration : IEntityTypeConfiguration<Usuario>
         builder.ToTable("Usuario");
 
         // Llave primaria - Asumiendo que agregarás una propiedad Id
-        builder.Property(e => e.Id)
+        builder.Property(e => e.IdUsuario)
             .HasColumnName("IdUsuario");
 
-        builder.HasKey(e => e.Id);
+        builder.HasKey(e => e.IdUsuario);
 
         // Propiedades
         builder.Property(e => e.NombreCompleto)
-            .HasMaxLength(200)
-            .IsRequired();
+            .HasMaxLength(200);
+            //.IsRequired();
 
         builder.Property(e => e.Email)
-            .HasMaxLength(150)
-            .IsRequired();
+            .HasMaxLength(150);
+            //.IsRequired();
 
-        builder.Property(e => e.UsuarioNombre)
+        builder.Property(e => e.UserName)
             .HasColumnName("UserName")
             .HasMaxLength(50)
             .IsRequired();
 
-        builder.Property(e => e.Contrasena)
+        builder.Property(e => e.UserPass)
             .HasColumnName("UserPass")
             .HasMaxLength(500)
             .IsRequired();
 
-        builder.Property(e => e.FechaRegistro)
+        builder.Property(e => e.FechaRegistracion)
             .HasColumnName("FechaRegistracion")
-            .IsRequired()
             .HasDefaultValueSql("GETDATE()");
 
         builder.Property(e => e.Activo)
-            .IsRequired()
+            //.IsRequired()
             .HasDefaultValue(true);
 
-        builder.Property(e => e.RolId)
-            .HasColumnName("IdRol")
-            .IsRequired();
+        builder.Property(e => e.IdRol)
+            .HasColumnName("IdRol");
+            
 
         // Relación con Rol (FK explícita porque Rol.IdRol no sigue la convención Id)
         builder.HasOne(u => u.Rol)
             .WithMany(r => r.Usuarios)
-            .HasForeignKey(u => u.RolId)
+            .HasForeignKey(u => u.IdRol)
             .HasPrincipalKey(r => r.IdRol)
             .OnDelete(DeleteBehavior.Restrict);
 
@@ -61,11 +60,11 @@ public class UsuarioConfiguration : IEntityTypeConfiguration<Usuario>
             .IsUnique()
             .HasDatabaseName("IX_Usuario_Email");
 
-        builder.HasIndex(e => e.UsuarioNombre)
+        builder.HasIndex(e => e.UserPass)
             .IsUnique()
             .HasDatabaseName("IX_Usuario_UsuarioNombre");
 
-        builder.HasIndex(e => e.RolId)
+        builder.HasIndex(e => e.IdRol)
             .HasDatabaseName("IX_Usuario_RolId");
 
         builder.HasIndex(e => e.Activo)

@@ -15,6 +15,38 @@ export const configuracionRoutes: Routes = [
           ),
       },
       {
+        path: 'fondeador/:id/lineas-credito',
+        data: { title: 'Líneas de Crédito' },
+        loadComponent: () =>
+          import('../../pages/configuracion/fondeador/linea-credito-list.component').then(
+            (m) => m.LineaCreditoListComponent
+          ),
+      },
+      {
+        path: 'fondeador/:id/lineas-credito/:lineaId/tipos-credito',
+        data: { title: 'Tipos de Crédito' },
+        loadComponent: () =>
+          import('../../pages/configuracion/fondeador/tipo-credito-linea.component').then(
+            (m) => m.TipoCreditoLineaComponent
+          ),
+      },
+      {
+        path: 'fondeador/:id/lineas-credito/new',
+        data: { title: 'Nueva Línea de Crédito' },
+        loadComponent: () =>
+          import('../../pages/configuracion/fondeador/linea-credito-form.component').then(
+            (m) => m.LineaCreditoFormComponent
+          ),
+      },
+      {
+        path: 'fondeador/:id/lineas-credito/edit/:lineaId',
+        data: { title: 'Editar Línea de Crédito' },
+        loadComponent: () =>
+          import('../../pages/configuracion/fondeador/linea-credito-form.component').then(
+            (m) => m.LineaCreditoFormComponent
+          ),
+      },
+      {
         path: 'fondeador/new',
         data: { title: 'Nuevo Fondeador' },
         loadComponent: () =>

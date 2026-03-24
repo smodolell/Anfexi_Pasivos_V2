@@ -50,6 +50,24 @@ builder.Services.AddAuthentication(options =>
         ValidAudience = jwtSettings["Audience"],
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey ?? ""))
     };
+    options.Events = new JwtBearerEvents
+    {
+        OnChallenge = async context =>
+        {
+            context.HandleResponse(); // Evita el JSON RFC 7807 por defecto
+            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+            context.Response.ContentType = "application/json";
+
+            await context.Response.WriteAsJsonAsync(new ApiResponseDto<object>
+            {
+                Success = false,
+                Message = "No está autorizado. El token es inválido o ha expirado.",
+                StatusCode = StatusCodes.Status401Unauthorized,
+                Timestamp = DateTime.UtcNow,
+                TraceId = context.HttpContext.TraceIdentifier
+            });
+        }
+    };
 });
 
 builder.Services.AddAuthorization();
@@ -74,7 +92,7 @@ builder.Services.AddCors(options =>
         });
 });
 var app = builder.Build();
-
+//app.UseExceptionHandler(options => { });
 app.UseExceptionHandler();
 app.UseStatusCodePages();
 
@@ -97,7 +115,7 @@ if (app.Environment.IsDevelopment())
 #if (!UseAspire)
 app.UseHealthChecks("/health");
 #endif
-app.UseExceptionHandler(options => { });
+
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();

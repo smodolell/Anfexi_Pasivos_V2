@@ -88,10 +88,10 @@ public static class ResultExtensions
 
     private static IResult HandleInvalid<T>(Result<T> result)
     {
+      
         var errors = result.ValidationErrors
-            .Select(e => $"{e.Identifier}: {e.ErrorMessage}")
-            .ToList();
-
+            .Select(e => string.IsNullOrWhiteSpace(e.Identifier) ? e.ErrorMessage : $"{e.Identifier}: {e.ErrorMessage}")
+    .ToList();
         if (!errors.Any())
         {
             errors = GetErrorsList(result);

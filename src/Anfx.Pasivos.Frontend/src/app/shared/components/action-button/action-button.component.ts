@@ -9,7 +9,7 @@ export type ActionVariant = 'edit' | 'delete' | 'config' | 'info' | 'warning';
   template: `
     <button
       type="button"
-      [class]="'action-btn ' + variant() + '-btn'"
+      [class]="computedClass"
       [title]="title()"
       [disabled]="disabled()"
       (click)="onClick()"
@@ -20,11 +20,17 @@ export type ActionVariant = 'edit' | 'delete' | 'config' | 'info' | 'warning';
 })
 export class ActionButtonComponent {
   icon     = input('');
-  variant  = input<ActionVariant>('edit');
+  variant  = input<ActionVariant | undefined>(undefined);
+  btnClass = input<string | undefined>(undefined);
   title    = input('');
   disabled = input(false);
 
   clicked = output<void>();
+
+  get computedClass(): string {
+    if (this.btnClass()) return 'action-btn ' + this.btnClass();
+    return 'action-btn ' + (this.variant() ?? 'edit') + '-btn';
+  }
 
   onClick(): void {
     if (!this.disabled()) this.clicked.emit();

@@ -1,76 +1,72 @@
 import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
+import { ToastrService } from 'ngx-toastr';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UtilsService {
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
+  constructor(
+    @Inject(PLATFORM_ID) private platformId: Object,
+    private toastr: ToastrService,
+  ) {}
 
-  // Notificaciones
+  // ── Notificaciones ────────────────────────────────────────
   showNotification(title: string, message: string, type: 'success' | 'error' | 'warning' | 'info' = 'info') {
-    if (isPlatformBrowser(this.platformId) && (window as any).showNotification) {
-      (window as any).showNotification(title, message, type);
+    switch (type) {
+      case 'success': this.toastr.success(message, title); break;
+      case 'error':   this.toastr.error(message, title);   break;
+      case 'warning': this.toastr.warning(message, title); break;
+      default:        this.toastr.info(message, title);    break;
     }
   }
 
-  // Preloader
+  // ── Preloader ─────────────────────────────────────────────
   showPreloader() {
-    if (isPlatformBrowser(this.platformId) && (window as any).showPreloader) {
-      (window as any).showPreloader();
-    }
+    if (!isPlatformBrowser(this.platformId)) return;
+    const el = document.querySelector<HTMLElement>('.preloader');
+    if (el) { el.style.opacity = '1'; el.style.display = 'block'; }
   }
 
   hidePreloader() {
-    if (isPlatformBrowser(this.platformId) && (window as any).hidePreloader) {
-      (window as any).hidePreloader();
+    if (!isPlatformBrowser(this.platformId)) return;
+    const el = document.querySelector<HTMLElement>('.preloader');
+    if (el) {
+      el.style.opacity = '0';
+      setTimeout(() => { el.style.display = 'none'; }, 500);
     }
   }
 
-  // Body classes
+  // ── Body classes ──────────────────────────────────────────
   addBodyClass(className: string) {
-    if (isPlatformBrowser(this.platformId) && (window as any).addBodyClass) {
-      (window as any).addBodyClass(className);
-    }
+    if (isPlatformBrowser(this.platformId)) document.body.classList.add(className);
   }
 
   removeBodyClass(className: string) {
-    if (isPlatformBrowser(this.platformId) && (window as any).removeBodyClass) {
-      (window as any).removeBodyClass(className);
-    }
+    if (isPlatformBrowser(this.platformId)) document.body.classList.remove(className);
   }
 
-  // Storage
-  setLocalStorage(key: string, value: any): void {
-    if (isPlatformBrowser(this.platformId)) {
-      try {
-        localStorage.setItem(key, JSON.stringify(value));
-      } catch (error) {
-        console.error('Error saving to localStorage:', error);
-      }
-    }
+  // ── Storage ───────────────────────────────────────────────
+  setLocalStorage(key: string, value: unknown): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+    try { localStorage.setItem(key, JSON.stringify(value)); }
+    catch (e) { console.error('Error saving to localStorage:', e); }
   }
 
   getLocalStorage<T>(key: string, defaultValue?: T): T | null {
-    if (isPlatformBrowser(this.platformId)) {
-      try {
-        const item = localStorage.getItem(key);
-        return item ? JSON.parse(item) : defaultValue || null;
-      } catch (error) {
-        console.error('Error reading from localStorage:', error);
-        return defaultValue || null;
-      }
+    if (!isPlatformBrowser(this.platformId)) return defaultValue ?? null;
+    try {
+      const item = localStorage.getItem(key);
+      return item ? JSON.parse(item) : defaultValue ?? null;
+    } catch (e) {
+      console.error('Error reading from localStorage:', e);
+      return defaultValue ?? null;
     }
-    return defaultValue || null;
   }
 
   removeLocalStorage(key: string): void {
-    if (isPlatformBrowser(this.platformId)) {
-      try {
-        localStorage.removeItem(key);
-      } catch (error) {
-        console.error('Error removing from localStorage:', error);
-      }
-    }
+    if (!isPlatformBrowser(this.platformId)) return;
+    try { localStorage.removeItem(key); }
+    catch (e) { console.error('Error removing from localStorage:', e); }
   }
 }

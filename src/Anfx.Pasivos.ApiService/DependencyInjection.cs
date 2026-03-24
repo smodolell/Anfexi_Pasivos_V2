@@ -86,9 +86,11 @@ public static class DependencyInjection
             var apiXml = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
             c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, apiXml));
 
+            c.SchemaFilter<ApiResponseSchemaFilter>();
         });
 
         builder.Services.AddFluentValidationRulesToSwagger();
+
     }
     public static void AddWebServices2(this IHostApplicationBuilder builder)
     {

@@ -1,0 +1,149 @@
+<div class="container-fluid mt-4">
+
+  <!-- Breadcrumb -->
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">Procesos</li>
+      <li class="breadcrumb-item active">Vencimiento</li>
+    </ol>
+  </nav>
+
+  <div class="card shadow-sm border-0 mt-3">
+    <div class="card-header bg-white py-3">
+      <h5 class="mb-0 text-primary">
+        <i class="fa-solid fa-calendar-check me-2"></i>Procesa Vencimientos de Contratos Pasivos
+      </h5>
+    </div>
+
+    <div class="card-body p-4">
+      <form [formGroup]="form">
+        <div class="row g-3">
+
+          <!-- Fondeador -->
+          <div class="col-md-3">
+            <label class="form-label fw-semibold">Fondeador</label>
+            <select class="form-select" formControlName="idFondeador">
+              <option [ngValue]="null">-- Todos --</option>
+              @for (f of fondeadores(); track f.value) {
+                <option [ngValue]="f.value">{{ f.text }}</option>
+              }
+            </select>
+          </div>
+
+          <!-- Contrato -->
+          <div class="col-md-3">
+            <label class="form-label fw-semibold">Contrato</label>
+            @if (cargandoContratos()) {
+              <div class="d-flex align-items-center gap-2 text-muted small mt-2">
+                <span class="spinner-border spinner-border-sm"></span>
+                <span>Cargando contratos...</span>
+              </div>
+            } @else {
+              <select class="form-select" formControlName="idContrato">
+                <option [ngValue]="null">
+                  @if (!form.get('idFondeador')?.value) {
+                    -- Seleccione primero un fondeador --
+                  } @else {
+                    -- Todos --
+                  }
+                </option>
+                @for (c of contratos(); track c.value) {
+                  <option [ngValue]="c.value">{{ c.text }}</option>
+                }
+              </select>
+            }
+          </div>
+
+          <!-- Fecha Inicial -->
+          <div class="col-md-3">
+            <label class="form-label fw-semibold">
+              Fecha Inicial <span class="text-danger">*</span>
+            </label>
+            <input
+              type="date"
+              class="form-control"
+              [class.is-invalid]="isInvalid('fechaInicial')"
+              formControlName="fechaInicial"
+            />
+            @if (isInvalid('fechaInicial')) {
+              <div class="invalid-feedback">Ingrese la fecha inicial.</div>
+            }
+          </div>
+
+          <!-- Fecha Final -->
+          <div class="col-md-3">
+            <label class="form-label fw-semibold">
+              Fecha Final <span class="text-danger">*</span>
+            </label>
+            <input
+              type="date"
+              class="form-control"
+              [class.is-invalid]="isInvalid('fechaFinal')"
+              formControlName="fechaFinal"
+            />
+            @if (isInvalid('fechaFinal')) {
+              <div class="invalid-feedback">Ingrese la fecha final.</div>
+            }
+          </div>
+
+          <!-- Botones -->
+          <div class="col-12 d-flex gap-2 mt-2">
+            <button
+              type="button"
+              class="btn btn-primary"
+              [disabled]="procesando()"
+              (click)="onProcesar()">
+              @if (procesando()) {
+                <span class="spinner-border spinner-border-sm me-2"></span>Procesando...
+              } @else {
+                <i class="fa-solid fa-play me-2"></i>Procesar
+              }
+            </button>
+            <button
+              type="button"
+              class="btn btn-outline-secondary"
+              [disabled]="procesando()"
+              (click)="onLimpiar()">
+              <i class="fa-solid fa-broom me-2"></i>Limpiar
+            </button>
+          </div>
+
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Resultado -->
+  @if (totalProcesados() !== null) {
+    <div class="card shadow-sm border-0 mt-4 border-start border-4 border-success">
+      <div class="card-body d-flex align-items-center gap-3 py-3">
+        <div class="rounded-circle bg-success bg-opacity-10 p-3">
+          <i class="fa-solid fa-circle-check text-success fa-lg"></i>
+        </div>
+        <div>
+          <div class="fw-semibold text-success">Proceso completado</div>
+          <div class="text-muted small">
+            Total de vencimientos procesados:
+            <span class="fw-bold text-dark fs-5 ms-1">{{ totalProcesados() }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
+</div>
+
+<app-confirm-modal
+  #confirmModal
+  title="Confirmar Proceso de Vencimientos"
+  message="¿Está seguro que desea ejecutar el proceso de vencimientos con los parámetros indicados?"
+  warningText="Esta operación modificará los registros de los contratos en el rango de fechas seleccionado."
+  icon="fa-solid fa-calendar-check"
+  confirmLabel="Procesar"
+  confirmIcon="fa-solid fa-play"
+  confirmVariant="primary"
+  cancelLabel="Cancelar"
+  [confirmLoading]="procesando()"
+  (confirmed)="ejecutarProceso()"
+  (cancelled)="confirmModal.hide()">
+</app-confirm-modal>

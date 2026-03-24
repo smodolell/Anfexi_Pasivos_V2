@@ -24,6 +24,7 @@ export class SearchInputComponent implements OnInit {
   placeholder = input('Buscar...');
   value       = input('');
   debounceMs  = input(400);
+  /** Texto para aria-label del input (accesibilidad) */
   label       = input('Buscar');
 
   searched = output<string>();

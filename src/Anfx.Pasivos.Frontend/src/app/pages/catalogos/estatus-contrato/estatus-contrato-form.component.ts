@@ -1,10 +1,11 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CatalogosService } from '../../../../api/services/catalogos.service';
 import { CardComponent } from '../../../shared/components/card/card.component';
 import { EstatusContratoDto } from '../../../../api/models/models';
+import { UtilsService } from '../../../services/utils.service';
 
 @Component({
   selector: 'app-estatus-contrato-form',
@@ -18,6 +19,8 @@ export class EstatusContratoFormComponent implements OnInit {
   estatusId = signal<number | null>(null);
 
   estatusForm: FormGroup;
+
+  private readonly utilsService = inject(UtilsService);
 
   constructor(
     private fb: FormBuilder,
@@ -80,12 +83,13 @@ export class EstatusContratoFormComponent implements OnInit {
   }
 
   private handleSuccess(message: string): void {
-    alert(message);
+    this.isLoading.set(false);
+    this.utilsService.showNotification('Éxito', message, 'success');
     this.router.navigate(['/catalogos/estatus-contrato']);
   }
 
   private handleError(): void {
     this.isLoading.set(false);
-    alert('Error al procesar la solicitud');
+    this.utilsService.showNotification('Error', 'Error al procesar la solicitud', 'error');
   }
 }

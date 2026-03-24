@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { LayoutService } from '../../../services/layout.service';
 
 @Component({
@@ -8,7 +8,7 @@ import { LayoutService } from '../../../services/layout.service';
     <div class="dashboard">
       <h1>Dashboard de Administración</h1>
       <p>Bienvenido al panel de control. Esta página usa el layout de administración.</p>
-      
+
       <div class="stats-grid">
         <div class="stat-card">
           <div class="stat-number">1,234</div>
@@ -27,7 +27,7 @@ import { LayoutService } from '../../../services/layout.service';
           <div class="stat-label">Ingresos del mes</div>
         </div>
       </div>
-      
+
       <div class="recent-activity">
         <h2>Actividad reciente</h2>
         <div class="activity-list">
@@ -119,8 +119,7 @@ import { LayoutService } from '../../../services/layout.service';
   `]
 })
 export class DashboardComponent implements OnInit {
-  constructor(private layoutService: LayoutService) {}
-
+  private readonly layoutService = inject(LayoutService);
   ngOnInit() {
     // Cambiar el título del layout cuando se carga este componente
     this.layoutService.setTitle('Dashboard de Administración');

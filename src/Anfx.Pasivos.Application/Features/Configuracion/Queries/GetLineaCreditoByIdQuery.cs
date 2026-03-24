@@ -22,7 +22,6 @@ internal class GetLineaCreditoByIdQueryHandler(
             var lineaCredito = await _context.PSV_LineaCredito
                 .Include(x => x.PSV_Fondeador)
                 .Include(x => x.SB_TipoMoneda)
-                .Include(x => x.Tasa)
                 .SingleOrDefaultAsync(x => x.IdLineaCredito == request.Id, cancellationToken);
 
             if (lineaCredito == null)

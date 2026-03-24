@@ -61,7 +61,7 @@ public class SaveTiposCreditoByIdLineaCreditoCommandValidator : AbstractValidato
             return true;
 
         var ids = model.Select(x => x.IdTipoCredito).Distinct().ToList();
-        var existingIds = await _context.PSV_TipoCredito
+        var existingIds = await _context.TipoCredito
             .Where(x => ids.Contains(x.IdTipoCredito))
             .Select(x => x.IdTipoCredito)
             .ToListAsync(cancellationToken);

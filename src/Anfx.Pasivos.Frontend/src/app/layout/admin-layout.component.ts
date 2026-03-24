@@ -65,10 +65,7 @@ export class AdminLayoutComponent implements OnInit, OnDestroy {
 
     if (globalThis.window !== undefined) {
       this.addBodyClasses();
-      this.loadScriptsSequentially([
-        'assets/dist/js/perfect-scrollbar.jquery.min.js',
-        'assets/dist/js/waves.js',
-      ]);
+      this.loadScriptsSequentially(['assets/dist/js/waves.js']);
       this.applyMiniSidebar(window.innerWidth < 1170);
     }
   }

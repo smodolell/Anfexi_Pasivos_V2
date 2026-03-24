@@ -13,7 +13,7 @@ import { TablaAmortizaItemDto } from './tablaAmortizaItemDto';
 export interface TablaAmortizaItemDtoListApiResponseDto { 
     success?: boolean;
     message?: string | null;
-    data?: Array<TablaAmortizaItemDto> | null;
+    data?: Array<TablaAmortizaItemDto>;
     errors?: Array<string> | null;
     statusCode?: number;
     timestamp?: string;

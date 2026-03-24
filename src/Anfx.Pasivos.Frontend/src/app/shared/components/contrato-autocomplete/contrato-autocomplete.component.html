@@ -1,0 +1,68 @@
+<div class="position-relative">
+  @if (label()) {
+    <label class="form-label fw-semibold">
+      {{ label() }}
+      @if (required()) {
+        <span class="text-danger">*</span>
+      }
+    </label>
+  }
+
+  <div class="input-group">
+    <span class="input-group-text">
+      @if (loading()) {
+        <span class="spinner-border spinner-border-sm text-primary"></span>
+      } @else {
+        <i class="fa-solid fa-magnifying-glass text-muted"></i>
+      }
+    </span>
+
+    <input
+      type="text"
+      class="form-control"
+      [value]="inputValue()"
+      [placeholder]="placeholder()"
+      [disabled]="isDisabled() || disabled()"
+      autocomplete="off"
+      (input)="onInput($event)"
+      (focus)="onFocus()"
+      (blur)="onBlur()"
+      (keyup.enter)="onEnter()"
+    />
+
+    @if (inputValue()) {
+      <button
+        type="button"
+        class="btn btn-outline-secondary"
+        tabindex="-1"
+        (click)="clear()"
+        title="Limpiar"
+      >
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    }
+  </div>
+
+  <!-- Dropdown de sugerencias -->
+  @if (showDropdown() && sugerencias().length > 0) {
+    <ul
+      class="list-group shadow-sm position-absolute w-100 mt-1"
+      style="z-index: 1050; max-height: 220px; overflow-y: auto;"
+    >
+      @for (item of sugerencias(); track item.value) {
+        <li class="list-group-item list-group-item-action py-2 px-3" style="cursor: pointer;">
+          <button
+            type="button"
+            class="btn btn-link p-0 text-start w-100 text-decoration-none text-dark"
+            (mousedown)="onSelect(item)"
+          >
+            <span class="fw-semibold">{{ item.value }}</span>
+            @if (item.label && item.label !== item.value) {
+              <span class="text-muted ms-2 small">{{ item.label }}</span>
+            }
+          </button>
+        </li>
+      }
+    </ul>
+  }
+</div>

@@ -38,8 +38,8 @@ internal class GetTiposCreditoByIdLineaCreditoQueryHandler : IQueryHandler<GetTi
                 .ToDictionaryAsync(x => x.IdTipoCredito, x => x.Seleccionado, cancellationToken);
 
             // 3. Obtener tipos de crédito activos
-            var tiposCredito = await _context.PSV_TipoCredito
-                .Where(x => x.Activo)
+            var tiposCredito = await _context.TipoCredito
+                //.Where(x => x.Activo)
                 .ToListAsync(cancellationToken);
 
             // 4. Mapear y asignar seleccionado

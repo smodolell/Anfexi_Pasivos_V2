@@ -38,7 +38,21 @@
       "Bash(grep -r \"@import.*icon\\\\|@import.*font\" /e/profuturo/Profuturo_Alerta_Frontend/src --include=*.scss --include=*.css)",
       "Bash(grep -r \"class=fa\\\\|class=ti-\\\\|class=icon\" /e/profuturo/Profuturo_Alerta_Frontend/src --include=*.html)",
       "Bash(find /e/profuturo/Profuturo_Alerta_Frontend/public/assets -name *.css)",
-      "Bash(find E:profuturopasivosAnfexi_Pasivos_V2srcAnfx.Pasivos.Frontendsrcappservices -type f -name *.ts)"
+      "Bash(find E:profuturopasivosAnfexi_Pasivos_V2srcAnfx.Pasivos.Frontendsrcappservices -type f -name *.ts)",
+      "Bash(npm run:*)",
+      "Bash(cd /tmp)",
+      "Bash(des_test.csx:*)",
+      "Bash(dotnet script:*)",
+      "Bash(grep -rn \"page-wrapper\\\\|mini-sidebar\\\\|sidebar-width\\\\|\\\\.footer \" e:profuturopasivosAnfexi_Pasivos_V2srcAnfx.Pasivos.Frontendsrc --include=*.css --include=*.scss -l)",
+      "Bash(find e:profuturopasivosAnfexi_Pasivos_V2srcAnfx.Pasivos.Frontendsrcassets -name *.css)",
+      "Bash(xargs grep:*)",
+      "Bash(grep -rn \"page-wrapper\\\\|#main-wrapper\\\\|\\\\.footer\\\\b\" e:profuturopasivosAnfexi_Pasivos_V2srcAnfx.Pasivos.Frontendpublic --include=*.css)",
+      "Bash(grep -o .page-wrapper[^{]*{[^}]*} e:profuturopasivosAnfexi_Pasivos_V2srcAnfx.Pasivos.Frontendpublicassetsdistcssstyle.min.css)",
+      "Bash(node -e \":*)",
+      "Bash(npm uninstall:*)",
+      "Bash(node_modules/.bin/ng build:*)",
+      "Bash(echo \"EXIT:$?\")",
+      "Bash(find e:/profuturo/pasivos/Anfexi_Pasivos_V2/src/Anfx.Pasivos.Frontend -maxdepth 1 -type f -name *.js -o -name .eslintrc*)"
     ]
   }
 }

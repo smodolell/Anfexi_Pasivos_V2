@@ -20,6 +20,7 @@
   transition: border-color 0.25s ease, box-shadow 0.25s ease,
               background 0.25s ease, transform 0.25s ease;
 
+  // Estado con foco — aplica al wrapper, no al input
   &.si-focused {
     border-color: var(--color-primary-accent);
     background: var(--color-white);
@@ -44,7 +45,7 @@
   }
 }
 
-// ── Input sin borde propio ────────────────────────────────────────────────────
+// ── Input sin borde propio (el wrapper es quien "contiene" visualmente) ────────
 .si-input {
   flex: 1;
   min-width: 0;

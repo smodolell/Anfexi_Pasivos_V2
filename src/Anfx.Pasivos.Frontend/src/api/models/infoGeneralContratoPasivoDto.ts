@@ -13,6 +13,7 @@ import { TablaAmortizaItemDto } from './tablaAmortizaItemDto';
 
 
 export interface InfoGeneralContratoPasivoDto { 
+    idContrato?: number;
     contrato?: string | null;
     tipoCredito?: string | null;
     psV_EstatusContratoEstatusContrato?: string | null;

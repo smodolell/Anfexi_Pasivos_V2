@@ -24,7 +24,7 @@
   <div class="gt-toolbar__actions">
     @if (showExport()) {
       <app-button
-        icon="fa-solid fa-file-export"
+        icon="fas fa-file-export"
         label="Exportar"
         variant="info"
         [loading]="exportLoading()"
@@ -34,7 +34,7 @@
     }
     @if (showNew()) {
       <app-button
-        icon="fa-solid fa-circle-plus"
+        icon="fas fa-plus-circle"
         label="Nuevo"
         variant="success"
         (clicked)="newClicked.emit()"
@@ -66,9 +66,9 @@
             @if (col.sortable) {
               <span class="gt-sort-icon">
                 @if (sortColumn() === col.key) {
-                  <i [class]="sortDirection() === 'asc' ? 'fa-solid fa-arrow-up' : 'fa-solid fa-arrow-down'"></i>
+                  <i [class]="sortDirection() === 'asc' ? 'fas fa-arrow-up' : 'fas fa-arrow-down'"></i>
                 } @else {
-                  <i class="fa-solid fa-arrow-up-arrow-down gt-sort-inactive"></i>
+                  <i class="fas fa-sort gt-sort-inactive"></i>
                 }
               </span>
             }
@@ -115,11 +115,11 @@
             class="gt-empty-state"
           >
             @if (hasActiveSearch()) {
-              <i class="fa-solid fa-magnifying-glass gt-empty-icon gt-empty-icon--search"></i>
+              <i class="fas fa-search gt-empty-icon gt-empty-icon--search"></i>
               <p class="gt-empty-title">Sin resultados para <strong>"{{ searchValue() }}"</strong></p>
               <p class="gt-empty-subtitle">Intenta con otros términos de búsqueda</p>
               <button class="btn btn-sm btn-outline-secondary mt-2" (click)="onClearSearch()">
-                <i class="fa-solid fa-xmark me-1"></i>Limpiar búsqueda
+                <i class="fas fa-times me-1"></i>Limpiar búsqueda
               </button>
             } @else {
               <i [class]="emptyIcon() + ' gt-empty-icon'"></i>
@@ -127,7 +127,7 @@
               <p class="gt-empty-subtitle">Aún no hay registros en este catálogo</p>
               @if (showNew()) {
                 <button class="btn btn-sm btn-success mt-2" (click)="newClicked.emit()">
-                  <i class="fa-solid fa-circle-plus me-1"></i>Crear primero
+                  <i class="fas fa-plus-circle me-1"></i>Crear primero
                 </button>
               }
             }
@@ -177,6 +177,7 @@
                     <app-action-button
                       [icon]="act.icon"
                       [variant]="act.variant"
+                      [btnClass]="act.btnClass"
                       [title]="act.label"
                       [disabled]="act.disabledFn ? act.disabledFn(row) : false"
                       (clicked)="onAction(act.id, row)"
@@ -222,7 +223,7 @@
       <ul class="pagination mb-0">
         <li class="page-item" [class.disabled]="currentPage() <= 1">
           <a class="page-link" href="javascript:void(0)" aria-label="Página anterior" (click)="pagePrev.emit()">
-            <i class="fa-solid fa-chevron-left"></i>
+            <i class="fas fa-chevron-left"></i>
           </a>
         </li>
         <li class="page-item disabled">
@@ -230,7 +231,7 @@
         </li>
         <li class="page-item" [class.disabled]="currentPage() >= totalPages()">
           <a class="page-link" href="javascript:void(0)" aria-label="Página siguiente" (click)="pageNext.emit()">
-            <i class="fa-solid fa-chevron-right"></i>
+            <i class="fas fa-chevron-right"></i>
           </a>
         </li>
       </ul>

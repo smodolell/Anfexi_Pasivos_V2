@@ -1,5 +1,6 @@
 import { Component, OnInit, inject, signal, ViewChild } from '@angular/core';
-import { RolService } from '../../../services/sistema/rol.service';
+import { AuthService as AuthApiService } from '../../../../api/services/auth.service';
+import { RolCreateDto, RolUpdateDto } from '../../../../api/models/models';
 import { wasHandledByInterceptor } from '../../../interceptors/auth.interceptor';
 import { UtilsService } from '../../../services/utils.service';
 import { RolFormComponent } from './rol-form.component';
@@ -15,8 +16,8 @@ import { ConfirmModalComponent } from '../../../shared/components/confirm-modal/
   templateUrl: './rol-list.component.html',
 })
 export class RolListComponent implements OnInit {
-  private readonly rolService   = inject(RolService);
-  private readonly utilsService = inject(UtilsService);
+  private readonly authApiService = inject(AuthApiService);
+  private readonly utilsService   = inject(UtilsService);
 
   // ── Tabla ────────────────────────────────────────────────────
   columns: TableColumn[] = [
@@ -94,14 +95,18 @@ export class RolListComponent implements OnInit {
 
   private load() {
     this.loading.set(true);
-    this.rolService.getAll(this.query).subscribe({
+    this.authApiService.getRolesPaginados(this.query.q, this.query.page, this.query.size).subscribe({
       next: res => {
         if (res.success) {
-          this.items.set(res.data.results);
-          this.currentPage.set(res.data.currentPage);
-          this.pageSize.set(res.data.pageSize);
-          this.totalCount.set(res.data.totalCount);
-          this.totalPages.set(res.data.totalPages);
+          this.items.set((res.data?.results ?? []).map(r => ({
+            id:          r.id ?? 0,
+            sRol:        r.sRol ?? '',
+            descripcion: r.descripcion ?? '',
+          })));
+          this.currentPage.set(res.data?.currentPage ?? 1);
+          this.pageSize.set(res.data?.pageSize ?? 10);
+          this.totalCount.set(res.data?.totalCount ?? 0);
+          this.totalPages.set(res.data?.totalPages ?? 0);
         } else {
           this.items.set([]);
           this.utilsService.showNotification('Error', res.errors?.[0] ?? res.message ?? 'Error al cargar roles', 'error');
@@ -119,10 +124,14 @@ export class RolListComponent implements OnInit {
   }
 
   private editarRol(id: number) {
-    this.rolService.getById(id).subscribe({
+    this.authApiService.getRolById(id).subscribe({
       next: res => {
         if (res.success) {
-          this.rolSeleccionado = { ...res.data };
+          this.rolSeleccionado = {
+            id:          res.data?.id ?? 0,
+            sRol:        res.data?.sRol ?? '',
+            descripcion: res.data?.descripcion ?? '',
+          };
           this.mostrandoFormulario.set(true);
         } else {
           this.utilsService.showNotification('Error', res.errors?.[0] ?? res.message ?? 'Error al cargar el rol', 'error');
@@ -136,8 +145,8 @@ export class RolListComponent implements OnInit {
     const id = this.rolSeleccionado.id;
     const isUpdate = id != null && id > 0;
     const request$ = isUpdate
-      ? this.rolService.update(id, rol as UpdateRolDto)
-      : this.rolService.create(rol as CreateRolDto);
+      ? this.authApiService.updateRol(id, { id, sRol: rol.sRol ?? '', descripcion: rol.descripcion ?? null } as RolUpdateDto)
+      : this.authApiService.createRol({ sRol: (rol as CreateRolDto).sRol, descripcion: rol.descripcion ?? null } as RolCreateDto);
 
     request$.subscribe({
       next: res => {
@@ -165,7 +174,7 @@ export class RolListComponent implements OnInit {
 
   confirmarEliminacion() {
     if (!this.rolAEliminar) return;
-    this.rolService.delete(this.rolAEliminar.id).subscribe({
+    this.authApiService.deleteRol(this.rolAEliminar.id).subscribe({
       next: res => {
         if (res.success) {
           this.load();
