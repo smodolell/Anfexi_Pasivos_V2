@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewChild, ElementRef, inject, signal, computed } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef, inject, signal, computed, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ContratosService } from '../../../../api/services/contratos.service';
@@ -13,13 +13,15 @@ import { GenericTableComponent } from '../../../shared/components/generic-table/
 import { TableColumn, TableAction, TableActionEvent } from '../../../shared/components/generic-table/table-column.model';
 import { ContratoAutocompleteComponent } from "src/app/shared/components/contrato-autocomplete/contrato-autocomplete.component";
 import { AutocompleteResultDto } from '../../../../api/models/autocompleteResultDto';
+import { CardInfoComponent } from 'src/app/shared/components/card/card-info.component';
 
-type TabActiva = 'pagos' | 'movimientos' | 'tabla';
+export type TabActiva = 'pagos' | 'movimientos' | 'tabla';
 
 @Component({
   selector: 'app-info-general-contrato-pasivo',
-  imports: [CommonModule, FormsModule, GenericTableComponent,  ContratoAutocompleteComponent],
-  templateUrl: './info-general-contrato-pasivo.component.html'
+  imports: [CommonModule, FormsModule, GenericTableComponent, CardInfoComponent, ContratoAutocompleteComponent],
+  templateUrl: './info-general-contrato-pasivo.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InfoGeneralContratoPasivoComponent implements OnInit, OnDestroy {
   @ViewChild('detalleModalEl')     detalleModalEl!: ElementRef<HTMLElement>;
@@ -75,7 +77,7 @@ export class InfoGeneralContratoPasivoComponent implements OnInit, OnDestroy {
   ];
 
   readonly actionsPagos: TableAction[] = [
-    { id: 'detalle', label: 'Detalle de aplicación', icon: 'fa-solid fa-magnifying-glass', btnClass: 'btn-action-info' },
+    { id: 'detalle', label: 'Detalle de aplicación', icon: 'fa-solid fa-magnifying-glass', variant: 'info'},
   ];
 
   readonly columnasMovimientos: TableColumn[] = [
@@ -96,7 +98,7 @@ export class InfoGeneralContratoPasivoComponent implements OnInit, OnDestroy {
       id: 'detalle',
       label: 'Detalle de pagos',
       icon: 'fa-solid fa-magnifying-glass',
-      btnClass: 'btn-action-info',
+      variant: 'info',
       disabledFn: (row: MovimientoItemDto) => !row.idMovimiento || row.idMovimiento <= 0,
     },
   ];
@@ -132,7 +134,7 @@ export class InfoGeneralContratoPasivoComponent implements OnInit, OnDestroy {
   }
 
   onContratoSelected(item: AutocompleteResultDto): void {
-    this.contratoBusqueda.set(item.label ?? '');
+    this.contratoBusqueda.set(item.label ?? '');  // ✅ value es la clave de búsqueda
     this.buscar();
   }
 

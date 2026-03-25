@@ -53,7 +53,9 @@ export type CardVariant =
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="card card-rounded shadow-sm mb-4" [class]="cardClass()">
-
+      @if(getIcon()){
+        <i class="getIcon() me-2"></i>
+      }
       <!-- ── HEADER ─────────────────────────────────────────── -->
       @if (showHeader()) {
         <div class="card-header d-flex justify-content-between align-items-center"
@@ -75,6 +77,7 @@ export type CardVariant =
           </div>
 
         </div>
+        <span class="badge bg-white text-primary fs-6">{{ info() }}</span>
       }
 
       <!-- ── BODY ───────────────────────────────────────────── -->
@@ -110,6 +113,7 @@ export class CardInfoComponent {
   /** Mostrar/ocultar el header completo */
   showHeader  = input<boolean>(true);
 
+  info = input<string>('');
   /**
    * Clase CSS extra para el wrapper del card.
    * Útil para controlar ancho o márgenes desde el padre.
@@ -152,4 +156,7 @@ export class CardInfoComponent {
   bodyClass = computed((): string =>
     this.bodyPadding() === 'none' ? 'p-0' : ''
   );
+  getIcon():string | null {
+    return this.icon();
+  }
 }

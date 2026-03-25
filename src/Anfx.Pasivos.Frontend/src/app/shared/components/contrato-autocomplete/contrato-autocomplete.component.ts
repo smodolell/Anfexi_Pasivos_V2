@@ -102,6 +102,7 @@ export class ContratoAutocompleteComponent implements OnInit, OnDestroy, Control
   }
 
   onSelect(item: AutocompleteResultDto): void {
+    console.log('contato seleccionado', item);
     this.inputValue.set(item.label ?? '');
     this.showDropdown.set(false);
     this.sugerencias.set([]);

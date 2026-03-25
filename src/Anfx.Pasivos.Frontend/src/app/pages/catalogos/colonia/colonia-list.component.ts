@@ -52,7 +52,7 @@ export class ColoniaListComponent implements OnInit {
   ];
 
   actions: TableAction[] = [
-    { id: 'edit',   label: 'Editar',   icon: 'fa-solid fa-pen-clip',  variant: 'edit'   },
+    { id: 'edit',   label: 'Editar',   icon: 'fa-solid fa-pen-clip',  variant: 'edit' },
     { id: 'delete', label: 'Eliminar', icon: 'fa-solid fa-trash-can', variant: 'delete' },
   ];
 

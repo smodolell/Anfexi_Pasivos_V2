@@ -41,7 +41,7 @@ export class GenericTableComponent {
   showPageSizeSelector = input(false);
 
   // ── Búsqueda ─────────────────────────────────────────────────
-  searchable        = input(true);
+  searchable        = input(false);
   searchPlaceholder = input('Buscar...');
   searchValue       = input('');
 
@@ -54,7 +54,7 @@ export class GenericTableComponent {
   sortDirection = input<SortDirection>('asc');
 
   // ── Toolbar ──────────────────────────────────────────────────
-  showNew      = input(true);
+  showNew      = input(false);
   showExport   = input(false);
   exportLoading = input(false);
 

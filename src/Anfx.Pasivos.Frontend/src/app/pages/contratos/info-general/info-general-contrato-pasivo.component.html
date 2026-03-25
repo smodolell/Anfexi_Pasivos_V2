@@ -1,5 +1,4 @@
 <div class="container-fluid mt-4">
-
   <!-- FORMULARIO DE BÚSQUEDA -->
   <div class="card shadow-sm border-0 mb-4">
     <div class="card-body">
@@ -9,231 +8,238 @@
             (contratoSelected)="onContratoSelected($event)"
           ></app-contrato-autocomplete>
         </div>
-        @if (isLoading()) {
-          <div class="col-auto d-flex align-items-center gap-2">
-            <span class="spinner-border spinner-border-sm text-primary"></span>
-            <span class="text-muted small">Buscando...</span>
-          </div>
-        }
       </div>
     </div>
   </div>
 
   @if (isLoading()) {
     <div class="text-center py-5">
-      <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status"></div>
+      <div
+        class="spinner-border text-primary"
+        style="width: 3rem; height: 3rem"
+      ></div>
       <p class="mt-3 text-muted">Cargando información del contrato...</p>
     </div>
   }
 
   @if (errorMsg()) {
-    <div class="alert alert-danger">
-      <i class="ti-alert me-2"></i>{{ errorMsg() }}
-    </div>
+    <div class="alert alert-danger"><i class="ti-alert me-2"></i>{{ errorMsg() }}</div>
   }
 
   @if (!isLoading() && info()) {
     <!-- ENCABEZADO -->
-    <div class="card shadow-sm border-0 mb-4">
-      <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center py-3">
-        <h5 class="mb-0">
-          <i class="ti-file me-2"></i>
-          Información General — Contrato {{ info()!.contrato }}
-        </h5>
-        <span class="badge bg-white text-primary fs-6">{{ info()!.estatusContrato }}</span>
-      </div>
-      <div class="card-body">
-        <div class="row g-3">
+     <app-card-info title="Información General — Contrato {{ info()!.contrato }}" variant="light-blue" icon="ti-file" info="info()!.estatusContrato">
 
-          <div class="col-md-3">
-            <label class="text-muted small d-block mb-1">Tipo de Crédito</label>
-            <span class="fw-semibold">{{ info()!.tipoCredito || '—' }}</span>
-          </div>
-          <div class="col-md-3">
-            <label class="text-muted small d-block mb-1">Fondeador</label>
-            <span class="fw-semibold">{{ info()!.fondeador || '—' }}</span>
-          </div>
-          <div class="col-md-3">
-            <label class="text-muted small d-block mb-1">Moneda</label>
-            <span class="fw-semibold">{{ info()!.tipoMoneda || '—' }}</span>
-          </div>
-          <div class="col-md-3">
-            <label class="text-muted small d-block mb-1">Periodicidad</label>
-            <span class="fw-semibold">{{ info()!.periodicidad || '—' }}</span>
-          </div>
 
-          <div class="col-md-3">
-            <label class="text-muted small d-block mb-1">Capital Financiado</label>
-            <span class="fw-semibold">{{ info()!.capitalFinanciado | currency:'MXN':'symbol':'1.2-2' }}</span>
-          </div>
-          <div class="col-md-3">
-            <label class="text-muted small d-block mb-1">Saldo Insoluto</label>
-            <span class="fw-semibold">{{ info()!.saldoInsoluto | currency:'MXN':'symbol':'1.2-2' }}</span>
-          </div>
-          <div class="col-md-3">
-            <label class="text-muted small d-block mb-1">Saldo Vencido</label>
-            <span class="fw-semibold" [class.text-danger]="(info()!.saldoVencido || 0) > 0">
-              {{ info()!.saldoVencido | currency:'MXN':'symbol':'1.2-2' }}
-            </span>
-          </div>
-          <div class="col-md-3">
-            <label class="text-muted small d-block mb-1">Plazo</label>
-            <span class="fw-semibold">{{ info()!.plazo || '—' }} meses</span>
-          </div>
+      <!-- <div class="card shadow-sm border-0 mb-4">
+        <div
+          class="card-header d-flex justify-content-between align-items-center py-3"
+        >
+          <h5 class="mb-0">
+            <i class="ti-file me-2"></i>
+            <strong>
+              Información General — Contrato {{ info()!.contrato }}
+            </strong>
+          </h5>
+          <span class="badge bg-white text-primary fs-6">{{ info()!.estatusContrato }}</span>
+        </div> -->
+        <div class="card-body">
+          <div class="row g-3">
+            <div class="col-md-3">
+              <label class="text-muted small d-block mb-1">Tipo de Crédito</label>
+              <span class="fw-semibold">{{ info()!.tipoCredito || '—' }}</span>
+            </div>
+            <div class="col-md-3">
+              <label class="text-muted small d-block mb-1">Fondeador</label>
+              <span class="fw-semibold">{{ info()!.fondeador || '—' }}</span>
+            </div>
+            <div class="col-md-3">
+              <label class="text-muted small d-block mb-1">Moneda</label>
+              <span class="fw-semibold">{{ info()!.tipoMoneda || '—' }}</span>
+            </div>
+            <div class="col-md-3">
+              <label class="text-muted small d-block mb-1">Periodicidad</label>
+              <span class="fw-semibold">{{ info()!.periodicidad || '—' }}</span>
+            </div>
 
-          <div class="col-md-3">
-            <label class="text-muted small d-block mb-1">Tasa</label>
-            <span class="fw-semibold">
-              {{ info()!.tasa || '—' }}
-              @if (info()!.tasaEsVariable) {
-                <span class="badge bg-warning text-dark ms-1">Variable</span>
-              } @else {
-                <span class="badge bg-secondary ms-1">Fija</span>
-              }
-            </span>
-          </div>
-          <div class="col-md-3">
-            <label class="text-muted small d-block mb-1">Tasa IVA</label>
-            <span class="fw-semibold">{{ info()!.tasaIva !== null ? (info()!.tasaIva! * 100 | number:'1.0-2') + '%' : '—' }}</span>
-          </div>
-          <div class="col-md-3">
-            <label class="text-muted small d-block mb-1">Fecha Inicio</label>
-            <span class="fw-semibold">{{ info()!.fecInicioContrato | date:'dd/MM/yyyy' }}</span>
-          </div>
-          <div class="col-md-3">
-            <label class="text-muted small d-block mb-1">Primera Renta</label>
-            <span class="fw-semibold">{{ info()!.fecPrimeraRenta | date:'dd/MM/yyyy' }}</span>
-          </div>
+            <div class="col-md-3">
+              <label class="text-muted small d-block mb-1">Capital Financiado</label>
+              <span class="fw-semibold">{{
+                info()!.capitalFinanciado | currency: 'MXN' : 'symbol' : '1.2-2'
+              }}</span>
+            </div>
+            <div class="col-md-3">
+              <label class="text-muted small d-block mb-1">Saldo Insoluto</label>
+              <span class="fw-semibold">{{
+                info()!.saldoInsoluto | currency: 'MXN' : 'symbol' : '1.2-2'
+              }}</span>
+            </div>
+            <div class="col-md-3">
+              <label class="text-muted small d-block mb-1">Saldo Vencido</label>
+              <span class="fw-semibold" [class.text-danger]="(info()!.saldoVencido || 0) > 0">
+                {{ info()!.saldoVencido | currency: 'MXN' : 'symbol' : '1.2-2' }}
+              </span>
+            </div>
+            <div class="col-md-3">
+              <label class="text-muted small d-block mb-1">Plazo</label>
+              <span class="fw-semibold">{{ info()!.plazo || '—' }} meses</span>
+            </div>
 
-          <div class="col-md-3">
-            <label class="text-muted small d-block mb-1">Fecha Activación</label>
-            <span class="fw-semibold">{{ info()!.fecActivacion | date:'dd/MM/yyyy' }}</span>
-          </div>
-          <div class="col-md-3">
-            <label class="text-muted small d-block mb-1">Fecha Fin</label>
-            <span class="fw-semibold">{{ info()!.fecFinContrato | date:'dd/MM/yyyy' }}</span>
-          </div>
-          <div class="col-md-3">
-            <label class="text-muted small d-block mb-1">Fecha Cierre</label>
-            <span class="fw-semibold">{{ info()!.fechaCierre ? (info()!.fechaCierre | date:'dd/MM/yyyy') : '—' }}</span>
-          </div>
+            <div class="col-md-3">
+              <label class="text-muted small d-block mb-1">Tasa</label>
+              <span class="fw-semibold">
+                {{ info()!.tasa || '—' }}
+                @if (info()!.tasaEsVariable) {
+                  <span class="badge bg-warning text-dark ms-1">Variable</span>
+                } @else {
+                  <span class="badge bg-secondary ms-1">Fija</span>
+                }
+              </span>
+            </div>
+            <div class="col-md-3">
+              <label class="text-muted small d-block mb-1">Tasa IVA</label>
+              <span class="fw-semibold">{{
+                info()!.tasaIva !== null ? (info()!.tasaIva! * 100 | number: '1.0-2') + '%' : '—'
+              }}</span>
+            </div>
+            <div class="col-md-3">
+              <label class="text-muted small d-block mb-1">Fecha Inicio</label>
+              <span class="fw-semibold">{{ info()!.fecInicioContrato | date: 'dd/MM/yyyy' }}</span>
+            </div>
+            <div class="col-md-3">
+              <label class="text-muted small d-block mb-1">Primera Renta</label>
+              <span class="fw-semibold">{{ info()!.fecPrimeraRenta | date: 'dd/MM/yyyy' }}</span>
+            </div>
 
+            <div class="col-md-3">
+              <label class="text-muted small d-block mb-1">Fecha Activación</label>
+              <span class="fw-semibold">{{ info()!.fecActivacion | date: 'dd/MM/yyyy' }}</span>
+            </div>
+            <div class="col-md-3">
+              <label class="text-muted small d-block mb-1">Fecha Fin</label>
+              <span class="fw-semibold">{{ info()!.fecFinContrato | date: 'dd/MM/yyyy' }}</span>
+            </div>
+            <div class="col-md-3">
+              <label class="text-muted small d-block mb-1">Fecha Cierre</label>
+              <span class="fw-semibold">{{
+                info()!.fechaCierre ? (info()!.fechaCierre | date: 'dd/MM/yyyy') : '—'
+              }}</span>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
-
+      <!-- </div> -->
+  </app-card-info>
     <!-- TABS NAV -->
-    <div class="border-bottom mb-0 px-0">
-      <ul class="nav nav-tabs border-0">
-        <li class="nav-item">
-          <button
-            class="nav-link"
-            [class.active]="activeTab() === 'tabla'"
-            (click)="setTab('tabla')"
+    <div class="card shadow-sm border-0">
+      <div class="card-header p-0 bg-transparent border-bottom">
+        <ul class="nav nav-tabs border-0 px-3 pt-2">
+          <li class="nav-item">
+            <button
+              class="nav-link"
+              [class.active]="activeTab() === 'tabla'"
+              (click)="setTab('tabla')"
+            >
+              <i class="ti-list me-1"></i>
+              Tabla de Amortización
+            </button>
+          </li>
+          <li class="nav-item">
+            <button
+              class="nav-link"
+              [class.active]="activeTab() === 'movimientos'"
+              (click)="setTab('movimientos')"
+            >
+              <i class="ti-exchange-vertical me-1"></i>
+              Movimientos
+              <span class="badge bg-secondary ms-1">{{ movimientos().length }}</span>
+            </button>
+          </li>
+          <li class="nav-item">
+            <button
+              class="nav-link"
+              [class.active]="activeTab() === 'pagos'"
+              (click)="setTab('pagos')"
+            >
+              <i class="ti-money me-1"></i>
+              Pagos
+              <span class="badge bg-info text-dark ms-1">{{ pagos().length }}</span>
+            </button>
+          </li>
+        </ul>
+      </div>
+
+      <div class="card-body">
+        <!-- TAB: PAGOS -->
+        @if (activeTab() === 'pagos') {
+          <app-generic-table
+            [columns]="columnasPagos"
+            [items]="pagos()"
+            [actions]="actionsPagos"
+            emptyMessage="Sin pagos registrados"
+            emptyIcon="fa-solid fa-money-bill-wave"
+            (actionCalled)="onActionPago($event)"
+          ></app-generic-table>
+        }
+
+        <!-- TAB: MOVIMIENTOS -->
+        @if (activeTab() === 'movimientos') {
+          <app-generic-table
+            [columns]="columnasMovimientos"
+            [items]="movimientos()"
+            [actions]="actionsMovimientos"
+            emptyMessage="Sin movimientos registrados"
+            emptyIcon="fa-solid fa-arrow-right-arrow-left"
+            (actionCalled)="onActionMovimiento($event)"
+          ></app-generic-table>
+        }
+
+        <!-- TAB: TABLA AMORTIZACIÓN -->
+        @if (activeTab() === 'tabla') {
+          <app-generic-table
+            [columns]="columnasTablaAmortiza"
+            [items]="tablaAmortiza()"
+            [loading]="isLoadingTabla()"
+            emptyMessage="Sin datos de tabla de amortización"
+            emptyIcon="fa-solid fa-table-list"
           >
-            <i class="ti-list me-1"></i>
-            Tabla de Amortización
-          </button>
-        </li>
-        <li class="nav-item">
-          <button
-            class="nav-link"
-            [class.active]="activeTab() === 'movimientos'"
-            (click)="setTab('movimientos')"
-          >
-            <i class="ti-exchange-vertical me-1"></i>
-            Movimientos
-            <span class="badge bg-secondary ms-1">{{ movimientos().length }}</span>
-          </button>
-        </li>
-        <li class="nav-item">
-          <button
-            class="nav-link"
-            [class.active]="activeTab() === 'pagos'"
-            (click)="setTab('pagos')"
-          >
-            <i class="ti-money me-1"></i>
-            Pagos
-            <span class="badge bg-info text-dark ms-1">{{ pagos().length }}</span>
-          </button>
-        </li>
-      </ul>
+            <div slot="filters" class="d-flex align-items-center gap-2">
+              <label class="fw-bold mb-0 text-nowrap">Tipo de Tabla:</label>
+              <select
+                class="form-select form-select-sm"
+                style="width: auto"
+                [ngModel]="tipoTabla()"
+                (ngModelChange)="tipoTabla.set($event); onTipoTablaChange()"
+              >
+                @for (t of tiposTabla; track t.value) {
+                  <option [ngValue]="t.value">{{ t.label }}</option>
+                }
+              </select>
+            </div>
+          </app-generic-table>
+        }
+      </div>
     </div>
-
-    <!-- TAB: PAGOS -->
-    @if (activeTab() === 'pagos') {
-      <app-generic-table
-        [columns]="columnasPagos"
-        [items]="pagos()"
-        [actions]="actionsPagos"
-        [searchable]="false"
-        [showNew]="false"
-        emptyMessage="Sin pagos registrados"
-        emptyIcon="fa-solid fa-money-bill-wave"
-        (actionCalled)="onActionPago($event)"
-      ></app-generic-table>
-    }
-
-    <!-- TAB: MOVIMIENTOS -->
-    @if (activeTab() === 'movimientos') {
-      <app-generic-table
-        [columns]="columnasMovimientos"
-        [items]="movimientos()"
-        [actions]="actionsMovimientos"
-        [searchable]="false"
-        [showNew]="false"
-        emptyMessage="Sin movimientos registrados"
-        emptyIcon="fa-solid fa-arrow-right-arrow-left"
-        (actionCalled)="onActionMovimiento($event)"
-      ></app-generic-table>
-    }
-
-    <!-- TAB: TABLA AMORTIZACIÓN -->
-    @if (activeTab() === 'tabla') {
-      <app-generic-table
-        [columns]="columnasTablaAmortiza"
-        [items]="tablaAmortiza()"
-        [loading]="isLoadingTabla()"
-        [searchable]="false"
-        [showNew]="false"
-        emptyMessage="Sin datos de tabla de amortización"
-        emptyIcon="fa-solid fa-table-list"
-      >
-        <div slot="filters" class="d-flex align-items-center gap-2">
-          <label class="fw-bold mb-0 text-nowrap">Tipo de Tabla:</label>
-          <select
-            class="form-select form-select-sm"
-            style="width: auto;"
-            [ngModel]="tipoTabla()"
-            (ngModelChange)="tipoTabla.set($event); onTipoTablaChange()"
-          >
-            @for (t of tiposTabla; track t.value) {
-              <option [ngValue]="t.value">{{ t.label }}</option>
-            }
-          </select>
-        </div>
-      </app-generic-table>
-    }
-
   }
-
 </div>
 
 <!-- MODAL: Detalle de Pagos aplicados al Movimiento -->
 <div #detalleModalEl class="modal fade" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
     <div class="modal-content">
-
       <div class="modal-header bg-primary text-white">
         <h5 class="modal-title">
           <i class="fa-solid fa-magnifying-glass me-2"></i>
           Detalle de Pagos aplicados al Movimiento
         </h5>
-        <button type="button" class="btn-close btn-close-white" (click)="cerrarDetalleMovimiento()" aria-label="Cerrar"></button>
+        <button
+          type="button"
+          class="btn-close btn-close-white"
+          (click)="cerrarDetalleMovimiento()"
+          aria-label="Cerrar"
+        ></button>
       </div>
 
       <div class="modal-body p-3">
-
         @if (isLoadingDetalle()) {
           <div class="text-center py-4">
             <div class="spinner-border text-primary" role="status"></div>
@@ -273,36 +279,56 @@
                     <td>{{ fila.tipoPago || '—' }}</td>
                     <td>{{ fila.cuentaBancaria || '—' }}</td>
                     <td>{{ fila.contrato || '—' }}</td>
-                    <td>{{ fila.fecPagoValor | date:'dd/MM/yyyy' }}</td>
-                    <td>{{ fila.fecPagoRegistro | date:'dd/MM/yyyy' }}</td>
-                    <td class="text-end">{{ fila.montoPago | currency:'MXN':'symbol':'1.2-2' }}</td>
-                    <td class="text-end">{{ fila.capitalPagado | currency:'MXN':'symbol':'1.2-2' }}</td>
-                    <td class="text-end">{{ fila.interesPagado | currency:'MXN':'symbol':'1.2-2' }}</td>
-                    <td class="text-end">{{ fila.ivaPagado | currency:'MXN':'symbol':'1.2-2' }}</td>
-                    <td class="text-end">{{ fila.totalPagado | currency:'MXN':'symbol':'1.2-2' }}</td>
+                    <td>{{ fila.fecPagoValor | date: 'dd/MM/yyyy' }}</td>
+                    <td>{{ fila.fecPagoRegistro | date: 'dd/MM/yyyy' }}</td>
+                    <td class="text-end">
+                      {{ fila.montoPago | currency: 'MXN' : 'symbol' : '1.2-2' }}
+                    </td>
+                    <td class="text-end">
+                      {{ fila.capitalPagado | currency: 'MXN' : 'symbol' : '1.2-2' }}
+                    </td>
+                    <td class="text-end">
+                      {{ fila.interesPagado | currency: 'MXN' : 'symbol' : '1.2-2' }}
+                    </td>
+                    <td class="text-end">
+                      {{ fila.ivaPagado | currency: 'MXN' : 'symbol' : '1.2-2' }}
+                    </td>
+                    <td class="text-end">
+                      {{ fila.totalPagado | currency: 'MXN' : 'symbol' : '1.2-2' }}
+                    </td>
                   </tr>
                 }
                 @if (detalleTotales()) {
                   <tr class="table-primary fw-bold border-top border-2">
                     <td colspan="6" class="text-end">Total</td>
-                    <td class="text-end">{{ detalleTotales()!.montoPago | currency:'MXN':'symbol':'1.2-2' }}</td>
-                    <td class="text-end">{{ detalleTotales()!.capitalPagado | currency:'MXN':'symbol':'1.2-2' }}</td>
-                    <td class="text-end">{{ detalleTotales()!.interesPagado | currency:'MXN':'symbol':'1.2-2' }}</td>
-                    <td class="text-end">{{ detalleTotales()!.ivaPagado | currency:'MXN':'symbol':'1.2-2' }}</td>
-                    <td class="text-end">{{ detalleTotales()!.totalPagado | currency:'MXN':'symbol':'1.2-2' }}</td>
+                    <td class="text-end">
+                      {{ detalleTotales()!.montoPago | currency: 'MXN' : 'symbol' : '1.2-2' }}
+                    </td>
+                    <td class="text-end">
+                      {{ detalleTotales()!.capitalPagado | currency: 'MXN' : 'symbol' : '1.2-2' }}
+                    </td>
+                    <td class="text-end">
+                      {{ detalleTotales()!.interesPagado | currency: 'MXN' : 'symbol' : '1.2-2' }}
+                    </td>
+                    <td class="text-end">
+                      {{ detalleTotales()!.ivaPagado | currency: 'MXN' : 'symbol' : '1.2-2' }}
+                    </td>
+                    <td class="text-end">
+                      {{ detalleTotales()!.totalPagado | currency: 'MXN' : 'symbol' : '1.2-2' }}
+                    </td>
                   </tr>
                 }
               </tbody>
             </table>
           </div>
         }
-
       </div>
 
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" (click)="cerrarDetalleMovimiento()">Cerrar</button>
+        <button type="button" class="btn btn-secondary" (click)="cerrarDetalleMovimiento()">
+          Cerrar
+        </button>
       </div>
-
     </div>
   </div>
 </div>
@@ -311,17 +337,20 @@
 <div #detallePagoModalEl class="modal fade" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
     <div class="modal-content">
-
       <div class="modal-header bg-primary text-white">
         <h5 class="modal-title">
           <i class="fa-solid fa-magnifying-glass me-2"></i>
           Detalle de Aplicación de Pago
         </h5>
-        <button type="button" class="btn-close btn-close-white" (click)="cerrarDetallePago()" aria-label="Cerrar"></button>
+        <button
+          type="button"
+          class="btn-close btn-close-white"
+          (click)="cerrarDetallePago()"
+          aria-label="Cerrar"
+        ></button>
       </div>
 
       <div class="modal-body p-3">
-
         @if (isLoadingDetallePago()) {
           <div class="text-center py-4">
             <div class="spinner-border text-primary" role="status"></div>
@@ -359,33 +388,53 @@
                     <td>{{ fila.fondeador || '—' }}</td>
                     <td>{{ fila.contrato || '—' }}</td>
                     <td>{{ fila.descripcion || '—' }}</td>
-                    <td>{{ fila.fecMovimiento | date:'dd/MM/yyyy' }}</td>
-                    <td class="text-end">{{ fila.capitalPagado | currency:'MXN':'symbol':'1.2-2' }}</td>
-                    <td class="text-end">{{ fila.interesPagado | currency:'MXN':'symbol':'1.2-2' }}</td>
-                    <td class="text-end">{{ fila.ivaPagado | currency:'MXN':'symbol':'1.2-2' }}</td>
-                    <td class="text-end">{{ fila.totalPagado | currency:'MXN':'symbol':'1.2-2' }}</td>
+                    <td>{{ fila.fecMovimiento | date: 'dd/MM/yyyy' }}</td>
+                    <td class="text-end">
+                      {{ fila.capitalPagado | currency: 'MXN' : 'symbol' : '1.2-2' }}
+                    </td>
+                    <td class="text-end">
+                      {{ fila.interesPagado | currency: 'MXN' : 'symbol' : '1.2-2' }}
+                    </td>
+                    <td class="text-end">
+                      {{ fila.ivaPagado | currency: 'MXN' : 'symbol' : '1.2-2' }}
+                    </td>
+                    <td class="text-end">
+                      {{ fila.totalPagado | currency: 'MXN' : 'symbol' : '1.2-2' }}
+                    </td>
                   </tr>
                 }
                 @if (detallePagoTotales()) {
                   <tr class="table-primary fw-bold border-top border-2">
                     <td colspan="5" class="text-end">Total</td>
-                    <td class="text-end">{{ detallePagoTotales()!.capitalPagado | currency:'MXN':'symbol':'1.2-2' }}</td>
-                    <td class="text-end">{{ detallePagoTotales()!.interesPagado | currency:'MXN':'symbol':'1.2-2' }}</td>
-                    <td class="text-end">{{ detallePagoTotales()!.ivaPagado | currency:'MXN':'symbol':'1.2-2' }}</td>
-                    <td class="text-end">{{ detallePagoTotales()!.totalPagado | currency:'MXN':'symbol':'1.2-2' }}</td>
+                    <td class="text-end">
+                      {{
+                        detallePagoTotales()!.capitalPagado | currency: 'MXN' : 'symbol' : '1.2-2'
+                      }}
+                    </td>
+                    <td class="text-end">
+                      {{
+                        detallePagoTotales()!.interesPagado | currency: 'MXN' : 'symbol' : '1.2-2'
+                      }}
+                    </td>
+                    <td class="text-end">
+                      {{ detallePagoTotales()!.ivaPagado | currency: 'MXN' : 'symbol' : '1.2-2' }}
+                    </td>
+                    <td class="text-end">
+                      {{ detallePagoTotales()!.totalPagado | currency: 'MXN' : 'symbol' : '1.2-2' }}
+                    </td>
                   </tr>
                 }
               </tbody>
             </table>
           </div>
         }
-
       </div>
 
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" (click)="cerrarDetallePago()">Cerrar</button>
+        <button type="button" class="btn btn-secondary" (click)="cerrarDetallePago()">
+          Cerrar
+        </button>
       </div>
-
     </div>
   </div>
 </div>
