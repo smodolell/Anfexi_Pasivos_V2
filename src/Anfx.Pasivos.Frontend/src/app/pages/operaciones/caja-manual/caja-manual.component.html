@@ -292,7 +292,7 @@
   confirmLabel="Confirmar Pago"
   confirmIcon="fa-solid fa-check"
   confirmVariant="primary"
-  [confirmLoading]="guardando()"
+  (confirmLoading)="guardando()"
   (confirmed)="ejecutarPago()"
   (cancelled)="confirmModal.hide()">
 </app-confirm-modal>

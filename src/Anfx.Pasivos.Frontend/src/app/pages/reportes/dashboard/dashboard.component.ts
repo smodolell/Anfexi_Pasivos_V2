@@ -15,11 +15,12 @@ import { CarteraMensualDto } from '@api/models/carteraMensualDto';
 import { CarteraDto } from '@api/models/carteraDto';
 import { LayoutService } from 'src/app/services/layout.service';
 import { UtilsService } from 'src/app/services/utils.service';
+import { CardInfoComponent } from 'src/app/shared/components/card/card-info.component';
 
 @Component({
   selector: 'app-dashboard-reportes',
   standalone: true,
-  imports: [CommonModule, FormsModule, HighchartsChartComponent],
+  imports: [CommonModule, FormsModule, HighchartsChartComponent, CardInfoComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css',
 })

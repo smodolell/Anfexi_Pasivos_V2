@@ -1,53 +1,47 @@
 import {
   Component, OnInit, OnDestroy, HostListener,
   inject, Renderer2, ChangeDetectorRef, ViewEncapsulation, signal,
+  input,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { RouterOutlet, Router, RouterModule, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { CommonModule, DOCUMENT } from '@angular/common';
-import { Subject, switchMap, takeUntil, filter } from 'rxjs';
-import { AuthService } from '../services/auth.service';
+import { Subject, takeUntil, filter } from 'rxjs';
+import { AuthService, User } from '../services/auth.service';
 import { LayoutService } from '../services/layout.service';
-import { MenuService } from '../services/menu.service';
-import { MenuItem } from '../shared/models/menu-item.model';
+import { MenuItem } from './../../types/menu.model';
 import { TopbarComponent } from '../shared/components/topbar/topbar.component';
-import { SidebarNavComponent } from '../shared/components/sidebar-nav/sidebar-nav.component';
 import { FooterComponent } from '../shared/components/footer/footer.component';
-
+import { SidebarComponent } from './sidebar/sidebar.component';
+import { toSignal } from '@angular/core/rxjs-interop';
 @Component({
   selector: 'app-admin-layout',
   standalone: true,
-  imports: [RouterOutlet, CommonModule, RouterModule, TopbarComponent, SidebarNavComponent, FooterComponent],
+  imports: [RouterOutlet, CommonModule, RouterModule, TopbarComponent,SidebarComponent,  FooterComponent],
   templateUrl: './admin-layout.component.html',
   styleUrls: ['./admin-layout.component.scss'],
   encapsulation: ViewEncapsulation.None,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AdminLayoutComponent implements OnInit, OnDestroy {
+  [x: string]: any;
   currentTitle = '';
-  menuItems: MenuItem[] = [];
+  readonly menuItems = signal<MenuItem[]>([])
 
   isMiniSidebar    = signal(true);
   isMobileNavOpen  = signal(false);
-
+  readonly role       = input.required<string>();
   private readonly renderer      = inject(Renderer2);
   private readonly document      = inject(DOCUMENT);
   private readonly cdr           = inject(ChangeDetectorRef);
   private readonly destroy$      = new Subject<void>();
-  private readonly authService   = inject(AuthService);
   private readonly router        = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly layoutService = inject(LayoutService);
-  private readonly menuService   = inject(MenuService);
-
+  private readonly authService   = inject(AuthService);
+  readonly activeGroup = signal<string | number | null>(null);
+ readonly currentUser  = toSignal(this.authService.currentUser$, { initialValue: null as User | null });
   ngOnInit(): void {
-    // Menú reactivo: se recarga cada vez que cambia el usuario (ej: re-login con otro rol)
-    this.authService.currentUser$.pipe(
-      switchMap(user => this.menuService.getMenuForUser(user)),
-      takeUntil(this.destroy$),
-    ).subscribe(items => {
-      this.menuItems = items;
-      this.cdr.detectChanges();
-    });
-
     // Título de página
     this.layoutService.title$.pipe(takeUntil(this.destroy$)).subscribe(title => {
       this.currentTitle = title;
@@ -68,6 +62,7 @@ export class AdminLayoutComponent implements OnInit, OnDestroy {
       this.loadScriptsSequentially(['assets/dist/js/waves.js']);
       this.applyMiniSidebar(window.innerWidth < 1170);
     }
+
   }
 
   ngOnDestroy(): void {
@@ -141,5 +136,22 @@ export class AdminLayoutComponent implements OnInit, OnDestroy {
     this.renderer.setAttribute(script, 'type', 'text/javascript');
     script.onload = () => this.loadScriptsSequentially(srcs, index + 1);
     this.renderer.appendChild(this.document.body, script);
+  }
+  toggleGroup(id: string | number): void {
+    this.activeGroup.set(this.activeGroup() === id ? null : id);
+  }
+
+  isGroupActive(item: MenuItem): boolean {
+    // Activo si el grupo está abierto O si alguna ruta hija es la activa
+    return this.activeGroup() === item.id
+      || (item.children?.some(c => this.router.url.startsWith(c.route ?? '')) ?? false);
+  }
+
+  isSubmenuOpen(item: MenuItem): boolean {
+    return (this.activeGroup() === item.id)
+      && (!this.isMiniSidebar() || this.isMobileNavOpen());
+  }
+  get userRole(): string {
+    return this.currentUser()?.role ?? 'User';
   }
 }

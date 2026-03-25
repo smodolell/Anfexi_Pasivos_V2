@@ -395,3 +395,18 @@ body {
 
 .success-btn { background: var(--color-success); }
 .success-btn:hover:not(:disabled) { background: var(--color-success-dark); }
+
+// ------------------------------------------------------------
+// UTILIDADES ADICIONALES
+// ------------------------------------------------------------
+
+.bg-light-yellow { background-color: lightyellow; }
+
+.h-chart         { height: 400px; }
+.h-chart-lg      { position: relative; height: 450px; width: 100%; }
+.h-bar           { height: 25px; }
+.min-w-action    { min-width: 130px; }
+.min-w-action-lg { min-width: 140px; }
+.max-w-modal     { max-width: 90%; }
+.toggle-size     { width: 3em; height: 1.5em; }
+.dropdown-anchor { position: absolute; top: 100%; left: 0; z-index: 1000; }

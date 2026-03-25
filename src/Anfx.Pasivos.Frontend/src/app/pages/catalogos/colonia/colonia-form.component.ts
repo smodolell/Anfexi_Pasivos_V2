@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChanges, inject, signal } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChanges, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ColoniaDto, CreateColoniaDto, UpdateColoniaDto } from '../../../../api/models/models';
@@ -9,11 +9,12 @@ import { CardComponent } from '../../../shared/components/card/card.component';
   selector: 'app-colonia-form',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, CardComponent],
-  templateUrl: './colonia-form.component.html'
+  templateUrl: './colonia-form.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ColoniaFormComponent implements OnInit, OnChanges {
-  private utilsService = inject(UtilsService);
-  private fb = inject(FormBuilder);
+  private readonly utilsService = inject(UtilsService);
+  private readonly fb = inject(FormBuilder);
 
   @Input() colonia: Partial<ColoniaDto> = {
     sColonia: '',
@@ -28,8 +29,6 @@ export class ColoniaFormComponent implements OnInit, OnChanges {
 
   // Reactive Form
   coloniaForm!: FormGroup;
-
-  constructor() { }
 
   ngOnInit() {
     // Inicializar el formulario reactivo
@@ -64,7 +63,7 @@ export class ColoniaFormComponent implements OnInit, OnChanges {
   onSubmit() {
     if (this.coloniaForm.valid) {
       const formValue = this.coloniaForm.value;
-      
+
       // Crear objeto colonia con los valores del formulario
       const coloniaData = {
         ...this.colonia,

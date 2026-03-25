@@ -1,4 +1,4 @@
-<ul id="sidebarnav">
+<!-- <ul id="sidebarnav">
   @for (item of items(); track item.id) {
 
     @if (!item.disabled) {
@@ -31,8 +31,8 @@
                     [routerLinkActiveOptions]="{ exact: false }"
                     (click)="onNavItemSelected()"
                   >
-                    @if (child.icon) { <i [class]="child.icon"></i> }
-                    <span>{{ child.label }}</span>
+                    @if (child.icon) { <i [class]="child.icon + ' me-1'"></i> }
+                    {{ child.label }}
                   </a>
                 </li>
               }
@@ -58,4 +58,4 @@
 
     }
   }
-</ul>
+</ul> -->

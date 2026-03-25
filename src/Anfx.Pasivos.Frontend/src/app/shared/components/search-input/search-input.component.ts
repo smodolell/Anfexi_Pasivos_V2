@@ -27,7 +27,7 @@ export class SearchInputComponent implements OnInit {
   /** Texto para aria-label del input (accesibilidad) */
   label       = input('Buscar');
 
-  searched = output<string>();
+  searched = output<string | Event>();
   cleared  = output<void>();
 
   protected term    = '';

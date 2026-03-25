@@ -1,4 +1,5 @@
-import { Component, OnInit, inject, signal, ViewChild } from '@angular/core';
+import { Component, OnInit, inject, signal, ViewChild, ChangeDetectionStrategy, DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CatalogosService } from '../../../../api/services/catalogos.service';
@@ -14,13 +15,14 @@ import { ConfirmModalComponent } from '../../../shared/components/confirm-modal/
   selector: 'app-colonia-list',
   standalone: true,
   imports: [CommonModule, FormsModule, ColoniaFormComponent, GenericTableComponent, ConfirmModalComponent],
-  templateUrl: './colonia-list.component.html'
+  templateUrl: './colonia-list.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ColoniaListComponent implements OnInit {
   @ViewChild('confirmModal') confirmModal!: ConfirmModalComponent;
-
-  private catalogosService = inject(CatalogosService);
-  private utilsService     = inject(UtilsService);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly catalogosService = inject(CatalogosService);
+  private readonly utilsService     = inject(UtilsService);
 
   items         = signal<ColoniaDto[]>([]);
   loading       = signal<boolean>(false);
@@ -131,7 +133,8 @@ export class ColoniaListComponent implements OnInit {
 
   onExportar() {
     this.exportLoading.set(true);
-    this.catalogosService.exportColonias(this.query.q || undefined).subscribe({
+    this.catalogosService.exportColonias(this.query.q || undefined)
+    .pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (blob: any) => {
         const url  = URL.createObjectURL(blob as Blob);
         const link = document.createElement('a');
@@ -156,11 +159,11 @@ export class ColoniaListComponent implements OnInit {
 
   confirmarEliminacion() {
     if (!this.coloniaAEliminar) return;
-    this.confirmModal.confirmLoading = true;
+    this.confirmModal.confirmLoading.set(true);
 
     this.catalogosService.deleteColonia(this.coloniaAEliminar.id!).subscribe({
       next: (res) => {
-        this.confirmModal.confirmLoading = false;
+        this.confirmModal.confirmLoading.set(false);
         this.confirmModal.hide();
         this.coloniaAEliminar = null;
         if (res.success) {
@@ -172,7 +175,7 @@ export class ColoniaListComponent implements OnInit {
         }
       },
       error: (err) => {
-        this.confirmModal.confirmLoading = false;
+        this.confirmModal.confirmLoading.set(false);
         this.confirmModal.hide();
         this.coloniaAEliminar = null;
         if (!wasHandledByInterceptor(err)) {
@@ -197,6 +200,7 @@ export class ColoniaListComponent implements OnInit {
         this.query.sortBy,
         this.query.sortDir
       )
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (res) => {
 
@@ -224,7 +228,8 @@ export class ColoniaListComponent implements OnInit {
   }
 
   private editarColonia(id: number) {
-    this.catalogosService.getColoniaById(id).subscribe({
+    this.catalogosService.getColoniaById(id)
+    .pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res) => {
         if (res.success && res.data) {
           this.coloniaSeleccionada = { ...res.data };

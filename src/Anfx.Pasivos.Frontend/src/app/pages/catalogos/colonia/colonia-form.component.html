@@ -1,10 +1,11 @@
-<div class="row">
-  <div class="col-md-8 offset-md-2">
-    <app-card
+
+   <app-card
       [title]="colonia.id ? 'Editar Colonia' : 'Nueva Colonia'"
       [icon]="colonia.id ? 'fa-solid fa-pen-clip' : 'fa-solid fa-map-location-dot'"
       [variant]="colonia.id ? 'warning' : 'info'">
-
+      <p class="text-muted small mb-3">
+       {{ colonia.id ? 'Actualice los datos de la colonia.' : 'Complete los datos para registrar una nueva colonia.' }}
+     </p>
       <form [formGroup]="coloniaForm" (ngSubmit)="onSubmit()">
         <div class="row">
           <div class="col-md-6 mb-3">
@@ -67,10 +68,8 @@
           <i class="fa fa-times me-1"></i> Cancelar
         </button>
         <button type="button" class="btn btn-primary" [disabled]="coloniaForm.invalid" (click)="onSubmit()">
-          <i class="fa fa-save me-1"></i> Guardar
+          <i class="fa fa-save me-1"></i> {{ colonia.id ? 'Actualizar' : 'Guardar' }}
         </button>
       </div>
 
     </app-card>
-  </div>
-</div>

@@ -1,8 +1,28 @@
-import { Component, Input, Output, EventEmitter, OnInit, inject, signal } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnInit,
+  inject,
+  signal,
+  output,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, ValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  ReactiveFormsModule,
+  ValidatorFn,
+  AbstractControl,
+  ValidationErrors,
+} from '@angular/forms';
 import { AuthService as AuthApiService } from '../../../../api/services/auth.service';
-import { UsuarioFormData, UsuarioDto, CreateUsuarioDto, UpdateUsuarioDto, RolItemDto } from '../../../../types/sistema/usuario.dto';
+import {
+  UsuarioFormData,
+  CreateUsuarioDto,
+  UpdateUsuarioDto,
+  RolItemDto,
+} from '../../../../types/sistema/usuario.dto';
 import { UtilsService } from '../../../services/utils.service';
 import { CardComponent } from '../../../shared/components/card/card.component';
 import { FormCheckComponent } from '../../../shared/components/form-check/form-check.component';
@@ -11,13 +31,19 @@ import { FormFieldComponent } from '../../../shared/components/form-field/form-f
 @Component({
   selector: 'app-usuario-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, CardComponent, FormCheckComponent, FormFieldComponent],
-  templateUrl: './usuario-form.component.html'
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    CardComponent,
+    FormCheckComponent,
+    FormFieldComponent,
+  ],
+  templateUrl: './usuario-form.component.html',
 })
 export class UsuarioFormComponent implements OnInit {
-  private utilsService = inject(UtilsService);
-  private authApiService = inject(AuthApiService);
-  private fb = inject(FormBuilder);
+  private readonly utilsService = inject(UtilsService);
+  private readonly authApiService = inject(AuthApiService);
+  private readonly fb = inject(FormBuilder);
 
   @Input() usuario: UsuarioFormData = {
     nombreCompleto: '',
@@ -27,14 +53,14 @@ export class UsuarioFormComponent implements OnInit {
     rolId: undefined,
     Contrasenia: '',
     Confirma_Contrasenia: '',
-    PermiteEditarContrasenia: false
+    PermiteEditarContrasenia: false,
   };
 
   @Input() isFromProfile: boolean = false;
 
-  @Output() guardar = new EventEmitter<CreateUsuarioDto | UpdateUsuarioDto>();
-  @Output() cancelar = new EventEmitter<void>();
-  @Output() volverALista = new EventEmitter<void>();
+  guardar = output<CreateUsuarioDto | UpdateUsuarioDto>();
+  cancelar = output<void>();
+  volverALista = output<void>();
 
   roles = signal<RolItemDto[]>([]);
   loadingRoles = signal<boolean>(false);
@@ -42,7 +68,7 @@ export class UsuarioFormComponent implements OnInit {
   // Reactive Form
   usuarioForm!: FormGroup;
 
-  constructor() { }
+  constructor() {}
 
   ngOnInit() {
     // Inicializar el formulario reactivo
@@ -76,27 +102,33 @@ export class UsuarioFormComponent implements OnInit {
   private initForm() {
     // Crear el FormGroup base
     const formGroup: any = {
-      nombreCompleto: [this.usuario.nombreCompleto || '', [Validators.required, Validators.minLength(2)]],
+      nombreCompleto: [
+        this.usuario.nombreCompleto || '',
+        [Validators.required, Validators.minLength(2)],
+      ],
       email: [this.usuario.email || '', [Validators.required, Validators.email]],
-      usuarioNombre: [this.usuario.usuarioNombre || '', [Validators.required, Validators.minLength(3)]],
+      usuarioNombre: [
+        this.usuario.usuarioNombre || '',
+        [Validators.required, Validators.minLength(3)],
+      ],
       rolId: [{ value: this.usuario.rolId || undefined, disabled: true }, Validators.required],
-      activo: [this.usuario.activo ?? true]
+      activo: [this.usuario.activo ?? true],
     };
 
     // Si es creación, agregar solo campos de contraseña (sin checkbox)
-    if (!this.usuario.id) {
-      formGroup.contrasenia = ['', [Validators.required, Validators.minLength(6)]];
-      formGroup.confirma_contrasenia = ['', [Validators.required, Validators.minLength(6)]];
-    } else {
+    if (this.usuario.id) {
       // Si es edición, agregar solo el checkbox (sin campos de contraseña inicialmente)
       formGroup.permiteEditarContrasenia = [this.usuario.PermiteEditarContrasenia ?? false];
 
       // Los campos de contraseña se agregarán dinámicamente si se activa el checkbox
+    } else {
+      formGroup.contrasenia = ['', [Validators.required, Validators.minLength(6)]];
+      formGroup.confirma_contrasenia = ['', [Validators.required, Validators.minLength(6)]];
     }
 
     this.usuarioForm = this.fb.group(formGroup, {
       // Aplicar validador a nivel del formulario solo si hay campos de contraseña
-      validators: this.hasPasswordFields() ? this.passwordMatchValidator() : null
+      validators: this.hasPasswordFields() ? this.passwordMatchValidator() : null,
     });
 
     // Si es edición, actualizar el formulario con los datos existentes
@@ -104,7 +136,7 @@ export class UsuarioFormComponent implements OnInit {
       this.usuarioForm.patchValue(this.usuario);
 
       // Suscribirse a cambios del checkbox en modo edición
-      this.usuarioForm.get('permiteEditarContrasenia')?.valueChanges.subscribe(permiteEditar => {
+      this.usuarioForm.get('permiteEditarContrasenia')?.valueChanges.subscribe((permiteEditar) => {
         this.togglePasswordFields(permiteEditar);
       });
     }
@@ -123,7 +155,7 @@ export class UsuarioFormComponent implements OnInit {
         console.error('Error al cargar roles:', error);
         this.utilsService.showNotification('Error', 'Error al cargar los roles', 'error');
         this.loadingRoles.set(false);
-      }
+      },
     });
   }
 
@@ -134,7 +166,7 @@ export class UsuarioFormComponent implements OnInit {
       // Crear objeto usuario con los valores del formulario
       const usuarioData = {
         ...this.usuario,
-        ...formValue
+        ...formValue,
       };
 
       this.guardar.emit(usuarioData as CreateUsuarioDto | UpdateUsuarioDto);
@@ -153,7 +185,7 @@ export class UsuarioFormComponent implements OnInit {
 
   // Método para marcar todos los campos como touched
   private markFormGroupTouched() {
-    Object.keys(this.usuarioForm.controls).forEach(key => {
+    Object.keys(this.usuarioForm.controls).forEach((key) => {
       const control = this.usuarioForm.get(key);
       control?.markAsTouched();
     });
@@ -167,16 +199,17 @@ export class UsuarioFormComponent implements OnInit {
 
   getFieldError(fieldName: string): string {
     const field = this.usuarioForm.get(fieldName);
-    if (field && field.errors) {
+    if (field?.errors) {
       if (field.errors['required']) return 'Este campo es requerido';
       if (field.errors['email']) return 'El email no es válido';
-      if (field.errors['minlength']) return `Mínimo ${field.errors['minlength'].requiredLength} caracteres`;
+      if (field.errors['minlength'])
+        return `Mínimo ${field.errors['minlength'].requiredLength} caracteres`;
       if (field.errors['passwordMismatch']) return 'Las contraseñas no coinciden';
     }
 
     // Verificar errores del formulario completo para contraseñas
     const formErrors = this.usuarioForm.errors;
-    if (formErrors && formErrors['passwordMismatch']) {
+    if (formErrors?.['passwordMismatch']) {
       if (fieldName === 'contrasenia' || fieldName === 'confirma_contrasenia') {
         return 'Las contraseñas no coinciden';
       }
@@ -191,15 +224,24 @@ export class UsuarioFormComponent implements OnInit {
 
   // Método para verificar si el formulario tiene campos de contraseña
   private hasPasswordFields(): boolean {
-    return this.usuarioForm?.contains('contrasenia') && this.usuarioForm?.contains('confirma_contrasenia');
+    return (
+      this.usuarioForm?.contains('contrasenia') &&
+      this.usuarioForm?.contains('confirma_contrasenia')
+    );
   }
 
   // Método para mostrar/ocultar campos de contraseña en modo edición
   private togglePasswordFields(mostrar: boolean) {
     if (mostrar) {
       // Agregar campos de contraseña
-      this.usuarioForm.addControl('contrasenia', this.fb.control('', [Validators.required, Validators.minLength(6)]));
-      this.usuarioForm.addControl('confirma_contrasenia', this.fb.control('', [Validators.required, Validators.minLength(6)]));
+      this.usuarioForm.addControl(
+        'contrasenia',
+        this.fb.control('', [Validators.required, Validators.minLength(6)]),
+      );
+      this.usuarioForm.addControl(
+        'confirma_contrasenia',
+        this.fb.control('', [Validators.required, Validators.minLength(6)]),
+      );
 
       // Agregar validador de contraseñas
       this.usuarioForm.setValidators(this.passwordMatchValidator());

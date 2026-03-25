@@ -1,0 +1,38 @@
+// card.component.scss
+// Usa únicamente CSS custom properties ya definidos en styles.scss / _variables.scss.
+// No hay valores hardcodeados aquí.
+
+:host {
+  display: contents;   // el host no genera caja, el card ocupa el espacio natural
+}
+
+// ── Variante custom "light-blue" (usada en Alerta) ────────────
+// Si el proyecto ya tiene .bg-light-blue en styles.scss, esta regla
+// solo garantiza que el texto sea legible.
+.bg-light-blue {
+  background-color: var(--color-bg-table-alt, #f7fafc);
+  color:            var(--color-text-title, #2c3e50);
+  border-bottom:    1px solid var(--color-border-subtle, #e8ecf1);
+}
+
+// ── Overrides mínimos del card-header ─────────────────────────
+.card-header {
+  padding:     var(--space-3, 12px) var(--space-4, 16px);
+  font-size:   var(--font-size-base, 0.875rem);
+  font-weight: var(--font-weight-semibold, 600);
+  border-bottom: 1px solid var(--color-border, #dee2e6);
+}
+
+// ── card-rounded ya está en admin-layout, pero se repite aquí
+//    como fallback por si el componente se usa fuera del layout
+.card {
+  border-radius: var(--border-radius-xl, 12px);
+  border:        none;
+  box-shadow:    var(--shadow-md, 0 2px 8px rgba(0,0,0,.08));
+  transition:    var(--transition-normal, all .3s ease);
+}
+
+// ── Footer slot ───────────────────────────────────────────────
+// El slot=[footer] del ng-content no genera estilos propios —
+// el componente que proyecta debe agregar las clases Bootstrap
+// que necesite (d-flex, justify-content-end, gap-2, etc.).

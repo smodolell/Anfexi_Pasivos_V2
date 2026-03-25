@@ -4,13 +4,15 @@
     "label": "Reportes",
     "icon": "fa-solid fa-file-alt",
     "order": 1,
+    "roles": ["Admin", "Webmaster"],
     "children": [
       {
         "id": "dashboard",
         "label": "Dashboard",
         "icon": "fa-solid fa-gauge-high",
         "route": "/admin/reportes/dashboard",
-        "order": 1
+        "order": 1,
+        "roles": ["Admin", "Webmaster"]
       }
     ]
   },
@@ -32,13 +34,10 @@
     "label": "Contratos",
     "icon": "fa-solid fa-file-contract",
     "order": 3,
+    "roles": ["Admin", "Webmaster"],
     "children": [
       {
-        "id": "info-general",
-        "label": "Información General",
-        "icon": "fa-solid fa-circle-info",
-        "route": "/admin/contratos/info-general",
-        "order": 1
+        "id": "info-general",  "label": "Información General", "icon": "fa-solid fa-circle-info", "route": "/admin/contratos/info-general", "order": 1, "roles": ["Admin", "Webmaster"]
       }
     ]
   },

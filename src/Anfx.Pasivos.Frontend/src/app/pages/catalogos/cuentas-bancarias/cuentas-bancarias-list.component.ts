@@ -91,11 +91,11 @@ export class CuentasBancariasListComponent implements OnInit {
 
   confirmDelete() {
     if (!this.cuentaToDelete) return;
-    this.confirmModal.confirmLoading = true;
+    this.confirmModal.confirmLoading.set(true);
 
     this.catalogosService.deleteCuentaBancaria(this.cuentaToDelete.id!).subscribe({
       next: (res: any) => {
-        this.confirmModal.confirmLoading = false;
+        this.confirmModal.confirmLoading.set(false);
         this.confirmModal.hide();
         this.cuentaToDelete = null;
         if (res?.success === false) {
@@ -106,7 +106,7 @@ export class CuentasBancariasListComponent implements OnInit {
         }
       },
       error: (err) => {
-        this.confirmModal.confirmLoading = false;
+        this.confirmModal.confirmLoading.set(false);
         this.confirmModal.hide();
         this.cuentaToDelete = null;
         if (!wasHandledByInterceptor(err)) {

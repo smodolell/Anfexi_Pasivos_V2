@@ -98,8 +98,16 @@ export class GenericTableComponent {
     this.actionCalled.emit({ action: actionId, row });
   }
 
-  onSearch(value: string): void {
+  onSearch(event: string | Event): void {
+    let value = '';
+
+    if (typeof event === 'string') {
+      value = event;
+    } else {
+      value = (event.target as HTMLInputElement).value;
+    }
     this.searchChanged.emit(value);
+
   }
 
   onClearSearch(): void {

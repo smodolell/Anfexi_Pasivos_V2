@@ -5,19 +5,12 @@
     (toggleSidebar)="onToggleSidebar()"
     (toggleMobileNav)="onToggleMobileNav()"
   />
-
-  <aside class="left-sidebar">
-    <div class="scroll-sidebar">
-      <nav class="sidebar-nav">
-        <app-sidebar-nav
-          [items]="menuItems"
-          [isMini]="isMiniSidebar()"
-          [isMobileNavOpen]="isMobileNavOpen()"
-          (navItemSelected)="onNavItemSelected()"
-        />
-      </nav>
-    </div>
-  </aside>
+  <app-sidebar
+    [role]="userRole"
+    [isMini]="isMiniSidebar()"
+    [isMobileNavOpen]="isMobileNavOpen()"
+    (navItemSelected)="onNavItemSelected()">
+  </app-sidebar>
 
   <div class="page-wrapper">
     <div class="container-fluid">

@@ -9,7 +9,7 @@ import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/
 import { provideToastr } from 'ngx-toastr';
 
 import { routes } from './app.routes';
-import { API_AUTH_URL, API_CATALOGO_URL, API_COTIZADOR_URL, API_SISTEMA_URL } from './api.config';
+import { API_AUTH_URL, API_CATALOGO_URL, API_COTIZADOR_URL, API_SISTEMA_URL, MENU_API_URL } from './api.config';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { provideApi } from '@api/provide-api';
 import { provideHighcharts } from 'highcharts-angular';
@@ -38,5 +38,9 @@ export const appConfig: ApplicationConfig = {
     { provide: API_CATALOGO_URL,  useValue: environment.apiCatalogoUrl  },
     { provide: API_SISTEMA_URL,   useValue: environment.apiSistemaUrl   },
     { provide: API_COTIZADOR_URL, useValue: environment.apiCotizadorUrl },
+    { provide: API_AUTH_URL,     useValue: environment.apiAuthUrl },
+    { provide: API_CATALOGO_URL, useValue: environment.apiCatalogoUrl },
+    { provide: API_SISTEMA_URL,  useValue: environment.apiSistemaUrl },
+    { provide: MENU_API_URL,     useValue: environment.menuApiUrl },
   ],
 };

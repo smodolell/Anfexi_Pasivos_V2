@@ -12,11 +12,12 @@ import { ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR } from '@angular/f
 import { Subject, debounceTime, distinctUntilChanged, switchMap, takeUntil } from 'rxjs';
 import { AutocompleteResultDto } from '../../../../api/models/autocompleteResultDto';
 import { ContratosService } from '../../../../api/services/contratos.service';
+import { SearchInputComponent } from '../search-input/search-input.component';
 
 @Component({
   selector: 'app-contrato-autocomplete',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, SearchInputComponent],
   templateUrl: './contrato-autocomplete.component.html',
   providers: [
     {
@@ -36,7 +37,7 @@ export class ContratoAutocompleteComponent implements OnInit, OnDestroy, Control
   placeholder = input<string>('Ingrese el número de contrato...');
   required = input<boolean>(false);
   disabled = input<boolean>(false);
-
+  searchChanged   = output<string>();
   // ── Output ───────────────────────────────────────────────────
   /** Emite el item seleccionado del dropdown */
   contratoSelected = output<AutocompleteResultDto>();
@@ -136,6 +137,7 @@ export class ContratoAutocompleteComponent implements OnInit, OnDestroy, Control
     this.sugerencias.set([]);
     this.showDropdown.set(false);
     this.onChange(null);
+    this.searchChanged.emit('');
   }
 
   // ── ControlValueAccessor ──────────────────────────────────────

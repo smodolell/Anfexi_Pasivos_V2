@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal, DestroyRef, ViewChild } from '@angular/core';
+import { Component, OnInit, inject, signal, DestroyRef, ViewChild, input } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ProcesosService } from '../../../../api/services/procesos.service';

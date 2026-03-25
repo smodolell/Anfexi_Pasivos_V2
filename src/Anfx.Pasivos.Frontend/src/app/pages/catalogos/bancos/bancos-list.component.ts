@@ -1,13 +1,13 @@
+import { ConfirmModalComponent } from './../../../shared/components/confirm-modal/confirm-modal.component';
 import { Component, OnInit, ViewChild, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { CatalogosService } from '../../../../api/services/catalogos.service';
-import { BancoListItemDto } from '../../../../api/models/models';
-import { UtilsService } from '../../../services/utils.service';
-import { GenericTableComponent } from '../../../shared/components/generic-table/generic-table.component';
-import { TableColumn, TableAction, TableActionEvent, TableSortEvent, SortDirection } from '../../../shared/components/generic-table/table-column.model';
-import { wasHandledByInterceptor } from '../../../interceptors/auth.interceptor';
-import { ConfirmModalComponent } from '../../../shared/components/confirm-modal/confirm-modal.component';
+import { CatalogosService } from '@api/services/catalogos.service';
+import { BancoListItemDto } from '@api/models/bancoListItemDto';
+import { UtilsService } from 'src/app/services/utils.service';
+import { wasHandledByInterceptor } from 'src/app/interceptors/auth.interceptor';
+import { GenericTableComponent } from 'src/app/shared/components/generic-table/generic-table.component';
+import { SortDirection, TableAction, TableActionEvent, TableColumn, TableSortEvent } from 'src/app/shared/components/generic-table/table-column.model';
 
 @Component({
   selector: 'app-bancos-list',
@@ -103,11 +103,11 @@ export class BancosListComponent implements OnInit {
 
   confirmDelete() {
     if (!this.bancoToDelete) return;
-    this.confirmModal.confirmLoading = true;
+    this.confirmModal.confirmLoading.set(true);
 
     this.catalogosService.deleteBanco(this.bancoToDelete.id!).subscribe({
       next: (res: any) => {
-        this.confirmModal.confirmLoading = false;
+        this.confirmModal.confirmLoading.set(false);
         this.confirmModal.hide();
         this.bancoToDelete = null;
         if (res?.success === false) {
@@ -118,7 +118,7 @@ export class BancosListComponent implements OnInit {
         }
       },
       error: (err) => {
-        this.confirmModal.confirmLoading = false;
+        this.confirmModal.confirmLoading.set(false);
         this.confirmModal.hide();
         this.bancoToDelete = null;
         if (!wasHandledByInterceptor(err)) {

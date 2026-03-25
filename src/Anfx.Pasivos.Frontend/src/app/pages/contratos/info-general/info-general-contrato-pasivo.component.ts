@@ -25,8 +25,8 @@ export class InfoGeneralContratoPasivoComponent implements OnInit, OnDestroy {
   @ViewChild('detalleModalEl')     detalleModalEl!: ElementRef<HTMLElement>;
   @ViewChild('detallePagoModalEl') detallePagoModalEl!: ElementRef<HTMLElement>;
 
-  private service       = inject(ContratosService);
-  private layoutService = inject(LayoutService);
+  private readonly service       = inject(ContratosService);
+  private readonly layoutService = inject(LayoutService);
   private bsModalDetalle?:     any;
   private bsModalDetallePago?: any;
 

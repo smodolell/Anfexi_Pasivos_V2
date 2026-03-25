@@ -50,7 +50,6 @@
 #sidebarnav ul.collapse.show {
   display: block;
 }
-
 // ── Nivel raíz: flex para ícono + texto ──────────────────
 .sidebar-nav > ul > li > a {
   display: flex !important;
@@ -58,62 +57,48 @@
   gap: 10px !important;
 }
 
-// Ícono del nivel raíz
+// Ícono del nivel raíz — tamaño y alineación fijos
 .sidebar-nav > ul > li > a > i {
-  display: inline-flex !important;
-  align-items: center;
-  justify-content: center;
-  width: 22px;
-  flex-shrink: 0;
-  font-size: 1.05rem !important;
-  transition: color 0.2s ease, font-size 0.2s ease;
+  font-size: 1rem !important;
+  width: 20px !important;
+  min-width: 20px !important;
+  text-align: center !important;
+  flex-shrink: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  transition: color 0.2s ease;
 }
 
-// ── Submenú: flex para ícono + texto ─────────────────────
+// Neutraliza el margin-left que AdminLTE pone en .hide-menu
+// con mayor especificidad que la regla del tema
+#sidebarnav > ul > li > a > .hide-menu {
+  margin-left: 0 !important;
+  padding-left: 0 !important;
+}
+
+// El <a> de subitems — solo flex y gap, SIN tocar padding-left
+// (AdminLTE ya maneja el indent del submenú)
 .sidebar-nav ul ul li a {
   display: flex !important;
   align-items: center !important;
   gap: 8px !important;
-  padding-left: 10px !important;
-  font-size: 13px !important;
 }
 
-// Ícono del submenú: tamaño fijo, alineación y transición de color
-.sidebar-nav ul ul li a i {
-  display: inline-flex !important;
-  align-items: center;
-  justify-content: center;
-  width: 18px;
-  flex-shrink: 0;
-  font-size: 0.85rem !important;
-  transition: color 0.2s ease;
-  opacity: 0.85;
-}
-
-// Ícono del submenú en hover / activo — plena opacidad
-.sidebar-nav ul ul li a:hover i,
-.sidebar-nav ul ul li a.active i {
-  opacity: 1;
-}
-
-// ── Mini-sidebar: solo ícono, centrado ───────────────────
-.mini-sidebar .sidebar-nav > ul > li > a {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  padding: 12px 0 !important;
-}
-
-.mini-sidebar .sidebar-nav > ul > li > a > i {
-  font-size: 1.5rem !important;
-  width: 100% !important;
-  margin-right: 0 !important;
+// Íconos de subitems
+.sidebar-nav ul ul li a > i {
+  font-size: 0.875rem !important;
+  width: 16px !important;
+  min-width: 16px !important;
   text-align: center !important;
+  flex-shrink: 0 !important;
+  margin: 0 !important;
+  opacity: 0.85;
+  transition: color 0.2s ease, opacity 0.2s ease;
 }
 
-// Tooltip/label del mini-sidebar al hacer hover sobre el li
-.mini-sidebar .sidebar-nav > ul > li:hover > ul {
-  display: block !important;
+.sidebar-nav ul ul li a:hover > i,
+.sidebar-nav ul ul li a.active > i {
+  opacity: 1;
 }
 
 // ------------------------------------------------------------
@@ -678,7 +663,248 @@ input[iscurrency] { text-align: right; }
     from { opacity: 0; transform: translateY(-10px); }
     to   { opacity: 1; transform: translateY(0); }
 }
+// ------------------------------------------------------------
+// BOTONES — Secondary :focus (presente en Alerta, faltante)
+// ------------------------------------------------------------
+.btn-secondary:focus {
+    background: var(--color-gray-400);
+    color: var(--color-gray-850) !important;
+    box-shadow: 0 0 0 3px rgba(203, 213, 224, 0.3);
+}
 
+// ------------------------------------------------------------
+// BOTONES — Primary light (variante clara, faltante en Pasivos)
+// ------------------------------------------------------------
+.btn-primary-light {
+    background-color: var(--color-btn-primary-alt) !important;
+    color: var(--color-white) !important;
+}
+
+.btn-primary-light:hover {
+    background-color: var(--color-btn-primary-alt-dark) !important;
+    color: var(--color-white) !important;
+}
+
+// ------------------------------------------------------------
+// MODAL LOGOUT — estilos extendidos (faltantes en Pasivos)
+// ------------------------------------------------------------
+#logoutModal .modal-title {
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-heading);
+}
+
+#logoutModal .btn-danger {
+    background: linear-gradient(135deg, var(--color-danger-bs) 0%, var(--color-danger-bs-dark) 100%);
+    border: none;
+    font-weight: var(--font-weight-medium);
+    transition: var(--transition-normal);
+}
+
+#logoutModal .btn-danger:hover {
+    background: linear-gradient(135deg, var(--color-danger-bs-dark) 0%, var(--color-danger-bs-darker) 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
+}
+
+#logoutModal .btn:focus {
+    box-shadow: var(--shadow-focus-blue);
+    outline: none;
+}
+
+#logoutModal .btn-danger:focus {
+    box-shadow: var(--shadow-focus-danger);
+}
+
+// ------------------------------------------------------------
+// BORDES INFO / WARNING
+// ------------------------------------------------------------
+.border-info,
+.border-warning {
+    border-style: solid !important;
+    border-width: 1px !important;
+}
+
+// ------------------------------------------------------------
+// FORMULARIOS — adicionales faltantes
+// ------------------------------------------------------------
+.form-check-input {
+    transition: var(--transition-base);
+}
+
+app-input-currency input[type="string"],
+app-input-currency input[type="string"]:focus {
+    text-align: right;
+    color: var(--color-success);
+}
+
+// ------------------------------------------------------------
+// TABS VERTICALES (completas — faltaban en Pasivos)
+// ------------------------------------------------------------
+.card-min-height { min-height: 440px; }
+
+.vtabs { display: table; }
+
+.vtabs .tabs-vertical {
+    width: 150px;
+    border-bottom: 0;
+    border-right: 1px solid var(--color-gray-200);
+    display: table-cell;
+    vertical-align: top;
+}
+
+.vtabs .tabs-vertical li .nav-link {
+    color: var(--color-gray-800);
+    margin-bottom: var(--space-3);
+    border: 0;
+    border-radius: 0.25rem 0 0 0.25rem;
+}
+
+.vtabs .tab-content {
+    display: table-cell;
+    padding: var(--space-5);
+    vertical-align: top;
+}
+
+.tabs-vertical li .nav-link.active,
+.tabs-vertical li .nav-link:hover,
+.tabs-vertical li .nav-link.active:focus {
+    background: var(--color-tab-accent, #fb9678);
+    border: 0;
+    color: var(--color-white);
+}
+
+.customvtab .tabs-vertical li .nav-link.active,
+.customvtab .tabs-vertical li .nav-link:hover,
+.customvtab .tabs-vertical li .nav-link:focus {
+    background: var(--color-white);
+    border: 0;
+    border-right: 2px solid var(--color-tab-accent, #fb9678);
+    margin-right: -1px;
+    color: var(--color-tab-accent, #fb9678);
+}
+
+.tabheader-border {
+    border: 1px solid var(--color-border-tab);
+    border-bottom: 0;
+}
+
+.tabcontent-border {
+    border: 1px solid var(--color-border-tab);
+    border-top: 0;
+}
+
+.customtab2 li a.nav-link {
+    border: 0;
+    margin-right: 3px;
+    color: var(--color-text-primary);
+}
+
+.customtab2 li a.nav-link.active,
+.customtab2 li a.nav-link:hover {
+    background: var(--color-tab-accent, #fb9678);
+    color: var(--color-white);
+}
+
+// ------------------------------------------------------------
+// TABLAS — variantes faltantes
+// ------------------------------------------------------------
+.table-header-cotizador tr > th {
+    background-color: #f2f4f7 !important;
+    color: #000 !important;
+    font-weight: bold !important;
+}
+
+.table-header-cotizador tr > th:first-child {
+    background-color: #eaf0fc !important;
+    color: var(--color-btn-primary-alt-dark) !important;
+}
+
+.table.table-condensed td,
+.table.table-condensed th {
+    padding: 7px !important;
+}
+
+// ------------------------------------------------------------
+// BOTONES DE ACCIÓN — variante legacy (.btn-action-*)
+// (usada en componentes de Alerta, puede aparecer en Pasivos)
+// ------------------------------------------------------------
+.btn-action {
+    transition: var(--transition-base);
+    border-radius: var(--border-radius-md);
+    width: 36px;
+    height: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-action:hover  { transform: scale(1.05); box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); }
+.btn-action:active { transform: scale(0.95); }
+
+.btn-action-edit { background: var(--color-primary-accent); color: var(--color-white) !important; border: none; }
+.btn-action-edit:hover { background: var(--color-primary-medium); }
+
+.btn-action-delete { color: var(--color-danger-bs) !important; }
+.btn-action-delete:hover  { background-color: rgba(220, 53, 69, 0.12) !important; color: var(--color-danger-bs-dark) !important; }
+.btn-action-delete:active { background-color: rgba(220, 53, 69, 0.2)  !important; color: var(--color-danger-bs-darker) !important; }
+
+.btn-action-view   { background: var(--color-purple); color: var(--color-white) !important; border: none; }
+.btn-action-view:hover { background: var(--color-purple-dark); background-color: rgba(0, 123, 255, 0.12) !important; color: var(--color-blue-bootstrap) !important; }
+
+.btn-action-success { background: var(--color-success); color: var(--color-white) !important; border: none; }
+.btn-action-success:hover { background: var(--color-success-dark); background-color: rgba(72, 187, 120, 0.12) !important; color: var(--color-success-dark) !important; }
+
+.btn-action-warning { background: var(--color-warning); color: var(--color-white) !important; border: none; }
+.btn-action-warning:hover { background: var(--color-warning-dark); background-color: rgba(237, 137, 54, 0.12) !important; color: var(--color-warning-dark) !important; }
+
+// ------------------------------------------------------------
+// BADGES — variantes faltantes
+// ------------------------------------------------------------
+.badge.bg-sky {
+    background: var(--color-bg-date-hover) !important;
+    color: #1565c0 !important;
+}
+
+// ------------------------------------------------------------
+// BUSCADOR — estilos completos faltantes
+// ------------------------------------------------------------
+.search-label {
+    display: flex;
+    align-items: center;
+    margin-right: var(--space-3);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-text-input-label);
+}
+
+.search-icon { width: 20px; height: 20px; margin-right: 5px; }
+
+.search-input {
+    flex: 1;
+    padding: var(--space-3) 15px;
+    border: 1px solid var(--color-gray-450);
+    border-radius: var(--border-radius-md);
+    font-size: var(--font-size-base);
+    transition: var(--transition-normal);
+    background: var(--color-bg-surface);
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: var(--color-primary-accent);
+    background: var(--color-white);
+    box-shadow: var(--shadow-focus-primary);
+}
+
+.showing-text {
+    color: var(--color-gray-650);
+    font-size: var(--font-size-base);
+}
+
+// ------------------------------------------------------------
+// UTILIDADES — faltantes en Pasivos
+// ------------------------------------------------------------
+.w-auto-width  { width: auto !important; }
+.b-b-none      { border-bottom: none !important; }
 // ------------------------------------------------------------
 // RESPONSIVE
 // ------------------------------------------------------------
