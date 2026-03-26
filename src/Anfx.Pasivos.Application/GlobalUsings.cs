@@ -1,4 +1,5 @@
 ﻿global using Ardalis.Specification;
+global using Ardalis.Specification.EntityFrameworkCore;
 global using Ardalis.Result;
 global using Ardalis.Result.FluentValidation;
 global using FluentValidation;

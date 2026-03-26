@@ -1,8 +1,8 @@
-﻿using Anfx.Pasivos.ApiService.Responces.Contratos;
+﻿using Anfx.Pasivos.ApiService.Requests.Contratos;
+using Anfx.Pasivos.ApiService.Responces.Contratos;
 using Anfx.Pasivos.Application.Features.Contratos.Commands;
 using Anfx.Pasivos.Application.Features.Contratos.DTOs;
 using Anfx.Pasivos.Application.Features.Contratos.Queries;
-using Anfx.Pasivos.Domain.Entities;
 using IResult = Microsoft.AspNetCore.Http.IResult;
 
 namespace Anfx.Pasivos.ApiService.Endpoints;
@@ -31,11 +31,11 @@ public class Contratos : EndpointGroupBase
 
 
         group.MapGet("tabla-amortiza/{idContrato}", GetTablaAmortizacionByTipo)
-         .WithName("GetTablaAmortizacionByTipo")
-         .WithSummary("Obtiene la tabla de amortización de un contrato por tipo")
-         .Produces<ApiResponseDto<List<TablaAmortizaItemDto>>>(StatusCodes.Status200OK)
-         .Produces<ApiResponseDto>(StatusCodes.Status404NotFound)
-         .Produces<ApiResponseDto>(StatusCodes.Status500InternalServerError);
+             .WithName("GetTablaAmortizacionByTipo")
+             .WithSummary("Obtiene la tabla de amortización de un contrato por tipo")
+             .Produces<ApiResponseDto<List<TablaAmortizaItemDto>>>(StatusCodes.Status200OK)
+             .Produces<ApiResponseDto>(StatusCodes.Status404NotFound)
+             .Produces<ApiResponseDto>(StatusCodes.Status500InternalServerError);
 
 
         group.MapGet("rel-activo-pasivo", GetRelActivoPasivo)
@@ -94,6 +94,109 @@ public class Contratos : EndpointGroupBase
             .Produces<ApiResponseDto>(StatusCodes.Status500InternalServerError);
 
 
+
+        group.MapGet("/{id}", GetContratoById)
+            .WithName("GetContratoById")
+            .WithSummary("Obtiene un contrato pasivo por su ID")
+            .WithDescription("Retorna la información detallada de un contrato pasivo específico")
+            .Produces<ApiResponseDto<ContratoPasivoDto>>(StatusCodes.Status200OK)
+            .Produces<ApiResponseDto>(StatusCodes.Status404NotFound)
+            .Produces<ApiResponseDto>(StatusCodes.Status400BadRequest)
+            .Produces<ApiResponseDto>(StatusCodes.Status401Unauthorized)
+            .Produces<ApiResponseDto>(StatusCodes.Status500InternalServerError);
+
+        group.MapGet("/", GetContratosPasivos)
+            .WithName("GetContratosPasivos")
+            .WithSummary("Lista contratos pasivos con filtros")
+            .WithDescription("Retorna una lista paginada de contratos pasivos con soporte para filtros por fondeador, estatus, línea de crédito, búsqueda por texto, ordenamiento dinámico y paginación")
+            .Produces<ApiResponseDto<PagedResultDto<ContratoPasivoListItem>>>(StatusCodes.Status200OK)
+            .Produces<ApiResponseDto>(StatusCodes.Status400BadRequest)
+            .Produces<ApiResponseDto>(StatusCodes.Status401Unauthorized)
+            .Produces<ApiResponseDto>(StatusCodes.Status500InternalServerError);
+
+        group.MapGet("nuevo/{idLineaCredito}", GetAddContrato)
+            .WithName("GetAddContrato")
+            .WithSummary("Obtiene datos iniciales para crear un nuevo contrato")
+            .WithDescription("Retorna información pre-cargada basada en la línea de crédito seleccionada para facilitar la creación de un nuevo contrato")
+            .Produces<ApiResponseDto<ContratoPasivoEditDto>>(StatusCodes.Status200OK)
+            .Produces<ApiResponseDto>(StatusCodes.Status400BadRequest)
+            .Produces<ApiResponseDto>(StatusCodes.Status404NotFound)
+            .Produces<ApiResponseDto>(StatusCodes.Status401Unauthorized);
+
+        group.MapPost("/", CreateContrato)
+           .WithName("CreateContrato")
+           .WithSummary("Crea un nuevo contrato pasivo")
+           .WithDescription("Crea un nuevo contrato pasivo con toda su información incluyendo pagos irregulares si aplica")
+           .Accepts<ContratoPasivoEditDto>("application/json")
+           .Produces<ApiResponseDto<int>>(StatusCodes.Status200OK)
+           .Produces<ApiResponseDto>(StatusCodes.Status400BadRequest)
+           .Produces<ApiResponseDto>(StatusCodes.Status401Unauthorized)
+           .Produces<ApiResponseDto>(StatusCodes.Status500InternalServerError);
+
+        group.MapPut("/{id}", UpdateContrato)
+            .WithName("UpdateContrato")
+            .WithSummary("Actualiza un contrato pasivo existente")
+            .WithDescription("Actualiza la información de un contrato pasivo existente. Solo permite modificar contratos en estado 'Borrador'")
+            .Accepts<ContratoPasivoEditDto>("application/json")
+            .Produces<ApiResponseDto>(StatusCodes.Status200OK)
+            .Produces<ApiResponseDto>(StatusCodes.Status400BadRequest)
+            .Produces<ApiResponseDto>(StatusCodes.Status404NotFound)
+            .Produces<ApiResponseDto>(StatusCodes.Status401Unauthorized)
+            .Produces<ApiResponseDto>(StatusCodes.Status500InternalServerError);
+
+
+        group.MapPut("/{id}/activar", ActivarContrato)
+            .WithName("ActivarContrato")
+            .WithSummary("Activa un contrato pasivo")
+            .WithDescription("Activa un contrato pasivo con la fecha de activación especificada")
+            .Accepts<ActivarContratoRequest>("application/json")
+            .Produces<ApiResponseDto>(StatusCodes.Status200OK)
+            .Produces<ApiResponseDto>(StatusCodes.Status400BadRequest)
+            .Produces<ApiResponseDto>(StatusCodes.Status404NotFound)
+            .Produces<ApiResponseDto>(StatusCodes.Status401Unauthorized)
+            .Produces<ApiResponseDto>(StatusCodes.Status500InternalServerError);
+
+        group.MapGet("clave-contrato/{idTipoCredito}", GetClaveContrato)
+            .WithName("GetClaveContrato")
+            .WithSummary("Obtiene la clave del contrato")
+            .WithDescription("Genera y retorna la clave del contrato basada en el prefijo, sufijo y contador del tipo de crédito")
+            .Produces<ApiResponseDto<string>>(StatusCodes.Status200OK)
+            .Produces<ApiResponseDto>(StatusCodes.Status400BadRequest)
+            .Produces<ApiResponseDto>(StatusCodes.Status404NotFound)
+            .Produces<ApiResponseDto>(StatusCodes.Status401Unauthorized)
+            .Produces<ApiResponseDto>(StatusCodes.Status500InternalServerError);
+
+        // Agregar este endpoint dentro del método Map
+        group.MapGet("tipo-tabla-amortiza/{id}/info", GetTipoTablaAmortizaInfo)
+            .WithName("GetTipoTablaAmortizaInfo")
+            .WithSummary("Obtiene información de capitalización por tipo de tabla de amortización")
+            .WithDescription("Retorna si es capitalizable y las listas de tipos de capitalización y pago de capital según el tipo de tabla de amortización")
+            .Produces<ApiResponseDto<TipoTablaAmortizaInfoDto>>(StatusCodes.Status200OK)
+            .Produces<ApiResponseDto>(StatusCodes.Status400BadRequest)
+            .Produces<ApiResponseDto>(StatusCodes.Status404NotFound)
+            .Produces<ApiResponseDto>(StatusCodes.Status401Unauthorized)
+            .Produces<ApiResponseDto>(StatusCodes.Status500InternalServerError);
+
+
+        group.MapGet("{idContrato}/pagos", GetPagosByIdContrato)
+            .WithName("GetPagosByIdContrato")
+            .WithSummary("Obtiene los pagos de un contrato")
+            .WithDescription("Retorna la lista de pagos asociados a un contrato específico")
+            .Produces<ApiResponseDto<List<PagoItemDto>>>(StatusCodes.Status200OK)
+            .Produces<ApiResponseDto>(StatusCodes.Status400BadRequest)
+            .Produces<ApiResponseDto>(StatusCodes.Status404NotFound)
+            .Produces<ApiResponseDto>(StatusCodes.Status401Unauthorized)
+            .Produces<ApiResponseDto>(StatusCodes.Status500InternalServerError);
+
+        group.MapGet("{idContrato}/movimientos", GetMovimientosByIdContrato)
+            .WithName("GetMovimientosByIdContrato")
+            .WithSummary("Obtiene los movimientos de un contrato")
+            .WithDescription("Retorna la lista de movimientos asociados a un contrato específico")
+            .Produces<ApiResponseDto<List<MovimientoItemDto>>>(StatusCodes.Status200OK)
+            .Produces<ApiResponseDto>(StatusCodes.Status400BadRequest)
+            .Produces<ApiResponseDto>(StatusCodes.Status404NotFound)
+            .Produces<ApiResponseDto>(StatusCodes.Status401Unauthorized)
+            .Produces<ApiResponseDto>(StatusCodes.Status500InternalServerError);
 
     }
 
@@ -231,6 +334,163 @@ public class Contratos : EndpointGroupBase
         return result.ToCustomMinimalApiResult();
     }
 
+    public async Task<IResult> GetContratoById(
+    [FromServices] IQueryMediator queryMediator,
+    [FromRoute] int id,
+    CancellationToken cancellationToken = default)
+    {
+        var query = new GetContratoByIdQuery
+        {
+            IdContrato = id
+        };
+
+        var result = await queryMediator.QueryAsync(query, cancellationToken);
+        return result.ToCustomMinimalApiResult();
+    }
+
+    public async Task<IResult> GetContratosPasivos(
+      [FromServices] IQueryMediator queryMediator,
+      [FromQuery] int? idFondeador = null,
+      [FromQuery] int? idEstatusContrato = null,
+      [FromQuery] int? idLineaCredito = null,
+      [FromQuery] string? searchText = null,
+      [FromQuery] int page = 1,
+      [FromQuery] int pageSize = 10,
+      [FromQuery] string sortColumn = "Contrato",
+      [FromQuery] bool sortDescending = false,
+      CancellationToken cancellationToken = default)
+    {
+        var query = new GetContratosQuery
+        {
+            IdFondeador = idFondeador,
+            IdEstatusContrato = idEstatusContrato,
+            IdLineaCredito = idLineaCredito,
+            SearchText = searchText,
+            Page = page,
+            PageSize = pageSize,
+            SortColumn = sortColumn,
+            SortDescending = sortDescending
+        };
+
+        var result = await queryMediator.QueryAsync(query, cancellationToken);
+        return result.ToCustomMinimalApiResult();
+    }
+
+    public async Task<IResult> GetAddContrato(
+    [FromServices] IQueryMediator queryMediator,
+    [FromRoute] int idLineaCredito,
+    CancellationToken cancellationToken = default)
+    {
+        var query = new GetAddContratoQuery
+        {
+            IdLineaCredito = idLineaCredito
+        };
+
+        var result = await queryMediator.QueryAsync(query, cancellationToken);
+        return result.ToCustomMinimalApiResult();
+    }
+
+    public async Task<IResult> CreateContrato(
+      [FromServices] ICommandMediator commandMediator,
+      [FromBody] ContratoPasivoEditDto model,
+      CancellationToken cancellationToken = default)
+    {
+        var command = new SaveContratoCommand
+        {
+            IdContrato = 0,
+            Model = model
+        };
+
+        var result = await commandMediator.SendAsync(command, cancellationToken);
+        return result.ToCustomMinimalApiResult();
+    }
 
 
+    public async Task<IResult> UpdateContrato(
+      [FromServices] ICommandMediator commandMediator,
+      [FromRoute] int id,
+      [FromBody] ContratoPasivoEditDto model,
+      CancellationToken cancellationToken = default)
+    {
+        var command = new SaveContratoCommand
+        {
+            IdContrato = id,
+            Model = model
+        };
+
+        var result = await commandMediator.SendAsync(command, cancellationToken);
+        return result.ToCustomMinimalApiResult();
+    }
+
+    public async Task<IResult> ActivarContrato(
+    [FromServices] ICommandMediator commandMediator,
+    [FromRoute] int id,
+    [FromBody] ActivarContratoRequest request,
+    CancellationToken cancellationToken = default)
+    {
+        var command = new ActivarContratoCommand
+        {
+            IdContrato = id,
+            FechaActivacion = request.FechaActivacion
+        };
+
+        var result = await commandMediator.SendAsync(command, cancellationToken);
+        return result.ToCustomMinimalApiResult();
+    }
+
+    public async Task<IResult> GetClaveContrato(
+    [FromServices] IQueryMediator queryMediator,
+    [FromRoute] int idTipoCredito,
+    CancellationToken cancellationToken = default)
+    {
+        var query = new GetClaveContratoQuery
+        {
+            IdTipoCredito = idTipoCredito
+        };
+
+        var result = await queryMediator.QueryAsync(query, cancellationToken);
+        return result.ToCustomMinimalApiResult();
+    }
+
+    public async Task<IResult> GetTipoTablaAmortizaInfo(
+    [FromServices] IQueryMediator queryMediator,
+    [FromRoute] int id,
+    CancellationToken cancellationToken = default)
+    {
+        var query = new GetTipoTablaAmortizaInfoQuery
+        {
+            IdTipoTablaAmortiza = id
+        };
+
+        var result = await queryMediator.QueryAsync(query, cancellationToken);
+        return result.ToCustomMinimalApiResult();
+    }
+
+    public async Task<IResult> GetPagosByIdContrato(
+    [FromServices] IQueryMediator queryMediator,
+    [FromRoute] int idContrato,
+    CancellationToken cancellationToken = default)
+    {
+        var query = new GetPagosByIdContratoQuery
+        {
+            IdContrato = idContrato
+        };
+
+        var result = await queryMediator.QueryAsync(query, cancellationToken);
+        return result.ToCustomMinimalApiResult();
+    }
+
+    public async Task<IResult> GetMovimientosByIdContrato(
+    [FromServices] IQueryMediator queryMediator,
+    [FromRoute] int idContrato,
+    CancellationToken cancellationToken = default)
+    {
+        var query = new GetMovimientosByIdContratoQuery
+        {
+            IdContrato = idContrato
+        };
+
+        var result = await queryMediator.QueryAsync(query, cancellationToken);
+        return result.ToCustomMinimalApiResult();
+    }
 }

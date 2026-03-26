@@ -61,10 +61,12 @@
     "icon": "fa-solid fa-arrows-rotate",
     "order": 5,
     "children": [
-      { "id": "asociar-contrato", "label": "Asociar Cto. Activo/Pasivo", "icon": "fa-solid fa-link",                  "route": "/operaciones/asociar-contrato", "order": 1 },
-      { "id": "anticipo",         "label": "Anticipo",                  "icon": "fa-solid fa-hand-holding-dollar",    "route": "/operaciones/anticipo",          "order": 2 },
-      { "id": "caja-manual",     "label": "Caja Manual",               "icon": "fa-solid fa-cash-register",          "route": "/operaciones/caja-manual",       "order": 3 },
-      { "id": "cargo-adicional", "label": "Cargo Adicional",           "icon": "fa-solid fa-receipt",                "route": "/operaciones/cargo-adicional",    "order": 4 }
+      { "id": "contratos-pasivos", "label": "Contratos Pasivos",         "icon": "fa-solid fa-file-contract",          "route": "/operaciones/contratos-pasivos",  "order": 1 },
+      { "id": "nuevo-contrato",   "label": "Nuevo Contrato",            "icon": "fa-solid fa-file-circle-plus",       "route": "/operaciones/nuevo-contrato",     "order": 2 },
+      { "id": "asociar-contrato", "label": "Asociar Cto. Activo/Pasivo", "icon": "fa-solid fa-link",                  "route": "/operaciones/asociar-contrato", "order": 3 },
+      { "id": "anticipo",         "label": "Anticipo",                  "icon": "fa-solid fa-hand-holding-dollar",    "route": "/operaciones/anticipo",          "order": 3 },
+      { "id": "caja-manual",     "label": "Caja Manual",               "icon": "fa-solid fa-cash-register",          "route": "/operaciones/caja-manual",       "order": 4 },
+      { "id": "cargo-adicional", "label": "Cargo Adicional",           "icon": "fa-solid fa-receipt",                "route": "/operaciones/cargo-adicional",    "order": 5 }
     ]
   },
   {

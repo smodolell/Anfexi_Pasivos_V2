@@ -36,6 +36,7 @@ public class PSV_ContratoConfiguration : IEntityTypeConfiguration<PSV_Contrato>
             .HasForeignKey(e => e.IdTipoCredito)
             .OnDelete(DeleteBehavior.Restrict);
 
+
         builder.HasOne(e => e.PSV_TipoPagoCapital)
             .WithMany(tpc => tpc.PSV_Contrato)
             .HasForeignKey(e => e.IdTipoPagoCapital)

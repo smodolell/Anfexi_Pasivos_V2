@@ -25,6 +25,7 @@ public interface IApplicationDbContext
     DbSet<Contrato> Contrato { get; }
     DbSet<PSV_Archivo> PSV_Archivo { get; }
     DbSet<PSV_Parameter> PSV_Parameter { get; }
+    DbSet<PSV_RelLineaCreditoContrato> PSV_RelLineaCreditoContrato { get; }
     DbSet<Catalogo> Catalogo { get; }
     DbSet<Empresa> Empresa { get; }
     DbSet<PSV_Bitacora> PSV_Bitacora { get; }

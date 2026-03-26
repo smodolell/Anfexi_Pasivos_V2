@@ -1,6 +1,6 @@
 namespace Anfx.Pasivos.Domain.Entities;
 
-public partial class Tasa
+public class Tasa
 {
     public Tasa()
     {
@@ -13,17 +13,17 @@ public partial class Tasa
 
     public int IdTasa { get; set; }
     public string Tasa1 { get; set; }
-    public Nullable<decimal> ValorTasa { get; set; }
-    public Nullable<System.DateTime> FecTasa { get; set; }
-    public Nullable<bool> EsVariable { get; set; }
-    public Nullable<int> IdFondeador { get; set; }
-    public Nullable<decimal> Spred { get; set; }
-    public Nullable<decimal> RangoMinimo { get; set; }
-    public Nullable<decimal> RangoMaximo { get; set; }
-    public Nullable<int> IdTipoCredito { get; set; }
-    public Nullable<int> IdPlazo { get; set; }
-    public Nullable<decimal> Valor { get; set; }
-    public string CodeDofGob { get; set; }
+    public decimal? ValorTasa { get; set; }
+    public DateTime? FecTasa { get; set; }
+    public bool? EsVariable { get; set; }
+    public int? IdFondeador { get; set; }
+    public decimal? Spred { get; set; }
+    public decimal? RangoMinimo { get; set; }
+    public decimal? RangoMaximo { get; set; }
+    public int? IdTipoCredito { get; set; }
+    public int? IdPlazo { get; set; }
+    public decimal? Valor { get; set; }
+    public string? CodeDofGob { get; set; }
 
     public virtual ICollection<Contrato> Contrato { get; set; }
     public virtual ICollection<Contrato> Contrato1 { get; set; }

@@ -1,6 +1,6 @@
 namespace Anfx.Pasivos.Domain.Entities;
 
-public partial class PSV_Contrato
+public class PSV_Contrato
 {
 
     public PSV_Contrato()
@@ -8,7 +8,7 @@ public partial class PSV_Contrato
         this.PSV_ContratoPagoIrregular = new HashSet<PSV_ContratoPagoIrregular>();
         this.PSV_Movimiento = new HashSet<PSV_Movimiento>();
         this.PSV_RelActivoPasivo = new HashSet<PSV_RelActivoPasivo>();
-        this.PSV_LineaCredito = new HashSet<PSV_LineaCredito>();
+        //this.PSV_LineaCredito = new HashSet<PSV_LineaCredito>();
         this.PSV_TablaAmortiza = new HashSet<PSV_TablaAmortiza>();
         this.PSV_Terminacion = new HashSet<PSV_Terminacion>();
     }
@@ -55,7 +55,7 @@ public partial class PSV_Contrato
     public int? IdTipoMantenimiento { get; set; }
     public decimal? TasaMensual { get; set; }
     public DateTime? FechaCierre { get; set; }
-    public Nullable<bool> TasaEsVariable { get; set; }
+    public bool? TasaEsVariable { get; set; }
     public int IdFondeador { get; set; }
     public decimal? FactorFIRA { get; set; }
     public int IdTipoTablaAmortiza { get; set; }
@@ -78,8 +78,10 @@ public partial class PSV_Contrato
     public virtual ICollection<PSV_ContratoPagoIrregular> PSV_ContratoPagoIrregular { get; set; }
     public virtual ICollection<PSV_Movimiento> PSV_Movimiento { get; set; }
     public virtual ICollection<PSV_RelActivoPasivo> PSV_RelActivoPasivo { get; set; }
-    public virtual ICollection<PSV_LineaCredito> PSV_LineaCredito { get; set; }
+    //public virtual ICollection<PSV_LineaCredito> PSV_LineaCredito { get; set; }
     public virtual PSV_TipoTablaAmortiza PSV_TipoTablaAmortiza { get; set; }
     public virtual ICollection<PSV_TablaAmortiza> PSV_TablaAmortiza { get; set; }
     public virtual ICollection<PSV_Terminacion> PSV_Terminacion { get; set; }
+
+    public virtual ICollection<PSV_RelLineaCreditoContrato> PSV_RelLineaCreditoContrato { get; set; }
 }

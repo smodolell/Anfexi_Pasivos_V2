@@ -1,0 +1,581 @@
+<div class="container-fluid mt-4">
+
+  <!-- Breadcrumb -->
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">Operaciones</li>
+      <li class="breadcrumb-item">
+        <a routerLink="/operaciones/contratos-pasivos">Contratos Pasivos</a>
+      </li>
+      <li class="breadcrumb-item active">
+        {{ isEditMode() ? 'Editar Contrato' : 'Nuevo Contrato' }}
+      </li>
+    </ol>
+  </nav>
+
+  @if (isLoading()) {
+    <div class="text-center py-5">
+      <span class="spinner-border text-primary"></span>
+      <p class="mt-2 text-muted">Cargando contrato...</p>
+    </div>
+  } @else {
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+
+    <!-- ════════════════════════════════════════════════════════ -->
+    <!-- Sección 1 – Información de Línea de Crédito            -->
+    <!-- ════════════════════════════════════════════════════════ -->
+    <div class="card shadow-sm border-0 mt-3">
+      <div class="card-header bg-white border-bottom py-3">
+        <h6 class="mb-0 fw-semibold text-primary">
+          <i class="fa-solid fa-building-columns me-2"></i>1. Información de Línea de Crédito
+        </h6>
+      </div>
+      <div class="card-body">
+        <div class="row g-3">
+
+          <div class="col-md-4">
+            <label class="form-label fw-semibold">Fondeador</label>
+            <input type="text" class="form-control bg-light" formControlName="fondeador" readonly />
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label fw-semibold">Línea de Crédito</label>
+            <input type="text" class="form-control bg-light" formControlName="lineaCreditoNombre" readonly />
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label fw-semibold">Máx. Capital Disponible</label>
+            <input
+              type="text"
+              class="form-control bg-light text-end"
+              [value]="form.get('maxCapitalDisponible')!.value | currency: 'MXN' : 'symbol-narrow' : '1.2-2'"
+              readonly
+            />
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════════════════════════ -->
+    <!-- Sección 2 – Datos del Contrato                         -->
+    <!-- ════════════════════════════════════════════════════════ -->
+    <div class="card shadow-sm border-0 mt-3">
+      <div class="card-header bg-white border-bottom py-3">
+        <h6 class="mb-0 fw-semibold text-primary">
+          <i class="fa-solid fa-file-contract me-2"></i>2. Datos del Contrato
+        </h6>
+      </div>
+      <div class="card-body">
+        <div class="row g-3">
+
+          <!-- Tipo de Crédito -->
+          <div class="col-md-4">
+            <label for="idTipoCredito" class="form-label fw-semibold">
+              Tipo de Crédito <span class="text-danger">*</span>
+            </label>
+            <select
+              id="idTipoCredito"
+              class="form-select"
+              [class.is-invalid]="isInvalid('idTipoCredito')"
+              formControlName="idTipoCredito">
+              <option [ngValue]="null" disabled>-- Seleccione --</option>
+              @for (tc of tiposCredito(); track tc.value) {
+                <option [ngValue]="tc.value">{{ tc.text }}</option>
+              }
+            </select>
+            @if (isInvalid('idTipoCredito')) {
+              <div class="invalid-feedback">Seleccione el tipo de crédito.</div>
+            }
+          </div>
+
+          <!-- Contrato -->
+          <div class="col-md-4">
+            <label for="contrato" class="form-label fw-semibold">
+              Contrato <span class="text-danger">*</span>
+            </label>
+            <div class="input-group">
+              <input
+                id="contrato"
+                type="text"
+                class="form-control"
+                [class.is-invalid]="isInvalid('contrato')"
+                formControlName="contrato"
+                placeholder="Clave del contrato"
+              />
+              @if (loadingClave()) {
+                <span class="input-group-text">
+                  <span class="spinner-border spinner-border-sm text-primary"></span>
+                </span>
+              }
+            </div>
+            @if (isInvalid('contrato')) {
+              <div class="invalid-feedback d-block">El nombre del contrato es requerido.</div>
+            }
+          </div>
+
+          <!-- Estatus -->
+          <div class="col-md-4">
+            <label class="form-label fw-semibold">Estatus</label>
+            <input type="text" class="form-control bg-light" formControlName="estatusContrato" readonly />
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════════════════════════ -->
+    <!-- Sección 3 – Datos Base                                 -->
+    <!-- ════════════════════════════════════════════════════════ -->
+    <div class="card shadow-sm border-0 mt-3">
+      <div class="card-header bg-white border-bottom py-3">
+        <h6 class="mb-0 fw-semibold text-primary">
+          <i class="fa-solid fa-coins me-2"></i>3. Datos Base
+        </h6>
+      </div>
+      <div class="card-body">
+        <div class="row g-3">
+
+          <div class="col-md-3">
+            <label for="capital" class="form-label fw-semibold">
+              Capital <span class="text-danger">*</span>
+            </label>
+            <input
+              id="capital"
+              type="number"
+              step="0.01"
+              class="form-control"
+              [class.is-invalid]="isInvalid('capital')"
+              formControlName="capital"
+            />
+            @if (isInvalid('capital')) {
+              <div class="invalid-feedback">El capital es requerido.</div>
+            }
+          </div>
+
+          <div class="col-md-3">
+            <label for="capitalFinanciado" class="form-label fw-semibold">Capital Financiado</label>
+            <input id="capitalFinanciado" type="number" step="0.01" class="form-control" formControlName="capitalFinanciado" />
+          </div>
+
+          <div class="col-md-2">
+            <label for="plazo" class="form-label fw-semibold">Plazo</label>
+            <input id="plazo" type="number" class="form-control" formControlName="plazo" min="0" />
+          </div>
+
+          <div class="col-md-2">
+            <label class="form-label fw-semibold text-secondary small">Moneda</label>
+            <select class="form-select bg-light" formControlName="idMoneda">
+              <option [ngValue]="null">—</option>
+              @for (m of monedas(); track m.value) {
+                <option [ngValue]="m.value">{{ m.text }}</option>
+              }
+            </select>
+          </div>
+
+          <div class="col-md-2">
+            <label class="form-label fw-semibold text-secondary small">Periodicidad</label>
+            <select class="form-select bg-light" formControlName="idPeriodicidad">
+              <option [ngValue]="null">—</option>
+              @for (p of periodicidades(); track p.value) {
+                <option [ngValue]="p.value">{{ p.text }}</option>
+              }
+            </select>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════════════════════════ -->
+    <!-- Sección 4 – Tasa Ordinaria                             -->
+    <!-- ════════════════════════════════════════════════════════ -->
+    <div class="card shadow-sm border-0 mt-3">
+      <div class="card-header bg-white border-bottom py-3">
+        <h6 class="mb-0 fw-semibold text-primary">
+          <i class="fa-solid fa-percent me-2"></i>4. Tasa Ordinaria
+        </h6>
+      </div>
+      <div class="card-body">
+        <div class="row g-3">
+
+          <!-- Tipo de Tasa -->
+          <div class="col-md-2">
+            <label for="tipoTasa" class="form-label fw-semibold">Tipo de Tasa</label>
+            <select id="tipoTasa" class="form-select" formControlName="tipoTasa">
+              <option [ngValue]="null" disabled>-- Seleccione --</option>
+              @for (op of tipoTasaOpciones; track op.value) {
+                <option [ngValue]="op.value">{{ op.text }}</option>
+              }
+            </select>
+          </div>
+
+          <!-- Tasa -->
+          <div class="col-md-3">
+            <label for="idTasa" class="form-label fw-semibold">Tasa</label>
+            <select
+              id="idTasa"
+              class="form-select"
+              formControlName="idTasa"
+              [attr.disabled]="form.get('tipoTasa')!.value === null ? true : null">
+              <option [ngValue]="null">
+                @if (form.get('tipoTasa')!.value === null) { -- Seleccione tipo primero -- }
+                @else if (tasasOrdinarias().length === 0) { -- Sin tasas disponibles -- }
+                @else { -- Seleccione tasa -- }
+              </option>
+              @for (t of tasasOrdinarias(); track t.value) {
+                <option [ngValue]="t.value">{{ t.text }}</option>
+              }
+            </select>
+          </div>
+
+          <!-- Tasa IVA -->
+          <div class="col-md-2">
+            <label for="tasaIvaSelect" class="form-label fw-semibold">Tasa IVA</label>
+            <select id="tasaIvaSelect" class="form-select" formControlName="tasaIva">
+              <option [ngValue]="null">-- Sin IVA --</option>
+              @for (t of tasasIva(); track t.value) {
+                <option [ngValue]="t.valueDecimal">{{ t.text }}</option>
+              }
+            </select>
+          </div>
+
+          <!-- Valor Tasa -->
+          <div class="col-md-2">
+            <label for="tasa" class="form-label fw-semibold">Valor Tasa</label>
+            <input id="tasa" type="number" step="0.0001" class="form-control" formControlName="tasa" />
+          </div>
+
+          <!-- Valor Tasa Base (readonly) -->
+          <div class="col-md-2">
+            <label class="form-label fw-semibold text-secondary small">Valor Tasa Base</label>
+            <input type="number" step="0.0001" class="form-control bg-light" formControlName="tasaBase" readonly />
+          </div>
+
+          <!-- Puntos Adicionales -->
+          <div class="col-md-2">
+            <label for="puntosMas" class="form-label fw-semibold">Puntos Adicionales</label>
+            <input id="puntosMas" type="number" step="0.0001" class="form-control" formControlName="puntosMas" />
+          </div>
+
+          <!-- Factor -->
+          <div class="col-md-2">
+            <label for="puntosPor" class="form-label fw-semibold">Factor</label>
+            <input id="puntosPor" type="number" step="0.0001" class="form-control" formControlName="puntosPor" />
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════════════════════════ -->
+    <!-- Sección 5 – Tasa Mora                                  -->
+    <!-- ════════════════════════════════════════════════════════ -->
+    <div class="card shadow-sm border-0 mt-3">
+      <div class="card-header bg-white border-bottom py-3">
+        <h6 class="mb-0 fw-semibold text-primary">
+          <i class="fa-solid fa-triangle-exclamation me-2"></i>5. Tasa Mora
+        </h6>
+      </div>
+      <div class="card-body">
+        <div class="row g-3">
+
+          <!-- Tipo de Tasa Mora -->
+          <div class="col-md-2">
+            <label for="tipoTasaMora" class="form-label fw-semibold">Tipo de Tasa</label>
+            <select id="tipoTasaMora" class="form-select" formControlName="tipoTasaMora">
+              <option [ngValue]="null" disabled>-- Seleccione --</option>
+              @for (op of tipoTasaOpciones; track op.value) {
+                <option [ngValue]="op.value">{{ op.text }}</option>
+              }
+            </select>
+          </div>
+
+          <!-- Tasa Mora -->
+          <div class="col-md-3">
+            <label for="idTasaMora" class="form-label fw-semibold">Tasa Mora</label>
+            <select
+              id="idTasaMora"
+              class="form-select"
+              formControlName="idTasaMora"
+              [attr.disabled]="form.get('tipoTasaMora')!.value === null ? true : null">
+              <option [ngValue]="null">
+                @if (form.get('tipoTasaMora')!.value === null) { -- Seleccione tipo primero -- }
+                @else if (tasasMora().length === 0) { -- Sin tasas disponibles -- }
+                @else { -- Seleccione tasa -- }
+              </option>
+              @for (t of tasasMora(); track t.value) {
+                <option [ngValue]="t.value">{{ t.text }}</option>
+              }
+            </select>
+          </div>
+
+          <!-- Valor Tasa Mora -->
+          <div class="col-md-2">
+            <label for="tasaMora" class="form-label fw-semibold">Valor Tasa</label>
+            <input id="tasaMora" type="number" step="0.0001" class="form-control" formControlName="tasaMora" />
+          </div>
+
+          <!-- Valor Tasa Base Mora (readonly) -->
+          <div class="col-md-2">
+            <label class="form-label fw-semibold text-secondary small">Valor Tasa Base</label>
+            <input type="number" step="0.0001" class="form-control bg-light" formControlName="tasaBaseMora" readonly />
+          </div>
+
+          <!-- Puntos Adicionales Mora -->
+          <div class="col-md-2">
+            <label for="puntosMasMora" class="form-label fw-semibold">Puntos Adicionales</label>
+            <input id="puntosMasMora" type="number" step="0.0001" class="form-control" formControlName="puntosMasMora" />
+          </div>
+
+          <!-- Factor Adicional Mora -->
+          <div class="col-md-2">
+            <label for="factorMora" class="form-label fw-semibold">Factor Adicional</label>
+            <input id="factorMora" type="number" step="0.0001" class="form-control" formControlName="factorMora" />
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════════════════════════ -->
+    <!-- Sección 6 – Fechas                                     -->
+    <!-- ════════════════════════════════════════════════════════ -->
+    <div class="card shadow-sm border-0 mt-3">
+      <div class="card-header bg-white border-bottom py-3">
+        <h6 class="mb-0 fw-semibold text-primary">
+          <i class="fa-solid fa-calendar-days me-2"></i>6. Fechas
+        </h6>
+      </div>
+      <div class="card-body">
+        <div class="row g-3">
+
+          <!-- Alta Contrato -->
+          <div class="col-md-3">
+            <label for="fecInicioContrato" class="form-label fw-semibold">
+              Alta Contrato <span class="text-danger">*</span>
+            </label>
+            <input
+              id="fecInicioContrato"
+              type="date"
+              class="form-control"
+              [class.is-invalid]="isInvalid('fecInicioContrato')"
+              formControlName="fecInicioContrato"
+            />
+            @if (isInvalid('fecInicioContrato')) {
+              <div class="invalid-feedback">La fecha de alta es requerida.</div>
+            }
+          </div>
+
+          <!-- Firma de Contrato -->
+          <div class="col-md-3">
+            <label for="fechaFirmaContrato" class="form-label fw-semibold">Firma de Contrato</label>
+            <input id="fechaFirmaContrato" type="date" class="form-control" formControlName="fechaFirmaContrato" />
+          </div>
+
+          <!-- Primer Vencimiento -->
+          <div class="col-md-3">
+            <label for="fecPrimeraRenta" class="form-label fw-semibold">Primer Vencimiento</label>
+            <input id="fecPrimeraRenta" type="date" class="form-control" formControlName="fecPrimeraRenta" />
+          </div>
+
+          <!-- Activación (readonly) -->
+          <div class="col-md-3">
+            <label class="form-label fw-semibold text-secondary small">
+              Activación
+              <span class="badge bg-secondary-subtle text-secondary ms-1 fw-normal" style="font-size:0.7rem;">Solo lectura</span>
+            </label>
+            <input type="date" class="form-control bg-light" formControlName="fecActivacion" readonly />
+          </div>
+
+          <!-- Último Pago (readonly) -->
+          <div class="col-md-3">
+            <label class="form-label fw-semibold text-secondary small">
+              Último Pago
+              <span class="badge bg-secondary-subtle text-secondary ms-1 fw-normal" style="font-size:0.7rem;">Solo lectura</span>
+            </label>
+            <input type="date" class="form-control bg-light" formControlName="fecFinContrato" readonly />
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════════════════════════ -->
+    <!-- Sección 7 – Configuración de Tabla Amortización        -->
+    <!-- ════════════════════════════════════════════════════════ -->
+    <div class="card shadow-sm border-0 mt-3">
+      <div class="card-header bg-white border-bottom py-3">
+        <h6 class="mb-0 fw-semibold text-primary">
+          <i class="fa-solid fa-table-list me-2"></i>7. Configuración de Tabla Amortización
+        </h6>
+      </div>
+      <div class="card-body">
+        <div class="row g-3">
+
+          <!-- Tipo Tabla Amortización -->
+          <div class="col-md-4">
+            <label for="idTipoTablaAmortiza" class="form-label fw-semibold">Tipo Tabla Amortización</label>
+            <div class="input-group">
+              <select
+                id="idTipoTablaAmortiza"
+                class="form-select"
+                formControlName="idTipoTablaAmortiza">
+                <option [ngValue]="null">-- Seleccione --</option>
+                @for (tt of tiposTabla(); track tt.id) {
+                  <option [ngValue]="tt.id">{{ tt.tipoTablaAmortiza }}</option>
+                }
+              </select>
+              @if (loadingTablaInfo()) {
+                <span class="input-group-text">
+                  <span class="spinner-border spinner-border-sm text-primary"></span>
+                </span>
+              }
+            </div>
+          </div>
+
+          <!-- Tipo Capitalización (solo visible si esCapitalizable) -->
+          @if (esCapitalizable()) {
+            <div class="col-md-4">
+              <label for="idTipoCapitalizacion" class="form-label fw-semibold">Tipo Capitalización</label>
+              <select
+                id="idTipoCapitalizacion"
+                class="form-select"
+                formControlName="idTipoCapitalizacion">
+                <option [ngValue]="null">-- Seleccione --</option>
+                @for (tc of tipoCapitalizacionList(); track tc.value) {
+                  <option [ngValue]="tc.value">{{ tc.text }}</option>
+                }
+              </select>
+            </div>
+          }
+
+          <!-- Tipo Pago Capital -->
+          <div class="col-md-4">
+            <label for="idTipoPagoCapital" class="form-label fw-semibold">Tipo Pago Capital</label>
+            <select
+              id="idTipoPagoCapital"
+              class="form-select"
+              formControlName="idTipoPagoCapital">
+              <option [ngValue]="null">
+                @if (form.get('idTipoTablaAmortiza')!.value === null) { -- Seleccione tabla primero -- }
+                @else { -- Seleccione -- }
+              </option>
+              @for (tp of tipoPagoCapitalList(); track tp.value) {
+                <option [ngValue]="tp.value">{{ tp.text }}</option>
+              }
+            </select>
+          </div>
+
+          <!-- Periodicidad Capitalización (activa cuando Tipo Pago = pagos iguales) -->
+          <div class="col-md-4">
+            <label for="idPeriodicidad_TTA" class="form-label fw-semibold">
+              Periodicidad Capitalización
+            </label>
+            <select
+              id="idPeriodicidad_TTA"
+              class="form-select"
+              [class.bg-light]="form.get('idPeriodicidad_TTA')!.disabled"
+              formControlName="idPeriodicidad_TTA">
+              <option [ngValue]="null">-- Seleccione --</option>
+              @for (p of periodicidadesCapitalizacion(); track p.value) {
+                <option [ngValue]="p.value">{{ p.text }}</option>
+              }
+            </select>
+            @if (form.get('idPeriodicidad_TTA')!.disabled && form.get('idTipoPagoCapital')!.value !== null) {
+              <div class="form-text text-muted">Disponible para pagos iguales</div>
+            }
+          </div>
+
+          <!-- Nro. Pagos Irregulares (activo cuando Tipo Pago = irregular) -->
+          <div class="col-md-3">
+            <label for="noPagosIrregulares" class="form-label fw-semibold">
+              Nro. Pagos Irregulares
+            </label>
+            <input
+              id="noPagosIrregulares"
+              type="number"
+              min="0"
+              class="form-control"
+              [class.bg-light]="form.get('noPagosIrregulares')!.disabled"
+              formControlName="noPagosIrregulares"
+            />
+            @if (form.get('noPagosIrregulares')!.disabled && form.get('idTipoPagoCapital')!.value !== null) {
+              <div class="form-text text-muted">Disponible para pagos irregulares</div>
+            }
+          </div>
+
+        </div>
+
+        <!-- Tabla de Pagos Irregulares -->
+        @if (pagosArray.length > 0) {
+          <div class="mt-4">
+            <h6 class="fw-semibold text-secondary mb-3">
+              <i class="fa-solid fa-list-ol me-2"></i>Tabla de Amortización Irregular
+            </h6>
+            <div class="table-responsive">
+              <table class="table table-sm table-bordered align-middle">
+                <thead class="table-light">
+                  <tr>
+                    <th class="text-center" style="width:80px;">#</th>
+                    <th>Capital</th>
+                    <th>Fecha Vencimiento</th>
+                  </tr>
+                </thead>
+                <tbody [formArrayName]="'pagos'">
+                  @for (pg of pagosArray.controls; track $index) {
+                    <tr [formGroupName]="$index">
+                      <td class="text-center">
+                        <input type="number" class="form-control form-control-sm text-center" formControlName="noPago" readonly />
+                      </td>
+                      <td>
+                        <input type="number" step="0.01" class="form-control form-control-sm" formControlName="capital" placeholder="0.00" />
+                      </td>
+                      <td>
+                        <input
+                          type="date"
+                          class="form-control form-control-sm"
+                          [class.is-invalid]="pg.get('fecVencimiento')!.invalid && pg.get('fecVencimiento')!.touched"
+                          formControlName="fecVencimiento"
+                        />
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+        }
+
+      </div>
+    </div>
+
+    <!-- Aviso cuando el contrato no puede editarse -->
+    @if (isEditMode() && !puedeGuardar) {
+      <div class="alert alert-warning d-flex align-items-center gap-2 mt-4 mb-0">
+        <i class="fa-solid fa-lock"></i>
+        <span>Este contrato no puede modificarse porque su estatus no es <strong>Activo</strong>.</span>
+      </div>
+    }
+
+    <!-- ── Botones ────────────────────────────────────────────── -->
+    <div class="d-flex gap-2 justify-content-end mt-3 mb-5">
+      <button type="button" class="btn btn-outline-secondary px-4" (click)="onCancelar()" [disabled]="isSaving()">
+        <i class="fa-solid fa-xmark me-2"></i>Cancelar
+      </button>
+      <button type="submit" class="btn btn-primary px-4" [disabled]="isSaving() || !puedeGuardar">
+        @if (isSaving()) {
+          <span class="spinner-border spinner-border-sm me-2"></span>Guardando...
+        } @else {
+          <i class="fa-solid fa-floppy-disk me-2"></i>
+          {{ isEditMode() ? 'Actualizar Contrato' : 'Crear Contrato' }}
+        }
+      </button>
+    </div>
+
+  </form>
+
+  } <!-- @if isLoading -->
+
+</div>

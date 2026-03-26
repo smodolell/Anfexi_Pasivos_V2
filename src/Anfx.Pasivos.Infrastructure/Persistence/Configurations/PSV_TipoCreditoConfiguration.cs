@@ -12,6 +12,9 @@ public class PSV_TipoCreditoConfiguration : IEntityTypeConfiguration<PSV_TipoCre
 
         builder.HasKey(e => e.IdTipoCredito);
 
+        builder.Property(tc => tc.IdTipoCredito)
+            .HasColumnName("IdTipoCredito");
+
         builder.Property(e => e.TipoCredito)
             .IsRequired()
             .HasMaxLength(200);
@@ -40,10 +43,20 @@ public class PSV_TipoCreditoConfiguration : IEntityTypeConfiguration<PSV_TipoCre
             .HasForeignKey(e => e.IdTipoTablaAmortiza)
             .OnDelete(DeleteBehavior.Restrict);
 
+        //builder.HasOne(e => e.Empresa)
+        //    .WithMany(emp => emp.PSV_TipoCreditos)
+        //    .HasForeignKey(e => e.IdEmpresa)
+        //    .HasPrincipalKey(emp => emp.IdEmpresa)
+        //    .OnDelete(DeleteBehavior.Restrict);
+
         builder.HasOne(e => e.Empresa)
             .WithMany(emp => emp.PSV_TipoCreditos)
             .HasForeignKey(e => e.IdEmpresa)
-            .HasPrincipalKey(emp => emp.IdEmpresa)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasMany(tc => tc.PSV_Contrato)
+            .WithOne(c => c.PSV_TipoCredito)
+            .HasForeignKey(c => c.IdTipoCredito)
             .OnDelete(DeleteBehavior.Restrict);
 
     }

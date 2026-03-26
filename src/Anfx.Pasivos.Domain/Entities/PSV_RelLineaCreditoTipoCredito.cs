@@ -1,6 +1,6 @@
 namespace Anfx.Pasivos.Domain.Entities;
 
-public partial class PSV_RelLineaCreditoTipoCredito
+public class PSV_RelLineaCreditoTipoCredito
 {
     public int IdLineaCredito { get; set; }
     public int IdTipoCredito { get; set; }
