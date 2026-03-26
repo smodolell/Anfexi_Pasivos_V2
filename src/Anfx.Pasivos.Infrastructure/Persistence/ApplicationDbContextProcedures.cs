@@ -497,4 +497,73 @@ public partial class ApplicationDbContextProcedures : IApplicationDbContextProce
 
         return dataTable;
     }
+
+    public virtual async Task<List<usp_PSV_GeneraTablaAmortizaResult>> usp_PSV_GeneraTablaAmortizaAsync(int? idContrato, bool? raiseError, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
+    {
+        var parameterreturnValue = new SqlParameter
+        {
+            ParameterName = "returnValue",
+            Direction = System.Data.ParameterDirection.Output,
+            SqlDbType = System.Data.SqlDbType.Int,
+        };
+
+        var sqlParameters = new[]
+        {
+                new SqlParameter
+                {
+                    ParameterName = "IdContrato",
+                    Value = idContrato ?? Convert.DBNull,
+                    SqlDbType = System.Data.SqlDbType.Int,
+                },
+                new SqlParameter
+                {
+                    ParameterName = "RaiseError",
+                    Value = raiseError ?? Convert.DBNull,
+                    SqlDbType = System.Data.SqlDbType.Bit,
+                },
+                parameterreturnValue,
+            };
+        var _ = await _context.SqlQueryAsync<usp_PSV_GeneraTablaAmortizaResult>("EXEC @returnValue = [dbo].[usp_PSV_GeneraTablaAmortiza] @IdContrato = @IdContrato, @RaiseError = @RaiseError", sqlParameters, cancellationToken);
+
+        returnValue?.SetValue(parameterreturnValue.Value);
+
+        return _;
+    }
+    public virtual async Task<List<usp_PSV_ActivarContratoResult>> usp_PSV_ActivarContratoAsync(int? idContrato, DateOnly? fechaActivacion, bool? raiseError, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default)
+    {
+        var parameterreturnValue = new SqlParameter
+        {
+            ParameterName = "returnValue",
+            Direction = System.Data.ParameterDirection.Output,
+            SqlDbType = System.Data.SqlDbType.Int,
+        };
+
+        var sqlParameters = new[]
+        {
+                new SqlParameter
+                {
+                    ParameterName = "IdContrato",
+                    Value = idContrato ?? Convert.DBNull,
+                    SqlDbType = System.Data.SqlDbType.Int,
+                },
+                new SqlParameter
+                {
+                    ParameterName = "FechaActivacion",
+                    Value = fechaActivacion ?? Convert.DBNull,
+                    SqlDbType = System.Data.SqlDbType.Date,
+                },
+                new SqlParameter
+                {
+                    ParameterName = "RaiseError",
+                    Value = raiseError ?? Convert.DBNull,
+                    SqlDbType = System.Data.SqlDbType.Bit,
+                },
+                parameterreturnValue,
+            };
+        var _ = await _context.SqlQueryAsync<usp_PSV_ActivarContratoResult>("EXEC @returnValue = [dbo].[usp_PSV_ActivarContrato] @IdContrato = @IdContrato, @FechaActivacion = @FechaActivacion, @RaiseError = @RaiseError", sqlParameters, cancellationToken);
+
+        returnValue?.SetValue(parameterreturnValue.Value);
+
+        return _;
+    }
 }

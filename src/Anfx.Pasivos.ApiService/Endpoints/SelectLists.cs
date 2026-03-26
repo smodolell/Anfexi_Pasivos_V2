@@ -124,6 +124,63 @@ public class SelectLists : EndpointGroupBase
             .Produces<ApiResponseDto>(StatusCodes.Status401Unauthorized)
             .Produces<ApiResponseDto>(StatusCodes.Status500InternalServerError);
 
+        group.MapGet("lineas-credito/{idFondeador}", GetLineasCreditoByFondeador)
+            .WithName("GetLineasCreditoByFondeador")
+            .WithSummary("Obtiene líneas de crédito por ID de fondeador")
+            .WithDescription("Retorna una lista de líneas de crédito filtradas por el ID del fondeador")
+            .Produces<ApiResponseDto<List<SelectItemDto>>>(StatusCodes.Status200OK)
+            .Produces<ApiResponseDto>(StatusCodes.Status400BadRequest)
+            .Produces<ApiResponseDto>(StatusCodes.Status401Unauthorized)
+            .Produces<ApiResponseDto>(StatusCodes.Status404NotFound)
+            .Produces<ApiResponseDto>(StatusCodes.Status500InternalServerError);
+
+        group.MapGet("estatus-contrato/", GetEstatusContratoSelectList)
+            .WithName("GetEstatusContratoSelectList")
+            .WithSummary("Obtiene lista de estatus de contrato")
+            .WithDescription("Retorna un listado de todos los estatus de contrato disponibles para ser utilizados en controles de selección")
+            .Produces<ApiResponseDto<List<SelectItemDto>>>(StatusCodes.Status200OK)
+            .Produces<ApiResponseDto>(StatusCodes.Status400BadRequest)
+            .Produces<ApiResponseDto>(StatusCodes.Status401Unauthorized)
+            .Produces<ApiResponseDto>(StatusCodes.Status500InternalServerError);
+
+        group.MapGet("tipos-credito", GetTipoCreditoSelectList)
+            .WithName("GetTipoCreditoSelectList")
+            .WithSummary("Obtiene lista de tipos de crédito")
+            .WithDescription("Retorna un listado de todos los tipos de crédito disponibles para ser utilizados en controles de selección")
+            .Produces<ApiResponseDto<List<SelectItemDto>>>(StatusCodes.Status200OK)
+            .Produces<ApiResponseDto>(StatusCodes.Status400BadRequest)
+            .Produces<ApiResponseDto>(StatusCodes.Status401Unauthorized)
+            .Produces<ApiResponseDto>(StatusCodes.Status500InternalServerError);
+
+        // Agregar este endpoint dentro del método Map
+        group.MapGet("periodicidades", GetPeriodicidadSelectList)
+            .WithName("GetPeriodicidadSelectList")
+            .WithSummary("Obtiene lista de periodicidades")
+            .WithDescription("Retorna un listado de todas las periodicidades disponibles para ser utilizadas en controles de selección")
+            .Produces<ApiResponseDto<List<SelectItemDto>>>(StatusCodes.Status200OK)
+            .Produces<ApiResponseDto>(StatusCodes.Status400BadRequest)
+            .Produces<ApiResponseDto>(StatusCodes.Status401Unauthorized)
+            .Produces<ApiResponseDto>(StatusCodes.Status500InternalServerError);
+
+        // Agregar este endpoint dentro del método Map
+        group.MapGet("tasas-iva", GetTasaIvaSelectList)
+            .WithName("GetTasaIvaSelectList")
+            .WithSummary("Obtiene lista de tasas de IVA")
+            .WithDescription("Retorna un listado de las tasas de IVA disponibles (16%, 11%, 0%) para ser utilizadas en controles de selección")
+            .Produces<ApiResponseDto<List<SelectItemDto>>>(StatusCodes.Status200OK)
+            .Produces<ApiResponseDto>(StatusCodes.Status400BadRequest)
+            .Produces<ApiResponseDto>(StatusCodes.Status401Unauthorized)
+            .Produces<ApiResponseDto>(StatusCodes.Status500InternalServerError);
+
+        group.MapGet("periodicidades-tta/{idTipoTablaAmortiza}", GetPeriodicidadTTASelectList)
+            .WithName("GetPeriodicidadTTASelectList")
+            .WithSummary("Obtiene lista de periodicidades por tipo de tabla de amortización")
+            .WithDescription("Retorna un listado de periodicidades filtradas por el ID del tipo de tabla de amortización para ser utilizadas en controles de selección dependientes")
+            .Produces<ApiResponseDto<List<SelectItemDto>>>(StatusCodes.Status200OK)
+            .Produces<ApiResponseDto>(StatusCodes.Status400BadRequest)
+            .Produces<ApiResponseDto>(StatusCodes.Status401Unauthorized)
+            .Produces<ApiResponseDto>(StatusCodes.Status404NotFound)
+            .Produces<ApiResponseDto>(StatusCodes.Status500InternalServerError);
     }
 
 
@@ -259,6 +316,70 @@ public class SelectLists : EndpointGroupBase
         };
 
         var result = await queryMediator.QueryAsync(query);
+        return result.ToCustomMinimalApiResult();
+    }
+
+    public async Task<IResult> GetLineasCreditoByFondeador(
+    [FromServices] IQueryMediator queryMediator,
+    [FromRoute] int idFondeador,
+    CancellationToken cancellationToken = default)
+    {
+        var query = new GetLineaCreditoByFondeadorSelectListQuery
+        {
+            IdFondeador = idFondeador
+        };
+
+        var result = await queryMediator.QueryAsync(query, cancellationToken);
+        return result.ToCustomMinimalApiResult();
+    }
+
+    public async Task<IResult> GetEstatusContratoSelectList(
+    [FromServices] IQueryMediator queryMediator,
+    CancellationToken cancellationToken = default)
+    {
+        var query = new GetEstatusContratoSelectListQuery();
+        var result = await queryMediator.QueryAsync(query, cancellationToken);
+        return result.ToCustomMinimalApiResult();
+    }
+
+    public async Task<IResult> GetTipoCreditoSelectList(
+    [FromServices] IQueryMediator queryMediator,
+    CancellationToken cancellationToken = default)
+    {
+        var query = new GetTipoCreditoSelectListQuery();
+        var result = await queryMediator.QueryAsync(query, cancellationToken);
+        return result.ToCustomMinimalApiResult();
+    }
+
+    public async Task<IResult> GetPeriodicidadSelectList(
+        [FromServices] IQueryMediator queryMediator,
+        CancellationToken cancellationToken = default)
+    {
+        var query = new GetPeriodicidadSelectListQuery();
+        var result = await queryMediator.QueryAsync(query, cancellationToken);
+        return result.ToCustomMinimalApiResult();
+    }
+
+    public async Task<IResult> GetTasaIvaSelectList(
+    [FromServices] IQueryMediator queryMediator,
+    CancellationToken cancellationToken = default)
+    {
+        var query = new GetTasaIvaSelectListQuery();
+        var result = await queryMediator.QueryAsync(query, cancellationToken);
+        return result.ToCustomMinimalApiResult();
+    }
+
+    public async Task<IResult> GetPeriodicidadTTASelectList(
+        [FromServices] IQueryMediator queryMediator,
+        [FromRoute] int idTipoTablaAmortiza,
+        CancellationToken cancellationToken = default)
+    {
+        var query = new GetPeriodicidadTTASelectListQuery
+        {
+            IdTipoTablaAmortiza = idTipoTablaAmortiza
+        };
+
+        var result = await queryMediator.QueryAsync(query, cancellationToken);
         return result.ToCustomMinimalApiResult();
     }
 }

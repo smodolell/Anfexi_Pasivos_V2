@@ -1,0 +1,112 @@
+<div class="container-fluid mt-4">
+
+  <!-- Breadcrumb -->
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">Operaciones</li>
+      <li class="breadcrumb-item active">Nuevo Contrato</li>
+    </ol>
+  </nav>
+
+  <div class="card shadow-sm border-0 mt-3">
+
+    <div class="card-header bg-white py-3">
+      <h5 class="mb-0 text-primary">
+        <i class="fa-solid fa-file-circle-plus me-2"></i>Nuevo Contrato Pasivo
+      </h5>
+    </div>
+
+    <div class="card-body">
+      <p class="text-muted mb-4">
+        Seleccione el fondeador y la línea de crédito para iniciar la captura del contrato.
+      </p>
+
+      <form [formGroup]="form">
+        <div class="row g-3 align-items-end">
+
+          <!-- Fondeador -->
+          <div class="col-md-4">
+            <label for="idFondeador" class="form-label fw-semibold">
+              Fondeador <span class="text-danger">*</span>
+            </label>
+            @if (loadingFondeadores()) {
+              <div class="d-flex align-items-center gap-2 text-muted">
+                <span class="spinner-border spinner-border-sm"></span>
+                <span>Cargando...</span>
+              </div>
+            } @else {
+              <select
+                id="idFondeador"
+                class="form-select"
+                [class.is-invalid]="form.get('idFondeador')!.invalid && form.get('idFondeador')!.touched"
+                formControlName="idFondeador">
+                <option [ngValue]="null" disabled>-- Seleccione un fondeador --</option>
+                @for (item of fondeadores(); track item.value) {
+                  <option [ngValue]="item.value">{{ item.text }}</option>
+                }
+              </select>
+              @if (form.get('idFondeador')!.invalid && form.get('idFondeador')!.touched) {
+                <div class="invalid-feedback">Seleccione un fondeador.</div>
+              }
+            }
+          </div>
+
+          <!-- Línea de Crédito -->
+          <div class="col-md-5">
+            <label for="idLineaCredito" class="form-label fw-semibold">
+              Línea de Crédito <span class="text-danger">*</span>
+            </label>
+            @if (loadingLineas()) {
+              <div class="d-flex align-items-center gap-2 text-muted">
+                <span class="spinner-border spinner-border-sm"></span>
+                <span>Cargando...</span>
+              </div>
+            } @else {
+              <select
+                id="idLineaCredito"
+                class="form-select"
+                [class.is-invalid]="form.get('idLineaCredito')!.invalid && form.get('idLineaCredito')!.touched"
+                formControlName="idLineaCredito"
+                [attr.disabled]="!form.get('idFondeador')!.value ? true : null">
+                <option [ngValue]="null" disabled>
+                  @if (!form.get('idFondeador')!.value) {
+                    -- Seleccione primero un fondeador --
+                  } @else if (lineasCredito().length === 0) {
+                    -- Sin líneas disponibles --
+                  } @else {
+                    -- Seleccione una línea de crédito --
+                  }
+                </option>
+                @for (item of lineasCredito(); track item.value) {
+                  <option [ngValue]="item.value">{{ item.text }}</option>
+                }
+              </select>
+              @if (form.get('idLineaCredito')!.invalid && form.get('idLineaCredito')!.touched) {
+                <div class="invalid-feedback">Seleccione una línea de crédito.</div>
+              }
+            }
+          </div>
+
+          <!-- Botón -->
+          <div class="col-md-3">
+            <button
+              type="button"
+              class="btn btn-primary w-100"
+              [disabled]="!form.get('idLineaCredito')!.value || loadingForm()"
+              (click)="onNuevoContrato()">
+              @if (loadingForm()) {
+                <span class="spinner-border spinner-border-sm me-2"></span>
+                Preparando...
+              } @else {
+                <i class="fa-solid fa-file-circle-plus me-2"></i>
+                Nuevo Contrato
+              }
+            </button>
+          </div>
+
+        </div>
+      </form>
+    </div>
+  </div>
+
+</div>

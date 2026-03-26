@@ -36,6 +36,7 @@ public partial class ApplicationDbContext : DbContext,IApplicationDbContext
     public DbSet<Catalogo> Catalogo => Set<Catalogo>();
     public DbSet<Empresa> Empresa => Set<Empresa>();
     public DbSet<PSV_Bitacora> PSV_Bitacora => Set<PSV_Bitacora>();
+    public DbSet<PSV_RelLineaCreditoContrato> PSV_RelLineaCreditoContrato => Set<PSV_RelLineaCreditoContrato>();
     public DbSet<View_Menu> View_Menu => Set<View_Menu>();
     public DbSet<View_MenuRol> View_MenuRol => Set<View_MenuRol>();
     public DbSet<View_Rol> View_Rol => Set<View_Rol>();

@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Anfx.Pasivos.Application.Features.SelectLists.Queries;
-
-internal class TipoReduccion
-{
-}
+﻿namespace Anfx.Pasivos.Application.Features.SelectLists.Queries;
 
 public class GetTipoReduccionSelectListQuery : SelectListQueryBase
 {

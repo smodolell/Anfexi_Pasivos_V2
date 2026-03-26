@@ -28,4 +28,6 @@ public interface IApplicationDbContextProcedures
 
     Task<List<usp_PSV_ProcesaMoratoriosResult>> usp_PSV_ProcesaMoratoriosAsync(DateTime? fechaProcesamiento, int? idContrato, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
     Task<List<usp_PSV_ProcesaVencimientosResult>> usp_PSV_ProcesaVencimientosAsync(int? idFondeador, int? idContrato, DateOnly? fechaInicial, DateOnly? fechaFinal, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
+    Task<List<usp_PSV_GeneraTablaAmortizaResult>> usp_PSV_GeneraTablaAmortizaAsync(int? idContrato, bool? raiseError, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
+    Task<List<usp_PSV_ActivarContratoResult>> usp_PSV_ActivarContratoAsync(int? idContrato, DateOnly? fechaActivacion, bool? raiseError, OutputParameter<int> returnValue = null, CancellationToken cancellationToken = default);
 }

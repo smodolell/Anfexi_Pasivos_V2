@@ -1,0 +1,251 @@
+<div class="container-fluid mt-4">
+
+  <!-- Breadcrumb -->
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">Operaciones</li>
+      <li class="breadcrumb-item active">Contratos Pasivos</li>
+    </ol>
+  </nav>
+
+  <!-- ── Formulario de búsqueda ──────────────────────────────── -->
+  <div class="card shadow-sm border-0 mt-3">
+
+    <div class="card-header bg-white py-3">
+      <h5 class="mb-0 text-primary">
+        <i class="fa-solid fa-file-contract me-2"></i>Contratos Pasivos
+      </h5>
+    </div>
+
+    <div class="card-body">
+      <form [formGroup]="form" (ngSubmit)="onBuscar()">
+        <div class="row g-3 align-items-end">
+
+          <!-- Fondeador -->
+          <div class="col-md-3">
+            <label for="idFondeador" class="form-label fw-semibold">Fondeador</label>
+            @if (loadingFondeadores()) {
+              <div class="d-flex align-items-center gap-2 text-muted">
+                <span class="spinner-border spinner-border-sm"></span>
+                <span>Cargando...</span>
+              </div>
+            } @else {
+              <select id="idFondeador" class="form-select" formControlName="idFondeador">
+                <option [ngValue]="null">-- Todos los fondeadores --</option>
+                @for (item of fondeadores(); track item.value) {
+                  <option [ngValue]="item.value">{{ item.text }}</option>
+                }
+              </select>
+            }
+          </div>
+
+          <!-- Línea de Crédito -->
+          <div class="col-md-3">
+            <label for="idLineaCredito" class="form-label fw-semibold">Línea de Crédito</label>
+            @if (loadingLineas()) {
+              <div class="d-flex align-items-center gap-2 text-muted">
+                <span class="spinner-border spinner-border-sm"></span>
+                <span>Cargando...</span>
+              </div>
+            } @else {
+              <select
+                id="idLineaCredito"
+                class="form-select"
+                formControlName="idLineaCredito"
+                [attr.disabled]="!form.get('idFondeador')!.value ? true : null">
+                <option [ngValue]="null">
+                  @if (!form.get('idFondeador')!.value) {
+                    -- Seleccione un fondeador --
+                  } @else if (lineasCredito().length === 0) {
+                    -- Sin líneas disponibles --
+                  } @else {
+                    -- Todas las líneas --
+                  }
+                </option>
+                @for (item of lineasCredito(); track item.value) {
+                  <option [ngValue]="item.value">{{ item.text }}</option>
+                }
+              </select>
+            }
+          </div>
+
+          <!-- Estatus Contrato -->
+          <div class="col-md-2">
+            <label for="idEstatusContrato" class="form-label fw-semibold">Estatus</label>
+            @if (loadingEstatus()) {
+              <div class="d-flex align-items-center gap-2 text-muted">
+                <span class="spinner-border spinner-border-sm"></span>
+                <span>Cargando...</span>
+              </div>
+            } @else {
+              <select id="idEstatusContrato" class="form-select" formControlName="idEstatusContrato">
+                <option [ngValue]="null">-- Todos --</option>
+                @for (item of estatusContratos(); track item.value) {
+                  <option [ngValue]="item.value">{{ item.text }}</option>
+                }
+              </select>
+            }
+          </div>
+
+          <!-- Texto de búsqueda -->
+          <div class="col-md-2">
+            <label for="searchText" class="form-label fw-semibold">Buscar</label>
+            <div class="input-group">
+              <span class="input-group-text bg-white">
+                <i class="fa-solid fa-magnifying-glass text-muted"></i>
+              </span>
+              <input
+                id="searchText"
+                type="text"
+                class="form-control border-start-0"
+                placeholder="Buscar contrato..."
+                formControlName="searchText"
+              />
+            </div>
+          </div>
+
+          <!-- Botones -->
+          <div class="col-md-2 d-flex gap-2">
+            <button type="submit" class="btn btn-primary flex-grow-1" [disabled]="loading()">
+              @if (loading()) {
+                <span class="spinner-border spinner-border-sm me-1"></span>
+              } @else {
+                <i class="fa-solid fa-magnifying-glass me-1"></i>
+              }
+              Buscar
+            </button>
+            <button type="button" class="btn btn-outline-secondary" (click)="onLimpiar()" title="Limpiar filtros">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ── Resultados ──────────────────────────────────────────── -->
+  <div class="card shadow-sm border-0 mt-4">
+
+    <div class="card-header bg-white py-3 d-flex align-items-center justify-content-between">
+      <span class="text-muted small">
+        @if (totalCount() > 0) {
+          {{ totalCount() }} registro(s) encontrado(s)
+        } @else if (!loading()) {
+          Sin resultados
+        }
+      </span>
+    </div>
+
+    <div class="card-body p-0">
+
+      @if (loading()) {
+        <div class="text-center py-5">
+          <span class="spinner-border text-primary"></span>
+        </div>
+      } @else if (items().length === 0) {
+        <div class="text-center text-muted py-5">
+          <i class="fa-solid fa-file-circle-xmark fa-2x mb-2"></i>
+          <p class="mb-0">No se encontraron contratos pasivos</p>
+        </div>
+      } @else {
+
+        <table class="table table-hover mb-0">
+          <thead class="table-light">
+            <tr>
+              <th style="cursor:pointer;" (click)="onSort('contrato')">
+                Contrato
+                @if (sortColumn === 'contrato') {
+                  <i class="fa-solid fa-sort-{{ sortDir === 'asc' ? 'up' : 'down' }} ms-1 text-primary"></i>
+                } @else {
+                  <i class="fa-solid fa-sort ms-1 text-muted"></i>
+                }
+              </th>
+              <th style="cursor:pointer;" (click)="onSort('fondeador')">
+                Fondeador
+                @if (sortColumn === 'fondeador') {
+                  <i class="fa-solid fa-sort-{{ sortDir === 'asc' ? 'up' : 'down' }} ms-1 text-primary"></i>
+                } @else {
+                  <i class="fa-solid fa-sort ms-1 text-muted"></i>
+                }
+              </th>
+              <th class="d-none d-md-table-cell" style="cursor:pointer;" (click)="onSort('estatusContrato')">
+                Estatus
+                @if (sortColumn === 'estatusContrato') {
+                  <i class="fa-solid fa-sort-{{ sortDir === 'asc' ? 'up' : 'down' }} ms-1 text-primary"></i>
+                } @else {
+                  <i class="fa-solid fa-sort ms-1 text-muted"></i>
+                }
+              </th>
+              <th class="text-end" style="cursor:pointer;" (click)="onSort('capital')">
+                Capital
+                @if (sortColumn === 'capital') {
+                  <i class="fa-solid fa-sort-{{ sortDir === 'asc' ? 'up' : 'down' }} ms-1 text-primary"></i>
+                } @else {
+                  <i class="fa-solid fa-sort ms-1 text-muted"></i>
+                }
+              </th>
+              <th class="text-center" style="width:110px;">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of items(); track item.id) {
+              <tr>
+                <td>{{ item.contrato }}</td>
+                <td>{{ item.fondeador }}</td>
+                <td class="d-none d-md-table-cell">
+                  <span class="badge bg-primary">{{ item.estatusContrato }}</span>
+                </td>
+                <td class="text-end">{{ item.capital | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</td>
+                <td class="text-center">
+                  @if (item.idEstatusContrato === 1) {
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-outline-primary"
+                      title="Editar contrato"
+                      (click)="onEditar(item)">
+                      <i class="fa-solid fa-pen-to-square"></i>
+                    </button>
+                  } @else {
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-outline-secondary"
+                      title="Ver contrato"
+                      (click)="onVer(item)">
+                      <i class="fa-solid fa-eye"></i>
+                    </button>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+
+        <!-- Paginación -->
+        @if (totalPages() > 1) {
+          <div class="d-flex align-items-center justify-content-between px-3 py-2 border-top">
+            <small class="text-muted">Página {{ currentPage() }} de {{ totalPages() }}</small>
+            <div class="d-flex gap-2">
+              <button
+                type="button"
+                class="btn btn-outline-secondary btn-sm"
+                [disabled]="currentPage() === 1"
+                (click)="prevPage()">
+                <i class="fa-solid fa-chevron-left"></i>
+              </button>
+              <button
+                type="button"
+                class="btn btn-outline-secondary btn-sm"
+                [disabled]="currentPage() === totalPages()"
+                (click)="nextPage()">
+                <i class="fa-solid fa-chevron-right"></i>
+              </button>
+            </div>
+          </div>
+        }
+
+      }
+    </div>
+  </div>
+
+</div>

@@ -6,6 +6,7 @@ configuration.ts
 encoder.ts
 git_push.sh
 index.ts
+models/activarContratoRequest.ts
 models/anticipoConfigDto.ts
 models/anticipoConfigDtoApiResponseDto.ts
 models/anticipoDto.ts
@@ -39,6 +40,13 @@ models/coloniaDtoApiResponseDto.ts
 models/coloniaDtoIEnumerableApiResponseDto.ts
 models/coloniaDtoPagedResultDto.ts
 models/coloniaDtoPagedResultDtoResult.ts
+models/contratoPasivoDto.ts
+models/contratoPasivoDtoApiResponseDto.ts
+models/contratoPasivoEditDto.ts
+models/contratoPasivoEditDtoApiResponseDto.ts
+models/contratoPasivoListItem.ts
+models/contratoPasivoListItemPagedResultDto.ts
+models/contratoPasivoListItemPagedResultDtoApiResponseDto.ts
 models/createColoniaDto.ts
 models/createTipoDireccionDto.ts
 models/cuentaBancariaDto.ts
@@ -85,6 +93,7 @@ models/movimientoItemDto.ts
 models/movimientoPagoItem.ts
 models/pagoDetalleDto.ts
 models/pagoDetalleDtoApiResponseDto.ts
+models/pagoIrregularDto.ts
 models/pagoItemDto.ts
 models/problemDetails.ts
 models/procesaMoratorioRequest.ts
@@ -110,6 +119,7 @@ models/selectItemDto.ts
 models/selectItemDtoICollectionApiResponseDto.ts
 models/selectItemDtoIEnumerableApiResponseDto.ts
 models/selectItemDtoListApiResponseDto.ts
+models/stringApiResponseDto.ts
 models/tablaAmortizaItemDto.ts
 models/tablaAmortizaItemDtoListApiResponseDto.ts
 models/tipoCreditoDto.ts
@@ -131,12 +141,16 @@ models/tipoPagoListItemDtoPagedResultDto.ts
 models/tipoPagoListItemDtoPagedResultDtoApiResponseDto.ts
 models/tipoTablaAmortizaDto.ts
 models/tipoTablaAmortizaDtoApiResponseDto.ts
+models/tipoTablaAmortizaInfoDto.ts
+models/tipoTablaAmortizaInfoDtoApiResponseDto.ts
 models/tipoTablaAmortizaListItemDto.ts
 models/tipoTablaAmortizaListItemDtoPagedResultDto.ts
 models/tipoTablaAmortizaListItemDtoPagedResultDtoApiResponseDto.ts
 models/tokenValidationDto.ts
 models/updateColoniaDto.ts
 models/updateTipoDireccionDto.ts
+models/userContextDto.ts
+models/userContextDtoApiResponseDto.ts
 models/userInfo.ts
 models/usuarioCreateDto.ts
 models/usuarioDto.ts

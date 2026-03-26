@@ -11,6 +11,7 @@
 
 export interface SelectItemDto { 
     value?: number;
+    valueDecimal?: number;
     text?: string | null;
 }
 

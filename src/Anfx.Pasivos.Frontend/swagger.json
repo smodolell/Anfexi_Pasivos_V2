@@ -140,6 +140,7 @@
       "post": {
         "tags": ["Auth"],
         "summary": "Valida un token JWT",
+        "operationId": "ValidateToken",
         "requestBody": {
           "content": {
             "application/json": {
@@ -166,6 +167,36 @@
           },
           "500": {
             "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/auth/me": {
+      "get": {
+        "tags": ["Auth"],
+        "summary": "Obtiene el perfil del usuario actual",
+        "description": "Retorna los datos del usuario extraídos del token JWT mediante UserContext",
+        "operationId": "GetCurrentUserProfile",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserContextDtoApiResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
           }
         }
       }
@@ -5377,6 +5408,615 @@
         }
       }
     },
+    "/api/contratos/{id}": {
+      "get": {
+        "tags": ["Contratos"],
+        "summary": "Obtiene un contrato pasivo por su ID",
+        "description": "Retorna la información detallada de un contrato pasivo específico",
+        "operationId": "GetContratoById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContratoPasivoDtoApiResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Contratos"],
+        "summary": "Actualiza un contrato pasivo existente",
+        "description": "Actualiza la información de un contrato pasivo existente. Solo permite modificar contratos en estado 'Borrador'",
+        "operationId": "UpdateContrato",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContratoPasivoEditDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/contratos": {
+      "get": {
+        "tags": ["Contratos"],
+        "summary": "Lista contratos pasivos con filtros",
+        "description": "Retorna una lista paginada de contratos pasivos con soporte para filtros por fondeador, estatus, línea de crédito, búsqueda por texto, ordenamiento dinámico y paginación",
+        "operationId": "GetContratosPasivos",
+        "parameters": [
+          {
+            "name": "idFondeador",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "idEstatusContrato",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "idLineaCredito",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "searchText",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          },
+          {
+            "name": "sortColumn",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "Contrato"
+            }
+          },
+          {
+            "name": "sortDescending",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContratoPasivoListItemPagedResultDtoApiResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Contratos"],
+        "summary": "Crea un nuevo contrato pasivo",
+        "description": "Crea un nuevo contrato pasivo con toda su información incluyendo pagos irregulares si aplica",
+        "operationId": "CreateContrato",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContratoPasivoEditDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Int32ApiResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/contratos/nuevo/{idLineaCredito}": {
+      "get": {
+        "tags": ["Contratos"],
+        "summary": "Obtiene datos iniciales para crear un nuevo contrato",
+        "description": "Retorna información pre-cargada basada en la línea de crédito seleccionada para facilitar la creación de un nuevo contrato",
+        "operationId": "GetAddContrato",
+        "parameters": [
+          {
+            "name": "idLineaCredito",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContratoPasivoEditDtoApiResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/contratos/{id}/activar": {
+      "put": {
+        "tags": ["Contratos"],
+        "summary": "Activa un contrato pasivo",
+        "description": "Activa un contrato pasivo con la fecha de activación especificada",
+        "operationId": "ActivarContrato",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ActivarContratoRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/contratos/clave-contrato/{idTipoCredito}": {
+      "get": {
+        "tags": ["Contratos"],
+        "summary": "Obtiene la clave del contrato",
+        "description": "Genera y retorna la clave del contrato basada en el prefijo, sufijo y contador del tipo de crédito",
+        "operationId": "GetClaveContrato",
+        "parameters": [
+          {
+            "name": "idTipoCredito",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringApiResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/contratos/tipo-tabla-amortiza/{id}/info": {
+      "get": {
+        "tags": ["Contratos"],
+        "summary": "Obtiene información de capitalización por tipo de tabla de amortización",
+        "description": "Retorna si es capitalizable y las listas de tipos de capitalización y pago de capital según el tipo de tabla de amortización",
+        "operationId": "GetTipoTablaAmortizaInfo",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TipoTablaAmortizaInfoDtoApiResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/operaciones/tipo-movimiento/{id}/config": {
       "get": {
         "tags": ["Operaciones"],
@@ -7388,6 +8028,348 @@
         }
       }
     },
+    "/api/select-lists/lineas-credito/{idFondeador}": {
+      "get": {
+        "tags": ["Select Lists"],
+        "summary": "Obtiene líneas de crédito por ID de fondeador",
+        "description": "Retorna una lista de líneas de crédito filtradas por el ID del fondeador",
+        "operationId": "GetLineasCreditoByFondeador",
+        "parameters": [
+          {
+            "name": "idFondeador",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SelectItemDtoListApiResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/select-lists/estatus-contrato": {
+      "get": {
+        "tags": ["Select Lists"],
+        "summary": "Obtiene lista de estatus de contrato",
+        "description": "Retorna un listado de todos los estatus de contrato disponibles para ser utilizados en controles de selección",
+        "operationId": "GetEstatusContratoSelectList",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SelectItemDtoListApiResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/select-lists/tipos-credito": {
+      "get": {
+        "tags": ["Select Lists"],
+        "summary": "Obtiene lista de tipos de crédito",
+        "description": "Retorna un listado de todos los tipos de crédito disponibles para ser utilizados en controles de selección",
+        "operationId": "GetTipoCreditoSelectList",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SelectItemDtoListApiResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/select-lists/periodicidades": {
+      "get": {
+        "tags": ["Select Lists"],
+        "summary": "Obtiene lista de periodicidades",
+        "description": "Retorna un listado de todas las periodicidades disponibles para ser utilizadas en controles de selección",
+        "operationId": "GetPeriodicidadSelectList",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SelectItemDtoListApiResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/select-lists/tasas-iva": {
+      "get": {
+        "tags": ["Select Lists"],
+        "summary": "Obtiene lista de tasas de IVA",
+        "description": "Retorna un listado de las tasas de IVA disponibles (16%, 11%, 0%) para ser utilizadas en controles de selección",
+        "operationId": "GetTasaIvaSelectList",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SelectItemDtoListApiResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/select-lists/periodicidades-tta/{idTipoTablaAmortiza}": {
+      "get": {
+        "tags": ["Select Lists"],
+        "summary": "Obtiene lista de periodicidades por tipo de tabla de amortización",
+        "description": "Retorna un listado de periodicidades filtradas por el ID del tipo de tabla de amortización para ser utilizadas en controles de selección dependientes",
+        "operationId": "GetPeriodicidadTTASelectList",
+        "parameters": [
+          {
+            "name": "idTipoTablaAmortiza",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SelectItemDtoListApiResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/sistema/empresa": {
       "post": {
         "tags": ["Sistema"],
@@ -7832,6 +8814,16 @@
   },
   "components": {
     "schemas": {
+      "ActivarContratoRequest": {
+        "type": "object",
+        "properties": {
+          "fechaActivacion": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "additionalProperties": false
+      },
       "AnticipoConfigDto": {
         "type": "object",
         "properties": {
@@ -9029,6 +10021,547 @@
             },
             "nullable": true,
             "readOnly": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ContratoPasivoDto": {
+        "type": "object",
+        "properties": {
+          "fondeador": {
+            "type": "string",
+            "nullable": true
+          },
+          "idLineaCredito": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "maxCapitalDisponible": {
+            "type": "number",
+            "format": "double"
+          },
+          "idFondeador": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "idTipoCredito": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "contrato": {
+            "type": "string",
+            "nullable": true
+          },
+          "idEstatusContrato": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "capitalFinanciado": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "plazo": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "idMoneda": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "idPeriodicidad": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "tipoTasa": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "idTasa": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "tasaIva": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "tasaBase": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "tasa": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "puntosMas": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "puntosPor": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "tipoTasaMora": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "idTasaMora": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "tasaMora": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "tasaBaseMora": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "puntosMasMora": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "factorMora": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "fechaFirmaContrato": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "fecInicioContrato": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "fecPrimeraRenta": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "fecActivacion": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "fecFinContrato": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "idTipoTablaAmortiza": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "idTipoCapitalizacion": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "idTipoPagoCapital": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "idPeriodicidad_TTA": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "noPagosIrregulares": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "tipoCredito": {
+            "type": "string",
+            "nullable": true
+          },
+          "pagos": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PagoIrregularDto"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ContratoPasivoDtoApiResponseDto": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "data": {
+            "$ref": "#/components/schemas/ContratoPasivoDto"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "statusCode": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "traceId": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ContratoPasivoEditDto": {
+        "required": ["fecInicioContrato"],
+        "type": "object",
+        "properties": {
+          "fondeador": {
+            "type": "string",
+            "nullable": true
+          },
+          "idLineaCredito": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "maxCapitalDisponible": {
+            "type": "number",
+            "format": "double"
+          },
+          "contrato": {
+            "type": "string",
+            "nullable": true
+          },
+          "lineaCredito": {
+            "type": "string",
+            "nullable": true
+          },
+          "estatusContrato": {
+            "type": "string",
+            "nullable": true
+          },
+          "tipoTasa": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "idTipoCredito": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "capitalFinanciado": {
+            "type": "number",
+            "format": "double"
+          },
+          "idPeriodicidad": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "plazo": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "idMoneda": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "fecInicioContrato": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "fecPrimeraRenta": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "fecActivacion": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "fecFinContrato": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "idTasa": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "tasaBase": {
+            "type": "number",
+            "format": "double"
+          },
+          "puntosMas": {
+            "type": "number",
+            "format": "double"
+          },
+          "puntosPor": {
+            "type": "number",
+            "format": "double"
+          },
+          "tasa": {
+            "minimum": 0,
+            "exclusiveMinimum": true,
+            "type": "number",
+            "format": "double"
+          },
+          "tasaBaseMora": {
+            "type": "number",
+            "format": "double"
+          },
+          "idTasaMora": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "puntosMasMora": {
+            "type": "number",
+            "format": "double"
+          },
+          "puntosPorMora": {
+            "type": "number",
+            "format": "double"
+          },
+          "factorMora": {
+            "type": "number",
+            "format": "double"
+          },
+          "tasaMora": {
+            "minimum": 0,
+            "exclusiveMinimum": true,
+            "type": "number",
+            "format": "double"
+          },
+          "tasaIva": {
+            "type": "number",
+            "format": "double"
+          },
+          "versionTabla": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "idTipoCalculoTasaVariable": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "nroRentasDepositoGarantia": {
+            "type": "number",
+            "format": "double"
+          },
+          "fechaFirmaContrato": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "idTipoMantenimiento": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "tasaMensual": {
+            "type": "number",
+            "format": "double"
+          },
+          "fechaCierre": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "tasaEsVariable": {
+            "type": "boolean"
+          },
+          "idFondeador": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "factorFIRA": {
+            "type": "number",
+            "format": "double"
+          },
+          "idTipoTablaAmortiza": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "idPeriodicidad_TTA": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "idTipoCapitalizacion": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "idTipoPagoCapital": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "noPagosIrregulares": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "pagos": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PagoIrregularDto"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ContratoPasivoEditDtoApiResponseDto": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "data": {
+            "$ref": "#/components/schemas/ContratoPasivoEditDto"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "statusCode": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "traceId": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ContratoPasivoListItem": {
+        "type": "object",
+        "properties": {
+          "contrato": {
+            "type": "string",
+            "nullable": true
+          },
+          "fondeador": {
+            "type": "string",
+            "nullable": true
+          },
+          "estatusContrato": {
+            "type": "string",
+            "nullable": true
+          },
+          "capital": {
+            "type": "number",
+            "format": "double"
+          },
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "fondeadorID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "idEstatusContrato": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "idLineaCredito": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ContratoPasivoListItemPagedResultDto": {
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ContratoPasivoListItem"
+            },
+            "nullable": true
+          },
+          "currentPage": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ContratoPasivoListItemPagedResultDtoApiResponseDto": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "data": {
+            "$ref": "#/components/schemas/ContratoPasivoListItemPagedResultDto"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "statusCode": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "traceId": {
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -10673,6 +12206,25 @@
         },
         "additionalProperties": false
       },
+      "PagoIrregularDto": {
+        "type": "object",
+        "properties": {
+          "noPago": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "capital": {
+            "type": "number",
+            "format": "double"
+          },
+          "fecVencimiento": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "PagoItemDto": {
         "type": "object",
         "properties": {
@@ -11260,6 +12812,10 @@
             "type": "integer",
             "format": "int32"
           },
+          "valueDecimal": {
+            "type": "number",
+            "format": "double"
+          },
           "text": {
             "type": "string",
             "nullable": true
@@ -11358,6 +12914,41 @@
             "items": {
               "$ref": "#/components/schemas/SelectItemDto"
             }
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "statusCode": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "traceId": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "StringApiResponseDto": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "data": {
+            "type": "string"
           },
           "errors": {
             "type": "array",
@@ -12019,6 +13610,68 @@
         },
         "additionalProperties": false
       },
+      "TipoTablaAmortizaInfoDto": {
+        "type": "object",
+        "properties": {
+          "esCapitalizable": {
+            "type": "boolean"
+          },
+          "error": {
+            "type": "string",
+            "nullable": true
+          },
+          "tipoCapitalizacion": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SelectItemDto"
+            },
+            "nullable": true
+          },
+          "tipoPagoCapital": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SelectItemDto"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "TipoTablaAmortizaInfoDtoApiResponseDto": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "data": {
+            "$ref": "#/components/schemas/TipoTablaAmortizaInfoDto"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "statusCode": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "traceId": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "TipoTablaAmortizaListItemDto": {
         "type": "object",
         "properties": {
@@ -12155,6 +13808,67 @@
         },
         "additionalProperties": false
       },
+      "UserContextDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "username": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "role": {
+            "type": "string",
+            "nullable": true
+          },
+          "isAuthenticated": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "UserContextDtoApiResponseDto": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "data": {
+            "$ref": "#/components/schemas/UserContextDto"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "statusCode": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "traceId": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "UserInfo": {
         "type": "object",
         "properties": {
@@ -12187,7 +13901,7 @@
         "properties": {
           "nombreCompleto": {
             "maxLength": 100,
-            "minLength": 0,
+            "minLength": 1,
             "type": "string"
           },
           "email": {
@@ -12197,7 +13911,7 @@
           },
           "usuarioNombre": {
             "maxLength": 50,
-            "minLength": 0,
+            "minLength": 1,
             "type": "string"
           },
           "contrasena": {
@@ -12205,6 +13919,8 @@
             "type": "string"
           },
           "rolId": {
+            "minimum": 0,
+            "exclusiveMinimum": true,
             "type": "integer",
             "format": "int32"
           }
@@ -12389,30 +14105,34 @@
         "type": "object",
         "properties": {
           "id": {
+            "minimum": 0,
+            "exclusiveMinimum": true,
             "type": "integer",
             "format": "int32"
           },
           "nombreCompleto": {
             "maxLength": 100,
-            "minLength": 0,
+            "minLength": 1,
             "type": "string"
           },
           "email": {
+            "maxLength": 100,
             "minLength": 1,
             "type": "string",
             "format": "email"
           },
           "usuarioNombre": {
             "maxLength": 50,
-            "minLength": 0,
+            "minLength": 1,
             "type": "string"
           },
           "contrasena": {
-            "minLength": 6,
             "type": "string",
             "nullable": true
           },
           "rolId": {
+            "minimum": 0,
+            "exclusiveMinimum": true,
             "type": "integer",
             "format": "int32"
           }
