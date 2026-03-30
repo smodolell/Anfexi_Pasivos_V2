@@ -2,7 +2,7 @@ using Anfx.Pasivos.Application.Features.Auth.DTOs;
 
 namespace Anfx.Pasivos.Application.Features.Auth.Queries;
 
-public record GetUsuariosQuery(int PageNumber = 1, int PageSize = 10, string? SearchTerm = null, bool? Activo = null)
+public record GetUsuariosQuery(int PageNumber = 1, int PageSize = 10, string? SearchTerm = null, bool? Activo = null,string? SortBy = null, string? SortDir = null)
     : IQuery<Result<PagedResultDto<UsuarioDto>>>;
 
 public class GetUsuariosQueryHandler : IQueryHandler<GetUsuariosQuery, Result<PagedResultDto<UsuarioDto>>>
@@ -43,16 +43,29 @@ public class GetUsuariosQueryHandler : IQueryHandler<GetUsuariosQuery, Result<Pa
             if (!string.IsNullOrEmpty(request.SearchTerm))
             {
                 query = query.Where(u =>
-                    u.NombreCompleto.Contains(request.SearchTerm) ||
-                    u.Email.Contains(request.SearchTerm) ||
-                    u.UserPass.Contains(request.SearchTerm) ||
-                    (u.Rol.Titulo != null && u.Rol.Titulo.Contains(request.SearchTerm)));
+                    !(!u.NombreCompleto.Contains(request.SearchTerm) &&
+                    !u.Email.Contains(request.SearchTerm) &&
+                    !u.UserPass.Contains(request.SearchTerm) &&
+                    (u.Rol.Titulo == null || !u.Rol.Titulo.Contains(request.SearchTerm))));
             }
 
             var totalCount = await query.CountAsync(cancellationToken);
 
+            query = (request.SortBy?.ToLower(), request.SortDir?.ToLower() == "desc") switch
+            {
+                ("id", true) => query.OrderByDescending(u => u.IdUsuario),
+                ("id", false) => query.OrderBy(u => u.IdUsuario),
+                ("nombrecompleto", true) => query.OrderByDescending(u => u.NombreCompleto),
+                ("nombrecompleto", false) => query.OrderBy(u => u.NombreCompleto),
+                ("email", true) => query.OrderByDescending(u => u.Email),
+                ("email", false) => query.OrderBy(u => u.Email),
+                ("usuarionombre", true) => query.OrderByDescending(u => u.UserName),
+                ("usuarionombre", false) => query.OrderBy(u => u.UserName),
+                _ => query.OrderBy(u => u.NombreCompleto),
+            };
+
+
             var usuarios = await query
-                .OrderBy(u => u.NombreCompleto)
                 .Skip((request.PageNumber - 1) * request.PageSize)
                 .Take(request.PageSize)
                 .ToListAsync(cancellationToken);

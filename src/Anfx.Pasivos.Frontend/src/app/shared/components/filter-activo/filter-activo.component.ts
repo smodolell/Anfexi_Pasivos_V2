@@ -72,7 +72,7 @@ export class FilterActivoComponent {
   changed     = output<boolean>();
 
   toggle() {
-    const next = !this.value;
+    const next = !this.value();
     this.valueChange.emit(next);
     this.changed.emit(next);
   }

@@ -60,7 +60,10 @@ public class Auth : EndpointGroupBase
             .Produces<ApiResponseDto<UserContextDto>>(StatusCodes.Status200OK)
             .Produces<ApiResponseDto>(StatusCodes.Status401Unauthorized);
 
-
+        // group.MapPost("/refresh", RefreshToken)
+        //     .WithName("RefreshToken")
+        //     .WithSummary("Renueva el token JWT")
+        //     .RequireAuthorization();
 
         #region Usuarios
 
@@ -412,14 +415,16 @@ public class Auth : EndpointGroupBase
         return result.ToCustomMinimalApiResult();
     }
 
-    public async Task<IResult> GetUsuariosPaginados(
+    public static async Task<IResult> GetUsuariosPaginados(
         [FromServices] IQueryMediator queryMediator,
         [FromQuery] string? q = null,
         [FromQuery] int page = 1,
         [FromQuery] int size = 10,
-        [FromQuery] bool? activo = null)
+        [FromQuery] bool? activo = null,
+        [FromQuery] string? sortBy = null,
+        [FromQuery] string? sortDir = null)
     {
-        var query = new GetUsuariosQuery(page, size, q, activo);
+        var query = new GetUsuariosQuery(page, size, q, activo, sortBy, sortDir);
         var result = await queryMediator.QueryAsync(query);
         return result.ToCustomMinimalApiResult();
     }

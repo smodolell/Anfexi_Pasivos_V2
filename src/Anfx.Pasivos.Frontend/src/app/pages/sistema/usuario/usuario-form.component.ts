@@ -58,7 +58,7 @@ export class UsuarioFormComponent implements OnInit {
 
   @Input() isFromProfile: boolean = false;
 
-  guardar = output<CreateUsuarioDto | UpdateUsuarioDto>();
+  guardar = output<UsuarioFormData>();
   cancelar = output<void>();
   volverALista = output<void>();
 
@@ -169,7 +169,7 @@ export class UsuarioFormComponent implements OnInit {
         ...formValue,
       };
 
-      this.guardar.emit(usuarioData as CreateUsuarioDto | UpdateUsuarioDto);
+      this.guardar.emit(usuarioData as UsuarioFormData);
 
       // Mostrar notificación según el contexto
       this.utilsService.showNotification('Éxito', 'Guardado Satisfactorio', 'success');

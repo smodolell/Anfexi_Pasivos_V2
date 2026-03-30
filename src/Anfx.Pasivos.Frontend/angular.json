@@ -70,6 +70,7 @@
           "configurations": {
             "production": {
               "outputMode": "static",
+              "baseHref": "/profuturo/pasivos/frontend/",
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
@@ -79,13 +80,13 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kB",
-                  "maximumError": "1MB"
+                  "maximumWarning": "2mb",
+                  "maximumError": "4MB"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "4kB",
-                  "maximumError": "8kB"
+                  "maximumWarning": "1mb",
+                  "maximumError": "1mb"
                 }
               ],
               "outputHashing": "all",

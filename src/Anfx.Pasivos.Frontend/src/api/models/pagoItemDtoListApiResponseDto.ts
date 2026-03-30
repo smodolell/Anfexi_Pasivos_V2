@@ -7,13 +7,13 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { SelectItemDto } from './selectItemDto';
+import { PagoItemDto } from './pagoItemDto';
 
 
-export interface SelectItemDtoIEnumerableApiResponseDto { 
+export interface PagoItemDtoListApiResponseDto { 
     success?: boolean;
     message?: string | null;
-    data?: Array<SelectItemDto>;
+    data?: Array<PagoItemDto>;
     errors?: Array<string> | null;
     statusCode?: number;
     timestamp?: string;

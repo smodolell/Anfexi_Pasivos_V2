@@ -7,7 +7,7 @@
     "start:aspire": "ng serve --port 4200",
     "build": "ng build",
     "build:prod": "ng build --configuration production",
-    "prebuild:prod": "node -e \"const p=require('./package.json'); const fs=require('fs'); ['src/environments/environment.ts','src/environments/environment.production.ts'].forEach(f=>{ let c=fs.readFileSync(f,'utf8'); fs.writeFileSync(f,c.replace(/appVersion: '.*?'/,\\`appVersion: '${p.version}'\\`)); })\"",
+    "prebuild:prod": "node scripts/set-version.js",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "serve:ssr:Pasivos_Frontend": "node dist/Pasivos_Frontend/server/server.mjs",
