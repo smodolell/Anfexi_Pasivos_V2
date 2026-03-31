@@ -8,6 +8,6 @@ export const environment = {
   menuApiUrl: 'assets/menu.json',
   // ── App metadata ────────────────────────────────────────────
   appName:    'Pasivos',
-  appVersion: '0.0.0',         // sincronizar con package.json al hacer release
+  appVersion: '0.0.1',         // sincronizar con package.json al hacer release
   company:    'ANFEXI TECHNOLOGIES',
 };

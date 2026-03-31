@@ -54,7 +54,8 @@
       "Bash(echo \"EXIT:$?\")",
       "Bash(find e:/profuturo/pasivos/Anfexi_Pasivos_V2/src/Anfx.Pasivos.Frontend -maxdepth 1 -type f -name *.js -o -name .eslintrc*)",
       "Bash(find E:profuturoProfuturo_Alerta_Frontend -name sidebar-nav.component.* -o -name admin-layout.component.*)",
-      "Bash(xargs cat:*)"
+      "Bash(xargs cat:*)",
+      "Bash(find e:/profuturo/pasivos/Anfexi_Pasivos_V2/src/Anfx.Pasivos.Frontend/src/app -type f -name *404* -o -name *not-found* -o -name *error*)"
     ]
   }
 }
