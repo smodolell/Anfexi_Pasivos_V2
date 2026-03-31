@@ -2,14 +2,14 @@ import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { forkJoin } from 'rxjs';
-import { ContratosService } from '../../../../api/services/contratos.service';
-import { SelectListsService } from '../../../../api/services/selectLists.service';
-import { ConfiguracionesService } from '../../../../api/services/configuraciones.service';
-import { ContratoPasivoDto } from '../../../../api/models/contratoPasivoDto';
-import { SelectItemDto } from '../../../../api/models/selectItemDto';
-import { TipoTablaAmortizaListItemDto } from '../../../../api/models/tipoTablaAmortizaListItemDto';
+import { ContratosService } from 'src/app/core/api/services/contratos.service';
+import { SelectListsService } from 'src/app/core/api/services/selectLists.service';
+import { ConfiguracionesService } from 'src/app/core/api/services/configuraciones.service';
+import { ContratoPasivoDto } from 'src/app/core/api/models/contratoPasivoDto';
+import { SelectItemDto } from 'src/app/core/api/models/selectItemDto';
+import { TipoTablaAmortizaListItemDto } from 'src/app/core/api/models/tipoTablaAmortizaListItemDto';
 import { wasHandledByInterceptor } from '../../../interceptors/auth.interceptor';
-import { UtilsService } from '../../../services/utils.service';
+import { UtilsService } from '@services/utils.service';
 
 @Component({
   selector: 'app-contrato-view',

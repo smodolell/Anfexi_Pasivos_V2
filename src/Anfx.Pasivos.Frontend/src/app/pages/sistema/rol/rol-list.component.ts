@@ -1,13 +1,13 @@
 import { Component, OnInit, inject, signal, ViewChild } from '@angular/core';
-import { AuthService as AuthApiService } from '../../../../api/services/auth.service';
-import { RolCreateDto, RolUpdateDto } from '../../../../api/models/models';
-import { wasHandledByInterceptor } from '../../../interceptors/auth.interceptor';
-import { UtilsService } from '../../../services/utils.service';
+import { AuthService as AuthApiService } from 'src/app/core/api/services/auth.service';
+import { RolCreateDto, RolUpdateDto } from 'src/app/core/api/models/models';
+import { wasHandledByInterceptor } from '@interceptors/auth.interceptor';
+import { UtilsService } from '@services/utils.service';
 import { RolFormComponent } from './rol-form.component';
-import { GenericTableComponent } from '../../../shared/components/generic-table/generic-table.component';
-import { TableColumn, TableAction, TableActionEvent } from '../../../shared/components/generic-table/table-column.model';
+import { GenericTableComponent } from '@shared/components/generic-table/generic-table.component';
+import { TableColumn, TableAction, TableActionEvent } from '@shared/components/generic-table/table-column.model';
 import { RolDto, RolPageQueryDto, CreateRolDto, UpdateRolDto } from '../../../../types/sistema/rol.dto';
-import { ConfirmModalComponent } from '../../../shared/components/confirm-modal/confirm-modal.component';
+import { ConfirmModalComponent } from '@shared/components/confirm-modal/confirm-modal.component';
 
 @Component({
   selector: 'app-rol-list',

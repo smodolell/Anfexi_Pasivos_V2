@@ -10,19 +10,19 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { CatalogosService } from '../../../../api/services/catalogos.service';
-import { ColoniaDto, CreateColoniaDto, UpdateColoniaDto } from '../../../../api/models/models';
+import { CatalogosService } from '@api/services/catalogos.service';
+import { ColoniaDto, CreateColoniaDto, UpdateColoniaDto } from '@api/models/models';
 import { wasHandledByInterceptor } from '../../../interceptors/auth.interceptor';
-import { UtilsService } from '../../../services/utils.service';
+import { UtilsService } from '@services/utils.service';
 import { ColoniaFormComponent } from './colonia-form.component';
-import { GenericTableComponent } from '../../../shared/components/generic-table/generic-table.component';
+import { GenericTableComponent } from '@shared/components/generic-table/generic-table.component';
 import {
   TableColumn,
   TableAction,
   TableActionEvent,
   TableSortEvent,
-} from '../../../shared/components/generic-table/table-column.model';
-import { ConfirmModalComponent } from '../../../shared/components/confirm-modal/confirm-modal.component';
+} from '@shared/components/generic-table/table-column.model';
+import { ConfirmModalComponent } from '@shared/components/confirm-modal/confirm-modal.component';
 import { map } from 'rxjs';
 import { TableDataSource } from 'src/app/core/datasource/table.datasource';
 

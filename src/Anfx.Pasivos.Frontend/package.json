@@ -12,7 +12,7 @@
     "test": "ng test",
     "serve:ssr:Pasivos_Frontend": "node dist/Pasivos_Frontend/server/server.mjs",
     "generate:api": "openapi-generator-cli generate -c openapi-config.json --skip-validate-spec",
-    "generate:api:clean": "rm -rf src/api && npm run generate:api",
+    "generate:api:clean": "npx rimraf src/app/core/api && npm run generate:api",
     "lint": "ng lint"
   },
   "prettier": {

@@ -1,6 +1,6 @@
 import { Component, inject, signal, ViewChild, DestroyRef, effect } from '@angular/core';
-import { AuthService as AuthApiService } from '../../../../api/services/auth.service';
-import { UsuarioCreateDto, UsuarioUpdateDto } from '../../../../api/models/models';
+import { AuthService as AuthApiService } from 'src/app/core/api/services/auth.service';
+import { UsuarioCreateDto, UsuarioUpdateDto } from 'src/app/core/api/models/models';
 import { wasHandledByInterceptor } from '../../../interceptors/auth.interceptor';
 import {
   UsuarioItemDto,
@@ -8,17 +8,17 @@ import {
   UsuarioPageQueryDto,
   UsuarioFormData,
 } from '../../../../types/sistema/usuario.dto';
-import { UtilsService } from '../../../services/utils.service';
+import { UtilsService } from '@services/utils.service';
 import { UsuarioFormComponent } from './usuario-form.component';
-import { GenericTableComponent } from '../../../shared/components/generic-table/generic-table.component';
+import { GenericTableComponent } from '@shared/components/generic-table/generic-table.component';
 import {
   TableColumn,
   TableAction,
   TableActionEvent,
   TableSortEvent,
-} from '../../../shared/components/generic-table/table-column.model';
-import { FilterActivoComponent } from '../../../shared/components/filter-activo/filter-activo.component';
-import { ConfirmModalComponent } from '../../../shared/components/confirm-modal/confirm-modal.component';
+} from '@shared/components/generic-table/table-column.model';
+import { FilterActivoComponent } from '@shared/components/filter-activo/filter-activo.component';
+import { ConfirmModalComponent } from '@shared/components/confirm-modal/confirm-modal.component';
 import { TableDataSource } from 'src/app/core/datasource/table.datasource';
 import { map } from 'rxjs';
 

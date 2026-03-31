@@ -2,8 +2,8 @@ import { Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChange
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { TipoDireccionDto, CreateTipoDireccionDto, UpdateTipoDireccionDto } from '../../../../types/catalogos/tipodireccion.dto';
-import { UtilsService } from '../../../services/utils.service';
-import { CardComponent } from '../../../shared/components/card/card.component';
+import { UtilsService } from '@services/utils.service';
+import { CardComponent } from '@shared/components/card/card.component';
 
 @Component({
   selector: 'app-tipodireccion-form',
@@ -55,7 +55,7 @@ export class TipoDireccionFormComponent implements OnInit, OnChanges {
   onSubmit() {
     if (this.tipoDireccionForm.valid) {
       const formValue = this.tipoDireccionForm.value;
-      
+
       // Crear objeto tipo de dirección con los valores del formulario
       const tipoDireccionData = {
         ...this.tipoDireccion,

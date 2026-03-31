@@ -1,9 +1,9 @@
 import { Component, OnInit, ViewChild, ElementRef, computed, effect, inject, signal } from '@angular/core';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
-import { ConfiguracionesService } from '../../../../api/services/configuraciones.service';
-import { RelLineaCreditoTipoCreditoDto } from '../../../../api/models/relLineaCreditoTipoCreditoDto';
+import { ConfiguracionesService } from 'src/app/core/api/services/configuraciones.service';
+import { RelLineaCreditoTipoCreditoDto } from 'src/app/core/api/models/relLineaCreditoTipoCreditoDto';
 import { wasHandledByInterceptor } from '../../../interceptors/auth.interceptor';
-import { UtilsService } from '../../../services/utils.service';
+import { UtilsService } from '@services/utils.service';
 
 @Component({
   selector: 'app-tipo-credito-linea',

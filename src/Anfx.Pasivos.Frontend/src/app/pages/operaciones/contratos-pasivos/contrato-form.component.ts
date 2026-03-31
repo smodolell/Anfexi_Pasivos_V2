@@ -3,14 +3,14 @@ import { CommonModule, CurrencyPipe } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { forkJoin } from 'rxjs';
-import { ContratosService } from '../../../../api/services/contratos.service';
-import { SelectListsService } from '../../../../api/services/selectLists.service';
-import { ConfiguracionesService } from '../../../../api/services/configuraciones.service';
-import { ContratoPasivoEditDto } from '../../../../api/models/contratoPasivoEditDto';
-import { SelectItemDto } from '../../../../api/models/selectItemDto';
-import { TipoTablaAmortizaListItemDto } from '../../../../api/models/tipoTablaAmortizaListItemDto';
+import { ContratosService } from 'src/app/core/api/services/contratos.service';
+import { SelectListsService } from 'src/app/core/api/services/selectLists.service';
+import { ConfiguracionesService } from 'src/app/core/api/services/configuraciones.service';
+import { ContratoPasivoEditDto } from 'src/app/core/api/models/contratoPasivoEditDto';
+import { SelectItemDto } from 'src/app/core/api/models/selectItemDto';
+import { TipoTablaAmortizaListItemDto } from 'src/app/core/api/models/tipoTablaAmortizaListItemDto';
 import { wasHandledByInterceptor } from '../../../interceptors/auth.interceptor';
-import { UtilsService } from '../../../services/utils.service';
+import { UtilsService } from '@services/utils.service';
 
 @Component({
   selector: 'app-contrato-form',

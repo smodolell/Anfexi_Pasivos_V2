@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { CatalogosService } from '@api/services/catalogos.service';
 import { BancoListItemDto } from '@api/models/bancoListItemDto';
-import { UtilsService } from 'src/app/services/utils.service';
+import { UtilsService }  from '@services/utils.service';
 import { wasHandledByInterceptor } from 'src/app/interceptors/auth.interceptor';
 import { GenericTableComponent } from 'src/app/shared/components/generic-table/generic-table.component';
 import { SortDirection, TableAction, TableActionEvent, TableColumn, TableSortEvent } from 'src/app/shared/components/generic-table/table-column.model';

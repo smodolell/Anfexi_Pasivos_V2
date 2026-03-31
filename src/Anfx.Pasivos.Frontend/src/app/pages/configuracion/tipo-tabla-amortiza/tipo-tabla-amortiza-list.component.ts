@@ -1,11 +1,11 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { ConfiguracionesService } from '../../../../api/services/configuraciones.service';
-import { TipoTablaAmortizaListItemDto } from '../../../../api/models/tipoTablaAmortizaListItemDto';
-import { UtilsService } from '../../../services/utils.service';
-import { GenericTableComponent } from '../../../shared/components/generic-table/generic-table.component';
-import { TableColumn, TableAction, TableActionEvent, TableSortEvent, SortDirection } from '../../../shared/components/generic-table/table-column.model';
+import { ConfiguracionesService } from 'src/app/core/api/services/configuraciones.service';
+import { TipoTablaAmortizaListItemDto } from 'src/app/core/api/models/tipoTablaAmortizaListItemDto';
+import { UtilsService } from '@services/utils.service';
+import { GenericTableComponent } from '@shared/components/generic-table/generic-table.component';
+import { TableColumn, TableAction, TableActionEvent, TableSortEvent, SortDirection } from '@shared/components/generic-table/table-column.model';
 import { wasHandledByInterceptor } from '../../../interceptors/auth.interceptor';
 
 @Component({

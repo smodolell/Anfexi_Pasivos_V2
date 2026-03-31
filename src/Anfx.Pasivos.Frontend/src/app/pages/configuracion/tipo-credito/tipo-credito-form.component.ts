@@ -2,10 +2,10 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ConfiguracionesService } from '../../../../api/services/configuraciones.service';
-import { TipoCreditoDto } from '../../../../api/models/tipoCreditoDto';
-import { TipoTablaAmortizaListItemDto } from '../../../../api/models/tipoTablaAmortizaListItemDto';
-import { CardComponent } from '../../../shared/components/card/card.component';
+import { ConfiguracionesService } from 'src/app/core/api/services/configuraciones.service';
+import { TipoCreditoDto } from 'src/app/core/api/models/tipoCreditoDto';
+import { TipoTablaAmortizaListItemDto } from 'src/app/core/api/models/tipoTablaAmortizaListItemDto';
+import { CardComponent } from '@shared/components/card/card.component';
 
 @Component({
   selector: 'app-tipo-credito-form',

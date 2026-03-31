@@ -1,5 +1,5 @@
 const fs = require('fs');
-const p  = require('../package.json');
+const p  = require('../../package.json');
 const files = [
   'src/environments/environment.ts',
   'src/environments/environment.production.ts',

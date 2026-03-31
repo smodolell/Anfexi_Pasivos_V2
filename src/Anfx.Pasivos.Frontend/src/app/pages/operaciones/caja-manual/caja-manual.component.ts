@@ -2,18 +2,18 @@ import { Component, inject, signal, computed, ViewChild, ElementRef, effect } fr
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DecimalPipe } from '@angular/common';
 import { forkJoin } from 'rxjs';
-import { OperacionesService } from '../../../../api/services/operaciones.service';
-import { SelectListsService } from '../../../../api/services/selectLists.service';
-import { AutocompleteResultDto } from '../../../../api/models/autocompleteResultDto';
-import { CajaDto } from '../../../../api/models/cajaDto';
-import { MovimientoPagoItem } from '../../../../api/models/movimientoPagoItem';
-import { SelectItemDto } from '../../../../api/models/selectItemDto';
+import { OperacionesService } from 'src/app/core/api/services/operaciones.service';
+import { SelectListsService } from 'src/app/core/api/services/selectLists.service';
+import { AutocompleteResultDto } from 'src/app/core/api/models/autocompleteResultDto';
+import { CajaDto } from 'src/app/core/api/models/cajaDto';
+import { MovimientoPagoItem } from 'src/app/core/api/models/movimientoPagoItem';
+import { SelectItemDto } from 'src/app/core/api/models/selectItemDto';
 import { wasHandledByInterceptor } from '../../../interceptors/auth.interceptor';
-import { UtilsService } from '../../../services/utils.service';
-import { ContratoAutocompleteComponent } from '../../../shared/components/contrato-autocomplete/contrato-autocomplete.component';
-import { ConfirmModalComponent } from '../../../shared/components/confirm-modal/confirm-modal.component';
-import { FormErrorsComponent } from '../../../shared/components/form-errors/form-error.component';
-import { ErrorHandlerService } from 'src/app/services/error.services';
+import { UtilsService } from '@services/utils.service';
+import { ContratoAutocompleteComponent } from '@shared/components/contrato-autocomplete/contrato-autocomplete.component';
+import { ConfirmModalComponent } from '@shared/components/confirm-modal/confirm-modal.component';
+import { FormErrorsComponent } from '@shared/components/form-errors/form-error.component';
+import { ErrorHandlerService }  from '@services/error.services';
 
 @Component({
   selector: 'app-caja-manual',

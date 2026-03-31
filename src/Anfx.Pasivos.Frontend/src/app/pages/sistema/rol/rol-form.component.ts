@@ -2,8 +2,8 @@ import { Component, OnInit, Input, Output, EventEmitter, inject } from '@angular
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { RolDto, CreateRolDto, UpdateRolDto } from '../../../../types/sistema/rol.dto';
-import { UtilsService } from '../../../services/utils.service';
-import { CardComponent } from '../../../shared/components/card/card.component';
+import { UtilsService } from '@services/utils.service';
+import { CardComponent } from '@shared/components/card/card.component';
 
 @Component({
   selector: 'app-rol-form',
@@ -41,7 +41,7 @@ export class RolFormComponent implements OnInit {
   onSubmit(): void {
     if (this.form.valid) {
       const formData = this.form.value;
-      
+
       if (this.rol) {
         // Actualizar
         const updateData: UpdateRolDto = {

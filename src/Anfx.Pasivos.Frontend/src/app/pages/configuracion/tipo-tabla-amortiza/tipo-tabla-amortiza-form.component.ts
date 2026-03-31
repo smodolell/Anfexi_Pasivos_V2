@@ -2,9 +2,9 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ConfiguracionesService } from '../../../../api/services/configuraciones.service';
-import { TipoTablaAmortizaDto } from '../../../../api/models/tipoTablaAmortizaDto';
-import { CardComponent } from '../../../shared/components/card/card.component';
+import { ConfiguracionesService } from 'src/app/core/api/services/configuraciones.service';
+import { TipoTablaAmortizaDto } from 'src/app/core/api/models/tipoTablaAmortizaDto';
+import { CardComponent } from '@shared/components/card/card.component';
 
 @Component({
   selector: 'app-tipo-tabla-amortiza-form',

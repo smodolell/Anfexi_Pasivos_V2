@@ -1,12 +1,12 @@
 import { Component, OnInit, ViewChild, inject, signal } from '@angular/core';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
-import { ConfiguracionesService } from '../../../../api/services/configuraciones.service';
-import { LineaCreditoListItemDto } from '../../../../api/models/lineaCreditoListItemDto';
+import { ConfiguracionesService } from 'src/app/core/api/services/configuraciones.service';
+import { LineaCreditoListItemDto } from 'src/app/core/api/models/lineaCreditoListItemDto';
 import { wasHandledByInterceptor } from '../../../interceptors/auth.interceptor';
-import { UtilsService } from '../../../services/utils.service';
-import { GenericTableComponent } from '../../../shared/components/generic-table/generic-table.component';
-import { TableColumn, TableAction, TableActionEvent } from '../../../shared/components/generic-table/table-column.model';
-import { ConfirmModalComponent } from '../../../shared/components/confirm-modal/confirm-modal.component';
+import { UtilsService } from '@services/utils.service';
+import { ConfirmModalComponent } from './../../../shared/components/confirm-modal/confirm-modal.component';
+import { GenericTableComponent } from '@shared/components/generic-table/generic-table.component';
+import { TableColumn, TableAction, TableActionEvent } from '@shared/components/generic-table/table-column.model';
 
 @Component({
   selector: 'app-linea-credito-list',

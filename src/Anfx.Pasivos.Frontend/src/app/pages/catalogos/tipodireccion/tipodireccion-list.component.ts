@@ -1,18 +1,18 @@
 import { Component, inject, signal, ViewChild, DestroyRef, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TipoDireccionService } from '../../../services/catalogos/tipodireccion.service';
+import { TipoDireccionService } from '@services/catalogos/tipodireccion.service';
 import { wasHandledByInterceptor } from '../../../interceptors/auth.interceptor';
 import { TipoDireccionDto } from '../../../../types/catalogos/tipodireccion.dto';
-import { UtilsService } from '../../../services/utils.service';
+import { UtilsService } from '@services/utils.service';
 import { TipoDireccionFormComponent } from './tipodireccion-form.component';
-import { ConfirmModalComponent } from '../../../shared/components/confirm-modal/confirm-modal.component';
-import { GenericTableComponent } from '../../../shared/components/generic-table/generic-table.component';
+import { ConfirmModalComponent } from '@shared/components/confirm-modal/confirm-modal.component';
+import { GenericTableComponent } from '@shared/components/generic-table/generic-table.component';
 import {
   TableColumn,
   TableAction,
   TableActionEvent,
   TableSortEvent,
-} from '../../../shared/components/generic-table/table-column.model';
+} from '@shared/components/generic-table/table-column.model';
 import { TableDataSource } from '../../../core/datasource/table.datasource';
 
 @Component({

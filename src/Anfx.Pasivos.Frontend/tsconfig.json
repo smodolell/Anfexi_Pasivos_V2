@@ -16,11 +16,11 @@
     "module": "preserve",
     "baseUrl": "./",
     "paths": {
-      "@api/*": ["src/app/api/*"],
+      "@api/*":    ["src/app/core/api/*"],
       "@services/*": ["src/app/services/*"],
-      "@shared/*": ["src/app/shared/*"],
+      "@shared/*":   ["src/app/shared/*"],
       "@interceptors/*": ["src/app/interceptors/*"],
-      "@models/*": ["src/app/api/models/*"],
+      "@models/*": ["src/app/core/api/models/*"],
       "@components/*": ["src/app/shared/components/*"]
     }
   },

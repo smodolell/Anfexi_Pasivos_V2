@@ -5,7 +5,7 @@ import {
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Subject, takeUntil } from 'rxjs';
-import { AuthService, User } from '../../../services/auth.service';
+import { AuthService, User } from '@services/auth.service';
 
 @Component({
   selector: 'app-topbar',

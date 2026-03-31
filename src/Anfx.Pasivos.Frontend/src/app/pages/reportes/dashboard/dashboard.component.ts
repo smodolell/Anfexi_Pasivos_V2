@@ -13,8 +13,8 @@ import { HighchartsChartComponent } from 'highcharts-angular';
 import type { Options as HighchartsOptions } from 'highcharts';
 import { CarteraMensualDto } from '@api/models/carteraMensualDto';
 import { CarteraDto } from '@api/models/carteraDto';
-import { LayoutService } from 'src/app/services/layout.service';
-import { UtilsService } from 'src/app/services/utils.service';
+import { LayoutService } from '@services/layout.service';
+import { UtilsService }  from '@services/utils.service';
 import { CardInfoComponent } from 'src/app/shared/components/card/card-info.component';
 
 @Component({
