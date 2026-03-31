@@ -70,21 +70,21 @@ export const routes: Routes = [
   {
     path: 'configuracion',
     canActivate: [authGuard],
-    loadChildren: () => import('./features/configuracion/configuracion.routes'),
+    loadChildren: () => import('./pages/configuracion/configuracion.routes'),
   },
 
   // Operaciones - PROTEGIDAS
   {
     path: 'operaciones',
     canActivate: [authGuard],
-    loadChildren: () => import('./features/operaciones/operaciones.routes'),
+    loadChildren: () => import('./pages/operaciones/operaciones.routes'),
   },
 
   // Procesos - PROTEGIDOS
   {
     path: 'procesos',
     canActivate: [authGuard],
-    loadChildren: () => import('./features/procesos/procesos.routes'),
+    loadChildren: () => import('./pages/procesos/procesos.routes'),
   },
 
   // Catálogos - PROTEGIDOS

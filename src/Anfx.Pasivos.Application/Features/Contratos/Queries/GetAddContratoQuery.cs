@@ -26,6 +26,8 @@ internal class GetAddContratoQueryHandler(IApplicationDbContext context) : IQuer
         var result = new ContratoPasivoEditDto
         {
             IdFondeador = lineaCredito.IdFondeador,
+            IdLineaCredito = lineaCredito.IdLineaCredito,
+            IdPeriodicidad = 3,
             Fondeador = lineaCredito.PSV_Fondeador.Fondeador,
             MaxCapitalDisponible = lineaCredito.MontoDisponible,
             IdMoneda = lineaCredito.IdMoneda,
@@ -33,6 +35,9 @@ internal class GetAddContratoQueryHandler(IApplicationDbContext context) : IQuer
             IdTasa = lineaCredito.IdTasa!.Value,
             Tasa = lineaCredito.Tasa ?? 0,
             EstatusContrato = "CAPTURADO",
+            FecInicioContrato = DateTime.Now,
+            IdEstatusContrato = 1,
+            TasaIva = 0.0000m,
             LineaCredito = string.Format("ID [{0}] -> $ {1:N2}, Disponible: $ {2:N2}", lineaCredito.IdLineaCredito, lineaCredito.MontoAprobado, lineaCredito.MontoDisponible)
         };
 

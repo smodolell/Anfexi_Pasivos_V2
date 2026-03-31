@@ -10,6 +10,7 @@ public class ContratoPasivoEditDto
     public string Fondeador { get; set; } =string.Empty;
 
     public int IdLineaCredito { get; set; }
+    public int IdEstatusContrato { get; set; }
     public decimal MaxCapitalDisponible { get; set; }
     public string Contrato { get; set; } = string.Empty;
     public string LineaCredito { get; set; } = string.Empty;

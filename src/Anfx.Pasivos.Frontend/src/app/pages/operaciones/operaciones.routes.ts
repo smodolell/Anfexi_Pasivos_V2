@@ -10,7 +10,7 @@ export const operacionesRoutes: Routes = [
         path: 'asociar-contrato',
         data: { title: 'Asociar Contrato Activo a Pasivo' },
         loadComponent: () =>
-          import('../../pages/operaciones/asociar-contrato/asociar-contrato.component').then(
+          import('./asociar-contrato/asociar-contrato.component').then(
             (m) => m.AsociarContratoComponent
           ),
       },
@@ -18,7 +18,7 @@ export const operacionesRoutes: Routes = [
         path: 'anticipo',
         data: { title: 'Anticipo a Contrato Pasivo' },
         loadComponent: () =>
-          import('../../pages/operaciones/anticipo/anticipo.component').then(
+          import('./anticipo/anticipo.component').then(
             (m) => m.AnticipoComponent
           ),
       },
@@ -26,7 +26,7 @@ export const operacionesRoutes: Routes = [
         path: 'caja-manual',
         data: { title: 'Caja Manual' },
         loadComponent: () =>
-          import('../../pages/operaciones/caja-manual/caja-manual.component').then(
+          import('./caja-manual/caja-manual.component').then(
             (m) => m.CajaManualComponent
           ),
       },
@@ -34,7 +34,7 @@ export const operacionesRoutes: Routes = [
         path: 'cargo-adicional',
         data: { title: 'Cargo Adicional' },
         loadComponent: () =>
-          import('../../pages/operaciones/cargo-adicional/cargo-adicional.component').then(
+          import('./cargo-adicional/cargo-adicional.component').then(
             (m) => m.CargoAdicionalComponent
           ),
       },
@@ -42,7 +42,7 @@ export const operacionesRoutes: Routes = [
         path: 'contratos-pasivos',
         data: { title: 'Contratos Pasivos' },
         loadComponent: () =>
-          import('../../pages/operaciones/contratos-pasivos/contratos-pasivos-list.component').then(
+          import('./contratos-pasivos/contratos-pasivos-list.component').then(
             (m) => m.ContratosPasivosListComponent
           ),
       },
@@ -50,7 +50,7 @@ export const operacionesRoutes: Routes = [
         path: 'contratos-pasivos/nuevo',
         data: { title: 'Nuevo Contrato Pasivo' },
         loadComponent: () =>
-          import('../../pages/operaciones/contratos-pasivos/contrato-form.component').then(
+          import('./contratos-pasivos/contrato-form.component').then(
             (m) => m.ContratoFormComponent
           ),
       },
@@ -58,7 +58,7 @@ export const operacionesRoutes: Routes = [
         path: 'contratos-pasivos/edit/:id',
         data: { title: 'Editar Contrato Pasivo' },
         loadComponent: () =>
-          import('../../pages/operaciones/contratos-pasivos/contrato-form.component').then(
+          import('./contratos-pasivos/contrato-form.component').then(
             (m) => m.ContratoFormComponent
           ),
       },
@@ -66,7 +66,7 @@ export const operacionesRoutes: Routes = [
         path: 'contratos-pasivos/view/:id',
         data: { title: 'Detalle de Contrato Pasivo' },
         loadComponent: () =>
-          import('../../pages/operaciones/contratos-pasivos/contrato-view.component').then(
+          import('./contratos-pasivos/contrato-view.component').then(
             (m) => m.ContratoViewComponent
           ),
       },
@@ -74,7 +74,7 @@ export const operacionesRoutes: Routes = [
         path: 'nuevo-contrato',
         data: { title: 'Nuevo Contrato' },
         loadComponent: () =>
-          import('../../pages/operaciones/nuevo-contrato/nuevo-contrato.component').then(
+          import('./nuevo-contrato/nuevo-contrato.component').then(
             (m) => m.NuevoContratoComponent
           ),
       },
