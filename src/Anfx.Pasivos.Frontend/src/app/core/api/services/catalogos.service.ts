@@ -35,8 +35,6 @@ import { ColoniaDtoIEnumerableApiResponseDto } from '../models/coloniaDtoIEnumer
 // @ts-ignore
 import { ColoniaDtoPagedResultDtoResult } from '../models/coloniaDtoPagedResultDtoResult';
 // @ts-ignore
-import { ColoniaDtoPagedResultDtoApiResponseDto } from '../models/coloniaDtoPagedResultDtoApiResponseDto';
-// @ts-ignore
 import { CreateColoniaDto } from '../models/createColoniaDto';
 // @ts-ignore
 import { CreateTipoDireccionDto } from '../models/createTipoDireccionDto';
@@ -1797,9 +1795,9 @@ export class CatalogosService extends BaseService {
      * @param reportProgress flag to report request and response progress.
      * @param options additional options
      */
-    public getColoniasPaginados(q?: string, page?: number, size?: number, sortBy?: string, sortDir?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<ColoniaDtoPagedResultDtoApiResponseDto>;
-    public getColoniasPaginados(q?: string, page?: number, size?: number, sortBy?: string, sortDir?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ColoniaDtoPagedResultDtoApiResponseDto>>;
-    public getColoniasPaginados(q?: string, page?: number, size?: number, sortBy?: string, sortDir?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ColoniaDtoPagedResultDtoApiResponseDto>>;
+    public getColoniasPaginados(q?: string, page?: number, size?: number, sortBy?: string, sortDir?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<ColoniaDtoPagedResultDtoResult>;
+    public getColoniasPaginados(q?: string, page?: number, size?: number, sortBy?: string, sortDir?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ColoniaDtoPagedResultDtoResult>>;
+    public getColoniasPaginados(q?: string, page?: number, size?: number, sortBy?: string, sortDir?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ColoniaDtoPagedResultDtoResult>>;
     public getColoniasPaginados(q?: string, page?: number, size?: number, sortBy?: string, sortDir?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarQueryParameters = new OpenApiHttpParams(this.encoder);

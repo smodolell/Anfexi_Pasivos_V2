@@ -70,6 +70,7 @@
           "configurations": {
             "production": {
               "outputMode": "static",
+              "baseHref": "/profuturo/pasivos/frontend/",
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
@@ -79,13 +80,13 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2MB",
-                  "maximumError": "5MB"
+                  "maximumWarning": "2mb",
+                  "maximumError": "4MB"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "15kb",
-                  "maximumError": "25kb"
+                  "maximumWarning": "1mb",
+                  "maximumError": "1mb"
                 }
               ],
               "outputHashing": "all",
@@ -138,6 +139,7 @@
               "node_modules/@fontsource/roboto/400.css",
               "node_modules/@fontsource/roboto/500.css",
               "node_modules/@fontsource/roboto/700.css",
+              "public/assets/dist/css/style.min.css",
               "src/styles.scss"
             ],
             "scripts": [

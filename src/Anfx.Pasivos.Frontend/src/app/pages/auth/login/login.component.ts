@@ -1,8 +1,8 @@
 import { Component, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { AuthService, LoginCredentials } from '../../../services/auth.service';
-import { UtilsService } from '../../../services/utils.service';
+import { AuthService, LoginCredentials } from '@services/auth.service';
+import { UtilsService } from '@services/utils.service';
 import { Router } from '@angular/router';
 
 @Component({

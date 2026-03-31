@@ -1,7 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { LayoutService } from '../../../services/layout.service';
+import { LayoutService } from '@services/layout.service';
 import { UsuarioFormComponent } from '../../sistema/usuario/usuario-form.component';
 import { UsuarioDto, CreateUsuarioDto, UpdateUsuarioDto } from '../../../../types/sistema/usuario.dto';
 

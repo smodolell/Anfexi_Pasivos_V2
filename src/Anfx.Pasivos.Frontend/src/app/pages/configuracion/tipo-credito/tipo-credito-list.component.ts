@@ -1,11 +1,11 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { TipoCreditoService } from '../../../services/configuracion/tipo-credito.service';
+import { TipoCreditoService } from '@services/configuracion/tipo-credito.service';
 import { TipoCreditoListItemDto } from '../../../../types/configuracion/tipo-credito.dto';
-import { UtilsService } from '../../../services/utils.service';
-import { GenericTableComponent } from '../../../shared/components/generic-table/generic-table.component';
-import { TableColumn, TableAction, TableActionEvent, TableSortEvent, SortDirection } from '../../../shared/components/generic-table/table-column.model';
+import { UtilsService } from '@services/utils.service';
+import { GenericTableComponent } from '@shared/components/generic-table/generic-table.component';
+import { TableColumn, TableAction, TableActionEvent, TableSortEvent, SortDirection } from '@shared/components/generic-table/table-column.model';
 import { wasHandledByInterceptor } from '../../../interceptors/auth.interceptor';
 
 @Component({

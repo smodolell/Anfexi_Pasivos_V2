@@ -1,16 +1,16 @@
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { forkJoin, of, switchMap } from 'rxjs';
-import { AnticipoConfigDto } from '../../../../api/models/anticipoConfigDto';
-import { AnticipoDto } from '../../../../api/models/anticipoDto';
-import { AutocompleteResultDto } from '../../../../api/models/autocompleteResultDto';
-import { SelectItemDto } from '../../../../api/models/selectItemDto';
-import { OperacionesService } from '../../../../api/services/operaciones.service';
-import { SelectListsService } from '../../../../api/services/selectLists.service';
+import { AnticipoConfigDto } from 'src/app/core/api/models/anticipoConfigDto';
+import { AnticipoDto } from 'src/app/core/api/models/anticipoDto';
+import { AutocompleteResultDto } from 'src/app/core/api/models/autocompleteResultDto';
+import { SelectItemDto } from 'src/app/core/api/models/selectItemDto';
+import { OperacionesService } from 'src/app/core/api/services/operaciones.service';
+import { SelectListsService } from 'src/app/core/api/services/selectLists.service';
 import { wasHandledByInterceptor } from '../../../interceptors/auth.interceptor';
-import { ErrorHandlerService } from '../../../services/error.services';
-import { UtilsService } from '../../../services/utils.service';
-import { ContratoAutocompleteComponent } from '../../../shared/components/contrato-autocomplete/contrato-autocomplete.component';
+import { ErrorHandlerService } from '@services/error.services';
+import { UtilsService } from '@services/utils.service';
+import { ContratoAutocompleteComponent } from '@shared/components/contrato-autocomplete/contrato-autocomplete.component';
 import { FormErrorsComponent } from 'src/app/shared/components/form-errors/form-error.component';
 
 @Component({

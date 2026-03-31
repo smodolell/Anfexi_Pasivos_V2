@@ -2,8 +2,8 @@ import { ChangeDetectionStrategy, Component, DestroyRef, Input, OnInit, forwardR
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormsModule } from '@angular/forms';
 
-import { ColoniaService } from '../../../services/catalogos/colonia.service';
-import { UtilsService } from '../../../services/utils.service';
+import { ColoniaService } from '@services/catalogos/colonia.service';
+import { UtilsService } from '@services/utils.service';
 import { SelectItemDto } from '../../../../types/selectitem.dto';
 import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 
@@ -48,16 +48,16 @@ export class ColoniaAutoCompleteComponent implements OnInit, ControlValueAccesso
   coloniaId = signal<number | null>(null);
   colonias = signal<SelectItemDto[]>([]);
   codigosPostales = signal<SelectItemDto[]>([]);
-  
+
   // Estados de carga
   loadingCodigosPostales = signal<boolean>(false);
   loadingColonias = signal<boolean>(false);
   loadingById = signal<boolean>(false);
-  
+
   // Estados de autocompletado
   showCodigosPostales = signal<boolean>(false);
   showColonias = signal<boolean>(false);
-  
+
   // ControlValueAccessor
   private onChange = (_value: ColoniaModel) => {};
   private onTouched = () => {};
@@ -84,7 +84,7 @@ export class ColoniaAutoCompleteComponent implements OnInit, ControlValueAccesso
         if (value && value.length >= 3) {
           this.loadingCodigosPostales.set(true);
           this.showCodigosPostales.set(true);
-          
+
           this.coloniaService.getCodigosPostales(value)
             .subscribe({
               next: (response) => {
@@ -110,7 +110,7 @@ export class ColoniaAutoCompleteComponent implements OnInit, ControlValueAccesso
     const value = (event.target as HTMLInputElement).value;
     this.codigoPostal.set(value);
     this.updateModel();
-    
+
     // Emitir valor para el debounce
     this.codigoPostalDebounce$.next(value);
   }

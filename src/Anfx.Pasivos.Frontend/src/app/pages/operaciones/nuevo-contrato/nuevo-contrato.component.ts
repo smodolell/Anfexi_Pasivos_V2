@@ -1,11 +1,11 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { SelectListsService } from '../../../../api/services/selectLists.service';
-import { ContratosService } from '../../../../api/services/contratos.service';
-import { SelectItemDto } from '../../../../api/models/selectItemDto';
+import { SelectListsService } from 'src/app/core/api/services/selectLists.service';
+import { ContratosService } from 'src/app/core/api/services/contratos.service';
+import { SelectItemDto } from 'src/app/core/api/models/selectItemDto';
 import { wasHandledByInterceptor } from '../../../interceptors/auth.interceptor';
-import { UtilsService } from '../../../services/utils.service';
+import { UtilsService } from '@services/utils.service';
 
 @Component({
   selector: 'app-nuevo-contrato',

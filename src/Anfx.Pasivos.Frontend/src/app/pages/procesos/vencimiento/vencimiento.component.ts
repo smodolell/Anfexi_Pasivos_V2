@@ -1,13 +1,13 @@
 import { Component, OnInit, inject, signal, DestroyRef, ViewChild, input } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ProcesosService } from '../../../../api/services/procesos.service';
-import { SelectListsService } from '../../../../api/services/selectLists.service';
-import { ProcesaVencimientoRequest } from '../../../../api/models/procesaVencimientoRequest';
-import { SelectItemDto } from '../../../../api/models/selectItemDto';
+import { ProcesosService } from 'src/app/core/api/services/procesos.service';
+import { SelectListsService } from 'src/app/core/api/services/selectLists.service';
+import { ProcesaVencimientoRequest } from 'src/app/core/api/models/procesaVencimientoRequest';
+import { SelectItemDto } from 'src/app/core/api/models/selectItemDto';
 import { wasHandledByInterceptor } from '../../../interceptors/auth.interceptor';
-import { UtilsService } from '../../../services/utils.service';
-import { ConfirmModalComponent } from '../../../shared/components/confirm-modal/confirm-modal.component';
+import { UtilsService } from '@services/utils.service';
+import { ConfirmModalComponent } from '@shared/components/confirm-modal/confirm-modal.component';
 
 @Component({
   selector: 'app-vencimiento',

@@ -1,13 +1,13 @@
 import { Component, OnInit, inject, signal, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TipoPagoService } from '../../../services/catalogos/tipo-pago.service';
+import { TipoPagoService } from '@services/catalogos/tipo-pago.service';
 import { wasHandledByInterceptor } from '../../../interceptors/auth.interceptor';
 import { TipoPagoListItemDto } from '../../../../types/catalogos/tipo-pago.dto';
-import { UtilsService } from '../../../services/utils.service';
+import { UtilsService } from '@services/utils.service';
 import { TipoPagoFormComponent } from './tipo-pago-form.component';
-import { ConfirmModalComponent } from '../../../shared/components/confirm-modal/confirm-modal.component';
-import { GenericTableComponent } from '../../../shared/components/generic-table/generic-table.component';
-import { TableColumn, TableAction, TableActionEvent, TableSortEvent, SortDirection } from '../../../shared/components/generic-table/table-column.model';
+import { ConfirmModalComponent } from '@shared/components/confirm-modal/confirm-modal.component';
+import { GenericTableComponent } from '@shared/components/generic-table/generic-table.component';
+import { TableColumn, TableAction, TableActionEvent, TableSortEvent, SortDirection } from '@shared/components/generic-table/table-column.model';
 
 @Component({
   selector: 'app-tipo-pago-list',

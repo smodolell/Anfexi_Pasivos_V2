@@ -2,27 +2,27 @@ import { Component, OnInit, computed, inject, signal, ViewChild, DestroyRef } fr
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { OperacionesService } from '../../../../api/services/operaciones.service';
-import { SelectListsService } from '../../../../api/services/selectLists.service';
-import { AutocompleteResultDto } from '../../../../api/models/autocompleteResultDto';
-import { CargoAdicionalViewDto } from '../../../../api/models/cargoAdicionalViewDto';
-import { CargoAdicionalDto } from '../../../../api/models/cargoAdicionalDto';
-import { MovimientoItemDto } from '../../../../api/models/movimientoItemDto';
-import { SelectItemDto } from '../../../../api/models/selectItemDto';
-import { TipoMovimientoConfigDto } from '../../../../api/models/tipoMovimientoConfigDto';
+import { OperacionesService } from 'src/app/core/api/services/operaciones.service';
+import { SelectListsService } from 'src/app/core/api/services/selectLists.service';
+import { AutocompleteResultDto } from 'src/app/core/api/models/autocompleteResultDto';
+import { CargoAdicionalViewDto } from 'src/app/core/api/models/cargoAdicionalViewDto';
+import { CargoAdicionalDto } from 'src/app/core/api/models/cargoAdicionalDto';
+import { MovimientoItemDto } from 'src/app/core/api/models/movimientoItemDto';
+import { SelectItemDto } from 'src/app/core/api/models/selectItemDto';
+import { TipoMovimientoConfigDto } from 'src/app/core/api/models/tipoMovimientoConfigDto';
 import { wasHandledByInterceptor } from '../../../interceptors/auth.interceptor';
-import { UtilsService } from '../../../services/utils.service';
-import { ErrorHandlerService } from '../../../services/error.services';
-import { ContratoAutocompleteComponent } from '../../../shared/components/contrato-autocomplete/contrato-autocomplete.component';
-import { FormErrorsComponent } from '../../../shared/components/form-errors/form-error.component';
-import { GenericTableComponent } from '../../../shared/components/generic-table/generic-table.component';
+import { UtilsService } from '@services/utils.service';
+import { ErrorHandlerService } from '@services/error.services';
+import { ContratoAutocompleteComponent } from '@shared/components/contrato-autocomplete/contrato-autocomplete.component';
+import { FormErrorsComponent } from '@shared/components/form-errors/form-error.component';
+import { GenericTableComponent } from '@shared/components/generic-table/generic-table.component';
 import {
   TableColumn,
   TableAction,
   TableActionEvent,
-} from '../../../shared/components/generic-table/table-column.model';
-import { ConfirmModalComponent } from '../../../shared/components/confirm-modal/confirm-modal.component';
-import { LayoutService } from 'src/app/services/layout.service';
+} from '@shared/components/generic-table/table-column.model';
+import { ConfirmModalComponent } from '@shared/components/confirm-modal/confirm-modal.component';
+import { LayoutService }  from '@services/layout.service';
 
 @Component({
   selector: 'app-cargo-adicional',

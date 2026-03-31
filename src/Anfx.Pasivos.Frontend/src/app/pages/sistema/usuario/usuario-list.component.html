@@ -6,25 +6,31 @@
 
       <app-generic-table
         [columns]="columns"
+        [items]="ds.items()"
+        [loading]="ds.loading()"
         [actions]="actions"
-        [items]="items()"
-        [loading]="loading()"
-        [totalCount]="totalCount()"
-        [currentPage]="currentPage()"
-        [totalPages]="totalPages()"
-        [pageSize]="pageSize()"
+        [totalCount]="ds.totalCount()"
+        [currentPage]="ds.currentPage()"
+        [totalPages]="ds.totalPages()"
+        [pageSize]="ds.pageSize()"
+        [sortColumn]="ds.sortColumn()"
+        [sortDirection]="ds.sortDirection()"
         [showNew]="true"
         (actionCalled)="onAction($event)"
         (searchChanged)="onSearch($event)"
+        (sortChanged)="onSort($event)"
         (pageNext)="onPageNext()"
         (pagePrev)="onPagePrev()"
-        (newClicked)="onNuevo()">
+        (newClicked)="onNuevo()"
+        [searchable]="true"
+        [searchPlaceholder]="'Buscar usuarios...'"
+        >
 
         <app-filter-activo
           slot="filters"
           label="Solo activos"
-          [(value)]="query.activo"
-          (changed)="onActivoChange()">
+          [value]="ds.activo()"
+          (changed)="onActivoChange($event)">
         </app-filter-activo>
 
       </app-generic-table>

@@ -1,4 +1,5 @@
 .gitignore
+.openapi-generator-ignore
 README.md
 api.base.service.ts
 api.module.ts
@@ -90,11 +91,13 @@ models/models.ts
 models/movimientoDetalleDto.ts
 models/movimientoDetalleDtoApiResponseDto.ts
 models/movimientoItemDto.ts
+models/movimientoItemDtoListApiResponseDto.ts
 models/movimientoPagoItem.ts
 models/pagoDetalleDto.ts
 models/pagoDetalleDtoApiResponseDto.ts
 models/pagoIrregularDto.ts
 models/pagoItemDto.ts
+models/pagoItemDtoListApiResponseDto.ts
 models/problemDetails.ts
 models/procesaMoratorioRequest.ts
 models/procesaMoratorioResultDto.ts

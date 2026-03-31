@@ -1,13 +1,13 @@
 import { Component, OnInit, inject, signal, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { EmpresaService } from '../../../services/sistema/empresa.service';
+import { EmpresaService } from '@services/sistema/empresa.service';
 import { wasHandledByInterceptor } from '../../../interceptors/auth.interceptor';
-import { UtilsService } from '../../../services/utils.service';
+import { UtilsService } from '@services/utils.service';
 import { EmpresaFormComponent } from './empresa-form.component';
 import { EmpresaDto } from '../../../../types/sistema/empresa.dto';
-import { ConfirmModalComponent } from '../../../shared/components/confirm-modal/confirm-modal.component';
-import { GenericTableComponent } from '../../../shared/components/generic-table/generic-table.component';
-import { TableColumn, TableAction, TableActionEvent, TableSortEvent, SortDirection } from '../../../shared/components/generic-table/table-column.model';
+import { ConfirmModalComponent } from '@shared/components/confirm-modal/confirm-modal.component';
+import { GenericTableComponent } from '@shared/components/generic-table/generic-table.component';
+import { TableColumn, TableAction, TableActionEvent, TableSortEvent, SortDirection } from '@shared/components/generic-table/table-column.model';
 
 @Component({
   selector: 'app-empresa-list',

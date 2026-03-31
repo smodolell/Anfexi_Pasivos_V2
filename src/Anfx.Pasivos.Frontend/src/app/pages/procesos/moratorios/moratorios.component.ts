@@ -1,10 +1,10 @@
 import { Component, inject, signal, ViewChild } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ProcesosService } from '../../../../api/services/procesos.service';
-import { ProcesaMoratorioRequest } from '../../../../api/models/procesaMoratorioRequest';
+import { ProcesosService } from 'src/app/core/api/services/procesos.service';
+import { ProcesaMoratorioRequest } from 'src/app/core/api/models/procesaMoratorioRequest';
 import { wasHandledByInterceptor } from '../../../interceptors/auth.interceptor';
-import { UtilsService } from '../../../services/utils.service';
-import { ConfirmModalComponent } from '../../../shared/components/confirm-modal/confirm-modal.component';
+import { UtilsService } from '@services/utils.service';
+import { ConfirmModalComponent } from '@shared/components/confirm-modal/confirm-modal.component';
 
 @Component({
   selector: 'app-moratorios',

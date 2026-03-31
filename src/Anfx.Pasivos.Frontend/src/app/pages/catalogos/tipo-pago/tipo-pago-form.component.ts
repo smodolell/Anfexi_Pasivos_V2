@@ -2,7 +2,7 @@ import { Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChange
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { TipoPagoListItemDto, CreateTipoPagoDto, UpdateTipoPagoDto } from '../../../../types/catalogos/tipo-pago.dto';
-import { CardComponent } from '../../../shared/components/card/card.component';
+import { CardComponent } from '@shared/components/card/card.component';
 
 @Component({
   selector: 'app-tipo-pago-form',

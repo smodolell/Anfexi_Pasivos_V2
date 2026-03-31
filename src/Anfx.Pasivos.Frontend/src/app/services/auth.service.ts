@@ -18,8 +18,8 @@ export interface LoginCredentials {
   recuerdame?: boolean;
 }
 
-type LoginResult  = { success: boolean; message: string; user?: User; errors?: string[] };
-type ApiLoginResponse = { token: string; user: User; message?: string; errors?: string[] };
+export type LoginResult = { success: boolean; message: string; user?: User; errors?: string[] };
+export type ApiLoginResponse = { token: string; user: User; message?: string; errors?: string[] };
 
 /** Segundos antes de expirar en los que se lanza el refresh proactivo */
 const REFRESH_BEFORE_EXPIRY_S = 60;
@@ -27,10 +27,10 @@ const REFRESH_BEFORE_EXPIRY_S = 60;
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   // ── Estado ────────────────────────────────────────────────
-  private currentUserSubject     = new BehaviorSubject<User | null>(null);
+  private currentUserSubject = new BehaviorSubject<User | null>(null);
   private isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
 
-  readonly currentUser$     = this.currentUserSubject.asObservable();
+  readonly currentUser$ = this.currentUserSubject.asObservable();
   readonly isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
 
   // ── Token en memoria (nunca en storage) ──────────────────
@@ -39,7 +39,7 @@ export class AuthService {
   // ── Refresh proactivo ─────────────────────────────────────
   private refreshTimer: ReturnType<typeof setTimeout> | null = null;
   private refreshInProgress = false;
-  private refreshQueue      = new Subject<boolean>();
+  private refreshQueue = new Subject<boolean>();
 
   // ── Cross-tab logout ──────────────────────────────────────
   private storageListenerRegistered = false;
@@ -69,6 +69,7 @@ export class AuthService {
 
       // Persiste SOLO el usuario (no el token) para restaurar UI entre recargas
       const storage = credentials.recuerdame ? localStorage : sessionStorage;
+      storage.setItem('pf_token', res.token);
       storage.setItem('currentUser', JSON.stringify(res.user));
       // Señal de sesión activa para cross-tab sync
       localStorage.setItem(AuthService.SESSION_KEY, '1');
@@ -78,9 +79,10 @@ export class AuthService {
       return { success: true, message: res.message ?? 'Login exitoso', user: res.user };
     } catch (err) {
       const error = err as HttpErrorResponse;
-      const message = error.status === 0
-        ? 'No se pudo conectar con el servidor. Verifique su conexión a internet.'
-        : error.error?.message ?? 'Error en el servidor';
+      const message =
+        error.status === 0
+          ? 'No se pudo conectar con el servidor. Verifique su conexión a internet.'
+          : (error.error?.message ?? 'Error en el servidor');
       return { success: false, message, errors: error.error?.errors ?? [] };
     }
   }
@@ -94,18 +96,26 @@ export class AuthService {
 
   // ── Estado ────────────────────────────────────────────────
 
-  isAuthenticated(): boolean { return this.isAuthenticatedSubject.value; }
-  getCurrentUser(): User | null { return this.currentUserSubject.value; }
+  isAuthenticated(): boolean {
+    return this.isAuthenticatedSubject.value;
+  }
+  getCurrentUser(): User | null {
+    return this.currentUserSubject.value;
+  }
   isAdmin(): boolean {
     const role = this.currentUserSubject.value?.role;
     return role === 'Admin' || role === 'Webmaster';
   }
-  hasRole(role: string): boolean { return this.currentUserSubject.value?.role === role; }
+  hasRole(role: string): boolean {
+    return this.currentUserSubject.value?.role === role;
+  }
 
   // ── Token ─────────────────────────────────────────────────
 
   /** Retorna el token en memoria — nunca desde storage */
-  getAuthToken(): string | null { return this._token; }
+  getAuthToken(): string | null {
+    return this._token;
+  }
 
   isTokenExpired(token?: string): boolean {
     const t = token ?? this._token;
@@ -115,7 +125,9 @@ export class AuthService {
       if (parts.length !== 3) return true;
       const payload = JSON.parse(atob(parts[1])) as { exp?: number };
       return payload.exp != null && payload.exp < Math.floor(Date.now() / 1000);
-    } catch { return true; }
+    } catch {
+      return true;
+    }
   }
 
   // ── Guard helper ──────────────────────────────────────────
@@ -138,12 +150,19 @@ export class AuthService {
       const payload = JSON.parse(atob(parts[1])) as { exp?: number };
       if (!payload.exp) return;
 
-      const msUntilRefresh = (payload.exp - Math.floor(Date.now() / 1000) - REFRESH_BEFORE_EXPIRY_S) * 1000;
-      if (msUntilRefresh <= 0) { this.performRefresh(); return; }
+      const msUntilRefresh =
+        (payload.exp - Math.floor(Date.now() / 1000) - REFRESH_BEFORE_EXPIRY_S) * 1000;
+      if (msUntilRefresh <= 0) {
+        this.performRefresh();
+        return;
+      }
 
       this.refreshTimer = setTimeout(() => this.performRefresh(), msUntilRefresh);
-      if (isDevMode()) console.log(`[AuthService] Refresh en ${Math.round(msUntilRefresh / 1000)}s`);
-    } catch { /* token inválido, no programar */ }
+      if (isDevMode())
+        console.log(`[AuthService] Refresh en ${Math.round(msUntilRefresh / 1000)}s`);
+    } catch {
+      /* token inválido, no programar */
+    }
   }
 
   private async performRefresh(): Promise<void> {
@@ -169,27 +188,34 @@ export class AuthService {
   }
 
   private cancelRefreshTimer(): void {
-    if (this.refreshTimer) { clearTimeout(this.refreshTimer); this.refreshTimer = null; }
+    if (this.refreshTimer) {
+      clearTimeout(this.refreshTimer);
+      this.refreshTimer = null;
+    }
   }
 
-  // ── Internos ──────────────────────────────────────────────
-
   private checkStoredAuth(): void {
-    // Al recargar la página el token en memoria se pierde → requiere nuevo login.
-    // Solo restauramos el nombre de usuario para mejorar UX (ej. en guards).
-    const storedUser = localStorage.getItem('currentUser') ?? sessionStorage.getItem('currentUser');
-    if (storedUser) {
+    const storedToken = sessionStorage.getItem('pf_token') ?? localStorage.getItem('pf_token');
+    const storedUser = sessionStorage.getItem('currentUser') ?? localStorage.getItem('currentUser');
+    if (storedToken && storedUser && !this.isTokenExpired(storedToken)) {
       try {
-        // Sin token en memoria no autenticamos — el guard redirigirá al login.
-        // Limpiamos el estado guardado para que no haya inconsistencias.
+        this._token = storedToken;
+        this.currentUserSubject.next(JSON.parse(storedUser) as User);
+        this.isAuthenticatedSubject.next(true);
+        this.scheduleProactiveRefresh();
+      } catch {
         this.clearAuth();
-      } catch { this.clearAuth(); }
+      }
+    } else {
+      this.clearAuth();
     }
   }
 
   private clearAuth(): void {
     this._token = null;
     this.cancelRefreshTimer();
+    sessionStorage.removeItem('pf_token');
+    localStorage.removeItem('pf_token');
     localStorage.removeItem('currentUser');
     localStorage.removeItem(AuthService.SESSION_KEY);
     sessionStorage.removeItem('currentUser');

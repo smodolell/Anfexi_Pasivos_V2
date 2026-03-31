@@ -28,7 +28,7 @@ public class UserContext : IUserContext
 
     public string? Email => User?.FindFirst(ClaimTypes.Email)?.Value??"soporte@anfexi.com";
 
-    public string? Role => User?.FindAll(ClaimTypes.GivenName).LastOrDefault()?.Value;
+    public string? Role => User?.FindAll(ClaimTypes.Role).LastOrDefault()?.Value;
 
     public bool IsAuthenticated => User?.Identity?.IsAuthenticated ?? false;
 }

@@ -2,9 +2,9 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ConfiguracionesService } from '../../../../api/services/configuraciones.service';
-import { FondeadorEditDto } from '../../../../api/models/fondeadorEditDto';
-import { CardComponent } from '../../../shared/components/card/card.component';
+import { ConfiguracionesService } from 'src/app/core/api/services/configuraciones.service';
+import { FondeadorEditDto } from 'src/app/core/api/models/fondeadorEditDto';
+import { CardComponent } from '@shared/components/card/card.component';
 
 @Component({
   selector: 'app-fondeador-form',

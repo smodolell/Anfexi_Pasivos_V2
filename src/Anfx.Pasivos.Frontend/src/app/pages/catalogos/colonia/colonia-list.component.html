@@ -5,22 +5,20 @@
       <h1 class="page-title">Colonias</h1>
 
       <app-generic-table
+        [items]="ds.items()"
+        [loading]="ds.loading()"
+        [totalCount]="ds.totalCount()"
+        [currentPage]="ds.currentPage()"
+        [totalPages]="ds.totalPages()"
+        [pageSize]="ds.pageSize()"
+        [searchValue]="ds.searchValue()"
+        [sortColumn]="ds.sortColumn()"
+        [sortDirection]="ds.sortDirection()"
         [columns]="columns"
-        [items]="items()"
-        [loading]="loading()"
         [actions]="actions"
-        [totalCount]="totalCount()"
-        [currentPage]="currentPage()"
-        [totalPages]="totalPages()"
-        [pageSize]="pageSize()"
-        [searchable]="true"
-        [searchPlaceholder]="'Buscar colonia, estado, municipio...'"
-        [searchValue]="searchValue()"
         [showNew]="true"
         [showExport]="true"
         [exportLoading]="exportLoading()"
-        [sortColumn]="sortColumn"
-        [sortDirection]="sortDirection"
         (searchChanged)="onSearch($event)"
         (sortChanged)="onSort($event)"
         (actionCalled)="onAction($event)"
@@ -28,6 +26,8 @@
         (pagePrev)="prevPage()"
         (newClicked)="mostrarFormularioNuevo()"
         (exportClicked)="onExportar()"
+        [searchable]="true"
+        [searchPlaceholder]="'Buscar colonia, estado, municipio...'"
       />
     }
 

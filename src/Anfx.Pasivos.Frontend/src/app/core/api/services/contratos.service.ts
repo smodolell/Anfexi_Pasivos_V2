@@ -39,7 +39,11 @@ import { Int32ApiResponseDto } from '../models/int32ApiResponseDto';
 // @ts-ignore
 import { MovimientoDetalleDtoApiResponseDto } from '../models/movimientoDetalleDtoApiResponseDto';
 // @ts-ignore
+import { MovimientoItemDtoListApiResponseDto } from '../models/movimientoItemDtoListApiResponseDto';
+// @ts-ignore
 import { PagoDetalleDtoApiResponseDto } from '../models/pagoDetalleDtoApiResponseDto';
+// @ts-ignore
+import { PagoItemDtoListApiResponseDto } from '../models/pagoItemDtoListApiResponseDto';
 // @ts-ignore
 import { RelActivoPasivoDtoPagedResultDtoApiResponseDto } from '../models/relActivoPasivoDtoPagedResultDtoApiResponseDto';
 // @ts-ignore
@@ -762,6 +766,63 @@ export class ContratosService extends BaseService {
     }
 
     /**
+     * Obtiene los movimientos de un contrato
+     * Retorna la lista de movimientos asociados a un contrato específico
+     * @endpoint get /api/contratos/{idContrato}/movimientos
+     * @param idContrato 
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     * @param options additional options
+     */
+    public getMovimientosByIdContrato(idContrato: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<MovimientoItemDtoListApiResponseDto>;
+    public getMovimientosByIdContrato(idContrato: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<MovimientoItemDtoListApiResponseDto>>;
+    public getMovimientosByIdContrato(idContrato: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<MovimientoItemDtoListApiResponseDto>>;
+    public getMovimientosByIdContrato(idContrato: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        if (idContrato === null || idContrato === undefined) {
+            throw new Error('Required parameter idContrato was null or undefined when calling getMovimientosByIdContrato.');
+        }
+
+        let localVarHeaders = this.defaultHeaders;
+
+        const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
+            'application/json'
+        ]);
+        if (localVarHttpHeaderAcceptSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+        }
+
+        const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
+
+        const localVarTransferCache: boolean = options?.transferCache ?? true;
+
+
+        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        if (localVarHttpHeaderAcceptSelected) {
+            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+                responseType_ = 'text';
+            } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+                responseType_ = 'json';
+            } else {
+                responseType_ = 'blob';
+            }
+        }
+
+        let localVarPath = `/api/contratos/${this.configuration.encodeParam({name: "idContrato", value: idContrato, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: "int32"})}/movimientos`;
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<MovimientoItemDtoListApiResponseDto>('get', `${basePath}${localVarPath}`,
+            {
+                context: localVarHttpContext,
+                responseType: <any>responseType_,
+                ...(withCredentials ? { withCredentials } : {}),
+                headers: localVarHeaders,
+                observe: observe,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
      * Obtiene el detalle de un pago
      * Retorna la información detallada de un pago específico, incluyendo los movimientos o conceptos asociados.
      * @endpoint get /api/contratos/pago/{idPago}/detalle
@@ -806,6 +867,63 @@ export class ContratosService extends BaseService {
         let localVarPath = `/api/contratos/pago/${this.configuration.encodeParam({name: "idPago", value: idPago, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: "int32"})}/detalle`;
         const { basePath, withCredentials } = this.configuration;
         return this.httpClient.request<PagoDetalleDtoApiResponseDto>('get', `${basePath}${localVarPath}`,
+            {
+                context: localVarHttpContext,
+                responseType: <any>responseType_,
+                ...(withCredentials ? { withCredentials } : {}),
+                headers: localVarHeaders,
+                observe: observe,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * Obtiene los pagos de un contrato
+     * Retorna la lista de pagos asociados a un contrato específico
+     * @endpoint get /api/contratos/{idContrato}/pagos
+     * @param idContrato 
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     * @param options additional options
+     */
+    public getPagosByIdContrato(idContrato: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<PagoItemDtoListApiResponseDto>;
+    public getPagosByIdContrato(idContrato: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<PagoItemDtoListApiResponseDto>>;
+    public getPagosByIdContrato(idContrato: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<PagoItemDtoListApiResponseDto>>;
+    public getPagosByIdContrato(idContrato: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        if (idContrato === null || idContrato === undefined) {
+            throw new Error('Required parameter idContrato was null or undefined when calling getPagosByIdContrato.');
+        }
+
+        let localVarHeaders = this.defaultHeaders;
+
+        const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
+            'application/json'
+        ]);
+        if (localVarHttpHeaderAcceptSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+        }
+
+        const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
+
+        const localVarTransferCache: boolean = options?.transferCache ?? true;
+
+
+        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        if (localVarHttpHeaderAcceptSelected) {
+            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+                responseType_ = 'text';
+            } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+                responseType_ = 'json';
+            } else {
+                responseType_ = 'blob';
+            }
+        }
+
+        let localVarPath = `/api/contratos/${this.configuration.encodeParam({name: "idContrato", value: idContrato, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: "int32"})}/pagos`;
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<PagoItemDtoListApiResponseDto>('get', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,

@@ -10,8 +10,8 @@ import {
 } from '@angular/core';
 import { ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { Subject, debounceTime, distinctUntilChanged, switchMap, takeUntil } from 'rxjs';
-import { AutocompleteResultDto } from '../../../../api/models/autocompleteResultDto';
-import { ContratosService } from '../../../../api/services/contratos.service';
+import { AutocompleteResultDto } from 'src/app/core/api/models/autocompleteResultDto';
+import { ContratosService } from 'src/app/core/api/services/contratos.service';
 import { SearchInputComponent } from '../search-input/search-input.component';
 
 @Component({

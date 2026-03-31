@@ -1,158 +1,147 @@
-import { Component, OnInit, inject, signal, ViewChild } from '@angular/core';
+import { Component, inject, signal, ViewChild, DestroyRef, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TipoDireccionService } from '../../../services/catalogos/tipodireccion.service';
+import { TipoDireccionService } from '@services/catalogos/tipodireccion.service';
 import { wasHandledByInterceptor } from '../../../interceptors/auth.interceptor';
 import { TipoDireccionDto } from '../../../../types/catalogos/tipodireccion.dto';
-import { UtilsService } from '../../../services/utils.service';
+import { UtilsService } from '@services/utils.service';
 import { TipoDireccionFormComponent } from './tipodireccion-form.component';
-import { ConfirmModalComponent } from '../../../shared/components/confirm-modal/confirm-modal.component';
-import { GenericTableComponent } from '../../../shared/components/generic-table/generic-table.component';
-import { TableColumn, TableAction, TableActionEvent, TableSortEvent, SortDirection } from '../../../shared/components/generic-table/table-column.model';
+import { ConfirmModalComponent } from '@shared/components/confirm-modal/confirm-modal.component';
+import { GenericTableComponent } from '@shared/components/generic-table/generic-table.component';
+import {
+  TableColumn,
+  TableAction,
+  TableActionEvent,
+  TableSortEvent,
+} from '@shared/components/generic-table/table-column.model';
+import { TableDataSource } from '../../../core/datasource/table.datasource';
 
 @Component({
   selector: 'app-tipodireccion-list',
   standalone: true,
   imports: [CommonModule, TipoDireccionFormComponent, ConfirmModalComponent, GenericTableComponent],
-  templateUrl: './tipodireccion-list.component.html'
+  templateUrl: './tipodireccion-list.component.html',
 })
-export class TipoDireccionListComponent implements OnInit {
+export class TipoDireccionListComponent {
   @ViewChild('confirmModal') confirmModal!: ConfirmModalComponent;
 
-  private readonly tipoDireccionService = inject(TipoDireccionService);
-  private readonly utilsService         = inject(UtilsService);
+  private readonly service = inject(TipoDireccionService);
+  private readonly utilsService = inject(UtilsService);
 
-  items       = signal<TipoDireccionDto[]>([]);
-  loading     = signal(false);
-  totalCount  = signal(0);
-  totalPages  = signal(0);
-  currentPage = signal(1);
-  pageSize    = signal(10);
+  // ── DataSource (reemplaza: items, loading, totalCount, totalPages,
+  //   currentPage, pageSize, sortColumn, sortDirection, searchValue,
+  //   onSearch, onSort, nextPage, prevPage, load, resetPagination) ──
+  readonly ds = new TableDataSource<TipoDireccionDto>(
+    (q) => this.service.getAll(q),
+    inject(DestroyRef),
+  );
 
-  sortColumn:    string | null = null;
-  sortDirection: SortDirection = 'asc';
-  searchValue = '';
-
-  mostrandoFormulario    = signal(false);
+  // ── Estado CRUD (no cambia) ────────────────────────────────────
+  mostrandoFormulario = signal(false);
   tipoDireccionSeleccionado: Partial<TipoDireccionDto> = {};
   tipoDireccionAEliminar: TipoDireccionDto | null = null;
 
-  private q    = '';
-  private page = 1;
-
   columns: TableColumn[] = [
-    { key: 'id',             header: 'ID',     type: 'number', sortable: true },
-    { key: 'sTipoDireccion', header: 'Título', type: 'text',   sortable: true },
+    { key: 'id', header: 'ID', type: 'number', sortable: true },
+    { key: 'sTipoDireccion', header: 'Título', type: 'text', sortable: true },
   ];
 
   actions: TableAction[] = [
-    { id: 'edit',   label: 'Editar',   icon: 'fa-solid fa-pen-clip',  variant: 'edit'   },
+    { id: 'edit', label: 'Editar', icon: 'fa-solid fa-pen-clip', variant: 'edit' },
     { id: 'delete', label: 'Eliminar', icon: 'fa-solid fa-trash-can', variant: 'delete' },
   ];
 
-  ngOnInit() {
-    this.load();
+  constructor() {
+    // Centraliza notificaciones de error del datasource
+    effect(() => {
+      const err = this.ds.error();
+      if (err) this.utilsService.showNotification('Error', err, 'error');
+    });
+    this.ds.load();
   }
 
+  // ── Delegación al DataSource ───────────────────────────────────
   onSearch(value: string) {
-    this.q           = value;
-    this.searchValue = value;
-    this.page        = 1;
-    this.load();
+    this.ds.search(value);
   }
-
-  onSort(event: TableSortEvent) {
-    this.sortColumn    = event.column;
-    this.sortDirection = event.direction;
-    this.page = 1;
-    this.load();
+  onSort(e: TableSortEvent) {
+    this.ds.sort(e.column, e.direction as 'asc' | 'desc');
   }
-
   nextPage() {
-    if (this.currentPage() < this.totalPages()) { this.page++; this.load(); }
+    this.ds.nextPage();
   }
-
   prevPage() {
-    if (this.page > 1) { this.page--; this.load(); }
+    this.ds.prevPage();
   }
 
+  // ── CRUD (sin cambios en lógica) ───────────────────────────────
   onNuevo() {
     this.tipoDireccionSeleccionado = { id: 0, sTipoDireccion: '' };
     this.mostrandoFormulario.set(true);
   }
 
   onAction(event: TableActionEvent<TipoDireccionDto>) {
-    if (event.action === 'edit')   this.editarTipoDireccion(event.row.id);
-    if (event.action === 'delete') this.delete(event.row.id);
+    if (event.action === 'edit') this.editarTipoDireccion(event.row.id);
+    if (event.action === 'delete') this.iniciarEliminacion(event.row);
   }
 
   onExportar() {
-    this.loading.set(true);
-    this.tipoDireccionService.exportar(this.q).subscribe({
-      next: (blob) => {
-        const url  = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href  = url;
-        const fecha = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
-        link.download = `tipos_direcciones_${fecha}.xlsx`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
-        this.loading.set(false);
-        this.utilsService.showNotification('Éxito', 'Archivo exportado correctamente', 'success');
-      },
+    this.service.exportar(this.ds.searchValue()).subscribe({
+      next: (blob) => this.descargarBlob(blob, 'tipos_direcciones'),
       error: (err) => {
-        this.loading.set(false);
-        if (!wasHandledByInterceptor(err)) {
-          this.utilsService.showNotification('Error', 'Error al exportar el archivo', 'error');
-        }
-      }
+        if (!wasHandledByInterceptor(err))
+          this.utilsService.showNotification('Error', 'Error al exportar', 'error');
+      },
     });
   }
 
   onGuardarTipoDireccion(tipoDireccion: any) {
     const isUpdate = typeof tipoDireccion.id === 'number' && tipoDireccion.id > 0;
-    const request$ = isUpdate
-      ? this.tipoDireccionService.update(tipoDireccion.id, tipoDireccion)
-      : this.tipoDireccionService.create(tipoDireccion);
+    const req$ = isUpdate
+      ? this.service.update(tipoDireccion.id, tipoDireccion)
+      : this.service.create(tipoDireccion);
 
-    request$.subscribe({
-      next: (response) => {
-        if (response.success) {
-          this.load();
+    req$.subscribe({
+      next: (res) => {
+        if (res.success) {
+          this.ds.reload();
           this.mostrandoFormulario.set(false);
-        } else {
-          const msg = response.errors?.[0] ?? response.message ?? 'Error al guardar';
-          this.utilsService.showNotification('Error', msg, 'error');
-        }
+        } else
+          this.utilsService.showNotification(
+            'Error',
+            res.errors?.[0] ?? 'Error al guardar',
+            'error',
+          );
       },
-      error: (err) => { if (!wasHandledByInterceptor(err)) this.utilsService.showNotification('Error', 'Error de conexión', 'error'); }
+      error: (err) => {
+        if (!wasHandledByInterceptor(err))
+          this.utilsService.showNotification('Error', 'Error de conexión', 'error');
+      },
     });
   }
 
   onCancelarEdicion() {
-    this.volverALista();
-  }
-
-  volverALista() {
     this.mostrandoFormulario.set(false);
-    this.tipoDireccionSeleccionado = { id: 0, sTipoDireccion: '' };
   }
 
   confirmarEliminacion() {
     if (!this.tipoDireccionAEliminar) return;
-    this.tipoDireccionService.delete(this.tipoDireccionAEliminar.id).subscribe({
-      next: (response) => {
-        if (response.success) {
-          this.load();
+    this.service.delete(this.tipoDireccionAEliminar.id).subscribe({
+      next: (res) => {
+        if (res.success) {
+          this.ds.reload();
           this.confirmModal.hide();
           this.tipoDireccionAEliminar = null;
-        } else {
-          const msg = response.errors?.[0] ?? response.message ?? 'Error al eliminar';
-          this.utilsService.showNotification('Error', msg, 'error');
-        }
+        } else
+          this.utilsService.showNotification(
+            'Error',
+            res.errors?.[0] ?? 'Error al eliminar',
+            'error',
+          );
       },
-      error: (err) => { if (!wasHandledByInterceptor(err)) this.utilsService.showNotification('Error', 'Error de conexión al eliminar', 'error'); }
+      error: (err) => {
+        if (!wasHandledByInterceptor(err))
+          this.utilsService.showNotification('Error', 'Error al eliminar', 'error');
+      },
     });
   }
 
@@ -161,61 +150,43 @@ export class TipoDireccionListComponent implements OnInit {
   }
 
   private editarTipoDireccion(id: number) {
-    this.tipoDireccionService.getById(id).subscribe({
-      next: (response) => {
-        if (response.success) {
-          this.tipoDireccionSeleccionado = { ...response.data };
+    this.service.getById(id).subscribe({
+      next: (res) => {
+        if (res.success) {
+          this.tipoDireccionSeleccionado = { ...res.data };
           this.mostrandoFormulario.set(true);
-        } else {
-          const msg = response.errors?.[0] ?? response.message ?? 'Error al cargar';
-          this.utilsService.showNotification('Error', msg, 'error');
-        }
+        } else
+          this.utilsService.showNotification(
+            'Error',
+            res.errors?.[0] ?? 'Error al cargar',
+            'error',
+          );
       },
-      error: (err) => { if (!wasHandledByInterceptor(err)) this.utilsService.showNotification('Error', 'Error de conexión', 'error'); }
+      error: (err) => {
+        if (!wasHandledByInterceptor(err))
+          this.utilsService.showNotification('Error', 'Error de conexión', 'error');
+      },
     });
   }
 
-  private delete(id: number) {
-    const item = this.items().find(t => t.id === id);
-    if (!item) return;
+  private iniciarEliminacion(item: TipoDireccionDto) {
     this.tipoDireccionAEliminar = item;
     this.confirmModal.show();
   }
 
-  private load() {
-    this.loading.set(true);
-    this.tipoDireccionService.getAll({ q: this.q, page: this.page, size: this.pageSize() }).subscribe({
-      next: (response) => {
-        if (response.success) {
-          const size  = response.data.pageSize  ?? 10;
-          const total = response.data.totalCount ?? 0;
-          this.items.set(response.data.results ?? []);
-          this.currentPage.set(response.data.currentPage ?? this.page);
-          this.pageSize.set(size);
-          this.totalCount.set(total);
-          this.totalPages.set(total > 0 ? Math.ceil(total / size) : 0);
-        } else {
-          this.resetPagination();
-          const msg = response.errors?.[0] ?? response.message ?? 'Error al cargar tipos de dirección';
-          this.utilsService.showNotification('Error', msg, 'error');
-        }
-        this.loading.set(false);
-      },
-      error: (err) => {
-        this.resetPagination();
-        this.loading.set(false);
-        if (!wasHandledByInterceptor(err)) {
-          this.utilsService.showNotification('Error', 'Error de conexión al cargar tipos de dirección', 'error');
-        }
-      }
-    });
+  private descargarBlob(blob: Blob, nombre: string) {
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    const fecha = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
+    link.href = url;
+    link.download = `${nombre}_${fecha}.xlsx`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    this.utilsService.showNotification('Éxito', 'Archivo exportado correctamente', 'success');
   }
-
-  private resetPagination() {
-    this.items.set([]);
-    this.currentPage.set(this.page);
-    this.pageSize.set(10);
-    this.totalCount.set(0);
-    this.totalPages.set(0);
+  volverAlListado(){
+    this.mostrandoFormulario.set(false);
   }
 }

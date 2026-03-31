@@ -38,9 +38,6 @@ export const appConfig: ApplicationConfig = {
     { provide: API_CATALOGO_URL,  useValue: environment.apiCatalogoUrl  },
     { provide: API_SISTEMA_URL,   useValue: environment.apiSistemaUrl   },
     { provide: API_COTIZADOR_URL, useValue: environment.apiCotizadorUrl },
-    { provide: API_AUTH_URL,     useValue: environment.apiAuthUrl },
-    { provide: API_CATALOGO_URL, useValue: environment.apiCatalogoUrl },
-    { provide: API_SISTEMA_URL,  useValue: environment.apiSistemaUrl },
     { provide: MENU_API_URL,     useValue: environment.menuApiUrl },
   ],
 };

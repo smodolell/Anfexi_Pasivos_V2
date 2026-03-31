@@ -35,7 +35,7 @@ public class JwtService : IJwtService
                 new Claim(ClaimTypes.Name, user.UsuarioNombre),
                 new Claim(ClaimTypes.Email, user.Email),
                 new Claim(ClaimTypes.GivenName, user.NombreCompleto),
-                new Claim(ClaimTypes.GivenName, user.Role),
+                new Claim(ClaimTypes.Role, user.Role),
             }),
             Expires = DateTime.UtcNow.AddMinutes(expirationMinutes),
             Issuer = issuer,

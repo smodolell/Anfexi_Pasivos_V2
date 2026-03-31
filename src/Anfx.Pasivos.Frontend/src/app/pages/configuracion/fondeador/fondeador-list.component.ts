@@ -1,12 +1,12 @@
 import { Component, OnInit, inject, signal, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { ConfiguracionesService } from '../../../../api/services/configuraciones.service';
+import { ConfiguracionesService } from 'src/app/core/api/services/configuraciones.service';
 import { wasHandledByInterceptor } from '../../../interceptors/auth.interceptor';
-import { FondeadorListItemDto } from '../../../../api/models/fondeadorListItemDto';
-import { UtilsService } from '../../../services/utils.service';
-import { GenericTableComponent } from '../../../shared/components/generic-table/generic-table.component';
-import { TableColumn, TableAction, TableActionEvent } from '../../../shared/components/generic-table/table-column.model';
-import { ConfirmModalComponent } from '../../../shared/components/confirm-modal/confirm-modal.component';
+import { FondeadorListItemDto } from 'src/app/core/api/models/fondeadorListItemDto';
+import { UtilsService } from '@services/utils.service';
+import { GenericTableComponent } from '@shared/components/generic-table/generic-table.component';
+import { TableColumn, TableAction, TableActionEvent } from '@shared/components/generic-table/table-column.model';
+import { ConfirmModalComponent } from '@shared/components/confirm-modal/confirm-modal.component';
 
 @Component({
   selector: 'app-fondeador-list',

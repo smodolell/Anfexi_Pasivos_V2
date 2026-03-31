@@ -2,10 +2,10 @@ import { Component, OnInit, Input, Output, EventEmitter, inject, signal } from '
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { EmpresaDto, CreateEmpresaDto, UpdateEmpresaDto, TipoDireccionItemDto } from '../../../../types/sistema/empresa.dto';
-import { UtilsService } from '../../../services/utils.service';
-import { EmpresaService } from '../../../services/sistema/empresa.service';
+import { UtilsService } from '@services/utils.service';
+import { EmpresaService } from '@services/sistema/empresa.service';
 import { ColoniaAutoCompleteComponent, ColoniaModel } from "../../../shared/components/colonia-auto-complete/colonia-auto-complete.component";
-import { CardComponent } from '../../../shared/components/card/card.component';
+import { CardComponent } from '@shared/components/card/card.component';
 
 @Component({
   selector: 'app-empresa-form',

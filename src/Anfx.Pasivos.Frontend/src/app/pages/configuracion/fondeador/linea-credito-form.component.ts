@@ -2,12 +2,12 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { forkJoin } from 'rxjs';
-import { ConfiguracionesService } from '../../../../api/services/configuraciones.service';
-import { SelectListsService } from '../../../../api/services/selectLists.service';
-import { LineaCreditoEditDto } from '../../../../api/models/lineaCreditoEditDto';
-import { SelectItemDto } from '../../../../api/models/selectItemDto';
+import { ConfiguracionesService } from 'src/app/core/api/services/configuraciones.service';
+import { SelectListsService } from 'src/app/core/api/services/selectLists.service';
+import { LineaCreditoEditDto } from 'src/app/core/api/models/lineaCreditoEditDto';
+import { SelectItemDto } from 'src/app/core/api/models/selectItemDto';
 import { wasHandledByInterceptor } from '../../../interceptors/auth.interceptor';
-import { UtilsService } from '../../../services/utils.service';
+import { UtilsService } from '@services/utils.service';
 
 @Component({
   selector: 'app-linea-credito-form',
