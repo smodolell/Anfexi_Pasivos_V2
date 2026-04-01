@@ -5,11 +5,12 @@ import { ProcesaMoratorioRequest } from 'src/app/core/api/models/procesaMoratori
 import { wasHandledByInterceptor } from '../../../interceptors/auth.interceptor';
 import { UtilsService } from '@services/utils.service';
 import { ConfirmModalComponent } from '@shared/components/confirm-modal/confirm-modal.component';
+import { CardInfoComponent } from '@shared/components/card/card-info.component';
 
 @Component({
   selector: 'app-moratorios',
   standalone: true,
-  imports: [ReactiveFormsModule, ConfirmModalComponent],
+  imports: [ReactiveFormsModule, ConfirmModalComponent, CardInfoComponent],
   templateUrl: './moratorios.component.html',
 })
 export class MoratoriosComponent {

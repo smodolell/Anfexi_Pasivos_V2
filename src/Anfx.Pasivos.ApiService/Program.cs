@@ -77,19 +77,18 @@ builder.Services.AddAuthorization();
 //   "AllowedOrigins": ["http://dev.anfexi.com", "https://dev.anfexi.com"]
 builder.Services.AddCors(options =>
 {
-    var allowedOrigins = builder.Environment.IsDevelopment()
-        ? new[] { "http://localhost:4200" }
-        : builder.Configuration.GetSection("AllowedOrigins").Get<string[]>()
-          ?? ["http://dev.anfexi.com", "https://dev.anfexi.com"];
+    var allowedOrigins = builder.Configuration
+        .GetSection("AllowedOrigins")
+        .Get<string[]>()
+        ?? Array.Empty<string>();
 
-    options.AddPolicy("AllowAngular",
-        policy =>
-        {
-            policy.WithOrigins(allowedOrigins)
-                  .AllowAnyHeader()
-                  .AllowAnyMethod()
-                  .AllowCredentials();
-        });
+    options.AddPolicy("AllowAngular", policy =>
+    {
+        policy.WithOrigins(allowedOrigins)
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials();
+    });
 });
 var app = builder.Build();
 //app.UseExceptionHandler(options => { });

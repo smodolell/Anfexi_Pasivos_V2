@@ -14,11 +14,12 @@ import { ContratoAutocompleteComponent } from '@shared/components/contrato-autoc
 import { ConfirmModalComponent } from '@shared/components/confirm-modal/confirm-modal.component';
 import { FormErrorsComponent } from '@shared/components/form-errors/form-error.component';
 import { ErrorHandlerService }  from '@services/error.services';
+import { CardInfoComponent } from '@shared/components/card/card-info.component';
 
 @Component({
   selector: 'app-caja-manual',
   standalone: true,
-  imports: [FormsModule, ReactiveFormsModule, DecimalPipe, ConfirmModalComponent, ContratoAutocompleteComponent, FormErrorsComponent],
+  imports: [FormsModule, ReactiveFormsModule, DecimalPipe, ConfirmModalComponent, ContratoAutocompleteComponent, FormErrorsComponent, CardInfoComponent],
   templateUrl: './caja-manual.component.html',
 })
 export class CajaManualComponent {

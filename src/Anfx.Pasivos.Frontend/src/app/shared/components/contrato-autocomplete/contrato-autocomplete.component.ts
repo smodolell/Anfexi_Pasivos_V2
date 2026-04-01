@@ -33,7 +33,7 @@ export class ContratoAutocompleteComponent implements OnInit, OnDestroy, Control
   private readonly search$ = new Subject<string>();
 
   // ── Inputs ───────────────────────────────────────────────────
-  label = input<string>('Número de Contrato');
+  label = input<string>('Contrato Pasivo');
   placeholder = input<string>('Ingrese el número de contrato...');
   required = input<boolean>(false);
   disabled = input<boolean>(false);
@@ -59,7 +59,7 @@ export class ContratoAutocompleteComponent implements OnInit, OnDestroy, Control
         debounceTime(300),
         distinctUntilChanged(),
         switchMap((term) => {
-          if (!term || term.length < 2) {
+          if (!term || term.length < 1) {
             this.sugerencias.set([]);
             this.showDropdown.set(false);
             this.loading.set(false);
@@ -103,7 +103,7 @@ export class ContratoAutocompleteComponent implements OnInit, OnDestroy, Control
 
   onSelect(item: AutocompleteResultDto): void {
     console.log('contato seleccionado', item);
-    this.inputValue.set(item.label ?? '');
+    this.inputValue.set(item.value ?? '');
     this.showDropdown.set(false);
     this.sugerencias.set([]);
     this.onChange(item.value ?? null);
@@ -113,10 +113,27 @@ export class ContratoAutocompleteComponent implements OnInit, OnDestroy, Control
   onEnter(): void {
     const text = this.inputValue().trim();
     if (!text) return;
-    this.showDropdown.set(false);
-    this.sugerencias.set([]);
-    this.onChange(text);
-    this.contratoSelected.emit({ value: text, label: text });
+
+    this.loading.set(true);
+    this.contratosSvc.getAutocompleteContrato(text)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (res) => {
+          this.loading.set(false);
+          const items = res.data ?? [];
+          if (items.length === 1) {
+            this.onSelect(items[0]);
+          } else {
+            this.sugerencias.set(items);
+            this.showDropdown.set(items.length > 0);
+          }
+        },
+        error: () => {
+          this.loading.set(false);
+          this.sugerencias.set([]);
+          this.showDropdown.set(false);
+        },
+      });
   }
 
   onBlur(): void {

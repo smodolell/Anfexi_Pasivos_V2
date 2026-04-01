@@ -7,13 +7,14 @@ import { SelectItemDto } from 'src/app/core/api/models/selectItemDto';
 import { RelActivoPasivoDto } from 'src/app/core/api/models/relActivoPasivoDto';
 import { wasHandledByInterceptor } from '../../../interceptors/auth.interceptor';
 import { UtilsService } from '@services/utils.service';
+import { CardInfoComponent } from '@shared/components/card/card-info.component';
 
 type RelItem = RelActivoPasivoDto & { seleccionado: boolean };
 
 @Component({
   selector: 'app-asociar-contrato',
   standalone: true,
-  imports: [ReactiveFormsModule, DecimalPipe],
+  imports: [ReactiveFormsModule, DecimalPipe, CardInfoComponent],
   templateUrl: './asociar-contrato.component.html',
 })
 export class AsociarContratoComponent implements OnInit {

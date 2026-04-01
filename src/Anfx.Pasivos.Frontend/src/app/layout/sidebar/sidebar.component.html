@@ -3,30 +3,41 @@
     <nav class="sidebar-nav">
       <ul id="sidebarnav">
         @for (item of menuItems(); track item.id) {
-          <li [class.active]="isOpen(item.id)">
-            <a class="has-arrow waves-effect waves-dark"
-               href="javascript:void(0)"
-               [class.active]="isOpen(item.id)"
-               [attr.aria-expanded]="isOpen(item.id)"
-               (click)="toggle(item.id); $event.preventDefault()">
-              <i [class]="item.icon"></i>
-              <span class="hide-menu">{{ item.label }}</span>
-            </a>
-            <ul class="collapse"
-                [class.in]="(!isMini() || isMobileNavOpen()) && isOpen(item.id)"
-                [class.show]="(!isMini() || isMobileNavOpen()) && isOpen(item.id)"
-                [attr.aria-expanded]="isOpen(item.id)">
-              @for (child of item.children; track child.route) {
-                <li>
-                  <a [routerLink]="child.route" routerLinkActive="active"
-                     (click)="navItemSelected.emit()">
-                    @if (child.icon) { <i [class]="child.icon + ' me-1'"></i> }
-                    {{ child.label }}
-                  </a>
-                </li>
-              }
-            </ul>
-          </li>
+          @if (item.route) {
+            <li>
+              <a class="waves-effect waves-dark"
+                 [routerLink]="item.route" routerLinkActive="active"
+                 (click)="navItemSelected.emit()">
+                <i [class]="item.icon"></i>
+                <span class="hide-menu">{{ item.label }}</span>
+              </a>
+            </li>
+          } @else {
+            <li [class.active]="isOpen(item.id)">
+              <a class="has-arrow waves-effect waves-dark"
+                 href="javascript:void(0)"
+                 [class.active]="isOpen(item.id)"
+                 [attr.aria-expanded]="isOpen(item.id)"
+                 (click)="toggle(item.id); $event.preventDefault()">
+                <i [class]="item.icon"></i>
+                <span class="hide-menu">{{ item.label }}</span>
+              </a>
+              <ul class="collapse"
+                  [class.in]="(!isMini() || isMobileNavOpen()) && isOpen(item.id)"
+                  [class.show]="(!isMini() || isMobileNavOpen()) && isOpen(item.id)"
+                  [attr.aria-expanded]="isOpen(item.id)">
+                @for (child of item.children; track child.route) {
+                  <li>
+                    <a [routerLink]="child.route" routerLinkActive="active"
+                       (click)="navItemSelected.emit()">
+                      @if (child.icon) { <i [class]="child.icon + ' me-1'"></i> }
+                      {{ child.label }}
+                    </a>
+                  </li>
+                }
+              </ul>
+            </li>
+          }
         }
       </ul>
     </nav>

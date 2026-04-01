@@ -1,21 +1,18 @@
 <div class="gt-toolbar mb-3">
   <div class="gt-toolbar__search">
     @if (label()) {
-      <h1 class="page-title">
+      <label class="form-label mb-1">
         {{ label() }}
         @if (required()) {
           <span class="text-danger">*</span>
         }
-      </h1>
-      <!-- {{ label() }}
-      @if (required()) {
-        <span class="text-danger">*</span>
-      } -->
+      </label>
     }
     <app-search-input
       [placeholder]="placeholder()"
       [value]="inputValue()"
       (input)="onInput($event)"
+      (searched)="onEnter()"
       (cleared)="clear()"
     ></app-search-input>
 
@@ -26,16 +23,13 @@
         style="z-index: 1050; max-height: 220px; overflow-y: auto"
       >
         @for (item of sugerencias(); track item.value) {
-          <li class="list-group-item list-group-item-action py-2 px-3" style="cursor: pointer">
+          <li class="list-group-item py-2 px-3" style="cursor: pointer">
             <button
               type="button"
               class="btn btn-link p-0 text-start w-100 text-decoration-none text-dark"
               (mousedown)="onSelect(item)"
             >
-              <span class="fw-semibold">{{ item.value }}</span>
-              @if (item.label && item.label !== item.value) {
-                <span class="text-muted ms-2 small">{{ item.label }}</span>
-              }
+              <span class="fw-semibold">{{ item.label }}</span>
             </button>
           </li>
         }

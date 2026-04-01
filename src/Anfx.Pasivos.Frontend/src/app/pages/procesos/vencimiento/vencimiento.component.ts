@@ -8,11 +8,12 @@ import { SelectItemDto } from 'src/app/core/api/models/selectItemDto';
 import { wasHandledByInterceptor } from '../../../interceptors/auth.interceptor';
 import { UtilsService } from '@services/utils.service';
 import { ConfirmModalComponent } from '@shared/components/confirm-modal/confirm-modal.component';
+import { CardInfoComponent } from '@shared/components/card/card-info.component';
 
 @Component({
   selector: 'app-vencimiento',
   standalone: true,
-  imports: [ReactiveFormsModule, ConfirmModalComponent],
+  imports: [ReactiveFormsModule, ConfirmModalComponent, CardInfoComponent],
   templateUrl: './vencimiento.component.html',
 })
 export class VencimientoComponent implements OnInit {

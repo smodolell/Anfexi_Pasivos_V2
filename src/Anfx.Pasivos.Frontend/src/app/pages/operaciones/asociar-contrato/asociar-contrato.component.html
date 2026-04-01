@@ -9,16 +9,8 @@
   </nav>
 
   <!-- ── Formulario de selección ─────────────────────────────── -->
-  <div class="card shadow-sm border-0 mt-3">
-
-    <div class="card-header bg-white py-3">
-      <h5 class="mb-0 text-primary">
-        <i class="fa-solid fa-link me-2"></i>Asociar Contrato Activo a Pasivo
-      </h5>
-    </div>
-
-    <div class="card-body">
-      <form [formGroup]="form">
+  <app-card-info title="Asociar Contrato Activo a Pasivo" icon="fa-solid fa-link" variant="primary" wrapperClass="mt-3">
+    <form [formGroup]="form">
         <div class="row g-3 align-items-end">
 
           <!-- Fondeador -->
@@ -102,58 +94,49 @@
 
         </div>
       </form>
-    </div>
-  </div>
+  </app-card-info>
 
   <!-- ── Resultados ──────────────────────────────────────────── -->
   @if (preparado()) {
-    <div class="card shadow-sm border-0 mt-4">
+    <app-card-info title="Contratos Activos" icon="fa-solid fa-list-check" variant="primary" wrapperClass="mt-4" bodyPadding="none">
 
-      <div class="card-header bg-white py-3 d-flex align-items-center justify-content-between flex-wrap gap-2">
-
+      <div slot="header-actions" class="d-flex align-items-center gap-3 flex-wrap">
         <!-- Buscador + contador -->
-        <div class="d-flex align-items-center gap-3">
-          <div class="input-group" style="width: 280px;">
-            <span class="input-group-text bg-white">
-              <i class="fa-solid fa-magnifying-glass text-muted"></i>
-            </span>
-            <input
-              #searchInput
-              type="text"
-              class="form-control border-start-0"
-              placeholder="Buscar contrato..."
-              (input)="onSearch(searchInput.value)"
-            />
-          </div>
-          @if (totalCount() > 0) {
-            <span class="text-muted small">{{ totalCount() }} registro(s)</span>
-          }
+        <div class="input-group" style="width: 260px;">
+          <span class="input-group-text">
+            <i class="fa-solid fa-magnifying-glass text-muted"></i>
+          </span>
+          <input
+            #searchInput
+            type="text"
+            class="form-control border-start-0"
+            placeholder="Buscar contrato..."
+            (input)="onSearch(searchInput.value)"
+          />
         </div>
-
-        <!-- Seleccionados + Guardar -->
-        <div class="d-flex align-items-center gap-3">
-          @if (totalSeleccionados() > 0) {
-            <span class="badge bg-primary-subtle text-primary fs-6 px-3 py-2">
-              {{ totalSeleccionados() }} seleccionado(s)
-            </span>
+        @if (totalCount() > 0) {
+          <span class="text-white small">{{ totalCount() }} registro(s)</span>
+        }
+        @if (totalSeleccionados() > 0) {
+          <span class="badge bg-white text-primary fs-6 px-3 py-2">
+            {{ totalSeleccionados() }} seleccionado(s)
+          </span>
+        }
+        <button
+          type="button"
+          class="btn btn-success btn-sm"
+          [disabled]="totalSeleccionados() === 0 || saving()"
+          (click)="onGuardar()">
+          @if (saving()) {
+            <span class="spinner-border spinner-border-sm me-2"></span>
+          } @else {
+            <i class="fa-solid fa-floppy-disk me-2"></i>
           }
-          <button
-            type="button"
-            class="btn btn-success"
-            [disabled]="totalSeleccionados() === 0 || saving()"
-            (click)="onGuardar()">
-            @if (saving()) {
-              <span class="spinner-border spinner-border-sm me-2"></span>
-            } @else {
-              <i class="fa-solid fa-floppy-disk me-2"></i>
-            }
-            Guardar cambios
-          </button>
-        </div>
-
+          Guardar cambios
+        </button>
       </div>
 
-      <div class="card-body p-0">
+      <div>
 
         @if (loading()) {
           <div class="text-center py-5">
@@ -232,7 +215,7 @@
 
         }
       </div>
-    </div>
+    </app-card-info>
   }
 
 </div>

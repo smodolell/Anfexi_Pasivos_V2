@@ -1,18 +1,84 @@
 [
   {
-    "id": "reportes",
-    "label": "Reportes",
-    "icon": "fa-solid fa-file-alt",
+    "id": "inicio",
+    "label": "Inicio",
+    "icon": "fa-solid fa-house",
+    "route": "/admin/reportes/dashboard",
     "order": 1,
+    "roles": ["Admin", "Webmaster"]
+  },
+  {
+    "id": "contratos",
+    "label": "Atención a Clientes",
+    "icon": "fa-solid fa-file-contract",
+    "order": 2,
     "roles": ["Admin", "Webmaster"],
     "children": [
       {
-        "id": "dashboard",
-        "label": "Dashboard",
-        "icon": "fa-solid fa-gauge-high",
-        "route": "/admin/reportes/dashboard",
+        "id": "info-general",
+        "label": "Información General",
+        "icon": "fa-solid fa-circle-info",
+        "route": "/admin/contratos/info-general",
         "order": 1,
         "roles": ["Admin", "Webmaster"]
+      }
+    ]
+  },
+  {
+    "id": "operaciones",
+    "label": "Admin. Pasivos",
+    "icon": "fa-solid fa-arrows-rotate",
+    "order": 5,
+    "children": [
+      {
+        "id": "contratos-pasivos",
+        "label": "Contratos Pasivos",
+        "icon": "fa-solid fa-file-contract",
+        "route": "/operaciones/contratos-pasivos",
+        "order": 1
+      },
+      {
+        "id": "nuevo-contrato",
+        "label": "Nuevo Contrato",
+        "icon": "fa-solid fa-file-circle-plus",
+        "route": "/operaciones/nuevo-contrato",
+        "order": 2
+      },
+      {
+        "id": "asociar-contrato",
+        "label": "Asociar Cto. Activo/Pasivo",
+        "icon": "fa-solid fa-link",
+        "route": "/operaciones/asociar-contrato",
+        "order": 3
+      },
+      {
+        "id": "anticipo",
+        "label": "Anticipo",
+        "icon": "fa-solid fa-hand-holding-dollar",
+        "route": "/operaciones/anticipo",
+        "order": 3
+      }
+    ]
+  },
+  {
+    "id": "cobranza",
+    "label": "Cobranza",
+    "icon": "fa-solid fa-dollar-sign",
+    "order": 4,
+    "children": [
+  {
+        "id": "caja-manual",
+        "label": "Caja Manual",
+        "icon": "fa-solid fa-cash-register",
+        "route": "/operaciones/caja-manual",
+        "order": 1
+      },
+      {
+        "id": "cargo-adicional",
+        "label": "Cargo Adicional",
+        "icon": "fa-solid fa-receipt",
+        "route": "/operaciones/cargo-adicional",
+        "order": 2
       }
     ]
   },
@@ -20,24 +86,35 @@
     "id": "catalogos",
     "label": "Catálogos",
     "icon": "fa-solid fa-book",
-    "order": 2,
-    "children": [
-      { "id": "bancos",            "label": "Bancos",            "icon": "fa-solid fa-building-columns",  "route": "/catalogos/bancos",             "order": 1 },
-      { "id": "cuentas-bancarias", "label": "Cuentas Bancarias", "icon": "fa-solid fa-credit-card",       "route": "/catalogos/cuentas-bancarias",  "order": 2 },
-      { "id": "colonias",          "label": "Colonia",           "icon": "fa-solid fa-map-location-dot",  "route": "/catalogos/colonias",           "order": 4 },
-      { "id": "estatus-contrato",  "label": "Estatus Contrato",  "icon": "fa-solid fa-file-circle-check", "route": "/catalogos/estatus-contrato",   "order": 5 },
-      { "id": "tipo-pago",         "label": "Tipos de Pago",     "icon": "fa-solid fa-money-check-dollar","route": "/catalogos/tipo-pago",          "order": 6 }
-    ]
-  },
-  {
-    "id": "contratos",
-    "label": "Contratos",
-    "icon": "fa-solid fa-file-contract",
     "order": 3,
-    "roles": ["Admin", "Webmaster"],
     "children": [
       {
-        "id": "info-general",  "label": "Información General", "icon": "fa-solid fa-circle-info", "route": "/admin/contratos/info-general", "order": 1, "roles": ["Admin", "Webmaster"]
+        "id": "bancos",
+        "label": "Bancos",
+        "icon": "fa-solid fa-building-columns",
+        "route": "/catalogos/bancos",
+        "order": 1
+      },
+      {
+        "id": "cuentas-bancarias",
+        "label": "Cuentas Bancarias",
+        "icon": "fa-solid fa-credit-card",
+        "route": "/catalogos/cuentas-bancarias",
+        "order": 2
+      },
+      {
+        "id": "estatus-contrato",
+        "label": "Estatus Contrato",
+        "icon": "fa-solid fa-file-circle-check",
+        "route": "/catalogos/estatus-contrato",
+        "order": 5
+      },
+      {
+        "id": "tipo-pago",
+        "label": "Tipos de Pago",
+        "icon": "fa-solid fa-money-check-dollar",
+        "route": "/catalogos/tipo-pago",
+        "order": 6
       }
     ]
   },
@@ -48,34 +125,61 @@
     "order": 4,
     "roles": ["Admin", "Webmaster"],
     "children": [
-      { "id": "empresas",            "label": "Empresas",            "icon": "fa-solid fa-building",             "route": "/admin/empresas",                    "order": 1, "roles": ["Admin", "Webmaster"] },
-      { "id": "fondeador",           "label": "Fondeadores",         "icon": "fa-solid fa-hand-holding-dollar",  "route": "/configuracion/fondeador",           "order": 2, "roles": ["Admin", "Webmaster"] },
-      { "id": "tipo-credito",        "label": "Tipos de Crédito",    "icon": "fa-solid fa-tag",                  "route": "/configuracion/tipo-credito",        "order": 3, "roles": ["Admin", "Webmaster"] },
-      { "id": "tipo-tabla-amortiza", "label": "Tipo Tabla Amortiza", "icon": "fa-solid fa-table-list", "route": "/configuracion/tipo-tabla-amortiza", "order": 4, "roles": ["Admin", "Webmaster"] }
+      {
+        "id": "empresas",
+        "label": "Empresas",
+        "icon": "fa-solid fa-building",
+        "route": "/admin/empresas",
+        "order": 1,
+        "roles": ["Admin", "Webmaster"]
+      },
+      {
+        "id": "fondeador",
+        "label": "Fondeadores",
+        "icon": "fa-solid fa-hand-holding-dollar",
+        "route": "/configuracion/fondeador",
+        "order": 2,
+        "roles": ["Admin", "Webmaster"]
+      },
+      {
+        "id": "tipo-credito",
+        "label": "Tipos de Crédito",
+        "icon": "fa-solid fa-tag",
+        "route": "/configuracion/tipo-credito",
+        "order": 3,
+        "roles": ["Admin", "Webmaster"]
+      },
+      {
+        "id": "tipo-tabla-amortiza",
+        "label": "Tipo Tabla Amortiza",
+        "icon": "fa-solid fa-table-list",
+        "route": "/configuracion/tipo-tabla-amortiza",
+        "order": 4,
+        "roles": ["Admin", "Webmaster"]
+      }
     ]
   },
-  {
-    "id": "operaciones",
-    "label": "Operaciones",
-    "icon": "fa-solid fa-arrows-rotate",
-    "order": 5,
-    "children": [
-      { "id": "contratos-pasivos", "label": "Contratos Pasivos",         "icon": "fa-solid fa-file-contract",          "route": "/operaciones/contratos-pasivos",  "order": 1 },
-      { "id": "nuevo-contrato",   "label": "Nuevo Contrato",            "icon": "fa-solid fa-file-circle-plus",       "route": "/operaciones/nuevo-contrato",     "order": 2 },
-      { "id": "asociar-contrato", "label": "Asociar Cto. Activo/Pasivo", "icon": "fa-solid fa-link",                  "route": "/operaciones/asociar-contrato", "order": 3 },
-      { "id": "anticipo",         "label": "Anticipo",                  "icon": "fa-solid fa-hand-holding-dollar",    "route": "/operaciones/anticipo",          "order": 3 },
-      { "id": "caja-manual",     "label": "Caja Manual",               "icon": "fa-solid fa-cash-register",          "route": "/operaciones/caja-manual",       "order": 4 },
-      { "id": "cargo-adicional", "label": "Cargo Adicional",           "icon": "fa-solid fa-receipt",                "route": "/operaciones/cargo-adicional",    "order": 5 }
-    ]
-  },
+
   {
     "id": "procesos",
     "label": "Procesos",
     "icon": "fa-solid fa-gears",
     "order": 6,
     "children": [
-      { "id": "vencimiento", "label": "Vencimiento", "icon": "fa-solid fa-calendar-check",        "route": "/procesos/vencimiento", "order": 1 },
-      { "id": "moratorios",  "label": "Moratorios",  "icon": "fa-solid fa-triangle-exclamation", "route": "/procesos/moratorios",  "order": 2 }
+      {
+        "id": "vencimiento",
+        "label": "Vencimiento",
+        "icon": "fa-solid fa-calendar-check",
+        "route": "/procesos/vencimiento",
+        "order": 1
+      },
+      {
+        "id": "moratorios",
+        "label": "Moratorios",
+        "icon": "fa-solid fa-triangle-exclamation",
+        "route": "/procesos/moratorios",
+        "order": 2
+      }
     ]
   },
   {
@@ -85,8 +189,22 @@
     "order": 5,
     "roles": ["Admin", "Webmaster"],
     "children": [
-      { "id": "usuarios", "label": "Usuarios", "icon": "fa-solid fa-users",      "route": "/admin/usuarios", "order": 1, "roles": ["Admin", "Webmaster"] },
-      { "id": "roles",    "label": "Roles",    "icon": "fa-solid fa-user-shield", "route": "/admin/roles",    "order": 2, "roles": ["Admin", "Webmaster"] }
+      {
+        "id": "usuarios",
+        "label": "Usuarios",
+        "icon": "fa-solid fa-users",
+        "route": "/admin/usuarios",
+        "order": 1,
+        "roles": ["Admin", "Webmaster"]
+      },
+      {
+        "id": "roles",
+        "label": "Roles",
+        "icon": "fa-solid fa-user-shield",
+        "route": "/admin/roles",
+        "order": 2,
+        "roles": ["Admin", "Webmaster"]
+      }
     ]
   }
 ]

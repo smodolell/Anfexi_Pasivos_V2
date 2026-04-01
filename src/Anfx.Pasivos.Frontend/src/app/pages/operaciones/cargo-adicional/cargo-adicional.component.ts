@@ -23,6 +23,7 @@ import {
 } from '@shared/components/generic-table/table-column.model';
 import { ConfirmModalComponent } from '@shared/components/confirm-modal/confirm-modal.component';
 import { LayoutService }  from '@services/layout.service';
+import { CardInfoComponent } from '@shared/components/card/card-info.component';
 
 @Component({
   selector: 'app-cargo-adicional',
@@ -34,6 +35,7 @@ import { LayoutService }  from '@services/layout.service';
     FormErrorsComponent,
     GenericTableComponent,
     ConfirmModalComponent,
+    CardInfoComponent,
   ],
   templateUrl: './cargo-adicional.component.html',
 })

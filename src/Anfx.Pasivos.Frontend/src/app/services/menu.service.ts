@@ -32,7 +32,7 @@ export class MenuService {
           children: (item.children ?? [])
             .filter((child: MenuChild) => child.roles?.includes(role) ?? true)
         }))
-        .filter(item => item.children.length > 0)
+        .filter(item => item.children.length > 0 || !!item.route)
     )
   );
 }

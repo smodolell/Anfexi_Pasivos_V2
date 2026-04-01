@@ -33,7 +33,7 @@ internal class GetCargoAdicionalQueryHandler(IApplicationDbContext context, IDat
 
         if (contrato == null)
         {
-            return Result.NotFound("El contrato al que se hace referencia no fue encontrado.");
+            return Result.NotFound("El contrato al que se hace referencia clave[{contrato.Contrato}] no fue encontrado.");
         }
         if (contrato.IdEstatusContrato != 2) return Result.Invalid(new ValidationError($"El Contrato clave[{contrato.Contrato}] no se encuentra Activo"));
 

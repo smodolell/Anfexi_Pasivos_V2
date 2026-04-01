@@ -1,16 +1,14 @@
 <div class="container-fluid mt-4">
   <!-- FORMULARIO DE BÚSQUEDA -->
-  <div class="card shadow-sm border-0 mb-4">
-    <div class="card-body">
-      <div class="row g-2 align-items-end">
-        <div class="col-12 col-md-6 col-lg-4">
-          <app-contrato-autocomplete
-            (contratoSelected)="onContratoSelected($event)"
-          ></app-contrato-autocomplete>
-        </div>
+  <app-card-info title="Información General Contrato" icon="fa-solid fa-file-contract" variant="primary" wrapperClass="mb-4">
+    <div class="row g-2 align-items-end">
+      <div class="col-12 col-md-6 col-lg-4">
+        <app-contrato-autocomplete
+          (contratoSelected)="onContratoSelected($event)"
+        ></app-contrato-autocomplete>
       </div>
     </div>
-  </div>
+  </app-card-info>
 
   @if (isLoading()) {
     <div class="text-center py-5">
@@ -28,23 +26,8 @@
 
   @if (!isLoading() && info()) {
     <!-- ENCABEZADO -->
-     <app-card-info title="Información General — Contrato {{ info()!.contrato }}" variant="light-blue" icon="ti-file" info="info()!.estatusContrato">
-
-
-      <!-- <div class="card shadow-sm border-0 mb-4">
-        <div
-          class="card-header d-flex justify-content-between align-items-center py-3"
-        >
-          <h5 class="mb-0">
-            <i class="ti-file me-2"></i>
-            <strong>
-              Información General — Contrato {{ info()!.contrato }}
-            </strong>
-          </h5>
-          <span class="badge bg-white text-primary fs-6">{{ info()!.estatusContrato }}</span>
-        </div> -->
-        <div class="card-body">
-          <div class="row g-3">
+    <app-card-info [title]="'Información General — Contrato ' + info()!.contrato" variant="light-blue" icon="ti-file" [info]="info()!.estatusContrato ?? ''">
+      <div class="row g-3">
             <div class="col-md-3">
               <label class="text-muted small d-block mb-1">Tipo de Crédito</label>
               <span class="fw-semibold">{{ info()!.tipoCredito || '—' }}</span>
@@ -126,13 +109,12 @@
               }}</span>
             </div>
           </div>
-        </div>
-      <!-- </div> -->
-  </app-card-info>
+    </app-card-info>
+
     <!-- TABS NAV -->
-    <div class="card shadow-sm border-0">
-      <div class="card-header p-0 bg-transparent border-bottom">
-        <ul class="nav nav-tabs border-0 px-3 pt-2">
+    <app-card-info [showHeader]="false" bodyPadding="none">
+      <div class="border-bottom px-3 pt-2">
+        <ul class="nav nav-tabs border-0">
           <li class="nav-item">
             <button
               class="nav-link"
@@ -168,7 +150,7 @@
         </ul>
       </div>
 
-      <div class="card-body">
+      <div class="p-3">
         <!-- TAB: PAGOS -->
         @if (activeTab() === 'pagos') {
           <app-generic-table
@@ -218,7 +200,7 @@
           </app-generic-table>
         }
       </div>
-    </div>
+    </app-card-info>
   }
 </div>
 

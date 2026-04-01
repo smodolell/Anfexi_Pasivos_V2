@@ -14,7 +14,7 @@ internal class GetAutocompleteContratoQueryHandler (IApplicationDbContext contex
     public async Task<Result<List<AutocompleteResultDto>>> HandleAsync(GetAutocompleteContratoQuery message, CancellationToken cancellationToken = default)
     {
         var result = new List<AutocompleteResultDto>();
-        if (!String.IsNullOrEmpty(message.Search))
+        if (!string.IsNullOrEmpty(message.Search))
         {
             var dbResult = _context.View_PSV_PasivoAutocomple
                 .Where(w => w.label.Contains(message.Search))

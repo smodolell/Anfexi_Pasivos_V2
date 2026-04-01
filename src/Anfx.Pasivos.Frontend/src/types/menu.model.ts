@@ -9,6 +9,7 @@ export interface MenuItem {
   id:           number;
   label:        string;
   icon:         string;
+  route?:       string;
   routePrefix:  string;
   roles:        string[];
   children:     MenuChild[];

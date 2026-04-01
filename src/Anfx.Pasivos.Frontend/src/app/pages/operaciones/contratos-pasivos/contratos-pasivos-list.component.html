@@ -9,16 +9,8 @@
   </nav>
 
   <!-- ── Formulario de búsqueda ──────────────────────────────── -->
-  <div class="card shadow-sm border-0 mt-3">
-
-    <div class="card-header bg-white py-3">
-      <h5 class="mb-0 text-primary">
-        <i class="fa-solid fa-file-contract me-2"></i>Contratos Pasivos
-      </h5>
-    </div>
-
-    <div class="card-body">
-      <form [formGroup]="form" (ngSubmit)="onBuscar()">
+  <app-card-info title="Contratos Pasivos" icon="fa-solid fa-file-contract" variant="primary" wrapperClass="mt-3">
+    <form [formGroup]="form" (ngSubmit)="onBuscar()">
         <div class="row g-3 align-items-end">
 
           <!-- Fondeador -->
@@ -121,23 +113,12 @@
 
         </div>
       </form>
-    </div>
-  </div>
+  </app-card-info>
 
   <!-- ── Resultados ──────────────────────────────────────────── -->
-  <div class="card shadow-sm border-0 mt-4">
-
-    <div class="card-header bg-white py-3 d-flex align-items-center justify-content-between">
-      <span class="text-muted small">
-        @if (totalCount() > 0) {
-          {{ totalCount() }} registro(s) encontrado(s)
-        } @else if (!loading()) {
-          Sin resultados
-        }
-      </span>
-    </div>
-
-    <div class="card-body p-0">
+  <app-card-info title="Resultados" icon="fa-solid fa-list" variant="secondary" wrapperClass="mt-4" bodyPadding="none"
+    [badge]="totalCount() > 0 ? totalCount() : null">
+    <div>
 
       @if (loading()) {
         <div class="text-center py-5">
@@ -246,6 +227,6 @@
 
       }
     </div>
-  </div>
+  </app-card-info>
 
 </div>
