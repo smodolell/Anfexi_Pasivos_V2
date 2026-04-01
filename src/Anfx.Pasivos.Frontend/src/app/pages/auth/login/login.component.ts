@@ -14,8 +14,8 @@ import { Router } from '@angular/router';
 })
 export class LoginComponent {
   private readonly authService = inject(AuthService);
-  private readonly router      = inject(Router);
-  private readonly utils       = inject(UtilsService);
+  private readonly router = inject(Router);
+  private readonly utils = inject(UtilsService);
 
   formData: LoginCredentials = {
     email: '',
@@ -24,11 +24,11 @@ export class LoginComponent {
   };
 
   showPassword = signal(false);
-  isLoading    = signal(false);
+  isLoading = signal(false);
   showRecovery = signal(false);
-
+  recoveryEmail = '';
   togglePassword(): void {
-    this.showPassword.update(v => !v);
+    this.showPassword.update((v) => !v);
   }
 
   async onSubmitLogin(): Promise<void> {
@@ -50,18 +50,32 @@ export class LoginComponent {
         this.utils.showNotification(result.message, result.errors?.join(', ') ?? '', 'error');
       }
     } catch {
-      this.utils.showNotification('Error', 'Ocurrió un error inesperado. Intente de nuevo.', 'error');
+      this.utils.showNotification(
+        'Error',
+        'Ocurrió un error inesperado. Intente de nuevo.',
+        'error',
+      );
     } finally {
       this.isLoading.set(false);
       this.utils.hidePreloader();
     }
   }
 
-  onSubmitRecovery(): void {
-    this.utils.showNotification(
-      'Información',
-      'La recuperación de contraseña no está disponible. Contacta al administrador del sistema.',
-      'info',
-    );
+  async onSubmitRecovery(): Promise<void> {
+  if (!this.recoveryEmail) {
+    this.utils.showNotification('Advertencia', 'Ingresa tu correo electrónico.', 'warning');
+    return;
   }
+  this.isLoading.set(true);
+  try {
+    await this.authService.requestPasswordRecovery(this.recoveryEmail);
+    this.utils.showNotification('Enviado', 'Revisa tu correo para las instrucciones.', 'success');
+    this.showRecovery.set(false);
+  } catch {
+    this.utils.showNotification('Error', 'No se pudo enviar. Contacta al administrador.', 'error');
+  } finally {
+    this.isLoading.set(false);
+  }
+}
+
 }

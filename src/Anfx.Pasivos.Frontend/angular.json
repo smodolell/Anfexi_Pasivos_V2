@@ -70,7 +70,7 @@
           "configurations": {
             "production": {
               "outputMode": "static",
-              "baseHref": "/profuturo/pasivos/frontend/",
+              "baseHref": "/APP_PASIVOS/",
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",

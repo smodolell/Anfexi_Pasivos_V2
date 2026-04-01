@@ -1,5 +1,5 @@
 import { Injectable, Inject, isDevMode } from '@angular/core';
-import { BehaviorSubject, Subject, firstValueFrom } from 'rxjs';
+import { BehaviorSubject, ReplaySubject, firstValueFrom } from 'rxjs';
 import { Router } from '@angular/router';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { API_AUTH_URL } from '../api.config';
@@ -33,13 +33,13 @@ export class AuthService {
   readonly currentUser$ = this.currentUserSubject.asObservable();
   readonly isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
 
-  // ── Token en memoria (nunca en storage) ──────────────────
+  // ── Token en memoria (también persiste en storage para restaurar sesión al recargar)
   private _token: string | null = null;
 
   // ── Refresh proactivo ─────────────────────────────────────
   private refreshTimer: ReturnType<typeof setTimeout> | null = null;
   private refreshInProgress = false;
-  private refreshQueue = new Subject<boolean>();
+  private readonly refreshQueue = new ReplaySubject<boolean>(1);
 
   // ── Cross-tab logout ──────────────────────────────────────
   private storageListenerRegistered = false;
@@ -108,6 +108,10 @@ export class AuthService {
   }
   hasRole(role: string): boolean {
     return this.currentUserSubject.value?.role === role;
+  }
+
+  async requestPasswordRecovery(email: string): Promise<void> {
+    await firstValueFrom(this.http.post(`${this.apiBaseUrl}/auth/recovery`, { email }));
   }
 
   // ── Token ─────────────────────────────────────────────────
@@ -235,6 +239,9 @@ export class AuthService {
         this.currentUserSubject.next(null);
         this.isAuthenticatedSubject.next(false);
         this.router.navigate(['/auth/login']);
+      } else if (event.key === 'pf_token' && event.newValue) {
+        this._token = event.newValue;
+        this.scheduleProactiveRefresh();
       }
     });
   }

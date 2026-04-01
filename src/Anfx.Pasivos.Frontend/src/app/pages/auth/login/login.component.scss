@@ -1,7 +1,7 @@
 // ── Variables ──────────────────────────────────────────────────
-$brand-color     : #03a9f3;
-$brand-glow      : rgba(3, 169, 243, 0.25);
-$brand-hover-bg  : rgba(3, 169, 243, 0.08);
+$brand-color     : var(--color-primary-accent);
+$brand-glow      : var(--shadow-focus-primary);
+$brand-hover-bg  : rgba(66, 153, 225, 0.06);
 $transition-fast : 0.2s ease;
 
 // ── Inputs — hover y focus ─────────────────────────────────────
@@ -77,13 +77,13 @@ $transition-fast : 0.2s ease;
 
   &:hover:not(:disabled) {
     transform : translateY(-2px);
-    box-shadow: 0 6px 18px $brand-glow;
+    box-shadow: var(--shadow-lg);
     filter    : brightness(1.08);
   }
 
   &:active:not(:disabled) {
     transform : translateY(0);
-    box-shadow: 0 2px 6px $brand-glow;
+    box-shadow: var(--shadow-sm);
     filter    : brightness(0.97);
   }
 }

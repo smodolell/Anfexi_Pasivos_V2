@@ -1,10 +1,10 @@
 export const environment = {
   production: true,
-  apiBaseUrl:      'https://dev.anfexi.com/profuturo/pasivos/backend',
-  apiAuthUrl:      'https://dev.anfexi.com/profuturo/pasivos/backend/api',
-  apiCatalogoUrl:  'https://dev.anfexi.com/profuturo/pasivos/backend/api',
-  apiSistemaUrl:   'https://dev.anfexi.com/profuturo/pasivos/backend/api',
-  apiCotizadorUrl: 'https://dev.anfexi.com/profuturo/pasivos/backend/api',
+  apiBaseUrl:      'http://172.22.147.81/APIPASIVOS',
+  apiAuthUrl:      'http://172.22.147.81/APIPASIVOS/api',
+  apiCatalogoUrl:  'http://172.22.147.81/APIPASIVOS/api',
+  apiSistemaUrl:   'http://172.22.147.81/APIPASIVOS/api',
+  apiCotizadorUrl: 'http://172.22.147.81/APIPASIVOS/api',
   menuApiUrl: 'assets/menu.json',
   // ── App metadata ────────────────────────────────────────────
   appName:    'Pasivos',

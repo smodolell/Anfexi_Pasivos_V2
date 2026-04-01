@@ -76,7 +76,7 @@
 
           <div class="form-group text-center mb-3">
             <button
-              class="btn w-100 btn-lg btn-info text-white"
+              class="btn w-100 btn-lg btn-info btn-primary"
               [disabled]="isLoading()"
               type="submit"
             >
@@ -107,7 +107,10 @@
               required
               placeholder="correo@ejemplo.com"
               autocomplete="email"
+              [(ngModel)]="recoveryEmail"
+              [disabled]="isLoading()"
             >
+
           </div>
 
           <div class="form-group text-center mb-3">
