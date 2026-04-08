@@ -64,10 +64,18 @@ export class LineaCreditoFormComponent implements OnInit {
     // Pre-rellenar con el nombre del state; se sobreescribe con la API en loadCatalogos
     this.form.get('idFondeador')!.setValue(this.fondeadorTitulo() || '');
 
-    // Cuando el usuario cambia tipoTasa: recargar tasas y limpiar idTasa
+    // Cuando el usuario cambia tipoTasa: recargar tasas y limpiar idTasa / tasa
     this.form.get('tipoTasa')!.valueChanges.subscribe(esVariable => {
-      this.form.patchValue({ idTasa: null }, { emitEvent: false });
+      this.form.patchValue({ idTasa: null, tasa: null }, { emitEvent: false });
       this.cargarTasas(esVariable ?? false);
+    });
+
+    // Cuando se selecciona una tasa: copiar su valueDecimal al campo tasa
+    this.form.get('idTasa')!.valueChanges.subscribe(idTasa => {
+      const item = this.tasas().find(t => t.value === Number(idTasa));
+          if (item?.valueDecimal !== undefined) {
+        this.form.patchValue({ tasa: item.valueDecimal }, { emitEvent: false });
+      }
     });
 
     this.loadCatalogos();

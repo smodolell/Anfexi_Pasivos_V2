@@ -15,6 +15,7 @@ internal class DatabaseService : IDatabaseService
     // Constantes SQL
     private const string DetalleMovimientosSql = @"
 SELECT pm.IdMovimiento,
+       pm.IdTipoMovimiento,
        pm.Descripcion,
        pm.NoPago,
        pm.FecMovimiento,
@@ -40,6 +41,7 @@ FROM   PSV_Movimiento pm
 WHERE  pm.IdContrato = {0}
  UNION ALL
 SELECT -1                                  IdMovimiento,
+        -1 IdTipoMovimiento,
        ''                                  Descripcion,
        0                                   NoPago,
        CAST(NULL AS DATE)                  FecMovimiento,
@@ -291,6 +293,7 @@ GROUP BY prpm.Estatus
 
     const string DetalleCargosSql = @"
 SELECT pm.IdMovimiento,
+       pm.IdTipoMovimiento,
        pm.Descripcion,
        pm.NoPago,
        pm.FecMovimiento,

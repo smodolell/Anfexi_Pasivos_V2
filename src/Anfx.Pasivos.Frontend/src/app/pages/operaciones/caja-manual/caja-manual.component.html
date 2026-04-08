@@ -110,10 +110,10 @@
                         <td>{{ mov.noPago }}</td>
                         <td>{{ mov.fecMovimiento?.substring(0, 10) }}</td>
                         <td>{{ mov.descripcion }}</td>
-                        <td class="text-end">{{ mov.saldoCapital | number:'1.2-2' }}</td>
-                        <td class="text-end">{{ mov.saldoInteres | number:'1.2-2' }}</td>
-                        <td class="text-end">{{ mov.saldoIVA | number:'1.2-2' }}</td>
-                        <td class="text-end fw-semibold">{{ mov.saldoTotal | number:'1.2-2' }}</td>
+                        <td class="text-end">{{ mov.saldoCapital | currency:'MXN':'symbol-narrow':'1.2-2' }}</td>
+                        <td class="text-end">{{ mov.saldoInteres | currency:'MXN':'symbol-narrow':'1.2-2' }}</td>
+                        <td class="text-end">{{ mov.saldoIVA | currency:'MXN':'symbol-narrow':'1.2-2' }}</td>
+                        <td class="text-end fw-semibold">{{ mov.saldoTotal | currency:'MXN':'symbol-narrow':'1.2-2' }}</td>
                       </tr>
                     }
                   </tbody>

@@ -81,7 +81,7 @@
               [class.is-invalid]="isInvalid('idTipoCredito')"
               formControlName="idTipoCredito">
               <option [ngValue]="null" disabled>-- Seleccione --</option>
-              @for (tc of tiposCredito(); track tc.value) {
+              @for (tc of tiposCredito(); track $index) {
                 <option [ngValue]="tc.value">{{ tc.text }}</option>
               }
             </select>
@@ -138,25 +138,20 @@
         <div class="row g-3">
 
           <div class="col-md-3">
-            <label for="capital" class="form-label fw-semibold">
-              Capital <span class="text-danger">*</span>
+            <label for="capitalFinanciado" class="form-label fw-semibold">
+              Capital Financiado <span class="text-danger">*</span>
             </label>
             <input
-              id="capital"
+              id="capitalFinanciado"
               type="number"
               step="0.01"
               class="form-control"
-              [class.is-invalid]="isInvalid('capital')"
-              formControlName="capital"
+              [class.is-invalid]="isInvalid('capitalFinanciado')"
+              formControlName="capitalFinanciado"
             />
-            @if (isInvalid('capital')) {
-              <div class="invalid-feedback">El capital es requerido.</div>
+            @if (isInvalid('capitalFinanciado')) {
+              <div class="invalid-feedback">El capital financiado es requerido.</div>
             }
-          </div>
-
-          <div class="col-md-3">
-            <label for="capitalFinanciado" class="form-label fw-semibold">Capital Financiado</label>
-            <input id="capitalFinanciado" type="number" step="0.01" class="form-control" formControlName="capitalFinanciado" />
           </div>
 
           <div class="col-md-2">
@@ -165,20 +160,20 @@
           </div>
 
           <div class="col-md-2">
-            <label class="form-label fw-semibold text-secondary small">Moneda</label>
+            <label class="form-label fw-semibold">Moneda</label>
             <select class="form-select bg-light" formControlName="idMoneda">
               <option [ngValue]="null">—</option>
-              @for (m of monedas(); track m.value) {
+              @for (m of monedas(); track $index) {
                 <option [ngValue]="m.value">{{ m.text }}</option>
               }
             </select>
           </div>
 
           <div class="col-md-2">
-            <label class="form-label fw-semibold text-secondary small">Periodicidad</label>
+            <label class="form-label fw-semibold">Periodicidad</label>
             <select class="form-select bg-light" formControlName="idPeriodicidad">
               <option [ngValue]="null">—</option>
-              @for (p of periodicidades(); track p.value) {
+              @for (p of periodicidades(); track $index) {
                 <option [ngValue]="p.value">{{ p.text }}</option>
               }
             </select>
@@ -205,7 +200,7 @@
             <label for="tipoTasa" class="form-label fw-semibold">Tipo de Tasa</label>
             <select id="tipoTasa" class="form-select" formControlName="tipoTasa">
               <option [ngValue]="null" disabled>-- Seleccione --</option>
-              @for (op of tipoTasaOpciones; track op.value) {
+              @for (op of tipoTasaOpciones; track op.text) {
                 <option [ngValue]="op.value">{{ op.text }}</option>
               }
             </select>
@@ -224,7 +219,7 @@
                 @else if (tasasOrdinarias().length === 0) { -- Sin tasas disponibles -- }
                 @else { -- Seleccione tasa -- }
               </option>
-              @for (t of tasasOrdinarias(); track t.value) {
+              @for (t of tasasOrdinarias(); track $index) {
                 <option [ngValue]="t.value">{{ t.text }}</option>
               }
             </select>
@@ -235,7 +230,7 @@
             <label for="tasaIvaSelect" class="form-label fw-semibold">Tasa IVA</label>
             <select id="tasaIvaSelect" class="form-select" formControlName="tasaIva">
               <option [ngValue]="null">-- Sin IVA --</option>
-              @for (t of tasasIva(); track t.value) {
+              @for (t of tasasIva(); track $index) {
                 <option [ngValue]="t.valueDecimal">{{ t.text }}</option>
               }
             </select>
@@ -249,8 +244,8 @@
 
           <!-- Valor Tasa Base (readonly) -->
           <div class="col-md-2">
-            <label class="form-label fw-semibold text-secondary small">Valor Tasa Base</label>
-            <input type="number" step="0.0001" class="form-control bg-light" formControlName="tasaBase" readonly />
+            <label class="form-label fw-semibold">Valor Tasa Base</label>
+            <input type="number" step="0.0001" class="form-control bg-light text-dark" formControlName="tasaBase" readonly />
           </div>
 
           <!-- Puntos Adicionales -->
@@ -286,7 +281,7 @@
             <label for="tipoTasaMora" class="form-label fw-semibold">Tipo de Tasa</label>
             <select id="tipoTasaMora" class="form-select" formControlName="tipoTasaMora">
               <option [ngValue]="null" disabled>-- Seleccione --</option>
-              @for (op of tipoTasaOpciones; track op.value) {
+              @for (op of tipoTasaOpciones; track op.text) {
                 <option [ngValue]="op.value">{{ op.text }}</option>
               }
             </select>
@@ -305,7 +300,7 @@
                 @else if (tasasMora().length === 0) { -- Sin tasas disponibles -- }
                 @else { -- Seleccione tasa -- }
               </option>
-              @for (t of tasasMora(); track t.value) {
+              @for (t of tasasMora(); track $index) {
                 <option [ngValue]="t.value">{{ t.text }}</option>
               }
             </select>
@@ -319,8 +314,8 @@
 
           <!-- Valor Tasa Base Mora (readonly) -->
           <div class="col-md-2">
-            <label class="form-label fw-semibold text-secondary small">Valor Tasa Base</label>
-            <input type="number" step="0.0001" class="form-control bg-light" formControlName="tasaBaseMora" readonly />
+            <label class="form-label fw-semibold">Valor Tasa Base</label>
+            <input type="number" step="0.0001" class="form-control bg-light text-dark" formControlName="tasaBaseMora" readonly />
           </div>
 
           <!-- Puntos Adicionales Mora -->
@@ -382,20 +377,20 @@
 
           <!-- Activación (readonly) -->
           <div class="col-md-3">
-            <label class="form-label fw-semibold text-secondary small">
+            <label class="form-label fw-semibold">
               Activación
               <span class="badge bg-secondary-subtle text-secondary ms-1 fw-normal" style="font-size:0.7rem;">Solo lectura</span>
             </label>
-            <input type="date" class="form-control bg-light" formControlName="fecActivacion" readonly />
+            <input type="date" class="form-control bg-light text-dark" formControlName="fecActivacion" readonly />
           </div>
 
           <!-- Último Pago (readonly) -->
           <div class="col-md-3">
-            <label class="form-label fw-semibold text-secondary small">
+            <label class="form-label fw-semibold">
               Último Pago
               <span class="badge bg-secondary-subtle text-secondary ms-1 fw-normal" style="font-size:0.7rem;">Solo lectura</span>
             </label>
-            <input type="date" class="form-control bg-light" formControlName="fecFinContrato" readonly />
+            <input type="date" class="form-control bg-light text-dark" formControlName="fecFinContrato" readonly />
           </div>
 
         </div>
@@ -444,7 +439,7 @@
                 class="form-select"
                 formControlName="idTipoCapitalizacion">
                 <option [ngValue]="null">-- Seleccione --</option>
-                @for (tc of tipoCapitalizacionList(); track tc.value) {
+                @for (tc of tipoCapitalizacionList(); track $index) {
                   <option [ngValue]="tc.value">{{ tc.text }}</option>
                 }
               </select>
@@ -462,7 +457,7 @@
                 @if (form.get('idTipoTablaAmortiza')!.value === null) { -- Seleccione tabla primero -- }
                 @else { -- Seleccione -- }
               </option>
-              @for (tp of tipoPagoCapitalList(); track tp.value) {
+              @for (tp of tipoPagoCapitalList(); track $index) {
                 <option [ngValue]="tp.value">{{ tp.text }}</option>
               }
             </select>
@@ -479,7 +474,7 @@
               [class.bg-light]="form.get('idPeriodicidad_TTA')!.disabled"
               formControlName="idPeriodicidad_TTA">
               <option [ngValue]="null">-- Seleccione --</option>
-              @for (p of periodicidadesCapitalizacion(); track p.value) {
+              @for (p of periodicidadesCapitalizacion(); track $index) {
                 <option [ngValue]="p.value">{{ p.text }}</option>
               }
             </select>
@@ -551,6 +546,74 @@
       </div>
     </div>
 
+    <!-- ════════════════════════════════════════════════════════ -->
+    <!-- Sección 8 – Tabla de Amortización (solo modo edición)   -->
+    <!-- ════════════════════════════════════════════════════════ -->
+    @if (isEditMode()) {
+      <div class="card shadow-sm border-0 mt-3">
+        <div class="card-header bg-white border-bottom py-3 d-flex align-items-center justify-content-between">
+          <h6 class="mb-0 fw-semibold text-primary">
+            <i class="fa-solid fa-table me-2"></i>8. Tabla de Amortización
+          </h6>
+          @if (loadingTablaAmortizacion()) {
+            <span class="d-flex align-items-center gap-2 text-muted small">
+              <span class="spinner-border spinner-border-sm"></span>Cargando...
+            </span>
+          }
+        </div>
+        <div class="card-body p-0">
+          @if (!loadingTablaAmortizacion() && tablaAmortizacion().length === 0) {
+            <div class="text-center py-4 text-muted">
+              <i class="fa-solid fa-table-list fa-2x mb-2 d-block opacity-50"></i>
+              <span class="small">Sin tabla de amortización generada</span>
+            </div>
+          }
+          @if (tablaAmortizacion().length > 0) {
+            <div class="table-responsive">
+              <table class="table table-sm table-bordered table-hover align-middle mb-0">
+                <thead class="table-light">
+                  <tr>
+                    <th class="text-center">#</th>
+                    <th>Fecha Inicial</th>
+                    <th>Fecha Vencimiento</th>
+                    <th class="text-end">Saldo Inicial</th>
+                    <th class="text-end">Capital</th>
+                    <th class="text-end">Interés</th>
+                    <th class="text-end">Seguro</th>
+                    <th class="text-end">IVA</th>
+                    <th class="text-end">Total</th>
+                    <th class="text-center">Procesado</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (row of tablaAmortizacion(); track row.idTablaAmortiza) {
+                    <tr [class.table-success]="row.procesado">
+                      <td class="text-center">{{ row.noPago ?? '—' }}</td>
+                      <td>{{ row.fecInicial | date:'dd/MM/yyyy' }}</td>
+                      <td>{{ row.fecVencimiento | date:'dd/MM/yyyy' }}</td>
+                      <td class="text-end">{{ row.saldoInicial | currency:'MXN':'symbol-narrow':'1.2-2' }}</td>
+                      <td class="text-end">{{ row.capital | currency:'MXN':'symbol-narrow':'1.2-2' }}</td>
+                      <td class="text-end">{{ row.interes | currency:'MXN':'symbol-narrow':'1.2-2' }}</td>
+                      <td class="text-end">{{ row.seguro | currency:'MXN':'symbol-narrow':'1.2-2' }}</td>
+                      <td class="text-end">{{ row.iva | currency:'MXN':'symbol-narrow':'1.2-2' }}</td>
+                      <td class="text-end fw-semibold">{{ row.total | currency:'MXN':'symbol-narrow':'1.2-2' }}</td>
+                      <td class="text-center">
+                        @if (row.procesado) {
+                          <i class="fa-solid fa-circle-check text-success"></i>
+                        } @else {
+                          <i class="fa-regular fa-circle text-muted"></i>
+                        }
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          }
+        </div>
+      </div>
+    }
+
     <!-- Aviso cuando el contrato no puede editarse -->
     @if (isEditMode() && !puedeGuardar) {
       <div class="alert alert-warning d-flex align-items-center gap-2 mt-4 mb-0">
@@ -558,6 +621,9 @@
         <span>Este contrato no puede modificarse porque su estatus no es <strong>Activo</strong>.</span>
       </div>
     }
+
+    <!-- ── Errores de validación ───────────────────────────────── -->
+    <app-form-errors [errors]="formErrors()" (onClose)="formErrors.set([])" />
 
     <!-- ── Botones ────────────────────────────────────────────── -->
     <div class="d-flex gap-2 justify-content-end mt-3 mb-5">

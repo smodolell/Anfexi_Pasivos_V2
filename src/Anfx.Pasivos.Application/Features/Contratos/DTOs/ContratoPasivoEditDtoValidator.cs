@@ -78,15 +78,15 @@ public class ContratoPasivoEditDtoValidator : AbstractValidator<ContratoPasivoEd
             .WithMessage("La fecha de inicio de contrato no puede ser superior a la fecha de primera renta")
             .WithErrorCode("FEC002");
 
-        RuleFor(x => x)
-            .Must(x => x.FecPrimeraRenta <= x.FecActivacion)
-            .WithMessage("La fecha de primera renta debe ser menor o igual a la fecha de activación")
-            .WithErrorCode("FEC003");
+        //RuleFor(x => x)
+        //    .Must(x => x.FecPrimeraRenta <= x.FecActivacion)
+        //    .WithMessage("La fecha de primera renta debe ser menor o igual a la fecha de activación")
+        //    .WithErrorCode("FEC003");
 
-        RuleFor(x => x)
-            .Must(x => x.FecActivacion <= x.FecFinContrato)
-            .WithMessage("La fecha de activación debe ser menor o igual a la fecha fin de contrato")
-            .WithErrorCode("FEC004");
+        //RuleFor(x => x)
+        //    .Must(x => x.FecActivacion <= x.FecFinContrato)
+        //    .WithMessage("La fecha de activación debe ser menor o igual a la fecha fin de contrato")
+        //    .WithErrorCode("FEC004");
 
         // Validaciones de tasas
         RuleFor(x => x.Tasa)

@@ -11,6 +11,7 @@
 
 export interface MovimientoItemDto { 
     idMovimiento?: number;
+    idTipoMovimiento?: number;
     descripcion?: string | null;
     noPago?: number;
     fecMovimiento?: string | null;

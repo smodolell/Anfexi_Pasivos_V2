@@ -4,8 +4,8 @@ namespace Anfx.Pasivos.Application.Features.Operaciones.DTOs;
 
 public class CajaDto
 {
-    public string ContratoPasivo { get; set; }
-    public string Fondeador { get; set; }
+    public string ContratoPasivo { get; set; } = string.Empty;
+    public string Fondeador { get; set; } = string.Empty;
     public int? IdFondeador { get; set; }
     public int? IdContrato { get; set; }
     public int? IdUsuario { get; set; }

@@ -60,7 +60,7 @@ internal class SaveContratoCommandHandler : ICommandHandler<SaveContratoCommand,
             if (idContrato == 0)
             {
                 // CREATE: Nuevo contrato
-                contrato = new PSV_Contrato();
+                contrato = new PSV_Contrato { VersionTabla = 1};
                 esNuevo = true;
                 _context.PSV_Contrato.Add(contrato);
             }
@@ -108,6 +108,9 @@ internal class SaveContratoCommandHandler : ICommandHandler<SaveContratoCommand,
             // 6. Actualizar contador de tipo de crédito (solo para nuevos)
             if (esNuevo)
             {
+                contrato.FecActivacion = null;
+                contrato.FecFinContrato = null;
+
                 tipoCredito.Contador++;
             }
 
@@ -182,8 +185,8 @@ internal class SaveContratoCommandHandler : ICommandHandler<SaveContratoCommand,
         entity.Contrato = model.Contrato;
         entity.Capital = model.CapitalFinanciado;
         entity.CapitalFinanciado = model.CapitalFinanciado;
-        //entity.Enganche = model.Enganche;
-        //entity.PorcEnganche = model.PorcEnganche;
+        entity.Enganche = 0;
+        entity.PorcEnganche = 0;
         entity.Plazo = model.Plazo;
         entity.Tasa = model.Tasa;
         entity.TasaBase = model.TasaBase;
@@ -195,15 +198,12 @@ internal class SaveContratoCommandHandler : ICommandHandler<SaveContratoCommand,
         entity.FechaFirmaContrato = model.FechaFirmaContrato;
 
         //// Versión de tabla
-        //if (esNuevo)
-        //{
-        //    entity.VersionTabla = 1;
-        //}
-        //else
-        //{
-        //    entity.VersionTabla++; // Incrementar versión en updates
-        //    entity.FechaUltimaModificacion = DateTime.Now;
-        //}
+        if (esNuevo)
+        {
+            entity.IdEstatusContrato = 1;
+            entity.VersionTabla = 1;
+        }
+        
 
         // Datos adicionales
         entity.PuntosMas = model.PuntosMas;
@@ -226,7 +226,7 @@ internal class SaveContratoCommandHandler : ICommandHandler<SaveContratoCommand,
         entity.NroRentasDepositoGarantia = model.NroRentasDepositoGarantia;
         entity.IdTipoMantenimiento = model.IdTipoMantenimiento;
         entity.TasaMensual = model.TasaMensual;
-        entity.FechaCierre = model.FechaCierre;
+        //entity.FechaCierre = model.FechaCierre;
         entity.TasaEsVariable = model.TasaEsVariable;
         entity.IdFondeador = model.IdFondeador;
         entity.FactorFIRA = model.FactorFIRA;

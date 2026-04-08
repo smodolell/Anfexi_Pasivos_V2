@@ -3,6 +3,7 @@
 public class MovimientoItemDto
 {
     public int IdMovimiento { get; set; }
+    public int IdTipoMovimiento { get; set; }
     public string Descripcion { get; set; } = string.Empty;
     public int NoPago { get; set; }
     public DateTime? FecMovimiento { get; set; }

@@ -22,6 +22,7 @@ internal class GetTasaSelectListQueryHandler : IQueryHandler<GetTasaSelectListQu
             .Select(f => new SelectItemDto
             {
                 Value = f.IdTasa,
+                ValueDecimal = f.Valor ?? 0,
                 Text = f.Tasa1
             }).ToListAsync();
 

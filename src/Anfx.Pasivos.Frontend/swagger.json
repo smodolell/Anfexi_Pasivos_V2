@@ -7,9 +7,7 @@
   "paths": {
     "/api/auth/login": {
       "post": {
-        "tags": [
-          "Auth"
-        ],
+        "tags": ["Auth"],
         "summary": "Login por Correo Electronico",
         "description": "Autentica un usuario con email y contraseña",
         "operationId": "Login",
@@ -70,9 +68,7 @@
     },
     "/api/auth/login/username": {
       "post": {
-        "tags": [
-          "Auth"
-        ],
+        "tags": ["Auth"],
         "summary": "Login por Nombre de Usuario",
         "description": "Autentica un usuario con nombre de usuario y contraseña",
         "operationId": "LoginByUserName",
@@ -117,8 +113,8 @@
               }
             }
           },
-          "500": {
-            "description": "Internal Server Error",
+          "409": {
+            "description": "Conflict",
             "content": {
               "application/json": {
                 "schema": {
@@ -127,8 +123,8 @@
               }
             }
           },
-          "409": {
-            "description": "Conflict",
+          "500": {
+            "description": "Internal Server Error",
             "content": {
               "application/json": {
                 "schema": {
@@ -142,9 +138,7 @@
     },
     "/api/auth/validate-token": {
       "post": {
-        "tags": [
-          "Auth"
-        ],
+        "tags": ["Auth"],
         "summary": "Valida un token JWT",
         "operationId": "ValidateToken",
         "requestBody": {
@@ -179,9 +173,7 @@
     },
     "/api/auth/me": {
       "get": {
-        "tags": [
-          "Auth"
-        ],
+        "tags": ["Auth"],
         "summary": "Obtiene el perfil del usuario actual",
         "description": "Retorna los datos del usuario extraídos del token JWT mediante UserContext",
         "operationId": "GetCurrentUserProfile",
@@ -211,9 +203,7 @@
     },
     "/api/auth/usuarios/all": {
       "get": {
-        "tags": [
-          "Auth"
-        ],
+        "tags": ["Auth"],
         "summary": "Obtiene todos los usuarios activos",
         "description": "Obtiene un listado completo de todos los usuarios activos",
         "operationId": "GetAllUsuarios",
@@ -256,9 +246,7 @@
     },
     "/api/auth/usuarios": {
       "get": {
-        "tags": [
-          "Auth"
-        ],
+        "tags": ["Auth"],
         "summary": "Obtiene usuarios paginados y filtrados",
         "description": "Obtiene un listado paginado de usuarios con filtros opcionales",
         "operationId": "GetUsuariosPaginados",
@@ -344,9 +332,7 @@
         }
       },
       "post": {
-        "tags": [
-          "Auth"
-        ],
+        "tags": ["Auth"],
         "summary": "Crea un nuevo usuario",
         "description": "Crea un nuevo usuario en el sistema",
         "operationId": "CreateUsuario",
@@ -406,9 +392,7 @@
     },
     "/api/auth/usuarios/{id}": {
       "get": {
-        "tags": [
-          "Auth"
-        ],
+        "tags": ["Auth"],
         "summary": "Obtiene un usuario por ID",
         "description": "Obtiene los detalles de un usuario específico por su ID",
         "operationId": "GetUsuarioById",
@@ -467,9 +451,7 @@
         }
       },
       "put": {
-        "tags": [
-          "Auth"
-        ],
+        "tags": ["Auth"],
         "summary": "Actualiza un usuario existente",
         "description": "Actualiza los datos de un usuario existente",
         "operationId": "UpdateUsuario",
@@ -548,9 +530,7 @@
         }
       },
       "delete": {
-        "tags": [
-          "Auth"
-        ],
+        "tags": ["Auth"],
         "summary": "Elimina un usuario (soft delete)",
         "description": "Elimina lógicamente un usuario (soft delete)",
         "operationId": "DeleteUsuario",
@@ -614,9 +594,7 @@
     },
     "/api/auth/usuarios/roles": {
       "get": {
-        "tags": [
-          "Auth"
-        ],
+        "tags": ["Auth"],
         "summary": "Obtiene lista de roles para selects",
         "description": "Obtiene un listado de roles para controles tipo select en formularios de usuario",
         "operationId": "GetUsuarioRoles",
@@ -656,9 +634,7 @@
     },
     "/api/auth/rol/all": {
       "get": {
-        "tags": [
-          "Auth"
-        ],
+        "tags": ["Auth"],
         "summary": "Obtiene todos los roles activos",
         "description": "Obtiene un listado completo de todos los roles activos",
         "operationId": "GetAllRoles",
@@ -698,9 +674,7 @@
     },
     "/api/auth/rol/paginados": {
       "get": {
-        "tags": [
-          "Auth"
-        ],
+        "tags": ["Auth"],
         "summary": "Obtiene roles paginados y filtrados",
         "description": "Obtiene un listado paginado de roles con filtros opcionales",
         "operationId": "GetRolesPaginados",
@@ -767,9 +741,7 @@
     },
     "/api/auth/rol/{id}": {
       "get": {
-        "tags": [
-          "Auth"
-        ],
+        "tags": ["Auth"],
         "summary": "Obtiene un rol por ID",
         "description": "Obtiene los detalles de un rol específico por su ID",
         "operationId": "GetRolById",
@@ -828,9 +800,7 @@
         }
       },
       "put": {
-        "tags": [
-          "Auth"
-        ],
+        "tags": ["Auth"],
         "summary": "Actualiza un rol existente",
         "description": "Actualiza los datos de un rol existente",
         "operationId": "UpdateRol",
@@ -909,9 +879,7 @@
         }
       },
       "delete": {
-        "tags": [
-          "Auth"
-        ],
+        "tags": ["Auth"],
         "summary": "Elimina un rol",
         "description": "Elimina lógicamente un rol (soft delete)",
         "operationId": "DeleteRol",
@@ -982,9 +950,7 @@
     },
     "/api/auth/rol/nombre/{nombre}": {
       "get": {
-        "tags": [
-          "Auth"
-        ],
+        "tags": ["Auth"],
         "summary": "Obtiene un rol por nombre",
         "description": "Obtiene los detalles de un rol específico por su nombre",
         "operationId": "GetRolByName",
@@ -1044,9 +1010,7 @@
     },
     "/api/auth/rol/{id}/exists": {
       "get": {
-        "tags": [
-          "Auth"
-        ],
+        "tags": ["Auth"],
         "summary": "Verifica si existe un rol",
         "description": "Verifica si existe un rol con el ID especificado",
         "operationId": "RolExists",
@@ -1097,9 +1061,7 @@
     },
     "/api/auth/rol/select-list": {
       "get": {
-        "tags": [
-          "Auth"
-        ],
+        "tags": ["Auth"],
         "summary": "Obtiene lista de roles para select",
         "description": "Obtiene un listado de roles para controles tipo select",
         "operationId": "GetRolesSelectList",
@@ -1139,9 +1101,7 @@
     },
     "/api/auth/rol": {
       "post": {
-        "tags": [
-          "Auth"
-        ],
+        "tags": ["Auth"],
         "summary": "Crea un nuevo rol",
         "description": "Crea un nuevo rol en el sistema",
         "operationId": "CreateRol",
@@ -1201,9 +1161,7 @@
     },
     "/api/catalogos/banco/{id}": {
       "get": {
-        "tags": [
-          "Catalogos"
-        ],
+        "tags": ["Catalogos"],
         "summary": "Obtiene un banco por ID",
         "operationId": "GetBancoById",
         "parameters": [
@@ -1228,8 +1186,8 @@
               }
             }
           },
-          "404": {
-            "description": "Not Found",
+          "401": {
+            "description": "Unauthorized",
             "content": {
               "application/json": {
                 "schema": {
@@ -1238,8 +1196,8 @@
               }
             }
           },
-          "401": {
-            "description": "Unauthorized",
+          "404": {
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -1261,9 +1219,7 @@
         }
       },
       "put": {
-        "tags": [
-          "Catalogos"
-        ],
+        "tags": ["Catalogos"],
         "summary": "Actualiza un banco",
         "operationId": "UpdateBanco",
         "parameters": [
@@ -1291,16 +1247,6 @@
           "200": {
             "description": "OK"
           },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiResponseDto"
-                }
-              }
-            }
-          },
           "400": {
             "description": "Bad Request",
             "content": {
@@ -1313,6 +1259,16 @@
           },
           "401": {
             "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -1334,9 +1290,7 @@
         }
       },
       "delete": {
-        "tags": [
-          "Catalogos"
-        ],
+        "tags": ["Catalogos"],
         "summary": "Elimina un banco",
         "description": "Elimina físicamente un banco del catálogo, identificado por su ID. Solo permite eliminar bancos que no tengan cuentas bancarias asociadas.",
         "operationId": "DeleteBanco",
@@ -1355,16 +1309,6 @@
           "200": {
             "description": "OK"
           },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiResponseDto"
-                }
-              }
-            }
-          },
           "400": {
             "description": "Bad Request",
             "content": {
@@ -1377,6 +1321,16 @@
           },
           "401": {
             "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -1400,9 +1354,7 @@
     },
     "/api/catalogos/banco": {
       "get": {
-        "tags": [
-          "Catalogos"
-        ],
+        "tags": ["Catalogos"],
         "summary": "Obtiene bancos paginados y filtrados",
         "parameters": [
           {
@@ -1481,9 +1433,7 @@
         }
       },
       "post": {
-        "tags": [
-          "Catalogos"
-        ],
+        "tags": ["Catalogos"],
         "summary": "Crea un nuevo banco",
         "operationId": "CreateBanco",
         "requestBody": {
@@ -1543,9 +1493,7 @@
     },
     "/api/catalogos/cuenta-bancaria/{id}": {
       "get": {
-        "tags": [
-          "Catalogos"
-        ],
+        "tags": ["Catalogos"],
         "summary": "Obtiene una cuenta bancaria por ID",
         "operationId": "GetCuentaBancariaById",
         "parameters": [
@@ -1570,8 +1518,8 @@
               }
             }
           },
-          "404": {
-            "description": "Not Found",
+          "401": {
+            "description": "Unauthorized",
             "content": {
               "application/json": {
                 "schema": {
@@ -1580,8 +1528,8 @@
               }
             }
           },
-          "401": {
-            "description": "Unauthorized",
+          "404": {
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -1603,9 +1551,7 @@
         }
       },
       "put": {
-        "tags": [
-          "Catalogos"
-        ],
+        "tags": ["Catalogos"],
         "summary": "Actualiza una cuenta bancaria",
         "operationId": "UpdateCuentaBancaria",
         "parameters": [
@@ -1633,16 +1579,6 @@
           "200": {
             "description": "OK"
           },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiResponseDto"
-                }
-              }
-            }
-          },
           "400": {
             "description": "Bad Request",
             "content": {
@@ -1655,6 +1591,16 @@
           },
           "401": {
             "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -1676,9 +1622,7 @@
         }
       },
       "delete": {
-        "tags": [
-          "Catalogos"
-        ],
+        "tags": ["Catalogos"],
         "summary": "Elimina una cuenta bancaria",
         "description": "Elimina físicamente una cuenta bancaria del catálogo. Solo permite eliminar cuentas que no tengan pagos o movimientos asociados.",
         "operationId": "DeleteCuentaBancaria",
@@ -1697,16 +1641,6 @@
           "200": {
             "description": "OK"
           },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiResponseDto"
-                }
-              }
-            }
-          },
           "400": {
             "description": "Bad Request",
             "content": {
@@ -1719,6 +1653,16 @@
           },
           "401": {
             "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -1742,9 +1686,7 @@
     },
     "/api/catalogos/cuenta-bancaria": {
       "get": {
-        "tags": [
-          "Catalogos"
-        ],
+        "tags": ["Catalogos"],
         "summary": "Obtiene cuentas bancarias paginadas y filtradas",
         "parameters": [
           {
@@ -1823,9 +1765,7 @@
         }
       },
       "post": {
-        "tags": [
-          "Catalogos"
-        ],
+        "tags": ["Catalogos"],
         "summary": "Crea una nueva cuenta bancaria",
         "operationId": "CreateCuentaBancaria",
         "requestBody": {
@@ -1885,9 +1825,7 @@
     },
     "/api/catalogos/estatus-contrato/{id}": {
       "get": {
-        "tags": [
-          "Catalogos"
-        ],
+        "tags": ["Catalogos"],
         "summary": "Obtiene un estatus de contrato por ID",
         "operationId": "GetEstatusContratoById",
         "parameters": [
@@ -1912,8 +1850,8 @@
               }
             }
           },
-          "404": {
-            "description": "Not Found",
+          "401": {
+            "description": "Unauthorized",
             "content": {
               "application/json": {
                 "schema": {
@@ -1922,8 +1860,8 @@
               }
             }
           },
-          "401": {
-            "description": "Unauthorized",
+          "404": {
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -1945,9 +1883,7 @@
         }
       },
       "put": {
-        "tags": [
-          "Catalogos"
-        ],
+        "tags": ["Catalogos"],
         "summary": "Actualiza un estatus de contrato",
         "operationId": "UpdateEstatusContrato",
         "parameters": [
@@ -1975,16 +1911,6 @@
           "200": {
             "description": "OK"
           },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiResponseDto"
-                }
-              }
-            }
-          },
           "400": {
             "description": "Bad Request",
             "content": {
@@ -1997,6 +1923,16 @@
           },
           "401": {
             "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -2018,9 +1954,7 @@
         }
       },
       "delete": {
-        "tags": [
-          "Catalogos"
-        ],
+        "tags": ["Catalogos"],
         "summary": "Elimina un estatus de contrato",
         "description": "Elimina físicamente un estatus de contrato del catálogo. Los estatus críticos del sistema (CAPTURADO=1, ACTIVO=2, CANCELADO=3, TERMINADO=4) no pueden ser eliminados.",
         "operationId": "DeleteEstatusContrato",
@@ -2039,16 +1973,6 @@
           "200": {
             "description": "OK"
           },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiResponseDto"
-                }
-              }
-            }
-          },
           "400": {
             "description": "Bad Request",
             "content": {
@@ -2061,6 +1985,16 @@
           },
           "401": {
             "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -2084,9 +2018,7 @@
     },
     "/api/catalogos/estatus-contrato": {
       "get": {
-        "tags": [
-          "Catalogos"
-        ],
+        "tags": ["Catalogos"],
         "summary": "Obtiene estatus de contrato paginados y filtrados",
         "parameters": [
           {
@@ -2165,9 +2097,7 @@
         }
       },
       "post": {
-        "tags": [
-          "Catalogos"
-        ],
+        "tags": ["Catalogos"],
         "summary": "Crea un nuevo estatus de contrato",
         "operationId": "CreateEstatusContrato",
         "requestBody": {
@@ -2227,9 +2157,7 @@
     },
     "/api/catalogos/tipo-pago/{id}": {
       "get": {
-        "tags": [
-          "Catalogos"
-        ],
+        "tags": ["Catalogos"],
         "summary": "Obtiene un tipo de pago por ID",
         "operationId": "GetTipoPagoById",
         "parameters": [
@@ -2254,8 +2182,8 @@
               }
             }
           },
-          "404": {
-            "description": "Not Found",
+          "401": {
+            "description": "Unauthorized",
             "content": {
               "application/json": {
                 "schema": {
@@ -2264,8 +2192,8 @@
               }
             }
           },
-          "401": {
-            "description": "Unauthorized",
+          "404": {
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -2287,9 +2215,7 @@
         }
       },
       "put": {
-        "tags": [
-          "Catalogos"
-        ],
+        "tags": ["Catalogos"],
         "summary": "Actualiza un tipo de pago",
         "operationId": "UpdateTipoPago",
         "parameters": [
@@ -2317,16 +2243,6 @@
           "200": {
             "description": "OK"
           },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiResponseDto"
-                }
-              }
-            }
-          },
           "400": {
             "description": "Bad Request",
             "content": {
@@ -2339,6 +2255,16 @@
           },
           "401": {
             "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -2360,9 +2286,7 @@
         }
       },
       "delete": {
-        "tags": [
-          "Catalogos"
-        ],
+        "tags": ["Catalogos"],
         "summary": "Elimina un tipo de pago",
         "description": "Elimina físicamente un tipo de pago del catálogo, identificado por su ID. Solo permite eliminar tipos de pago que no tengan movimientos o pagos asociados.",
         "operationId": "DeleteTipoPago",
@@ -2381,16 +2305,6 @@
           "200": {
             "description": "OK"
           },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiResponseDto"
-                }
-              }
-            }
-          },
           "400": {
             "description": "Bad Request",
             "content": {
@@ -2403,6 +2317,16 @@
           },
           "401": {
             "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -2426,9 +2350,7 @@
     },
     "/api/catalogos/tipo-pago": {
       "get": {
-        "tags": [
-          "Catalogos"
-        ],
+        "tags": ["Catalogos"],
         "summary": "Obtiene tipos de pago paginados y filtrados",
         "parameters": [
           {
@@ -2507,9 +2429,7 @@
         }
       },
       "post": {
-        "tags": [
-          "Catalogos"
-        ],
+        "tags": ["Catalogos"],
         "summary": "Crea un nuevo tipo de pago",
         "operationId": "CreateTipoPago",
         "requestBody": {
@@ -2569,9 +2489,7 @@
     },
     "/api/catalogos/tipo-direccion/all": {
       "get": {
-        "tags": [
-          "Catalogos"
-        ],
+        "tags": ["Catalogos"],
         "summary": "Obtiene todos los tipos de dirección",
         "operationId": "GetAllTiposDirecciones",
         "responses": {
@@ -2610,9 +2528,7 @@
     },
     "/api/catalogos/tipo-direccion": {
       "get": {
-        "tags": [
-          "Catalogos"
-        ],
+        "tags": ["Catalogos"],
         "summary": "Obtiene tipos de dirección paginados y filtrados",
         "operationId": "GetTiposDireccionesPaginados",
         "parameters": [
@@ -2686,9 +2602,7 @@
         }
       },
       "post": {
-        "tags": [
-          "Catalogos"
-        ],
+        "tags": ["Catalogos"],
         "summary": "Crea un nuevo tipo de dirección",
         "operationId": "CreateTipoDireccion",
         "requestBody": {
@@ -2747,9 +2661,7 @@
     },
     "/api/catalogos/tipo-direccion/{id}": {
       "get": {
-        "tags": [
-          "Catalogos"
-        ],
+        "tags": ["Catalogos"],
         "summary": "Obtiene un tipo de dirección por ID",
         "operationId": "GetTipoDireccionById",
         "parameters": [
@@ -2774,8 +2686,8 @@
               }
             }
           },
-          "404": {
-            "description": "Not Found",
+          "401": {
+            "description": "Unauthorized",
             "content": {
               "application/json": {
                 "schema": {
@@ -2784,8 +2696,8 @@
               }
             }
           },
-          "401": {
-            "description": "Unauthorized",
+          "404": {
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -2807,9 +2719,7 @@
         }
       },
       "put": {
-        "tags": [
-          "Catalogos"
-        ],
+        "tags": ["Catalogos"],
         "summary": "Actualiza un tipo de dirección existente",
         "operationId": "UpdateTipoDireccion",
         "parameters": [
@@ -2844,16 +2754,6 @@
               }
             }
           },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiResponseDto"
-                }
-              }
-            }
-          },
           "400": {
             "description": "Bad Request",
             "content": {
@@ -2866,6 +2766,16 @@
           },
           "401": {
             "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -2887,9 +2797,7 @@
         }
       },
       "delete": {
-        "tags": [
-          "Catalogos"
-        ],
+        "tags": ["Catalogos"],
         "summary": "Elimina un tipo de dirección",
         "operationId": "DeleteTipoDireccion",
         "parameters": [
@@ -2914,8 +2822,8 @@
               }
             }
           },
-          "404": {
-            "description": "Not Found",
+          "401": {
+            "description": "Unauthorized",
             "content": {
               "application/json": {
                 "schema": {
@@ -2924,8 +2832,8 @@
               }
             }
           },
-          "401": {
-            "description": "Unauthorized",
+          "404": {
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -2949,9 +2857,7 @@
     },
     "/api/catalogos/tipo-direccion/exportar": {
       "get": {
-        "tags": [
-          "Catalogos"
-        ],
+        "tags": ["Catalogos"],
         "summary": "Exporta tipos de direcciones filtrados a Excel",
         "operationId": "ExportTiposDirecciones",
         "parameters": [
@@ -3010,9 +2916,7 @@
     },
     "/api/catalogos/colonia/all": {
       "get": {
-        "tags": [
-          "Catalogos"
-        ],
+        "tags": ["Catalogos"],
         "summary": "Obtiene todas las colonias",
         "operationId": "GetAllColonias",
         "responses": {
@@ -3051,9 +2955,7 @@
     },
     "/api/catalogos/colonia": {
       "get": {
-        "tags": [
-          "Catalogos"
-        ],
+        "tags": ["Catalogos"],
         "summary": "Obtiene colonias paginadas y filtradas",
         "operationId": "GetColoniasPaginados",
         "parameters": [
@@ -3141,9 +3043,7 @@
         }
       },
       "post": {
-        "tags": [
-          "Catalogos"
-        ],
+        "tags": ["Catalogos"],
         "summary": "Crea una nueva colonia",
         "operationId": "CreateColonia",
         "requestBody": {
@@ -3202,9 +3102,7 @@
     },
     "/api/catalogos/colonia/exportar": {
       "get": {
-        "tags": [
-          "Catalogos"
-        ],
+        "tags": ["Catalogos"],
         "summary": "Exporta colonias filtradas a Excel",
         "operationId": "ExportColonias",
         "parameters": [
@@ -3263,9 +3161,7 @@
     },
     "/api/catalogos/colonia/{id}": {
       "get": {
-        "tags": [
-          "Catalogos"
-        ],
+        "tags": ["Catalogos"],
         "summary": "Obtiene una colonia por ID",
         "operationId": "GetColoniaById",
         "parameters": [
@@ -3290,8 +3186,8 @@
               }
             }
           },
-          "404": {
-            "description": "Not Found",
+          "401": {
+            "description": "Unauthorized",
             "content": {
               "application/json": {
                 "schema": {
@@ -3300,8 +3196,8 @@
               }
             }
           },
-          "401": {
-            "description": "Unauthorized",
+          "404": {
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -3323,9 +3219,7 @@
         }
       },
       "put": {
-        "tags": [
-          "Catalogos"
-        ],
+        "tags": ["Catalogos"],
         "summary": "Actualiza una colonia existente",
         "operationId": "UpdateColonia",
         "parameters": [
@@ -3360,16 +3254,6 @@
               }
             }
           },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiResponseDto"
-                }
-              }
-            }
-          },
           "400": {
             "description": "Bad Request",
             "content": {
@@ -3382,6 +3266,16 @@
           },
           "401": {
             "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -3403,9 +3297,7 @@
         }
       },
       "delete": {
-        "tags": [
-          "Catalogos"
-        ],
+        "tags": ["Catalogos"],
         "summary": "Elimina una colonia",
         "operationId": "DeleteColonia",
         "parameters": [
@@ -3430,8 +3322,8 @@
               }
             }
           },
-          "404": {
-            "description": "Not Found",
+          "401": {
+            "description": "Unauthorized",
             "content": {
               "application/json": {
                 "schema": {
@@ -3440,8 +3332,8 @@
               }
             }
           },
-          "401": {
-            "description": "Unauthorized",
+          "404": {
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -3465,9 +3357,7 @@
     },
     "/api/catalogos/colonia/get-codigospostales": {
       "get": {
-        "tags": [
-          "Catalogos"
-        ],
+        "tags": ["Catalogos"],
         "summary": "Obtiene códigos postales que coincidan con el parámetro",
         "operationId": "GetCodigosPostales",
         "parameters": [
@@ -3526,9 +3416,7 @@
     },
     "/api/catalogos/colonia/get-cols-by-cp": {
       "get": {
-        "tags": [
-          "Catalogos"
-        ],
+        "tags": ["Catalogos"],
         "summary": "Obtiene colonias por código postal",
         "operationId": "GetColoniasByCodigoPostal",
         "parameters": [
@@ -3548,16 +3436,6 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ColoniaComponentDtoResult"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiResponseDto"
                 }
               }
             }
@@ -3582,6 +3460,16 @@
               }
             }
           },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          },
           "500": {
             "description": "Internal Server Error",
             "content": {
@@ -3597,9 +3485,7 @@
     },
     "/api/catalogos/colonia/get-cols-by-id/{id}": {
       "get": {
-        "tags": [
-          "Catalogos"
-        ],
+        "tags": ["Catalogos"],
         "summary": "Obtiene colonias por ID",
         "operationId": "GetColoniasById",
         "parameters": [
@@ -3624,8 +3510,8 @@
               }
             }
           },
-          "404": {
-            "description": "Not Found",
+          "401": {
+            "description": "Unauthorized",
             "content": {
               "application/json": {
                 "schema": {
@@ -3634,8 +3520,8 @@
               }
             }
           },
-          "401": {
-            "description": "Unauthorized",
+          "404": {
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -3659,9 +3545,7 @@
     },
     "/api/Configuraciones/tipo-credito/{id}": {
       "get": {
-        "tags": [
-          "Configuraciones"
-        ],
+        "tags": ["Configuraciones"],
         "summary": "Tipo de Credito",
         "description": "Obtiene un tipo de Crédito por ID",
         "operationId": "GetTipoCreditoById",
@@ -3687,8 +3571,8 @@
               }
             }
           },
-          "404": {
-            "description": "Not Found",
+          "401": {
+            "description": "Unauthorized",
             "content": {
               "application/json": {
                 "schema": {
@@ -3697,8 +3581,8 @@
               }
             }
           },
-          "401": {
-            "description": "Unauthorized",
+          "404": {
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -3720,9 +3604,7 @@
         }
       },
       "put": {
-        "tags": [
-          "Configuraciones"
-        ],
+        "tags": ["Configuraciones"],
         "summary": "Actualiza un tipo de credito",
         "operationId": "UpdateTipoCredito",
         "parameters": [
@@ -3750,16 +3632,6 @@
           "200": {
             "description": "OK"
           },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiResponseDto"
-                }
-              }
-            }
-          },
           "400": {
             "description": "Bad Request",
             "content": {
@@ -3772,6 +3644,16 @@
           },
           "401": {
             "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -3795,9 +3677,7 @@
     },
     "/api/Configuraciones/tipo-credito": {
       "get": {
-        "tags": [
-          "Configuraciones"
-        ],
+        "tags": ["Configuraciones"],
         "summary": "Obtiene tipo de Crédito paginadas y filtradas",
         "operationId": "GetPaginatedTipoCreditoById",
         "parameters": [
@@ -3877,9 +3757,7 @@
         }
       },
       "post": {
-        "tags": [
-          "Configuraciones"
-        ],
+        "tags": ["Configuraciones"],
         "summary": "Crea un nuevo tipo de credito pasivo",
         "operationId": "CreateTipoCredito",
         "requestBody": {
@@ -3939,9 +3817,7 @@
     },
     "/api/Configuraciones/tipo-tabla-amortiza/{id}": {
       "get": {
-        "tags": [
-          "Configuraciones"
-        ],
+        "tags": ["Configuraciones"],
         "summary": "Obtiene un tipo de tabla amortiza por ID",
         "operationId": "GetTipoTablaAmortizaById",
         "parameters": [
@@ -3966,8 +3842,8 @@
               }
             }
           },
-          "404": {
-            "description": "Not Found",
+          "401": {
+            "description": "Unauthorized",
             "content": {
               "application/json": {
                 "schema": {
@@ -3976,8 +3852,8 @@
               }
             }
           },
-          "401": {
-            "description": "Unauthorized",
+          "404": {
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -3999,9 +3875,7 @@
         }
       },
       "put": {
-        "tags": [
-          "Configuraciones"
-        ],
+        "tags": ["Configuraciones"],
         "summary": "Actualiza un tipo de tabla amortiza",
         "operationId": "UpdateTipoTablaAmortiza",
         "parameters": [
@@ -4029,16 +3903,6 @@
           "200": {
             "description": "OK"
           },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiResponseDto"
-                }
-              }
-            }
-          },
           "400": {
             "description": "Bad Request",
             "content": {
@@ -4051,6 +3915,16 @@
           },
           "401": {
             "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -4074,9 +3948,7 @@
     },
     "/api/Configuraciones/tipo-tabla-amortiza": {
       "get": {
-        "tags": [
-          "Configuraciones"
-        ],
+        "tags": ["Configuraciones"],
         "summary": "Obtiene tipos de tabla amortiza paginados y filtrados",
         "parameters": [
           {
@@ -4155,9 +4027,7 @@
         }
       },
       "post": {
-        "tags": [
-          "Configuraciones"
-        ],
+        "tags": ["Configuraciones"],
         "summary": "Crea un nuevo tipo de tabla amortiza",
         "operationId": "CreateTipoTablaAmortiza",
         "requestBody": {
@@ -4217,9 +4087,7 @@
     },
     "/api/Configuraciones/fondeador": {
       "get": {
-        "tags": [
-          "Configuraciones"
-        ],
+        "tags": ["Configuraciones"],
         "summary": "Obtiene fondeadores paginados y filtrados",
         "description": "Obtiene una lista paginada de fondeadores con opciones de filtrado y ordenamiento",
         "operationId": "GetPaginatedFondeadores",
@@ -4300,9 +4168,7 @@
         }
       },
       "post": {
-        "tags": [
-          "Configuraciones"
-        ],
+        "tags": ["Configuraciones"],
         "summary": "Crea un nuevo fondeador",
         "description": "Crea un nuevo registro de fondeador",
         "operationId": "CreateFondeador",
@@ -4363,9 +4229,7 @@
     },
     "/api/Configuraciones/fondeador/{id}": {
       "get": {
-        "tags": [
-          "Configuraciones"
-        ],
+        "tags": ["Configuraciones"],
         "summary": "Obtiene un fondeador por ID",
         "description": "Obtiene un fondeador específico por su identificador",
         "operationId": "GetFondeadorById",
@@ -4391,8 +4255,8 @@
               }
             }
           },
-          "404": {
-            "description": "Not Found",
+          "401": {
+            "description": "Unauthorized",
             "content": {
               "application/json": {
                 "schema": {
@@ -4401,8 +4265,8 @@
               }
             }
           },
-          "401": {
-            "description": "Unauthorized",
+          "404": {
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -4424,9 +4288,7 @@
         }
       },
       "put": {
-        "tags": [
-          "Configuraciones"
-        ],
+        "tags": ["Configuraciones"],
         "summary": "Actualiza un fondeador existente",
         "description": "Actualiza los datos de un fondeador específico",
         "operationId": "UpdateFondeador",
@@ -4455,16 +4317,6 @@
           "200": {
             "description": "OK"
           },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiResponseDto"
-                }
-              }
-            }
-          },
           "400": {
             "description": "Bad Request",
             "content": {
@@ -4477,6 +4329,16 @@
           },
           "401": {
             "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -4498,9 +4360,7 @@
         }
       },
       "delete": {
-        "tags": [
-          "Configuraciones"
-        ],
+        "tags": ["Configuraciones"],
         "summary": "Elimina un fondeador",
         "description": "Elimina un fondeador específico por su ID",
         "operationId": "DeleteFondeador",
@@ -4519,8 +4379,8 @@
           "200": {
             "description": "OK"
           },
-          "404": {
-            "description": "Not Found",
+          "401": {
+            "description": "Unauthorized",
             "content": {
               "application/json": {
                 "schema": {
@@ -4529,8 +4389,8 @@
               }
             }
           },
-          "401": {
-            "description": "Unauthorized",
+          "404": {
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -4554,9 +4414,7 @@
     },
     "/api/Configuraciones/linea-credito/{id}": {
       "get": {
-        "tags": [
-          "Configuraciones"
-        ],
+        "tags": ["Configuraciones"],
         "summary": "Obtiene una línea de crédito por ID",
         "description": "Obtiene una línea de crédito específica por su identificador",
         "operationId": "GetLineaCreditoById",
@@ -4582,8 +4440,8 @@
               }
             }
           },
-          "404": {
-            "description": "Not Found",
+          "401": {
+            "description": "Unauthorized",
             "content": {
               "application/json": {
                 "schema": {
@@ -4592,8 +4450,8 @@
               }
             }
           },
-          "401": {
-            "description": "Unauthorized",
+          "404": {
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -4615,9 +4473,7 @@
         }
       },
       "put": {
-        "tags": [
-          "Configuraciones"
-        ],
+        "tags": ["Configuraciones"],
         "summary": "Actualiza una línea de crédito existente",
         "description": "Actualiza los datos de una línea de crédito específica",
         "operationId": "UpdateLineaCredito",
@@ -4646,16 +4502,6 @@
           "200": {
             "description": "OK"
           },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiResponseDto"
-                }
-              }
-            }
-          },
           "400": {
             "description": "Bad Request",
             "content": {
@@ -4668,6 +4514,16 @@
           },
           "401": {
             "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -4689,9 +4545,7 @@
         }
       },
       "delete": {
-        "tags": [
-          "Configuraciones"
-        ],
+        "tags": ["Configuraciones"],
         "summary": "Elimina una línea de crédito",
         "description": "Elimina una línea de crédito específica por su ID",
         "operationId": "DeleteLineaCredito",
@@ -4710,8 +4564,8 @@
           "200": {
             "description": "OK"
           },
-          "404": {
-            "description": "Not Found",
+          "401": {
+            "description": "Unauthorized",
             "content": {
               "application/json": {
                 "schema": {
@@ -4720,8 +4574,8 @@
               }
             }
           },
-          "401": {
-            "description": "Unauthorized",
+          "404": {
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -4745,9 +4599,7 @@
     },
     "/api/Configuraciones/linea-credito": {
       "get": {
-        "tags": [
-          "Configuraciones"
-        ],
+        "tags": ["Configuraciones"],
         "summary": "Obtiene líneas de crédito paginadas y filtradas",
         "description": "Obtiene una lista paginada de líneas de crédito con opciones de filtrado y ordenamiento",
         "operationId": "GetPaginatedLineasCredito",
@@ -4851,9 +4703,7 @@
         }
       },
       "post": {
-        "tags": [
-          "Configuraciones"
-        ],
+        "tags": ["Configuraciones"],
         "summary": "Crea una nueva línea de crédito",
         "description": "Crea un nuevo registro de línea de crédito",
         "operationId": "CreateLineaCredito",
@@ -4914,9 +4764,7 @@
     },
     "/api/Configuraciones/linea-credito/{idLineaCredito}/tipos-credito": {
       "get": {
-        "tags": [
-          "Configuraciones"
-        ],
+        "tags": ["Configuraciones"],
         "summary": "Obtiene tipos de crédito por línea de crédito",
         "description": "Obtiene todos los tipos de crédito activos indicando cuáles están seleccionados para la línea de crédito especificada",
         "operationId": "GetTiposCreditoByLineaCredito",
@@ -4942,8 +4790,8 @@
               }
             }
           },
-          "404": {
-            "description": "Not Found",
+          "401": {
+            "description": "Unauthorized",
             "content": {
               "application/json": {
                 "schema": {
@@ -4952,8 +4800,8 @@
               }
             }
           },
-          "401": {
-            "description": "Unauthorized",
+          "404": {
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -4975,9 +4823,7 @@
         }
       },
       "put": {
-        "tags": [
-          "Configuraciones"
-        ],
+        "tags": ["Configuraciones"],
         "summary": "Guarda los tipos de crédito asociados a una línea",
         "description": "Actualiza la selección de tipos de crédito para una línea de crédito específica",
         "operationId": "SaveTiposCreditoByLineaCredito",
@@ -5009,16 +4855,6 @@
           "200": {
             "description": "OK"
           },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiResponseDto"
-                }
-              }
-            }
-          },
           "400": {
             "description": "Bad Request",
             "content": {
@@ -5031,6 +4867,16 @@
           },
           "401": {
             "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -5054,9 +4900,7 @@
     },
     "/api/contratos/{contratoPasivo}/info-general": {
       "get": {
-        "tags": [
-          "Contratos"
-        ],
+        "tags": ["Contratos"],
         "summary": "Obtiene información general de un contrato pasivo",
         "description": "Retorna información general, saldo vencido, movimientos capturables y saldo insoluto de un contrato pasivo",
         "operationId": "GetInfoGeneralContratoPasivo",
@@ -5091,8 +4935,8 @@
               }
             }
           },
-          "404": {
-            "description": "Not Found",
+          "401": {
+            "description": "Unauthorized",
             "content": {
               "application/json": {
                 "schema": {
@@ -5101,8 +4945,8 @@
               }
             }
           },
-          "401": {
-            "description": "Unauthorized",
+          "404": {
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -5126,9 +4970,7 @@
     },
     "/api/contratos/tabla-amortiza/{idContrato}": {
       "get": {
-        "tags": [
-          "Contratos"
-        ],
+        "tags": ["Contratos"],
         "summary": "Obtiene la tabla de amortización de un contrato por tipo",
         "operationId": "GetTablaAmortizacionByTipo",
         "parameters": [
@@ -5186,9 +5028,7 @@
     },
     "/api/contratos/rel-activo-pasivo": {
       "get": {
-        "tags": [
-          "Contratos"
-        ],
+        "tags": ["Contratos"],
         "summary": "Obtiene relación activo-pasivo por contrato y fondeador",
         "description": "Retorna información paginada de la relación activo-pasivo, incluyendo contrato, capital, tipo de crédito y fondeador, filtrada por ID de fondeador y ID de contrato con soporte para búsqueda y ordenamiento dinámico",
         "operationId": "GetRelActivoPasivo",
@@ -5274,8 +5114,8 @@
               }
             }
           },
-          "404": {
-            "description": "Not Found",
+          "401": {
+            "description": "Unauthorized",
             "content": {
               "application/json": {
                 "schema": {
@@ -5284,8 +5124,8 @@
               }
             }
           },
-          "401": {
-            "description": "Unauthorized",
+          "404": {
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -5309,9 +5149,7 @@
     },
     "/api/contratos/contrato-pasivo/{id}/asignar-activos": {
       "put": {
-        "tags": [
-          "Contratos"
-        ],
+        "tags": ["Contratos"],
         "summary": "Asigna contratos activos a un contrato pasivo",
         "description": "Permite asignar o reasignar contratos activos a un contrato pasivo específico. Si se envía ContratosActivos, se asigna un solo contrato; si se envía ListaContratos, se asignan múltiples contratos.",
         "operationId": "AsignarPasivos",
@@ -5340,16 +5178,6 @@
           "200": {
             "description": "OK"
           },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiResponseDto"
-                }
-              }
-            }
-          },
           "400": {
             "description": "Bad Request",
             "content": {
@@ -5362,6 +5190,16 @@
           },
           "401": {
             "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -5385,9 +5223,7 @@
     },
     "/api/contratos/movimiento/{idMovimiento}/detalle": {
       "get": {
-        "tags": [
-          "Contratos"
-        ],
+        "tags": ["Contratos"],
         "summary": "Obtiene el detalle de un movimiento",
         "description": "Retorna la información detallada de un movimiento específico, incluyendo los pagos aplicados",
         "operationId": "GetMovimientoDetalle",
@@ -5413,16 +5249,6 @@
               }
             }
           },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiResponseDto"
-                }
-              }
-            }
-          },
           "400": {
             "description": "Bad Request",
             "content": {
@@ -5435,6 +5261,16 @@
           },
           "401": {
             "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -5458,9 +5294,7 @@
     },
     "/api/contratos/pago/{idPago}/detalle": {
       "get": {
-        "tags": [
-          "Contratos"
-        ],
+        "tags": ["Contratos"],
         "summary": "Obtiene el detalle de un pago",
         "description": "Retorna la información detallada de un pago específico, incluyendo los movimientos o conceptos asociados.",
         "operationId": "GetPagoDetalle",
@@ -5486,16 +5320,6 @@
               }
             }
           },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiResponseDto"
-                }
-              }
-            }
-          },
           "400": {
             "description": "Bad Request",
             "content": {
@@ -5508,6 +5332,16 @@
           },
           "401": {
             "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -5531,9 +5365,7 @@
     },
     "/api/contratos/autocomplete": {
       "get": {
-        "tags": [
-          "Contratos"
-        ],
+        "tags": ["Contratos"],
         "summary": "Autocompleta contratos pasivos",
         "description": "Retorna una lista de contratos pasivos que coinciden con el término de búsqueda, limitado a 15 resultados, para ser utilizado en controles de autocompletado.",
         "operationId": "GetAutocompleteContrato",
@@ -5592,9 +5424,7 @@
     },
     "/api/contratos/{id}": {
       "get": {
-        "tags": [
-          "Contratos"
-        ],
+        "tags": ["Contratos"],
         "summary": "Obtiene un contrato pasivo por su ID",
         "description": "Retorna la información detallada de un contrato pasivo específico",
         "operationId": "GetContratoById",
@@ -5615,17 +5445,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ContratoPasivoDtoApiResponseDto"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiResponseDto"
+                  "$ref": "#/components/schemas/ContratoPasivoEditDtoApiResponseDto"
                 }
               }
             }
@@ -5650,6 +5470,16 @@
               }
             }
           },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          },
           "500": {
             "description": "Internal Server Error",
             "content": {
@@ -5663,9 +5493,7 @@
         }
       },
       "put": {
-        "tags": [
-          "Contratos"
-        ],
+        "tags": ["Contratos"],
         "summary": "Actualiza un contrato pasivo existente",
         "description": "Actualiza la información de un contrato pasivo existente. Solo permite modificar contratos en estado 'Borrador'",
         "operationId": "UpdateContrato",
@@ -5711,8 +5539,8 @@
               }
             }
           },
-          "404": {
-            "description": "Not Found",
+          "401": {
+            "description": "Unauthorized",
             "content": {
               "application/json": {
                 "schema": {
@@ -5721,8 +5549,8 @@
               }
             }
           },
-          "401": {
-            "description": "Unauthorized",
+          "404": {
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -5746,9 +5574,7 @@
     },
     "/api/contratos": {
       "get": {
-        "tags": [
-          "Contratos"
-        ],
+        "tags": ["Contratos"],
         "summary": "Lista contratos pasivos con filtros",
         "description": "Retorna una lista paginada de contratos pasivos con soporte para filtros por fondeador, estatus, línea de crédito, búsqueda por texto, ordenamiento dinámico y paginación",
         "operationId": "GetContratosPasivos",
@@ -5863,9 +5689,7 @@
         }
       },
       "post": {
-        "tags": [
-          "Contratos"
-        ],
+        "tags": ["Contratos"],
         "summary": "Crea un nuevo contrato pasivo",
         "description": "Crea un nuevo contrato pasivo con toda su información incluyendo pagos irregulares si aplica",
         "operationId": "CreateContrato",
@@ -5925,9 +5749,7 @@
     },
     "/api/contratos/nuevo/{idLineaCredito}": {
       "get": {
-        "tags": [
-          "Contratos"
-        ],
+        "tags": ["Contratos"],
         "summary": "Obtiene datos iniciales para crear un nuevo contrato",
         "description": "Retorna información pre-cargada basada en la línea de crédito seleccionada para facilitar la creación de un nuevo contrato",
         "operationId": "GetAddContrato",
@@ -5963,8 +5785,8 @@
               }
             }
           },
-          "404": {
-            "description": "Not Found",
+          "401": {
+            "description": "Unauthorized",
             "content": {
               "application/json": {
                 "schema": {
@@ -5973,8 +5795,8 @@
               }
             }
           },
-          "401": {
-            "description": "Unauthorized",
+          "404": {
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -5988,9 +5810,7 @@
     },
     "/api/contratos/{id}/activar": {
       "put": {
-        "tags": [
-          "Contratos"
-        ],
+        "tags": ["Contratos"],
         "summary": "Activa un contrato pasivo",
         "description": "Activa un contrato pasivo con la fecha de activación especificada",
         "operationId": "ActivarContrato",
@@ -6036,8 +5856,8 @@
               }
             }
           },
-          "404": {
-            "description": "Not Found",
+          "401": {
+            "description": "Unauthorized",
             "content": {
               "application/json": {
                 "schema": {
@@ -6046,8 +5866,8 @@
               }
             }
           },
-          "401": {
-            "description": "Unauthorized",
+          "404": {
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -6071,9 +5891,7 @@
     },
     "/api/contratos/clave-contrato/{idTipoCredito}": {
       "get": {
-        "tags": [
-          "Contratos"
-        ],
+        "tags": ["Contratos"],
         "summary": "Obtiene la clave del contrato",
         "description": "Genera y retorna la clave del contrato basada en el prefijo, sufijo y contador del tipo de crédito",
         "operationId": "GetClaveContrato",
@@ -6109,8 +5927,8 @@
               }
             }
           },
-          "404": {
-            "description": "Not Found",
+          "401": {
+            "description": "Unauthorized",
             "content": {
               "application/json": {
                 "schema": {
@@ -6119,8 +5937,8 @@
               }
             }
           },
-          "401": {
-            "description": "Unauthorized",
+          "404": {
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -6144,9 +5962,7 @@
     },
     "/api/contratos/tipo-tabla-amortiza/{id}/info": {
       "get": {
-        "tags": [
-          "Contratos"
-        ],
+        "tags": ["Contratos"],
         "summary": "Obtiene información de capitalización por tipo de tabla de amortización",
         "description": "Retorna si es capitalizable y las listas de tipos de capitalización y pago de capital según el tipo de tabla de amortización",
         "operationId": "GetTipoTablaAmortizaInfo",
@@ -6182,8 +5998,8 @@
               }
             }
           },
-          "404": {
-            "description": "Not Found",
+          "401": {
+            "description": "Unauthorized",
             "content": {
               "application/json": {
                 "schema": {
@@ -6192,8 +6008,8 @@
               }
             }
           },
-          "401": {
-            "description": "Unauthorized",
+          "404": {
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -6217,9 +6033,7 @@
     },
     "/api/contratos/{idContrato}/pagos": {
       "get": {
-        "tags": [
-          "Contratos"
-        ],
+        "tags": ["Contratos"],
         "summary": "Obtiene los pagos de un contrato",
         "description": "Retorna la lista de pagos asociados a un contrato específico",
         "operationId": "GetPagosByIdContrato",
@@ -6255,8 +6069,8 @@
               }
             }
           },
-          "404": {
-            "description": "Not Found",
+          "401": {
+            "description": "Unauthorized",
             "content": {
               "application/json": {
                 "schema": {
@@ -6265,8 +6079,8 @@
               }
             }
           },
-          "401": {
-            "description": "Unauthorized",
+          "404": {
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -6290,9 +6104,7 @@
     },
     "/api/contratos/{idContrato}/movimientos": {
       "get": {
-        "tags": [
-          "Contratos"
-        ],
+        "tags": ["Contratos"],
         "summary": "Obtiene los movimientos de un contrato",
         "description": "Retorna la lista de movimientos asociados a un contrato específico",
         "operationId": "GetMovimientosByIdContrato",
@@ -6328,6 +6140,16 @@
               }
             }
           },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          },
           "404": {
             "description": "Not Found",
             "content": {
@@ -6338,8 +6160,69 @@
               }
             }
           },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/contratos/{idContratoPasivo}/contratos-asignados": {
+      "get": {
+        "tags": ["Contratos"],
+        "summary": "Obtiene los contratos asignados a un contrato pasivo",
+        "description": "Retorna la lista de contratos activos asignados a un contrato pasivo específico",
+        "operationId": "GetContratosAsignados",
+        "parameters": [
+          {
+            "name": "idContratoPasivo",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContratosAsignadosDtoListApiResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          },
           "401": {
             "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -6363,9 +6246,7 @@
     },
     "/api/operaciones/tipo-movimiento/{id}/config": {
       "get": {
-        "tags": [
-          "Operaciones"
-        ],
+        "tags": ["Operaciones"],
         "summary": "Obtiene configuración de un tipo de movimiento",
         "description": "Retorna los indicadores de generación de IVA para capital e intereses de un tipo de movimiento específico.",
         "operationId": "GetTipoMovimientoConfig",
@@ -6391,16 +6272,6 @@
               }
             }
           },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiResponseDto"
-                }
-              }
-            }
-          },
           "400": {
             "description": "Bad Request",
             "content": {
@@ -6413,6 +6284,16 @@
           },
           "401": {
             "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -6436,9 +6317,7 @@
     },
     "/api/operaciones/cargo-adicional": {
       "get": {
-        "tags": [
-          "Operaciones"
-        ],
+        "tags": ["Operaciones"],
         "summary": "Obtiene información de cargos adicionales para un contrato pasivo",
         "description": "Retorna los cargos adicionales, movimientos, saldo vencido y saldo insoluto de un contrato pasivo específico para su procesamiento.",
         "operationId": "GetCargoAdicional",
@@ -6458,16 +6337,6 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/CargoAdicionalViewDtoApiResponseDto"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiResponseDto"
                 }
               }
             }
@@ -6492,6 +6361,16 @@
               }
             }
           },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          },
           "500": {
             "description": "Internal Server Error",
             "content": {
@@ -6505,9 +6384,7 @@
         }
       },
       "post": {
-        "tags": [
-          "Operaciones"
-        ],
+        "tags": ["Operaciones"],
         "summary": "Crea un nuevo cargo adicional",
         "description": "Registra un nuevo cargo adicional (movimiento) para un contrato pasivo, calculando los montos de capital, intereses e IVA correspondientes.",
         "operationId": "CreateCargoAdicional",
@@ -6542,8 +6419,8 @@
               }
             }
           },
-          "404": {
-            "description": "Not Found",
+          "401": {
+            "description": "Unauthorized",
             "content": {
               "application/json": {
                 "schema": {
@@ -6552,8 +6429,8 @@
               }
             }
           },
-          "401": {
-            "description": "Unauthorized",
+          "404": {
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -6577,9 +6454,7 @@
     },
     "/api/operaciones/cargo-adicional/nuevo/{idContrato}": {
       "get": {
-        "tags": [
-          "Operaciones"
-        ],
+        "tags": ["Operaciones"],
         "summary": "Obtiene un nuevo cargo adicional con valores por defecto",
         "description": "Retorna un objeto CargoAdicionalDto inicializado con valores por defecto (fecha actual e IVA 16%) para un contrato específico.",
         "operationId": "GetNewCargoAdicional",
@@ -6605,16 +6480,6 @@
               }
             }
           },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiResponseDto"
-                }
-              }
-            }
-          },
           "400": {
             "description": "Bad Request",
             "content": {
@@ -6627,6 +6492,16 @@
           },
           "401": {
             "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -6650,9 +6525,7 @@
     },
     "/api/operaciones/cargo-adicional/{idMovimiento}": {
       "put": {
-        "tags": [
-          "Operaciones"
-        ],
+        "tags": ["Operaciones"],
         "summary": "Actualiza un cargo adicional existente",
         "description": "Modifica los datos de un cargo adicional (movimiento) existente, identificado por su ID.",
         "operationId": "UpdateCargoAdicional",
@@ -6681,16 +6554,6 @@
           "200": {
             "description": "OK"
           },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiResponseDto"
-                }
-              }
-            }
-          },
           "400": {
             "description": "Bad Request",
             "content": {
@@ -6703,6 +6566,16 @@
           },
           "401": {
             "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -6724,9 +6597,7 @@
         }
       },
       "delete": {
-        "tags": [
-          "Operaciones"
-        ],
+        "tags": ["Operaciones"],
         "summary": "Elimina un cargo adicional",
         "description": "Elimina lógicamente (o físicamente) un cargo adicional existente, identificado por su ID. Solo permite eliminar movimientos que no estén procesados ni tengan pagos aplicados.",
         "operationId": "DeleteCargoAdicional",
@@ -6745,16 +6616,6 @@
           "200": {
             "description": "OK"
           },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiResponseDto"
-                }
-              }
-            }
-          },
           "400": {
             "description": "Bad Request",
             "content": {
@@ -6767,6 +6628,16 @@
           },
           "401": {
             "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -6790,9 +6661,7 @@
     },
     "/api/operaciones/anticipo/{contrato}": {
       "get": {
-        "tags": [
-          "Operaciones"
-        ],
+        "tags": ["Operaciones"],
         "summary": "Obtiene información para anticipo por contrato pasivo",
         "description": "Retorna la configuración inicial para realizar un anticipo sobre un contrato pasivo activo específico, incluyendo la fecha sugerida basada en la tabla de amortización.",
         "operationId": "GetAnticipoByContrato",
@@ -6817,16 +6686,6 @@
               }
             }
           },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiResponseDto"
-                }
-              }
-            }
-          },
           "400": {
             "description": "Bad Request",
             "content": {
@@ -6839,6 +6698,16 @@
           },
           "401": {
             "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -6862,9 +6731,7 @@
     },
     "/api/operaciones/anticipo/config": {
       "get": {
-        "tags": [
-          "Operaciones"
-        ],
+        "tags": ["Operaciones"],
         "summary": "Obtiene configuración para anticipo/liquidación de contrato",
         "description": "Retorna la configuración necesaria para procesar un anticipo o liquidación de contrato basado en el tipo de terminación seleccionado, incluyendo montos, porcentajes de IVA y validaciones específicas.",
         "operationId": "GetAnticipoConfig",
@@ -6899,16 +6766,6 @@
               }
             }
           },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiResponseDto"
-                }
-              }
-            }
-          },
           "400": {
             "description": "Bad Request",
             "content": {
@@ -6921,6 +6778,16 @@
           },
           "401": {
             "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -6944,9 +6811,7 @@
     },
     "/api/operaciones/anticipo/interes": {
       "get": {
-        "tags": [
-          "Operaciones"
-        ],
+        "tags": ["Operaciones"],
         "summary": "Calcula el interés para un anticipo",
         "description": "Calcula el monto de intereses generados por un anticipo en un contrato pasivo, basado en la fecha de corte y el monto anticipado.",
         "operationId": "GetInteres",
@@ -7000,8 +6865,8 @@
               }
             }
           },
-          "404": {
-            "description": "Not Found",
+          "401": {
+            "description": "Unauthorized",
             "content": {
               "application/json": {
                 "schema": {
@@ -7010,8 +6875,8 @@
               }
             }
           },
-          "401": {
-            "description": "Unauthorized",
+          "404": {
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -7035,9 +6900,7 @@
     },
     "/api/operaciones/anticipo/confirmar": {
       "post": {
-        "tags": [
-          "Operaciones"
-        ],
+        "tags": ["Operaciones"],
         "summary": "Confirma y procesa un anticipo o liquidación",
         "description": "Registra un anticipo a capital o liquidación sobre un contrato pasivo, aplicando el procedimiento correspondiente.",
         "operationId": "ConfirmarAnticipo",
@@ -7065,8 +6928,8 @@
               }
             }
           },
-          "404": {
-            "description": "Not Found",
+          "401": {
+            "description": "Unauthorized",
             "content": {
               "application/json": {
                 "schema": {
@@ -7075,8 +6938,8 @@
               }
             }
           },
-          "401": {
-            "description": "Unauthorized",
+          "404": {
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -7100,9 +6963,7 @@
     },
     "/api/operaciones/caja/{contrato}": {
       "get": {
-        "tags": [
-          "Operaciones"
-        ],
+        "tags": ["Operaciones"],
         "summary": "Obtiene información de caja por contrato pasivo",
         "description": "Retorna la configuración inicial para registrar un pago en caja para un contrato específico.",
         "operationId": "GetCajaByContrato",
@@ -7127,16 +6988,6 @@
               }
             }
           },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApiResponseDto"
-                }
-              }
-            }
-          },
           "400": {
             "description": "Bad Request",
             "content": {
@@ -7149,6 +7000,16 @@
           },
           "401": {
             "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -7172,9 +7033,7 @@
     },
     "/api/operaciones/caja/confirmar": {
       "post": {
-        "tags": [
-          "Operaciones"
-        ],
+        "tags": ["Operaciones"],
         "summary": "Confirma y procesa un pago de caja",
         "description": "Registra un pago en caja, aplicando los movimientos seleccionados mediante el procedimiento almacenado usp_PSV_PagarCargosAsync.",
         "operationId": "ConfirmarPagoCaja",
@@ -7202,8 +7061,8 @@
               }
             }
           },
-          "404": {
-            "description": "Not Found",
+          "401": {
+            "description": "Unauthorized",
             "content": {
               "application/json": {
                 "schema": {
@@ -7212,8 +7071,8 @@
               }
             }
           },
-          "401": {
-            "description": "Unauthorized",
+          "404": {
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -7237,9 +7096,7 @@
     },
     "/api/procesos/moratorios": {
       "post": {
-        "tags": [
-          "Procesos"
-        ],
+        "tags": ["Procesos"],
         "summary": "Procesa moratorios para contratos",
         "description": "Ejecuta para calcular y aplicar moratorios a contratos, de forma global o para un contrato específico.",
         "operationId": "ProcesarMoratorios",
@@ -7274,8 +7131,8 @@
               }
             }
           },
-          "404": {
-            "description": "Not Found",
+          "401": {
+            "description": "Unauthorized",
             "content": {
               "application/json": {
                 "schema": {
@@ -7284,8 +7141,8 @@
               }
             }
           },
-          "401": {
-            "description": "Unauthorized",
+          "404": {
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -7309,9 +7166,7 @@
     },
     "/api/procesos/vencimientos": {
       "post": {
-        "tags": [
-          "Procesos"
-        ],
+        "tags": ["Procesos"],
         "summary": "Procesa vencimientos de contratos en un rango de fechas",
         "description": "Ejecuta el procedimiento almacenado usp_PSV_ProcesaVencimientosAsync para generar vencimientos de contratos en el rango de fechas especificado, con filtros opcionales por fondeador y contrato.",
         "operationId": "ProcesarVencimientos",
@@ -7346,8 +7201,8 @@
               }
             }
           },
-          "404": {
-            "description": "Not Found",
+          "401": {
+            "description": "Unauthorized",
             "content": {
               "application/json": {
                 "schema": {
@@ -7356,8 +7211,8 @@
               }
             }
           },
-          "401": {
-            "description": "Unauthorized",
+          "404": {
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -7381,9 +7236,7 @@
     },
     "/api/reportes/dashboard": {
       "get": {
-        "tags": [
-          "Reportes"
-        ],
+        "tags": ["Reportes"],
         "summary": "Obtiene datos del dashboard de reportes",
         "description": "Obtiene información de cartera activa, pasiva y otros datos para el dashboard",
         "operationId": "GetDashboard",
@@ -7477,9 +7330,7 @@
     },
     "/api/reportes/cartera-por-vencer/{Page}/{PageSize}": {
       "get": {
-        "tags": [
-          "Reportes"
-        ],
+        "tags": ["Reportes"],
         "summary": "Obtiene cartera activa por vencer con paginación",
         "description": "Obtiene listado paginado de cartera activa próxima a vencer",
         "operationId": "GetCarteraPorVencer",
@@ -7606,9 +7457,7 @@
     },
     "/api/reportes/cartera-pasiva-por-vencer": {
       "get": {
-        "tags": [
-          "Reportes"
-        ],
+        "tags": ["Reportes"],
         "summary": "Obtiene cartera pasiva por vencer con paginación",
         "operationId": "GetCarteraPasivaPorVencer",
         "parameters": [
@@ -7732,9 +7581,7 @@
     },
     "/api/select-lists/fondeadores": {
       "get": {
-        "tags": [
-          "Select Lists"
-        ],
+        "tags": ["Select Lists"],
         "summary": "Obtiene fondeadores",
         "description": "Retorna una lista de los Fondeadores",
         "operationId": "GetFondeadoresSelectList",
@@ -7811,9 +7658,7 @@
     },
     "/api/select-lists/contratos-pasivos-por-fondeador/{idFondeador}": {
       "get": {
-        "tags": [
-          "Select Lists"
-        ],
+        "tags": ["Select Lists"],
         "summary": "Obtiene contratos pasivos por ID de fondeador",
         "description": "Retorna una lista de contratos pasivos filtrados por el ID del fondeador",
         "operationId": "GetContratosPasivosPorFondeador",
@@ -7891,9 +7736,7 @@
     },
     "/api/select-lists/contratos-activos-por-pasivo/{idContratoPasivo}": {
       "get": {
-        "tags": [
-          "Select Lists"
-        ],
+        "tags": ["Select Lists"],
         "summary": "Obtiene contratos activos por ID de contrato pasivo",
         "description": "Retorna una lista de contratos activos filtrados por el ID del contrato pasivo",
         "operationId": "GetContratosActivosPorPasivo",
@@ -7964,9 +7807,7 @@
     },
     "/api/select-lists/moneda": {
       "get": {
-        "tags": [
-          "Select Lists"
-        ],
+        "tags": ["Select Lists"],
         "summary": "Obtiene las monedas del catalogo",
         "description": "Retorna una lista de monedas",
         "operationId": "GetMonedas",
@@ -8026,9 +7867,7 @@
     },
     "/api/select-lists/tipo-movimiento": {
       "get": {
-        "tags": [
-          "Select Lists"
-        ],
+        "tags": ["Select Lists"],
         "summary": "Obtiene los tipo de Movimientos del catalogo",
         "description": "Retorna una lista de tipo de Movimiento",
         "operationId": "GetTipoMovimientos",
@@ -8086,11 +7925,69 @@
         }
       }
     },
+    "/api/select-lists/tipo-movimiento-capturable": {
+      "get": {
+        "tags": ["Select Lists"],
+        "summary": "Obtiene los tipo de Movimientos capturables del catalogo",
+        "description": "Retorna una lista de tipo de Movimiento",
+        "operationId": "GetTipoMovimientosCapturables",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SelectItemDtoListApiResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/select-lists/tasas": {
       "get": {
-        "tags": [
-          "Select Lists"
-        ],
+        "tags": ["Select Lists"],
         "summary": "Obtiene lista de tasas para select",
         "description": "Retorna un listado de tasas filtradas por el tipo (fija o variable) para ser utilizadas en controles de selección.",
         "operationId": "GetTasas",
@@ -8149,9 +8046,7 @@
     },
     "/api/select-lists/tipo-terminaciones": {
       "get": {
-        "tags": [
-          "Select Lists"
-        ],
+        "tags": ["Select Lists"],
         "summary": "Obtiene lista de tipos de terminación para select",
         "description": "Retorna un listado de todos los tipos de terminación disponibles para ser utilizados en controles de selección.",
         "operationId": "GetTipoTerminaciones",
@@ -8201,9 +8096,7 @@
     },
     "/api/select-lists/tipo-reduccion": {
       "get": {
-        "tags": [
-          "Select Lists"
-        ],
+        "tags": ["Select Lists"],
         "summary": "Obtiene lista de tipos de reducción para select",
         "description": "Retorna un listado de los tipos de reducción disponibles (ej. POR MONTO) para ser utilizados en controles de selección.",
         "operationId": "GetTipoReduccion",
@@ -8253,9 +8146,7 @@
     },
     "/api/select-lists/tipo-pagos": {
       "get": {
-        "tags": [
-          "Select Lists"
-        ],
+        "tags": ["Select Lists"],
         "summary": "Obtiene lista de tipos de pago para select",
         "description": "Retorna un listado de todos los tipos de pago disponibles para ser utilizados en controles de selección.",
         "operationId": "GetTipoPagos",
@@ -8305,9 +8196,7 @@
     },
     "/api/select-lists/bancos": {
       "get": {
-        "tags": [
-          "Select Lists"
-        ],
+        "tags": ["Select Lists"],
         "summary": "Obtiene lista de bancos para select",
         "description": "Retorna un listado de todos los bancos disponibles para ser utilizados en controles de selección.",
         "operationId": "GetBancosSelectList",
@@ -8357,9 +8246,7 @@
     },
     "/api/select-lists/cuentas-bancarias/{idBanco}": {
       "get": {
-        "tags": [
-          "Select Lists"
-        ],
+        "tags": ["Select Lists"],
         "summary": "Obtiene lista de cuentas bancarias por banco",
         "description": "Retorna un listado de cuentas bancarias filtradas por el ID del banco para ser utilizadas en controles de selección dependientes.",
         "operationId": "GetCuentaBancariaByBancoIdSelectList",
@@ -8395,8 +8282,8 @@
               }
             }
           },
-          "404": {
-            "description": "Not Found",
+          "401": {
+            "description": "Unauthorized",
             "content": {
               "application/json": {
                 "schema": {
@@ -8405,8 +8292,8 @@
               }
             }
           },
-          "401": {
-            "description": "Unauthorized",
+          "404": {
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -8430,9 +8317,7 @@
     },
     "/api/select-lists/lineas-credito/{idFondeador}": {
       "get": {
-        "tags": [
-          "Select Lists"
-        ],
+        "tags": ["Select Lists"],
         "summary": "Obtiene líneas de crédito por ID de fondeador",
         "description": "Retorna una lista de líneas de crédito filtradas por el ID del fondeador",
         "operationId": "GetLineasCreditoByFondeador",
@@ -8503,9 +8388,7 @@
     },
     "/api/select-lists/estatus-contrato": {
       "get": {
-        "tags": [
-          "Select Lists"
-        ],
+        "tags": ["Select Lists"],
         "summary": "Obtiene lista de estatus de contrato",
         "description": "Retorna un listado de todos los estatus de contrato disponibles para ser utilizados en controles de selección",
         "operationId": "GetEstatusContratoSelectList",
@@ -8555,9 +8438,7 @@
     },
     "/api/select-lists/tipos-credito": {
       "get": {
-        "tags": [
-          "Select Lists"
-        ],
+        "tags": ["Select Lists"],
         "summary": "Obtiene lista de tipos de crédito",
         "description": "Retorna un listado de todos los tipos de crédito disponibles para ser utilizados en controles de selección",
         "operationId": "GetTipoCreditoSelectList",
@@ -8607,9 +8488,7 @@
     },
     "/api/select-lists/periodicidades": {
       "get": {
-        "tags": [
-          "Select Lists"
-        ],
+        "tags": ["Select Lists"],
         "summary": "Obtiene lista de periodicidades",
         "description": "Retorna un listado de todas las periodicidades disponibles para ser utilizadas en controles de selección",
         "operationId": "GetPeriodicidadSelectList",
@@ -8659,9 +8538,7 @@
     },
     "/api/select-lists/tasas-iva": {
       "get": {
-        "tags": [
-          "Select Lists"
-        ],
+        "tags": ["Select Lists"],
         "summary": "Obtiene lista de tasas de IVA",
         "description": "Retorna un listado de las tasas de IVA disponibles (16%, 11%, 0%) para ser utilizadas en controles de selección",
         "operationId": "GetTasaIvaSelectList",
@@ -8711,9 +8588,7 @@
     },
     "/api/select-lists/periodicidades-tta/{idTipoTablaAmortiza}": {
       "get": {
-        "tags": [
-          "Select Lists"
-        ],
+        "tags": ["Select Lists"],
         "summary": "Obtiene lista de periodicidades por tipo de tabla de amortización",
         "description": "Retorna un listado de periodicidades filtradas por el ID del tipo de tabla de amortización para ser utilizadas en controles de selección dependientes",
         "operationId": "GetPeriodicidadTTASelectList",
@@ -8784,9 +8659,7 @@
     },
     "/api/sistema/empresa": {
       "post": {
-        "tags": [
-          "Sistema"
-        ],
+        "tags": ["Sistema"],
         "summary": "Crea una nueva empresa",
         "operationId": "CreateEmpresa",
         "requestBody": {
@@ -8833,9 +8706,7 @@
         }
       },
       "get": {
-        "tags": [
-          "Sistema"
-        ],
+        "tags": ["Sistema"],
         "summary": "Obtiene empresas paginadas y filtradas",
         "parameters": [
           {
@@ -8880,9 +8751,7 @@
     },
     "/api/sistema/empresa/{id}": {
       "put": {
-        "tags": [
-          "Sistema"
-        ],
+        "tags": ["Sistema"],
         "summary": "Actualiza una empresa existente",
         "operationId": "UpdateEmpresa",
         "parameters": [
@@ -8927,16 +8796,6 @@
               }
             }
           },
-          "409": {
-            "description": "Conflict",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              }
-            }
-          },
           "401": {
             "description": "Unauthorized",
             "content": {
@@ -8949,6 +8808,16 @@
           },
           "404": {
             "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
             "content": {
               "application/json": {
                 "schema": {
@@ -8970,9 +8839,7 @@
         }
       },
       "delete": {
-        "tags": [
-          "Sistema"
-        ],
+        "tags": ["Sistema"],
         "summary": "Elimina una empresa",
         "operationId": "DeleteEmpresa",
         "parameters": [
@@ -9030,9 +8897,7 @@
         }
       },
       "get": {
-        "tags": [
-          "Sistema"
-        ],
+        "tags": ["Sistema"],
         "summary": "Obtiene una empresa por su ID",
         "operationId": "GetById",
         "parameters": [
@@ -9092,9 +8957,7 @@
     },
     "/api/sistema/empresa/all": {
       "get": {
-        "tags": [
-          "Sistema"
-        ],
+        "tags": ["Sistema"],
         "summary": "Obtiene todas las empresas activas",
         "operationId": "get-all",
         "responses": {
@@ -9136,9 +8999,7 @@
     },
     "/api/sistema/empresa/rfc/{rfc}": {
       "get": {
-        "tags": [
-          "Sistema"
-        ],
+        "tags": ["Sistema"],
         "summary": "Obtiene una empresa por RFC",
         "operationId": "GetEmpresaByRfc",
         "parameters": [
@@ -9197,9 +9058,7 @@
     },
     "/api/sistema/empresa/get-tiposdirecciones": {
       "get": {
-        "tags": [
-          "Sistema"
-        ],
+        "tags": ["Sistema"],
         "summary": "Obtiene lista de tipo de direcciones",
         "operationId": "GetTiposDirecciones",
         "responses": {
@@ -9508,9 +9367,7 @@
         "additionalProperties": false
       },
       "BancoDto": {
-        "required": [
-          "banco"
-        ],
+        "required": ["banco"],
         "type": "object",
         "properties": {
           "banco": {
@@ -9782,13 +9639,7 @@
         "additionalProperties": false
       },
       "CargoAdicionalDto": {
-        "required": [
-          "descripcion",
-          "fecMovimiento",
-          "idContrato",
-          "idTipoMovimiento",
-          "total"
-        ],
+        "required": ["descripcion", "fecMovimiento", "idContrato", "idTipoMovimiento", "total"],
         "type": "object",
         "properties": {
           "idContrato": {
@@ -10282,12 +10133,7 @@
         "additionalProperties": false
       },
       "ColoniaDto": {
-        "required": [
-          "codigoPostal",
-          "estado",
-          "municipio",
-          "sColonia"
-        ],
+        "required": ["codigoPostal", "estado", "municipio", "sColonia"],
         "type": "object",
         "properties": {
           "id": {
@@ -10466,7 +10312,8 @@
         },
         "additionalProperties": false
       },
-      "ContratoPasivoDto": {
+      "ContratoPasivoEditDto": {
+        "required": ["fecInicioContrato"],
         "type": "object",
         "properties": {
           "fondeador": {
@@ -10476,217 +10323,8 @@
           "idLineaCredito": {
             "type": "integer",
             "format": "int32"
-          },
-          "maxCapitalDisponible": {
-            "type": "number",
-            "format": "double"
-          },
-          "idFondeador": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "idTipoCredito": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
-          },
-          "contrato": {
-            "type": "string",
-            "nullable": true
           },
           "idEstatusContrato": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
-          },
-          "capitalFinanciado": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
-          },
-          "plazo": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
-          },
-          "idMoneda": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "idPeriodicidad": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "tipoTasa": {
-            "type": "boolean",
-            "nullable": true
-          },
-          "idTasa": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "tasaIva": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
-          },
-          "tasaBase": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
-          },
-          "tasa": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
-          },
-          "puntosMas": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
-          },
-          "puntosPor": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
-          },
-          "tipoTasaMora": {
-            "type": "boolean",
-            "nullable": true
-          },
-          "idTasaMora": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "tasaMora": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
-          },
-          "tasaBaseMora": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
-          },
-          "puntosMasMora": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
-          },
-          "factorMora": {
-            "type": "number",
-            "format": "double",
-            "nullable": true
-          },
-          "fechaFirmaContrato": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true
-          },
-          "fecInicioContrato": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true
-          },
-          "fecPrimeraRenta": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true
-          },
-          "fecActivacion": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true
-          },
-          "fecFinContrato": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true
-          },
-          "idTipoTablaAmortiza": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "idTipoCapitalizacion": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
-          },
-          "idTipoPagoCapital": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
-          },
-          "idPeriodicidad_TTA": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
-          },
-          "noPagosIrregulares": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
-          },
-          "tipoCredito": {
-            "type": "string",
-            "nullable": true
-          },
-          "pagos": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/PagoIrregularDto"
-            },
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "ContratoPasivoDtoApiResponseDto": {
-        "type": "object",
-        "properties": {
-          "success": {
-            "type": "boolean"
-          },
-          "message": {
-            "type": "string",
-            "nullable": true
-          },
-          "data": {
-            "$ref": "#/components/schemas/ContratoPasivoDto"
-          },
-          "errors": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "nullable": true
-          },
-          "statusCode": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "timestamp": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "traceId": {
-            "type": "string",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "ContratoPasivoEditDto": {
-        "required": [
-          "fecInicioContrato"
-        ],
-        "type": "object",
-        "properties": {
-          "fondeador": {
-            "type": "string",
-            "nullable": true
-          },
-          "idLineaCredito": {
             "type": "integer",
             "format": "int32"
           },
@@ -10714,6 +10352,10 @@
             "type": "integer",
             "format": "int32"
           },
+          "tipoCredito": {
+            "type": "string",
+            "nullable": true
+          },
           "capitalFinanciado": {
             "type": "number",
             "format": "double"
@@ -10740,11 +10382,13 @@
           },
           "fecActivacion": {
             "type": "string",
-            "format": "date-time"
+            "format": "date-time",
+            "nullable": true
           },
           "fecFinContrato": {
             "type": "string",
-            "format": "date-time"
+            "format": "date-time",
+            "nullable": true
           },
           "idTasa": {
             "type": "integer",
@@ -10793,6 +10437,10 @@
             "exclusiveMinimum": true,
             "type": "number",
             "format": "double"
+          },
+          "tipoTasaMora": {
+            "type": "boolean",
+            "nullable": true
           },
           "tasaIva": {
             "type": "number",
@@ -11009,13 +10657,83 @@
         },
         "additionalProperties": false
       },
+      "ContratosAsignadosDto": {
+        "type": "object",
+        "properties": {
+          "idContrato": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "contrato": {
+            "type": "string",
+            "nullable": true
+          },
+          "capital": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "fecActivacion": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "tipoCredito": {
+            "type": "string",
+            "nullable": true
+          },
+          "fechaAsignacion": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "idContratoPasivo": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ContratosAsignadosDtoListApiResponseDto": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ContratosAsignadosDto"
+            }
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "statusCode": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "traceId": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "CreateColoniaDto": {
-        "required": [
-          "codigoPostal",
-          "estado",
-          "municipio",
-          "sColonia"
-        ],
+        "required": ["codigoPostal", "estado", "municipio", "sColonia"],
         "type": "object",
         "properties": {
           "sColonia": {
@@ -11042,9 +10760,7 @@
         "additionalProperties": false
       },
       "CreateTipoDireccionDto": {
-        "required": [
-          "sTipoDireccion"
-        ],
+        "required": ["sTipoDireccion"],
         "type": "object",
         "properties": {
           "sTipoDireccion": {
@@ -11056,11 +10772,7 @@
         "additionalProperties": false
       },
       "CuentaBancariaDto": {
-        "required": [
-          "clabe",
-          "cuentaBancaria",
-          "idBanco"
-        ],
+        "required": ["clabe", "cuentaBancaria", "idBanco"],
         "type": "object",
         "properties": {
           "idBanco": {
@@ -11408,11 +11120,7 @@
         "additionalProperties": false
       },
       "EmpresaCreateDto": {
-        "required": [
-          "empresa1",
-          "razonSocial",
-          "rfc"
-        ],
+        "required": ["empresa1", "razonSocial", "rfc"],
         "type": "object",
         "properties": {
           "empresa1": {
@@ -11561,11 +11269,7 @@
         "additionalProperties": false
       },
       "EmpresaUpdateDto": {
-        "required": [
-          "razonSocial",
-          "rfc",
-          "sEmpresa"
-        ],
+        "required": ["razonSocial", "rfc", "sEmpresa"],
         "type": "object",
         "properties": {
           "id": {
@@ -11617,9 +11321,7 @@
         "additionalProperties": false
       },
       "EstatusContratoDto": {
-        "required": [
-          "estatusContrato"
-        ],
+        "required": ["estatusContrato"],
         "type": "object",
         "properties": {
           "estatusContrato": {
@@ -11797,9 +11499,7 @@
         "additionalProperties": false
       },
       "FondeadorEditDto": {
-        "required": [
-          "fondeador"
-        ],
+        "required": ["fondeador"],
         "type": "object",
         "properties": {
           "fondeador": {
@@ -12418,10 +12118,7 @@
         "additionalProperties": false
       },
       "LoginByUsernameRequestDto": {
-        "required": [
-          "contrasena",
-          "usuarioNombre"
-        ],
+        "required": ["contrasena", "usuarioNombre"],
         "type": "object",
         "properties": {
           "usuarioNombre": {
@@ -12436,10 +12133,7 @@
         "additionalProperties": false
       },
       "LoginRequestDto": {
-        "required": [
-          "contrasenia",
-          "email"
-        ],
+        "required": ["contrasenia", "email"],
         "type": "object",
         "properties": {
           "email": {
@@ -12530,6 +12224,10 @@
         "type": "object",
         "properties": {
           "idMovimiento": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "idTipoMovimiento": {
             "type": "integer",
             "format": "int32"
           },
@@ -12846,7 +12544,7 @@
             "nullable": true
           }
         },
-        "additionalProperties": { }
+        "additionalProperties": {}
       },
       "ProcesaMoratorioRequest": {
         "type": "object",
@@ -13153,26 +12851,12 @@
         "additionalProperties": false
       },
       "ResultStatus": {
-        "enum": [
-          0,
-          1,
-          2,
-          3,
-          4,
-          5,
-          6,
-          7,
-          8,
-          9,
-          10
-        ],
+        "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
         "type": "integer",
         "format": "int32"
       },
       "RolCreateDto": {
-        "required": [
-          "sRol"
-        ],
+        "required": ["sRol"],
         "type": "object",
         "properties": {
           "sRol": {
@@ -13344,10 +13028,7 @@
         "additionalProperties": false
       },
       "RolUpdateDto": {
-        "required": [
-          "id",
-          "sRol"
-        ],
+        "required": ["id", "sRol"],
         "type": "object",
         "properties": {
           "id": {
@@ -13796,9 +13477,7 @@
         "additionalProperties": false
       },
       "TipoDireccionDto": {
-        "required": [
-          "sTipoDireccion"
-        ],
+        "required": ["sTipoDireccion"],
         "type": "object",
         "properties": {
           "id": {
@@ -14000,9 +13679,7 @@
         "additionalProperties": false
       },
       "TipoPagoDto": {
-        "required": [
-          "tipoPago"
-        ],
+        "required": ["tipoPago"],
         "type": "object",
         "properties": {
           "tipoPago": {
@@ -14127,9 +13804,7 @@
         "additionalProperties": false
       },
       "TipoTablaAmortizaDto": {
-        "required": [
-          "tipoTablaAmortiza"
-        ],
+        "required": ["tipoTablaAmortiza"],
         "type": "object",
         "properties": {
           "tipoTablaAmortiza": {
@@ -14341,12 +14016,7 @@
         "additionalProperties": false
       },
       "UpdateColoniaDto": {
-        "required": [
-          "codigoPostal",
-          "estado",
-          "municipio",
-          "sColonia"
-        ],
+        "required": ["codigoPostal", "estado", "municipio", "sColonia"],
         "type": "object",
         "properties": {
           "sColonia": {
@@ -14373,9 +14043,7 @@
         "additionalProperties": false
       },
       "UpdateTipoDireccionDto": {
-        "required": [
-          "sTipoDireccion"
-        ],
+        "required": ["sTipoDireccion"],
         "type": "object",
         "properties": {
           "sTipoDireccion": {
@@ -14474,13 +14142,7 @@
         "additionalProperties": false
       },
       "UsuarioCreateDto": {
-        "required": [
-          "contrasena",
-          "email",
-          "nombreCompleto",
-          "rolId",
-          "usuarioNombre"
-        ],
+        "required": ["contrasena", "email", "nombreCompleto", "rolId", "usuarioNombre"],
         "type": "object",
         "properties": {
           "nombreCompleto": {
@@ -14685,13 +14347,7 @@
         "additionalProperties": false
       },
       "UsuarioUpdateDto": {
-        "required": [
-          "email",
-          "id",
-          "nombreCompleto",
-          "rolId",
-          "usuarioNombre"
-        ],
+        "required": ["email", "id", "nombreCompleto", "rolId", "usuarioNombre"],
         "type": "object",
         "properties": {
           "id": {
@@ -14785,14 +14441,10 @@
             "nullable": true
           }
         },
-        "additionalProperties": { }
+        "additionalProperties": {}
       },
       "ValidationSeverity": {
-        "enum": [
-          0,
-          1,
-          2
-        ],
+        "enum": [0, 1, 2],
         "type": "integer",
         "format": "int32"
       }

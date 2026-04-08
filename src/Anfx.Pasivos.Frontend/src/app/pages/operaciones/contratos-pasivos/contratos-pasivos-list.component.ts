@@ -1,11 +1,12 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
-import { CurrencyPipe } from '@angular/common';
+import { CurrencyPipe, DatePipe } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { SelectListsService } from 'src/app/core/api/services/selectLists.service';
 import { ContratosService } from 'src/app/core/api/services/contratos.service';
 import { SelectItemDto } from 'src/app/core/api/models/selectItemDto';
 import { ContratoPasivoListItem } from 'src/app/core/api/models/contratoPasivoListItem';
+import { ContratosAsignadosDto } from 'src/app/core/api/models/contratosAsignadosDto';
 import { wasHandledByInterceptor } from '../../../interceptors/auth.interceptor';
 import { UtilsService } from '@services/utils.service';
 import { CardInfoComponent } from '@shared/components/card/card-info.component';
@@ -13,7 +14,7 @@ import { CardInfoComponent } from '@shared/components/card/card-info.component';
 @Component({
   selector: 'app-contratos-pasivos-list',
   standalone: true,
-  imports: [ReactiveFormsModule, CurrencyPipe, CardInfoComponent],
+  imports: [ReactiveFormsModule, CurrencyPipe, DatePipe, CardInfoComponent],
   templateUrl: './contratos-pasivos-list.component.html',
 })
 export class ContratosPasivosListComponent implements OnInit {
@@ -46,14 +47,22 @@ export class ContratosPasivosListComponent implements OnInit {
   currentPage = signal(1);
   pageSize    = signal(10);
 
+  // ── Contratos asignados ───────────────────────────────────────
+  pasivoSeleccionado    = signal<ContratoPasivoListItem | null>(null);
+  contratosAsignados    = signal<ContratosAsignadosDto[]>([]);
+  loadingAsignados      = signal(false);
+
   private page           = 1;
   private sortDescending = false;
   sortColumn: string | null = null;
   sortDir: 'asc' | 'desc'  = 'asc';
 
+  private readonly STORAGE_KEY = 'contratos-pasivos-filtros';
+
   ngOnInit(): void {
     this.cargarFondeadores();
     this.cargarEstatus();
+    this.restaurarFiltros();
     this.load();
 
     this.form.get('idFondeador')!.valueChanges.subscribe(idFondeador => {
@@ -69,10 +78,12 @@ export class ContratosPasivosListComponent implements OnInit {
 
   onBuscar(): void {
     this.page = 1;
+    this.guardarFiltros();
     this.load();
   }
 
   onLimpiar(): void {
+    this.eliminarFiltrosStorage();
     this.form.reset({ idFondeador: null, idLineaCredito: null, idEstatusContrato: null, searchText: '' });
     this.lineasCredito.set([]);
     this.items.set([]);
@@ -105,7 +116,38 @@ export class ContratosPasivosListComponent implements OnInit {
   }
 
   onVer(item: ContratoPasivoListItem): void {
-    this.router.navigate(['/operaciones/contratos-pasivos/view', item.id]);
+    this.router.navigate(['/operaciones/contratos-pasivos/view', item.contrato]);
+  }
+
+  onActivar(item: ContratoPasivoListItem): void {
+    this.router.navigate(
+      ['/operaciones/contratos-pasivos/activar', item.id],
+      { state: { contrato: item.contrato } },
+    );
+  }
+
+  onVerAsignados(item: ContratoPasivoListItem): void {
+    this.pasivoSeleccionado.set(item);
+    this.contratosAsignados.set([]);
+    this.loadingAsignados.set(true);
+
+    this.contratosSvc.getContratosAsignados(item.id!).subscribe({
+      next: (res) => {
+        this.contratosAsignados.set(res.data ?? []);
+        this.loadingAsignados.set(false);
+      },
+      error: (err) => {
+        this.loadingAsignados.set(false);
+        if (!wasHandledByInterceptor(err)) {
+          this.utilsService.showNotification('Error', 'Error al cargar los contratos asignados', 'error');
+        }
+      },
+    });
+  }
+
+  onCerrarAsignados(): void {
+    this.pasivoSeleccionado.set(null);
+    this.contratosAsignados.set([]);
   }
 
   // ── Private ──────────────────────────────────────────────────
@@ -195,5 +237,30 @@ export class ContratosPasivosListComponent implements OnInit {
     this.pageSize.set(10);
     this.totalCount.set(0);
     this.totalPages.set(0);
+  }
+
+  private guardarFiltros(): void {
+    const valores = this.form.getRawValue();
+    localStorage.setItem(this.STORAGE_KEY, JSON.stringify(valores));
+  }
+
+  private eliminarFiltrosStorage(): void {
+    localStorage.removeItem(this.STORAGE_KEY);
+  }
+
+  private restaurarFiltros(): void {
+    const raw = localStorage.getItem(this.STORAGE_KEY);
+    if (!raw) return;
+    try {
+      const filtros = JSON.parse(raw);
+      // Patcheamos sin emitir evento para no resetear idLineaCredito por el subscription de idFondeador
+      this.form.patchValue(filtros, { emitEvent: false });
+      // Si había un fondeador guardado, cargamos sus líneas de crédito manualmente
+      if (filtros.idFondeador) {
+        this.cargarLineasCredito(filtros.idFondeador);
+      }
+    } catch {
+      localStorage.removeItem(this.STORAGE_KEY);
+    }
   }
 }

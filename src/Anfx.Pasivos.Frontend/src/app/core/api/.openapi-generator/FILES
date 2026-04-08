@@ -1,5 +1,4 @@
 .gitignore
-.openapi-generator-ignore
 README.md
 api.base.service.ts
 api.module.ts
@@ -41,13 +40,13 @@ models/coloniaDtoApiResponseDto.ts
 models/coloniaDtoIEnumerableApiResponseDto.ts
 models/coloniaDtoPagedResultDto.ts
 models/coloniaDtoPagedResultDtoResult.ts
-models/contratoPasivoDto.ts
-models/contratoPasivoDtoApiResponseDto.ts
 models/contratoPasivoEditDto.ts
 models/contratoPasivoEditDtoApiResponseDto.ts
 models/contratoPasivoListItem.ts
 models/contratoPasivoListItemPagedResultDto.ts
 models/contratoPasivoListItemPagedResultDtoApiResponseDto.ts
+models/contratosAsignadosDto.ts
+models/contratosAsignadosDtoListApiResponseDto.ts
 models/createColoniaDto.ts
 models/createTipoDireccionDto.ts
 models/cuentaBancariaDto.ts

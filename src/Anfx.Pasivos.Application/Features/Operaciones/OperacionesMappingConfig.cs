@@ -1,4 +1,5 @@
-﻿using Anfx.Pasivos.Application.Features.Operaciones.DTOs;
+﻿using Anfx.Pasivos.Application.Features.Contratos.DTOs;
+using Anfx.Pasivos.Application.Features.Operaciones.DTOs;
 using Mapster;
 
 namespace Anfx.Pasivos.Application.Features.Operaciones;
@@ -15,5 +16,7 @@ public class OperacionesMappingConfig : IRegister
             .Map(o => o.TipoMoneda, d => d.SB_TipoMoneda.DescTipoMoneda)
             .Map(o => o.Fondeador, d => d.PSV_Fondeador.Fondeador)
             ;
+        config.NewConfig<PSV_Movimiento, MovimientoPagoItem>()
+            .Map(o => o.ID, d => d.IdMovimiento);
     }
 }

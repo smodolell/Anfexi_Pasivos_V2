@@ -21,11 +21,22 @@ internal class UpdateCargoAdicionalCommandHandler(IApplicationDbContext context,
 
         try
         {
-            var movimiento = await _context.PSV_Movimiento.SingleOrDefaultAsync(f => f.IdMovimiento == message.IdMovimiento, cancellationToken);
+            var movimiento = await _context.PSV_Movimiento
+                .Include(i => i.PSV_RelPagoMovimiento)
+                .SingleOrDefaultAsync(f => f.IdMovimiento == message.IdMovimiento, cancellationToken);
 
             if (movimiento == null) return Result.NotFound("Movimiento no encontrado");
 
+            if (movimiento.PSV_RelPagoMovimiento.Any())
+                return Result.Invalid(new ValidationError("No se puede modificar un cargo adicional que ya tiene pagos relacionados"));
+
             _mapper.Map(model, movimiento);
+
+            movimiento.SaldoCapital = model.Capital;
+            movimiento.SaldoInteres = model.Interes;
+            movimiento.SaldoIVA = model.IVA;
+            movimiento.SaldoTotal = model.Capital + model.Interes + model.IVA;
+
 
             _context.PSV_Movimiento.Update(movimiento);
 
