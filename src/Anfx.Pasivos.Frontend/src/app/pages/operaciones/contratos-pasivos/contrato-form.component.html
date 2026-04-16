@@ -628,8 +628,13 @@
     <!-- ── Botones ────────────────────────────────────────────── -->
     <div class="d-flex gap-2 justify-content-end mt-3 mb-5">
       <button type="button" class="btn btn-outline-secondary px-4" (click)="onCancelar()" [disabled]="isSaving()">
-        <i class="fa-solid fa-xmark me-2"></i>Cancelar
+        <i class="fa-solid fa-xmark me-2"></i>Ir a Contratos
       </button>
+      @if (isEditMode() && form.get('idEstatusContrato')?.value === 1) {
+        <button type="button" class="btn btn-success px-4" (click)="onActivar()" [disabled]="isSaving()">
+          <i class="fa-solid fa-bolt me-2"></i>Activar Contrato
+        </button>
+      }
       <button type="submit" class="btn btn-primary px-4" [disabled]="isSaving() || !puedeGuardar">
         @if (isSaving()) {
           <span class="spinner-border spinner-border-sm me-2"></span>Guardando...

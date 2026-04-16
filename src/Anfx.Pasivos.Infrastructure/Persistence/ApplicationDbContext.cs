@@ -22,6 +22,7 @@ public partial class ApplicationDbContext : DbContext,IApplicationDbContext
     public DbSet<SB_Periodicidad> SB_Periodicidad => Set<SB_Periodicidad>();
     public DbSet<SB_TipoMoneda> SB_TipoMoneda => Set<SB_TipoMoneda>();
     public DbSet<Tasa> Tasa => Set<Tasa>();
+    public DbSet<TasaValor> TasaValor => Set<TasaValor>();
     public DbSet<TipoCalculoTasaVariable> TipoCalculoTasaVariable => Set<TipoCalculoTasaVariable>();
     public DbSet<TipoGeneracionComprobante> TipoGeneracionComprobante => Set<TipoGeneracionComprobante>();
     public DbSet<TipoMantenimiento> TipoMantenimiento => Set<TipoMantenimiento>();

@@ -14,6 +14,7 @@ public interface IApplicationDbContext
     DbSet<SB_Periodicidad> SB_Periodicidad { get; }
     DbSet<SB_TipoMoneda> SB_TipoMoneda { get; }
     DbSet<Tasa> Tasa { get; }
+    DbSet<TasaValor> TasaValor { get; }
     DbSet<TipoCalculoTasaVariable> TipoCalculoTasaVariable { get; }
     DbSet<TipoGeneracionComprobante> TipoGeneracionComprobante { get; }
     DbSet<TipoMantenimiento> TipoMantenimiento { get; }

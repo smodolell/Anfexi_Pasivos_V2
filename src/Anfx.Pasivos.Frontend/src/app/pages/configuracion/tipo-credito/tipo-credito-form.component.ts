@@ -3,8 +3,10 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ConfiguracionesService } from 'src/app/core/api/services/configuraciones.service';
+import { SelectListsService } from 'src/app/core/api/services/selectLists.service';
 import { TipoCreditoDto } from 'src/app/core/api/models/tipoCreditoDto';
 import { TipoTablaAmortizaListItemDto } from 'src/app/core/api/models/tipoTablaAmortizaListItemDto';
+import { SelectItemDto } from 'src/app/core/api/models/selectItemDto';
 import { CardComponent } from '@shared/components/card/card.component';
 
 @Component({
@@ -15,6 +17,7 @@ import { CardComponent } from '@shared/components/card/card.component';
 })
 export class TipoCreditoFormComponent implements OnInit {
   private service = inject(ConfiguracionesService);
+  private selectListsService = inject(SelectListsService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private fb = inject(FormBuilder);
@@ -24,6 +27,7 @@ export class TipoCreditoFormComponent implements OnInit {
   tipoCreditoId = signal<number | null>(null);
   errorMsg = signal<string | null>(null);
   tiposTablaAmortiza = signal<TipoTablaAmortizaListItemDto[]>([]);
+  tiposMovimiento = signal<SelectItemDto[]>([]);
 
   form = this.fb.group({
     tipoCredito:         ['', [Validators.required, Validators.maxLength(200)]],
@@ -38,6 +42,7 @@ export class TipoCreditoFormComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadTiposTablaAmortiza();
+    this.loadTiposMovimiento();
 
     const id = this.route.snapshot.params['id'];
     if (id) {
@@ -45,6 +50,12 @@ export class TipoCreditoFormComponent implements OnInit {
       this.tipoCreditoId.set(+id);
       this.loadTipoCredito(+id);
     }
+  }
+
+  private loadTiposMovimiento(): void {
+    this.selectListsService.getTipoMovimientos().subscribe({
+      next: (res) => this.tiposMovimiento.set(res.data ?? [])
+    });
   }
 
   private loadTiposTablaAmortiza(): void {

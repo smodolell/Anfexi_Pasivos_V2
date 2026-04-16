@@ -115,6 +115,13 @@
         "icon": "fa-solid fa-money-check-dollar",
         "route": "/catalogos/tipo-pago",
         "order": 6
+      },
+      {
+        "id": "tasas",
+        "label": "Tasas",
+        "icon": "fa-solid fa-percent",
+        "route": "/catalogos/tasas",
+        "order": 7
       }
     ]
   },

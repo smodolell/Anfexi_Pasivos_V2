@@ -23,8 +23,8 @@ export class SidebarComponent implements OnInit {
   /** Indica si el overlay móvil está visible (clase show-sidebar en body) */
   readonly isMobileNavOpen = input<boolean>(false);
   readonly navItemSelected = output<void>();
-  readonly menuItems  = signal<MenuItem[]>([]);
-  readonly openIndex  = signal<number>(-1);
+  readonly menuItems = signal<MenuItem[]>([]);
+  readonly openId    = signal<string | null>(null);
 
   private readonly router      = inject(Router);
   private readonly menuService = inject(MenuService);
@@ -33,29 +33,33 @@ export class SidebarComponent implements OnInit {
   ngOnInit(): void {
     this.menuService.getMenuForRole(this.role())
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(items => this.menuItems.set(items));
+      .subscribe(items => {
+        this.menuItems.set(items);
+        // Una vez cargados los items, sincroniza con la ruta actual
+        this.openId.set(this.getIdFromUrl(this.router.url));
+      });
 
-    // Sincroniza el submenú abierto con la ruta activa
-    this.openIndex.set(this.getIndexFromUrl(this.router.url));
+    // Sincroniza el submenú abierto con la ruta activa en cada navegación
     this.router.events
       .pipe(
         filter((e): e is NavigationEnd => e instanceof NavigationEnd),
         takeUntilDestroyed(this.destroyRef)
       )
-      .subscribe(e => this.openIndex.set(this.getIndexFromUrl(e.urlAfterRedirects)));
+      .subscribe(e => this.openId.set(this.getIdFromUrl(e.urlAfterRedirects)));
   }
 
-  toggle(index: number): void {
-    this.openIndex.set(this.openIndex() === index ? -1 : index);
+  toggle(id: string): void {
+    this.openId.set(this.openId() === id ? null : id);
   }
 
-  isOpen(index: number): boolean {
-    return this.openIndex() === index;
+  isOpen(id: string): boolean {
+    return this.openId() === id;
   }
 
-  private getIndexFromUrl(url: string): number {
-    const items = this.menuItems();
-    const found = items.findIndex(item => url.startsWith(item.routePrefix));
-    return found;
+  private getIdFromUrl(url: string): string | null {
+    const item = this.menuItems().find(m =>
+      m.children?.some(child => url.startsWith(child.route))
+    );
+    return item?.id ?? null;
   }
 }

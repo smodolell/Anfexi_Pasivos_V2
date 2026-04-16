@@ -25,7 +25,7 @@ export class ContratoActivarComponent implements OnInit {
   formErrors    = signal<string[]>([]);
 
   form = this.fb.group({
-    fechaActivacion: [null as string | null, Validators.required],
+    fechaActivacion: [new Date().toISOString().substring(0, 10), Validators.required],
   });
 
   ngOnInit(): void {

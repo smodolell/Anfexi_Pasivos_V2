@@ -102,6 +102,14 @@ export const catalogosRoutes: Routes = [
             (m) => m.TipoDireccionListComponent,
           ),
       },
+      {
+        path: 'tasas',
+        data: { title: 'Tasas' },
+        loadComponent: () =>
+          import('../../pages/catalogos/tasas/tasas.component').then(
+            (m) => m.TasasComponent,
+          ),
+      },
     ],
   },
 ];

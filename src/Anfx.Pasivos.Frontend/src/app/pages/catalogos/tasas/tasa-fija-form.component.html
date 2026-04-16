@@ -1,0 +1,59 @@
+<div class="row">
+  <div class="col-md-6 offset-md-3">
+    <app-card
+      [title]="tasa.id ? 'Editar Tasa Fija' : 'Nueva Tasa Fija'"
+      [icon]="tasa.id ? 'fa-solid fa-pen-clip' : 'fa-solid fa-percent'"
+      [variant]="tasa.id ? 'warning' : 'info'">
+
+      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <div class="mb-3">
+          <label for="nombre" class="form-label">Nombre *</label>
+          <input
+            type="text"
+            class="form-control"
+            id="nombre"
+            formControlName="nombre"
+            [ngClass]="{'is-invalid': isInvalid('nombre')}"
+            placeholder="Ej: TIIE 28 días">
+          @if (isInvalid('nombre')) {
+            <div class="invalid-feedback">{{ getError('nombre') }}</div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label for="valorTasa" class="form-label">Valor de Tasa (%) *</label>
+          <input
+            type="number"
+            class="form-control"
+            id="valorTasa"
+            formControlName="valorTasa"
+            [ngClass]="{'is-invalid': isInvalid('valorTasa')}"
+            placeholder="Ej: 12.50"
+            step="0.01">
+          @if (isInvalid('valorTasa')) {
+            <div class="invalid-feedback">{{ getError('valorTasa') }}</div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label for="fecTasa" class="form-label">Fecha de Tasa</label>
+          <input
+            type="date"
+            class="form-control"
+            id="fecTasa"
+            formControlName="fecTasa">
+        </div>
+      </form>
+
+      <div slot="footer" class="d-flex justify-content-end gap-2">
+        <button type="button" class="btn btn-outline-secondary" (click)="cancelar.emit()">
+          <i class="fa fa-times me-1"></i> Cancelar
+        </button>
+        <button type="button" class="btn btn-primary" [disabled]="form.invalid" (click)="onSubmit()">
+          <i class="fa fa-save me-1"></i> Guardar
+        </button>
+      </div>
+
+    </app-card>
+  </div>
+</div>

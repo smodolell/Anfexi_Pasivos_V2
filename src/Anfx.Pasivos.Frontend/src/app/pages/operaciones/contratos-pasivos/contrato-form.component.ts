@@ -359,6 +359,14 @@ export class ContratoFormComponent implements OnInit {
     this.router.navigate(['/operaciones/contratos-pasivos']);
   }
 
+  onActivar(): void {
+    const contrato = this.form.get('contrato')?.value ?? '';
+    this.router.navigate(
+      ['/operaciones/contratos-pasivos/activar', this.contratoId()],
+      { state: { contrato } }
+    );
+  }
+
   // ── Private ──────────────────────────────────────────────────
 
   private cargarListasBase(): void {
