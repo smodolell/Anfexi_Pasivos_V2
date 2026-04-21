@@ -1,4 +1,4 @@
-﻿using Anfx.Profuturo.Domain.Entities;
+﻿using Anfx.Pasivos.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

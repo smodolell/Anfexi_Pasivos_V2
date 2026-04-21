@@ -81,6 +81,8 @@ import { TipoPagoDtoApiResponseDto } from '../models/tipoPagoDtoApiResponseDto';
 // @ts-ignore
 import { TipoPagoListItemDtoPagedResultDtoApiResponseDto } from '../models/tipoPagoListItemDtoPagedResultDtoApiResponseDto';
 // @ts-ignore
+import { ToggleTasaStatusRequest } from '../models/toggleTasaStatusRequest';
+// @ts-ignore
 import { UpdateColoniaDto } from '../models/updateColoniaDto';
 // @ts-ignore
 import { UpdateTipoDireccionDto } from '../models/updateTipoDireccionDto';
@@ -424,14 +426,15 @@ export class CatalogosService extends BaseService {
      * @param size 
      * @param sortColumn 
      * @param sortDescending 
+     * @param activa 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      * @param options additional options
      */
-    public apiCatalogosTasaFijaGet(q?: string, page?: number, size?: number, sortColumn?: string, sortDescending?: boolean, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<TasaFijaListItemDtoPagedResultDtoApiResponseDto>;
-    public apiCatalogosTasaFijaGet(q?: string, page?: number, size?: number, sortColumn?: string, sortDescending?: boolean, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<TasaFijaListItemDtoPagedResultDtoApiResponseDto>>;
-    public apiCatalogosTasaFijaGet(q?: string, page?: number, size?: number, sortColumn?: string, sortDescending?: boolean, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<TasaFijaListItemDtoPagedResultDtoApiResponseDto>>;
-    public apiCatalogosTasaFijaGet(q?: string, page?: number, size?: number, sortColumn?: string, sortDescending?: boolean, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiCatalogosTasaFijaGet(q?: string, page?: number, size?: number, sortColumn?: string, sortDescending?: boolean, activa?: boolean, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<TasaFijaListItemDtoPagedResultDtoApiResponseDto>;
+    public apiCatalogosTasaFijaGet(q?: string, page?: number, size?: number, sortColumn?: string, sortDescending?: boolean, activa?: boolean, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<TasaFijaListItemDtoPagedResultDtoApiResponseDto>>;
+    public apiCatalogosTasaFijaGet(q?: string, page?: number, size?: number, sortColumn?: string, sortDescending?: boolean, activa?: boolean, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<TasaFijaListItemDtoPagedResultDtoApiResponseDto>>;
+    public apiCatalogosTasaFijaGet(q?: string, page?: number, size?: number, sortColumn?: string, sortDescending?: boolean, activa?: boolean, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarQueryParameters = new OpenApiHttpParams(this.encoder);
 
@@ -475,6 +478,15 @@ export class CatalogosService extends BaseService {
             localVarQueryParameters,
             'sortDescending',
             <any>sortDescending,
+            QueryParamStyle.Form,
+            true,
+        );
+
+
+        localVarQueryParameters = this.addToHttpParams(
+            localVarQueryParameters,
+            'activa',
+            <any>activa,
             QueryParamStyle.Form,
             true,
         );
@@ -529,14 +541,15 @@ export class CatalogosService extends BaseService {
      * @param size 
      * @param sortColumn 
      * @param sortDescending 
+     * @param activa 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      * @param options additional options
      */
-    public apiCatalogosTasaVariableGet(q?: string, page?: number, size?: number, sortColumn?: string, sortDescending?: boolean, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<TasaVariableListItemDtoPagedResultDtoApiResponseDto>;
-    public apiCatalogosTasaVariableGet(q?: string, page?: number, size?: number, sortColumn?: string, sortDescending?: boolean, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<TasaVariableListItemDtoPagedResultDtoApiResponseDto>>;
-    public apiCatalogosTasaVariableGet(q?: string, page?: number, size?: number, sortColumn?: string, sortDescending?: boolean, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<TasaVariableListItemDtoPagedResultDtoApiResponseDto>>;
-    public apiCatalogosTasaVariableGet(q?: string, page?: number, size?: number, sortColumn?: string, sortDescending?: boolean, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+    public apiCatalogosTasaVariableGet(q?: string, page?: number, size?: number, sortColumn?: string, sortDescending?: boolean, activa?: boolean, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<TasaVariableListItemDtoPagedResultDtoApiResponseDto>;
+    public apiCatalogosTasaVariableGet(q?: string, page?: number, size?: number, sortColumn?: string, sortDescending?: boolean, activa?: boolean, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<TasaVariableListItemDtoPagedResultDtoApiResponseDto>>;
+    public apiCatalogosTasaVariableGet(q?: string, page?: number, size?: number, sortColumn?: string, sortDescending?: boolean, activa?: boolean, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<TasaVariableListItemDtoPagedResultDtoApiResponseDto>>;
+    public apiCatalogosTasaVariableGet(q?: string, page?: number, size?: number, sortColumn?: string, sortDescending?: boolean, activa?: boolean, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
 
         let localVarQueryParameters = new OpenApiHttpParams(this.encoder);
 
@@ -580,6 +593,15 @@ export class CatalogosService extends BaseService {
             localVarQueryParameters,
             'sortDescending',
             <any>sortDescending,
+            QueryParamStyle.Form,
+            true,
+        );
+
+
+        localVarQueryParameters = this.addToHttpParams(
+            localVarQueryParameters,
+            'activa',
+            <any>activa,
             QueryParamStyle.Form,
             true,
         );
@@ -2895,6 +2917,77 @@ export class CatalogosService extends BaseService {
             {
                 context: localVarHttpContext,
                 params: localVarQueryParameters.toHttpParams(),
+                responseType: <any>responseType_,
+                ...(withCredentials ? { withCredentials } : {}),
+                headers: localVarHeaders,
+                observe: observe,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * Activa o desactiva una tasa
+     * Cambia el estado Activo/Inactivo de una tasa. No permite desactivar si tiene contratos o líneas de crédito asociadas.
+     * @endpoint put /api/catalogos/tasa-fija/{id}/toggle-status
+     * @param id 
+     * @param toggleTasaStatusRequest 
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     * @param options additional options
+     */
+    public toggleTasaFijaStatus(id: number, toggleTasaStatusRequest: ToggleTasaStatusRequest, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any>;
+    public toggleTasaFijaStatus(id: number, toggleTasaStatusRequest: ToggleTasaStatusRequest, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
+    public toggleTasaFijaStatus(id: number, toggleTasaStatusRequest: ToggleTasaStatusRequest, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
+    public toggleTasaFijaStatus(id: number, toggleTasaStatusRequest: ToggleTasaStatusRequest, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        if (id === null || id === undefined) {
+            throw new Error('Required parameter id was null or undefined when calling toggleTasaFijaStatus.');
+        }
+        if (toggleTasaStatusRequest === null || toggleTasaStatusRequest === undefined) {
+            throw new Error('Required parameter toggleTasaStatusRequest was null or undefined when calling toggleTasaFijaStatus.');
+        }
+
+        let localVarHeaders = this.defaultHeaders;
+
+        const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
+            'application/json'
+        ]);
+        if (localVarHttpHeaderAcceptSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+        }
+
+        const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
+
+        const localVarTransferCache: boolean = options?.transferCache ?? true;
+
+
+        // to determine the Content-Type header
+        const consumes: string[] = [
+            'application/json'
+        ];
+        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+        if (httpContentTypeSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Content-Type', httpContentTypeSelected);
+        }
+
+        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        if (localVarHttpHeaderAcceptSelected) {
+            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+                responseType_ = 'text';
+            } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+                responseType_ = 'json';
+            } else {
+                responseType_ = 'blob';
+            }
+        }
+
+        let localVarPath = `/api/catalogos/tasa-fija/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: "int32"})}/toggle-status`;
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<any>('put', `${basePath}${localVarPath}`,
+            {
+                context: localVarHttpContext,
+                body: toggleTasaStatusRequest,
                 responseType: <any>responseType_,
                 ...(withCredentials ? { withCredentials } : {}),
                 headers: localVarHeaders,

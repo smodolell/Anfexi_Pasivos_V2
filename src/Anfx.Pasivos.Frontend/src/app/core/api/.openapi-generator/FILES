@@ -12,6 +12,9 @@ models/anticipoConfigDtoApiResponseDto.ts
 models/anticipoDto.ts
 models/anticipoDtoApiResponseDto.ts
 models/apiResponseDto.ts
+models/archivoListItemDto.ts
+models/archivoListItemDtoPagedResultDto.ts
+models/archivoListItemDtoPagedResultDtoApiResponseDto.ts
 models/asignarPasivosResponce.ts
 models/autocompleteResultDto.ts
 models/autocompleteResultDtoListApiResponseDto.ts
@@ -97,6 +100,10 @@ models/pagoDetalleDtoApiResponseDto.ts
 models/pagoIrregularDto.ts
 models/pagoItemDto.ts
 models/pagoItemDtoListApiResponseDto.ts
+models/parametroEditDto.ts
+models/parametroEditDtoApiResponseDto.ts
+models/parametroListItemDto.ts
+models/parametroListItemDtoListApiResponseDto.ts
 models/problemDetails.ts
 models/procesaMoratorioRequest.ts
 models/procesaMoratorioResultDto.ts
@@ -109,6 +116,14 @@ models/relActivoPasivoDtoPagedResultDto.ts
 models/relActivoPasivoDtoPagedResultDtoApiResponseDto.ts
 models/relLineaCreditoTipoCreditoDto.ts
 models/relLineaCreditoTipoCreditoDtoListApiResponseDto.ts
+models/reporteEditDto.ts
+models/reporteEditDtoApiResponseDto.ts
+models/reporteExecuteDto.ts
+models/reporteExecuteDtoApiResponseDto.ts
+models/reporteExecuteParametroDto.ts
+models/reporteListItemDto.ts
+models/reporteListItemDtoPagedResultDto.ts
+models/reporteListItemDtoPagedResultDtoApiResponseDto.ts
 models/resultStatus.ts
 models/rolCreateDto.ts
 models/rolDto.ts
@@ -121,6 +136,9 @@ models/selectItemDto.ts
 models/selectItemDtoICollectionApiResponseDto.ts
 models/selectItemDtoIEnumerableApiResponseDto.ts
 models/selectItemDtoListApiResponseDto.ts
+models/selectListItemDto.ts
+models/selectReporteDto.ts
+models/selectReporteDtoListApiResponseDto.ts
 models/stringApiResponseDto.ts
 models/tablaAmortizaItemDto.ts
 models/tablaAmortizaItemDtoListApiResponseDto.ts
@@ -161,6 +179,7 @@ models/tipoTablaAmortizaInfoDtoApiResponseDto.ts
 models/tipoTablaAmortizaListItemDto.ts
 models/tipoTablaAmortizaListItemDtoPagedResultDto.ts
 models/tipoTablaAmortizaListItemDtoPagedResultDtoApiResponseDto.ts
+models/toggleTasaStatusRequest.ts
 models/tokenValidationDto.ts
 models/updateColoniaDto.ts
 models/updateTipoDireccionDto.ts

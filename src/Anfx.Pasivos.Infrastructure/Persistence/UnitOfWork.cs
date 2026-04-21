@@ -1,10 +1,9 @@
 ﻿using Anfx.Pasivos.Application.Common.Interfaces;
-using Anfx.Pasivos.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using System.Data;
 
-namespace Anfx.Profuturo.Sofom.Infrastructure.Persitence;
+namespace Anfx.Pasivos.Infrastructure.Persistence;
 
 
 

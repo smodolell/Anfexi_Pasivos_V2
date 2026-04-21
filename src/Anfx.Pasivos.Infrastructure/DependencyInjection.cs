@@ -1,8 +1,6 @@
 ﻿using Anfx.Pasivos.Application.Common.Interfaces;
 using Anfx.Pasivos.Infrastructure.Persistence;
 using Anfx.Pasivos.Infrastructure.Services;
-using Anfx.Profuturo.Sofom.Infrastructure.Persitence;
-using Anfx.Profuturo.Sofom.Infrastructure.Services;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -44,6 +42,8 @@ public static class DependencyInjection
         services.AddScoped<IJwtService, JwtService>();
         services.AddScoped<IDatabaseService, DatabaseService>();
         services.AddScoped<IExcelExportService, ExcelExportService>();
+        services.AddScoped<IParameterExtractor, SqlServerParameterExtractor>();
+
 
         return services;
     }

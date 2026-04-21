@@ -1,4 +1,4 @@
-﻿namespace Anfx.Profuturo.Domain.Entities;
+﻿namespace Anfx.Pasivos.Domain.Entities;
 
 public class Consecutivo
 {

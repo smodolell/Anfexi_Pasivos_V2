@@ -73,6 +73,12 @@ public interface IApplicationDbContext
     DbSet<PSV_Terminacion> PSV_Terminacion { get; }
     DbSet<View_CarteraPasiva_PorVencerV2> View_CarteraPasiva_PorVencerV2 { get; }
 
+
+    DbSet<RSP_Archivo> RSP_Archivo { get; }
+    DbSet<RSP_Input> RSP_Input { get; }
+    DbSet<RSP_Parametro> RSP_Parametro { get; }
+    DbSet<RSP_Reporte> RSP_Reporte { get; }
+
     IApplicationDbContextProcedures Procedures { get; }
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

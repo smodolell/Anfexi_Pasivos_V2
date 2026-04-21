@@ -168,6 +168,36 @@
   },
 
   {
+    "id": "reportes",
+    "label": "Reportes",
+    "icon": "fa-solid fa-chart-bar",
+    "order": 7,
+    "children": [
+      {
+        "id": "reportes-configuracion",
+        "label": "Configuración",
+        "icon": "fa-solid fa-gears",
+        "route": "/reportes/configuracion",
+        "order": 1,
+        "roles": ["Admin", "Webmaster"]
+      },
+      {
+        "id": "reportes-ejecutar",
+        "label": "Ejecutar",
+        "icon": "fa-solid fa-play",
+        "route": "/reportes/ejecutar",
+        "order": 2
+      },
+      {
+        "id": "reportes-historial",
+        "label": "Historial",
+        "icon": "fa-solid fa-clock-rotate-left",
+        "route": "/reportes/historial",
+        "order": 3
+      }
+    ]
+  },
+  {
     "id": "procesos",
     "label": "Procesos",
     "icon": "fa-solid fa-gears",
