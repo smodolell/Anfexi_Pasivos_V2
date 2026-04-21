@@ -10,7 +10,7 @@ export const SKIP_ERROR_TOAST_HEADER = 'X-Skip-Error-Toast';
 
 /** Retorna true si el error HTTP ya fue notificado por el interceptor global */
 export function wasHandledByInterceptor(error: unknown): boolean {
-  return !!(error && typeof error === 'object' && (error as any)['interceptorHandled'] === true);
+  return !!(error && typeof error === 'object' && (error as Record<string, unknown>)['interceptorHandled'] === true);
 }
 
 // Evita que múltiples peticiones simultáneas con 401 disparen varias notificaciones/logout
@@ -32,7 +32,7 @@ export const AuthInterceptor: HttpInterceptorFn = (request, next) => {
     ? request.clone({ headers: request.headers.delete(SKIP_ERROR_TOAST_HEADER) })
     : request;
 
-  // Inyección de Token
+  // Inyección del access token de Okta
   const token = authService.getAuthToken();
   const withAuth = token
     ? outgoing.clone({ setHeaders: { Authorization: `Bearer ${token}` } })

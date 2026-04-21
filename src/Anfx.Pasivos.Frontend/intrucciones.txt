@@ -1,0 +1,29 @@
+Necesito integrar Okta como proveedor de autenticación en mi aplicación Angular.
+Por favor, ayúdame a implementarlo paso a paso con las siguientes características:
+**Contexto de mi aplicación:**
+- Framework: Angular (versión 21)
+- Tipo: Single Page Application (SPA)
+- Ya tengo una cuenta de Okta Developer creada
+- Mi aplicación actualmente no tiene sistema de autenticación
+**Requisitos funcionales:**
+1. Login con redirección a la página de Okta
+2. Logout que cierra la sesión en Okta
+3. Proteger rutas específicas (ej: /dashboard, /profile)
+4. Mostrar/ocultar botones según estado de autenticación
+5. Obtener información del usuario autenticado (nombre, email)
+6. Manejar renovación automática de tokens (refresh token)
+**Requisitos técnicos:**
+- Usar @okta/okta-angular y @okta/okta-auth-js
+- Implementar el flujo Authorization Code with PKCE
+- Almacenar el access token de forma segura
+- Interceptar peticiones HTTP para añadir el token automáticamente
+**Lo que necesito que me proporciones:**
+1. Comandos de instalación específicos
+2. Configuración completa del módulo de autenticación
+3. Ejemplo de un servicio de autenticación
+4. Ejemplo de un guard de rutas
+5. Componente de login/logout con template
+6. Interceptor HTTP para añadir el token
+7. Ejemplo de cómo llamar a una API protegida
+8. Manejo de errores comunes (token expirado, etc.)
+

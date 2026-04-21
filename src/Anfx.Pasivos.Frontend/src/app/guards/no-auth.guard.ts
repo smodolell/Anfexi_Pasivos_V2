@@ -1,13 +1,16 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
-import { AuthService } from '../services/auth.service';
+import { OktaAuthStateService } from '@okta/okta-angular';
+import { filter, map, take } from 'rxjs';
 
-/** Impide que un usuario ya autenticado acceda a rutas de login */
+/** Impide que un usuario ya autenticado con Okta acceda a rutas de login */
 export const noAuthGuard: CanActivateFn = () => {
-  const authService = inject(AuthService);
-  const router      = inject(Router);
+  const oktaState = inject(OktaAuthStateService);
+  const router    = inject(Router);
 
-  return authService.isAuthenticated()
-    ? router.createUrlTree(['/admin'])
-    : true;
+  return oktaState.authState$.pipe(
+    filter(state => !!state && state.isAuthenticated !== undefined),
+    take(1),
+    map(state => state.isAuthenticated ? router.createUrlTree(['/admin']) : true),
+  );
 };

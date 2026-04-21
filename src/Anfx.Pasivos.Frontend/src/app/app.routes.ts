@@ -1,10 +1,23 @@
 import { Routes } from '@angular/router';
 import { LoginLayoutComponent } from './layout/login-layout.component';
+import { OktaCallbackComponent } from '@okta/okta-angular';
 import { authGuard } from './guards/auth.guard';
 import { noAuthGuard } from './guards/no-auth.guard';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/auth/login', pathMatch: 'full' },
+
+  // Ruta de callback de Okta — maneja el redirect tras autenticación
+  { path: 'login/callback', component: OktaCallbackComponent },
+
+  // Ruta de callback post-logout de Okta — limpia la sesión y redirige al login
+  {
+    path: 'logout/callback',
+    loadComponent: () =>
+      import('./pages/auth/logout-callback/logout-callback.component').then(
+        (m) => m.LogoutCallbackComponent,
+      ),
+  },
 
   {
     path: 'admin',

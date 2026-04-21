@@ -1,5 +1,6 @@
 import {
   ApplicationConfig,
+  importProvidersFrom,
   provideBrowserGlobalErrorListeners,
   provideZonelessChangeDetection,
 } from '@angular/core';
@@ -7,6 +8,8 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { provideRouter } from '@angular/router';
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { provideToastr } from 'ngx-toastr';
+import OktaAuth from '@okta/okta-auth-js';
+import { OktaAuthModule } from '@okta/okta-angular';
 
 import { routes } from './app.routes';
 import { API_AUTH_URL, API_CATALOGO_URL, API_COTIZADOR_URL, API_SISTEMA_URL, MENU_API_URL } from './api.config';
@@ -14,6 +17,14 @@ import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { provideApi } from '@api/provide-api';
 import { provideHighcharts } from 'highcharts-angular';
 import { environment } from '../environments/environment';
+
+const oktaAuth = new OktaAuth({
+  issuer:      environment.okta.issuer,
+  clientId:    environment.okta.clientId,
+  redirectUri: environment.okta.redirectUri,
+  scopes:      environment.okta.scopes,
+  pkce:        true,
+});
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -30,6 +41,7 @@ export const appConfig: ApplicationConfig = {
     }),
     provideRouter(routes),
     provideHttpClient(withFetch(), withInterceptors([AuthInterceptor])),
+    importProvidersFrom(OktaAuthModule.forRoot({ oktaAuth })),
     provideApi({
       basePath: environment.apiBaseUrl,
       withCredentials: true,

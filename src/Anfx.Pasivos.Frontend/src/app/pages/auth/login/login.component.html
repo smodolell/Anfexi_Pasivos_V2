@@ -6,127 +6,27 @@
     </div>
     <div class="card-body">
 
-      @if (!showRecovery()) {
+      <h3 class="text-center mb-4">Inicia sesión</h3>
+      <p class="text-center text-muted mb-4">
+        Usa tu cuenta corporativa de Okta para acceder al sistema.
+      </p>
 
-        <!-- ── Formulario de inicio de sesión ── -->
-        <form class="form-horizontal form-material" (ngSubmit)="onSubmitLogin()" id="loginform" autocomplete="on">
-          <h3 class="text-center mb-4">Inicia sesión</h3>
-
-          <div class="form-group mb-3">
-            <label for="email" class="form-label">Correo electrónico</label>
-            <input
-              class="form-control"
-              type="email"
-              id="email"
-              name="email"
-              required
-              placeholder="correo@ejemplo.com"
-              autocomplete="username"
-              [(ngModel)]="formData.email"
-              [disabled]="isLoading()"
-            >
-          </div>
-
-          <div class="form-group mb-3">
-            <label for="contrasenia" class="form-label">Contraseña</label>
-            <div class="input-group">
-              <input
-                class="form-control"
-                [type]="showPassword() ? 'text' : 'password'"
-                id="contrasenia"
-                name="contrasenia"
-                required
-                placeholder="Contraseña"
-                autocomplete="current-password"
-                [(ngModel)]="formData.contrasenia"
-                [disabled]="isLoading()"
-              >
-              <button
-                class="btn btn-outline-secondary"
-                type="button"
-                (click)="togglePassword()"
-                [attr.aria-label]="showPassword() ? 'Ocultar contraseña' : 'Mostrar contraseña'"
-              >
-                <i [class]="showPassword() ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
-              </button>
-            </div>
-          </div>
-
-          <div class="form-group row mb-3">
-            <div class="col-12">
-              <div class="d-flex align-items-center">
-                <div class="form-check">
-                  <input
-                    type="checkbox"
-                    class="form-check-input"
-                    id="recuerdame"
-                    name="recuerdame"
-                    [(ngModel)]="formData.recuerdame"
-                  >
-                  <label class="form-check-label" for="recuerdame">Recuérdame</label>
-                </div>
-                <div class="ms-auto">
-                  <a href="javascript:void(0)" class="text-muted" (click)="showRecovery.set(true)">
-                    <i class="fas fa-lock me-1"></i> ¿Olvidaste tu contraseña?
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="form-group text-center mb-3">
-            <button
-              class="btn w-100 btn-lg btn-info btn-primary"
-              [disabled]="isLoading()"
-              type="submit"
-            >
-              @if (isLoading()) {
-                <span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>
-                Iniciando sesión...
-              } @else {
-                Entrar
-              }
-            </button>
-          </div>
-        </form>
-
-      } @else {
-
-        <!-- ── Formulario de recuperación de contraseña ── -->
-        <form class="form-horizontal" (ngSubmit)="onSubmitRecovery()" autocomplete="off">
-          <h3 class="mb-3">Recuperar Contraseña</h3>
-          <p class="text-muted">Ingresa tu correo electrónico y te enviaremos las instrucciones para recuperar tu contraseña.</p>
-
-          <div class="form-group mb-3">
-            <label for="recoveryEmail" class="form-label">Correo electrónico</label>
-            <input
-              class="form-control"
-              type="email"
-              id="recoveryEmail"
-              name="recoveryEmail"
-              required
-              placeholder="correo@ejemplo.com"
-              autocomplete="email"
-              [(ngModel)]="recoveryEmail"
-              [disabled]="isLoading()"
-            >
-
-          </div>
-
-          <div class="form-group text-center mb-3">
-            <button class="btn btn-primary btn-lg w-100 text-uppercase" type="submit">
-              Enviar instrucciones
-            </button>
-          </div>
-
-          <div class="form-group">
-            <a href="javascript:void(0)" class="text-muted" (click)="showRecovery.set(false)">
-              <i class="fas fa-arrow-left me-1"></i> Volver al inicio de sesión
-            </a>
-          </div>
-        </form>
-
-      }
+      <div class="form-group text-center mb-3">
+        <button
+          class="btn btn-lg btn-primary w-100"
+          [disabled]="isLoading()"
+          (click)="loginWithOkta()"
+          type="button"
+        >
+          @if (isLoading()) {
+            <span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>
+            Redirigiendo...
+          } @else {
+            <i class="fas fa-sign-in-alt me-2"></i>
+            Continuar con Okta
+          }
+        </button>
+      </div>
 
     </div>
   </div>

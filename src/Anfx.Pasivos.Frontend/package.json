@@ -42,6 +42,8 @@
     "@angular/ssr": "^21.2.3",
     "@fontsource/roboto": "5.2.10",
     "@fortawesome/fontawesome-free": "7.2.0",
+    "@okta/okta-angular": "^7.1.0",
+    "@okta/okta-auth-js": "^8.0.0",
     "bootstrap": "^5.3.8",
     "express": "^5.1.0",
     "highcharts": "^12.5.0",
