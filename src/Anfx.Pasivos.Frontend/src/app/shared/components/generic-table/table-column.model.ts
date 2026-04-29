@@ -42,7 +42,7 @@ export interface TableAction {
   /** Función opcional que deshabilita el botón fila a fila */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   disabledFn?: (row: any) => boolean;
-  
+
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

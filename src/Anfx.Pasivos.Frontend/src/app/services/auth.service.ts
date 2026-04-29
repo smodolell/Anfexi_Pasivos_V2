@@ -2,7 +2,7 @@ import { Injectable, Inject, isDevMode } from '@angular/core';
 import { BehaviorSubject, ReplaySubject, firstValueFrom } from 'rxjs';
 import { Router } from '@angular/router';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { API_AUTH_URL } from '../api.config';
+import { API_BASE_URL } from '../api.config';
 
 export interface User {
   id: number;
@@ -49,7 +49,7 @@ export class AuthService {
   constructor(
     private readonly router: Router,
     private readonly http: HttpClient,
-    @Inject(API_AUTH_URL) private readonly apiBaseUrl: string,
+    @Inject(API_BASE_URL) private readonly apiBaseUrl: string,
   ) {
     this.checkStoredAuth();
     this.setupStorageListener();

@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpParams } from '@angular/common/http';
-import { API_CATALOGO_URL } from '../../api.config';
+import { API_BASE_URL } from '../../api.config';
 import { BaseCatalogService } from '../base-catalog.service';
 import { PageQueryDto } from '../../../types/paged-result.dto';
 import { TipoCreditoListItemDto, TipoCreditoDetailDto, CreateTipoCreditoDto, UpdateTipoCreditoDto } from '../../../types/configuracion/tipo-credito.dto';
@@ -12,7 +12,7 @@ export class TipoCreditoService extends BaseCatalogService<
   CreateTipoCreditoDto,
   UpdateTipoCreditoDto
 > {
-  protected override readonly baseUrl  = inject(API_CATALOGO_URL);
+  protected override readonly baseUrl  = inject(API_BASE_URL);
   protected override readonly resource = 'Configuraciones/tipo-credito';
 
   protected override buildParams(query?: PageQueryDto): HttpParams {

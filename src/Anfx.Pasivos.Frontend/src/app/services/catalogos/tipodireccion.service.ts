@@ -1,7 +1,7 @@
 import { Injectable, Inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { API_CATALOGO_URL } from '../../api.config';
+import { API_BASE_URL } from '../../api.config';
 import { PagedResultDto, PageQueryDto } from '../../../types/paged-result.dto';
 import { ApiResultDto } from '../../../types/apiresult.dto';
 import { TipoDireccionDto, TipoDireccionPageQueryDto, CreateTipoDireccionDto, UpdateTipoDireccionDto } from '../../../types/catalogos/tipodireccion.dto';
@@ -12,7 +12,7 @@ export class TipoDireccionService {
 
     constructor(
         private http: HttpClient,
-        @Inject(API_CATALOGO_URL) private readonly baseUrl: string
+        @Inject(API_BASE_URL) private readonly baseUrl: string
     ) {}
 
     getAll(params?: TipoDireccionPageQueryDto): Observable<ApiResultDto<PagedResultDto<TipoDireccionDto>>> {

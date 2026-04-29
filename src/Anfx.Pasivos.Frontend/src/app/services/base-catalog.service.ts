@@ -3,6 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ApiResultDto } from '../../types/apiresult.dto';
 import { PagedResultDto, PageQueryDto } from '../../types/paged-result.dto';
+import { API_BASE_URL } from '../api.config';
 
 /**
  * Servicio base genérico para catálogos CRUD con paginación server-side.
@@ -11,7 +12,7 @@ import { PagedResultDto, PageQueryDto } from '../../types/paged-result.dto';
  *
  *   @Injectable({ providedIn: 'root' })
  *   export class ColoniaService extends BaseCatalogService<ColoniaDto, ColoniaDto, CreateColoniaDto, UpdateColoniaDto> {
- *     protected readonly baseUrl  = inject(API_CATALOGO_URL);
+ *     protected readonly baseUrl  = inject(API_BASE_URL);
  *     protected readonly resource = 'colonias';
  *   }
  *
@@ -29,9 +30,9 @@ export abstract class BaseCatalogService<
 > {
   protected readonly http = inject(HttpClient);
 
-  /** URL base del API, ej: inject(API_CATALOGO_URL) */
-  protected abstract readonly baseUrl: string;
-
+  /** URL base del API, ej: inject(API_BASE_URL) */
+  //protected abstract readonly baseUrl: string;
+  protected readonly baseUrl = inject(API_BASE_URL);
   /** Segmento del recurso, ej: 'colonias' */
   protected abstract readonly resource: string;
 

@@ -1,13 +1,8 @@
 export const environment = {
   production: false,
-  apiBaseUrl:      'http://localhost:5056',
-  apiAuthUrl:      'http://localhost:5056/api',
-  apiCatalogoUrl:  'http://localhost:5056/api',
-  apiSistemaUrl:   'http://localhost:5056/api',
-  apiCotizadorUrl: 'http://localhost:5056/api',
+  apiUrl:     'http://localhost:5056/api',
   menuApiUrl: 'assets/menu.json',
-  // ── App metadata ────────────────────────────────────────────
-  appName:    'Pasivos',
-  appVersion: '0.0.1',         // sincronizar con package.json al hacer release
+  app: { name: 'Pasivos', version: '0.0.1' },
   company:    'ANFEXI TECHNOLOGIES',
 };
+

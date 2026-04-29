@@ -1,7 +1,7 @@
 import { Injectable, Inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { API_SISTEMA_URL } from '../../api.config';
+import { API_BASE_URL } from '../../api.config';
 import { PagedResultDto } from '../../../types/paged-result.dto';
 import { ApiResultDto } from '../../../types/apiresult.dto';
 import { RolDto, RolPageQueryDto, CreateRolDto, UpdateRolDto } from '../../../types/sistema/rol.dto';
@@ -12,7 +12,7 @@ export class RolService {
 
   constructor(
     private readonly http: HttpClient,
-    @Inject(API_SISTEMA_URL) private readonly baseUrl: string
+    @Inject(API_BASE_URL) private readonly baseUrl: string
   ) {}
 
   getAll(params?: RolPageQueryDto): Observable<ApiResultDto<PagedResultDto<RolDto>>> {
