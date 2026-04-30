@@ -393,7 +393,7 @@ public class SelectLists : EndpointGroupBase
         [FromRoute] int idTipoTablaAmortiza,
         CancellationToken cancellationToken = default)
     {
-        var query = new GetPeriodicidadTTASelectListQuery
+        var query = new GetPeriodicidadTtaSelectListQuery
         {
             IdTipoTablaAmortiza = idTipoTablaAmortiza
         };

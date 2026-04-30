@@ -1,9 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Anfx.Pasivos.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Anfx.Pasivos.Infrastructure.Persistence.Configurations;
 
-public partial class Cat_CuentasDispersionConfiguration : IEntityTypeConfiguration<Cat_CuentasDispersion>
+#pragma warning disable S101
+public class Cat_CuentasDispersionConfiguration : IEntityTypeConfiguration<Cat_CuentasDispersion>
+#pragma warning restore S101
 {
     public void Configure(EntityTypeBuilder<Cat_CuentasDispersion> entity)
     {
@@ -13,8 +16,6 @@ public partial class Cat_CuentasDispersionConfiguration : IEntityTypeConfigurati
 
         entity.Property(e => e.CuentaDispersion).IsUnicode(false);
 
-        OnConfigurePartial(entity);
     }
 
-    partial void OnConfigurePartial(EntityTypeBuilder<Cat_CuentasDispersion> entity);
 }

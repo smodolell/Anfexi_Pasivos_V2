@@ -17,7 +17,7 @@ internal class GetTipoReduccionSelectListQueryHandler : IQueryHandler<GetTipoRed
             //new SelectItemDto { Text = "POR PLAZO", Value = 2 }
         };
 
-        return await Task.FromResult(Result.Success(items));;
+        return await Task.FromResult(Result.Success(items));
 
     }
 }

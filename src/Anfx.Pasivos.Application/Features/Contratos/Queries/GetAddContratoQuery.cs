@@ -31,7 +31,7 @@ internal class GetAddContratoQueryHandler(IApplicationDbContext context) : IQuer
             Fondeador = lineaCredito.PSV_Fondeador.Fondeador,
             MaxCapitalDisponible = lineaCredito.MontoDisponible,
             IdMoneda = lineaCredito.IdMoneda,
-            TipoTasa = lineaCredito.Tasa1.EsVariable,
+            TipoTasa = lineaCredito.Tasa1!.EsVariable,
             IdTasa = lineaCredito.IdTasa!.Value,
             Tasa = lineaCredito.Tasa ?? 0,
             EstatusContrato = "CAPTURADO",

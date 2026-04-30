@@ -51,16 +51,7 @@ public class ContratoPasivoEditDtoValidator : AbstractValidator<ContratoPasivoEd
             .WithMessage("El Capital Financiado no puede ser mayor al Capital Máximo Disponible")
             .WithErrorCode("CAP001");
 
-        //RuleFor(x => x)
-        //    .Must(x => x.Enganche == (x.Capital * (x.PorcEnganche / 100)))
-        //    .WithMessage("El Enganche no corresponde al porcentaje indicado")
-        //    .WithErrorCode("CAP002");
-
-        //RuleFor(x => x)
-        //    .Must(x => x.CapitalFinanciado == x.Capital - x.Enganche)
-        //    .WithMessage("El Capital Financiado no corresponde a Capital menos Enganche")
-        //    .WithErrorCode("CAP003");
-
+ 
         // Validación de plazo máximo
         RuleFor(x => x)
             .MustAsync(ValidarPlazoMaximoAsync)
@@ -78,15 +69,6 @@ public class ContratoPasivoEditDtoValidator : AbstractValidator<ContratoPasivoEd
             .WithMessage("La fecha de inicio de contrato no puede ser superior a la fecha de primera renta")
             .WithErrorCode("FEC002");
 
-        //RuleFor(x => x)
-        //    .Must(x => x.FecPrimeraRenta <= x.FecActivacion)
-        //    .WithMessage("La fecha de primera renta debe ser menor o igual a la fecha de activación")
-        //    .WithErrorCode("FEC003");
-
-        //RuleFor(x => x)
-        //    .Must(x => x.FecActivacion <= x.FecFinContrato)
-        //    .WithMessage("La fecha de activación debe ser menor o igual a la fecha fin de contrato")
-        //    .WithErrorCode("FEC004");
 
         // Validaciones de tasas
         RuleFor(x => x.Tasa)
@@ -103,22 +85,6 @@ public class ContratoPasivoEditDtoValidator : AbstractValidator<ContratoPasivoEd
             .GreaterThan(0)
             .WithMessage("La tasa de mora debe ser mayor a 0")
             .WithErrorCode("TAS004");
-
-        // Validaciones de valores residuales y opciones
-        //RuleFor(x => x)
-        //    .Must(x => x.BallonPayment == 0 || (x.PorcBallonPayment > 0 && x.PorcBallonPayment <= 100))
-        //    .WithMessage("El porcentaje de Ballon Payment debe estar entre 1 y 100 si se especifica un monto")
-        //    .WithErrorCode("VAL001");
-
-        //RuleFor(x => x)
-        //    .Must(x => x.ValorResidual == 0 || (x.PorcValorResidual > 0 && x.PorcValorResidual <= 100))
-        //    .WithMessage("El porcentaje de Valor Residual debe estar entre 1 y 100 si se especifica un monto")
-        //    .WithErrorCode("VAL002");
-
-        //RuleFor(x => x)
-        //    .Must(x => x.OpcionDeCompra == 0 || (x.PorcOpcionDeCompra > 0 && x.PorcOpcionDeCompra <= 100))
-        //    .WithMessage("El porcentaje de Opción de Compra debe estar entre 1 y 100 si se especifica un monto")
-        //    .WithErrorCode("VAL003");
 
         // Validación de pagos irregulares
         RuleFor(x => x)
@@ -148,11 +114,7 @@ public class ContratoPasivoEditDtoValidator : AbstractValidator<ContratoPasivoEd
             .WithMessage("No existe el Fondeador especificado")
             .WithErrorCode("FON001");
 
-        //// Validación de contrato duplicado
-        //RuleFor(x => x)
-        //    .MustAsync(ContratoNoDuplicadoAsync)
-        //    .WithMessage("Ya existe un contrato con este número")
-        //    .WithErrorCode("CON001");
+    
     }
 
     #region Métodos de validación
@@ -218,11 +180,11 @@ public class ContratoPasivoEditDtoValidator : AbstractValidator<ContratoPasivoEd
         if (lineaCredito == null || periodicidad == null)
             return false;
 
-        var plazoCalculado = periodicidad.ParamMes.Value * (model.Plazo / periodicidad.NoPagosMes.Value);
+        var plazoCalculado = periodicidad.ParamMes!.Value * (model.Plazo / periodicidad.NoPagosMes!.Value);
         return plazoCalculado <= lineaCredito.PlazoMaximo;
     }
 
-    private async Task<bool> ValidarPagosIrregularesAsync(ContratoPasivoEditDto model, CancellationToken cancellation)
+    private static async Task<bool> ValidarPagosIrregularesAsync(ContratoPasivoEditDto model, CancellationToken cancellation)
     {
         if (model.Pagos == null || !model.Pagos.Any())
             return true;
@@ -231,15 +193,8 @@ public class ContratoPasivoEditDtoValidator : AbstractValidator<ContratoPasivoEd
         return Math.Abs(capital - model.CapitalFinanciado) < 0.01m; // Tolerancia para decimales
     }
 
-    //private async Task<bool> ContratoNoDuplicadoAsync(ContratoPasivoEditDto model, CancellationToken cancellation)
-    //{
-    //    return !await _context.PSV_Contrato
-    //        .AnyAsync(c => c.Contrato == model.Contrato &&
-    //                      c.IdContrato != model.IdContrato, // Asumiendo que tienes un Id en el DTO
-    //                      cancellation);
-    //}
 
-    private decimal CalcularTasa(ContratoPasivoEditDto model)
+    private static decimal CalcularTasa(ContratoPasivoEditDto model)
     {
         // Lógica para calcular la tasa según tipo de tasa
         if (model.TipoTasa == true) // Tasa fija

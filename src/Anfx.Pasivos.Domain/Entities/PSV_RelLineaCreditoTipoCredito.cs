@@ -6,6 +6,6 @@ public class PSV_RelLineaCreditoTipoCredito
     public int IdTipoCredito { get; set; }
     public bool Seleccionado { get; set; }
 
-    public virtual PSV_LineaCredito PSV_LineaCredito { get; set; }
-    public virtual TipoCredito TipoCredito { get; set; }
+    public virtual PSV_LineaCredito PSV_LineaCredito { get; set; } = null!;
+    public virtual TipoCredito TipoCredito { get; set; } = null!;
 }

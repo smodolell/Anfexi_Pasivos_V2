@@ -1,6 +1,6 @@
 namespace Anfx.Pasivos.Domain.Entities;
 
-public partial class PSV_Fondeador
+public class PSV_Fondeador
 {
 
     public int IdFondeador { get; set; }

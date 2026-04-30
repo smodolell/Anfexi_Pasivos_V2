@@ -1,14 +1,10 @@
 namespace Anfx.Pasivos.Domain.Entities;
 
-public partial class Genero
+public class Genero
 {
-    public Genero()
-    {
-        this.Usuario = new HashSet<Usuario>();
-    }
 
     public int IdGenero { get; set; }
-    public string Titulo { get; set; }
+    public string Titulo { get; set; } = string.Empty;
 
-    public virtual ICollection<Usuario> Usuario { get; set; }
+    public virtual ICollection<Usuario> Usuario { get; set; } = new HashSet<Usuario>();
 }

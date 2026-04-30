@@ -1,8 +1,8 @@
 namespace Anfx.Pasivos.Domain.Entities;
 
-public partial class View_CuentaBancaria
+public class View_CuentaBancaria
 {
-    public string CuentaBancaria { get; set; }
-    public string Banco { get; set; }
+    public string CuentaBancaria { get; set; } = string.Empty;
+    public string Banco { get; set; } = string.Empty;
     public int ID { get; set; }
 }

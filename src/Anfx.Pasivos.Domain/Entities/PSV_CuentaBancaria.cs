@@ -9,6 +9,6 @@ public class PSV_CuentaBancaria
     public string? CLABE { get; set; }
 
     public virtual ICollection<PSV_Pago> PSV_Pago { get; set; } = new HashSet<PSV_Pago>();
-    public virtual PSV_Banco PSV_Banco { get; set; }
+    public virtual PSV_Banco PSV_Banco { get; set; } = null!;
     public virtual ICollection<PSV_TipoTerminacion> PSV_TipoTerminacion { get; set; } = new HashSet<PSV_TipoTerminacion>();
 }

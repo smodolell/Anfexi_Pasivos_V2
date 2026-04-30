@@ -1,7 +1,7 @@
 namespace Anfx.Pasivos.Domain.Entities;
 
-public partial class View_TipoPagoCapital
+public class View_TipoPagoCapital
 {
-    public string TipoPagoCapital { get; set; }
+    public string TipoPagoCapital { get; set; } = string.Empty;
     public int ID { get; set; }
 }

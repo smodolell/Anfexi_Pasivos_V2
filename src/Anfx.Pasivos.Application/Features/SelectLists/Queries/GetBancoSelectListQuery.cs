@@ -1,4 +1,4 @@
-﻿using Anfx.Pasivos.Application.Features.SelectLists.Queries;
+﻿namespace Anfx.Pasivos.Application.Features.SelectLists.Queries;
 
 public class GetBancoSelectListQuery : SelectListQueryBase
 {
