@@ -1,6 +1,6 @@
 import { HttpInterceptorFn, HttpErrorResponse } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { EMPTY, catchError, retry, throwError, timer } from 'rxjs';
+import { EMPTY, catchError, retry, switchMap, throwError, timer } from 'rxjs';
 import { AuthService } from '../services/auth.service';
 import { UtilsService } from '../services/utils.service';
 import { Router } from '@angular/router';
@@ -10,15 +10,23 @@ export const SKIP_ERROR_TOAST_HEADER = 'X-Skip-Error-Toast';
 
 /** Retorna true si el error HTTP ya fue notificado por el interceptor global */
 export function wasHandledByInterceptor(error: unknown): boolean {
-  return !!(error && typeof error === 'object' && (error as any)['interceptorHandled'] === true);
+  return (
+    error !== null &&
+    typeof error === 'object' &&
+    'interceptorHandled' in error &&
+    (error as Record<string, unknown>)['interceptorHandled'] === true
+  );
 }
 
-// Evita que múltiples peticiones simultáneas con 401 disparen varias notificaciones/logout
-let handlingUnauthorized = false;
+type HandledHttpError = HttpErrorResponse & { interceptorHandled: true };
 
-/** Errores transitorios que se reintentan: sin conexión o servicio temporalmente no disponible */
+/** Errores transitorios que se reintentan (solo en GET): sin conexión o servicio no disponible */
 const RETRYABLE_STATUSES = new Set([0, 503]);
 const MAX_RETRIES = 2;
+
+function markAsHandled(error: HttpErrorResponse): HandledHttpError {
+  return Object.assign(error, { interceptorHandled: true as const });
+}
 
 export const AuthInterceptor: HttpInterceptorFn = (request, next) => {
   const authService  = inject(AuthService);
@@ -39,40 +47,39 @@ export const AuthInterceptor: HttpInterceptorFn = (request, next) => {
     : outgoing;
 
   return next(withAuth).pipe(
-    // Retry con backoff exponencial solo para errores transitorios (red/503)
+    // Retry con backoff exponencial solo para GET y errores transitorios (red/503)
     retry({
       count: MAX_RETRIES,
       delay: (error: HttpErrorResponse, attempt) =>
-        RETRYABLE_STATUSES.has(error.status) ? timer(attempt * 1000) : throwError(() => error),
+        request.method === 'GET' && RETRYABLE_STATUSES.has(error.status)
+          ? timer(attempt * 1000)
+          : throwError(() => error),
     }),
 
     catchError((error: HttpErrorResponse) => {
 
-      // CASO 0: Error de red (sin conexión) — ya se reintentó, no toast automático
+      // CASO 0: Error de red (sin conexión) — ya se reintentó, propagar al componente
       if (error.status === 0) {
         return throwError(() => error);
       }
 
-      // CASO 401: Sesión expirada
+      // CASO 401: Intentar refresh y reintentar la petición original.
+      // refreshToken() implementa single-flight: llamadas concurrentes comparten
+      // el mismo HTTP request; no se necesita lógica de coordinación aquí.
       if (error.status === 401) {
-        if (!handlingUnauthorized) {
-          handlingUnauthorized = true;
-          if (!skipToast) {
-            utilsService.showNotification(
-              'Sesión expirada',
-              'Tu sesión ha expirado. Por favor inicia sesión nuevamente.',
-              'warning',
-            );
-          }
-          setTimeout(() => {
-            authService.logout();
-            handlingUnauthorized = false;
-          }, 1500);
-        }
-        return EMPTY;
+        return authService.refreshToken().pipe(
+          switchMap((success) => {
+            if (!success) return EMPTY;
+            const retried = outgoing.clone({
+              setHeaders: { Authorization: `Bearer ${authService.getAuthToken()!}` },
+            });
+            return next(retried);
+          }),
+          catchError(() => EMPTY),
+        );
       }
 
-      // CASO 403: Sin permisos
+      // CASO 403: Sin permisos — notificar y navegar; componente recibe error marcado
       if (error.status === 403) {
         if (!skipToast) {
           utilsService.showNotification(
@@ -82,10 +89,10 @@ export const AuthInterceptor: HttpInterceptorFn = (request, next) => {
           );
         }
         router.navigate(['/unauthorized']);
-        return EMPTY;
+        return throwError(() => markAsHandled(error));
       }
 
-      // CASO 500+: Error de servidor
+      // CASO 500+: Error de servidor — notificar; componente recibe error marcado
       if (error.status >= 500) {
         if (!skipToast) {
           utilsService.showNotification(
@@ -94,11 +101,10 @@ export const AuthInterceptor: HttpInterceptorFn = (request, next) => {
             'error',
           );
         }
-        const handledError = Object.assign(error, { interceptorHandled: true });
-        return throwError(() => handledError);
+        return throwError(() => markAsHandled(error));
       }
 
-      // CASO 400, 404, etc: el componente decide cómo mostrarlo
+      // CASO 400, 404, etc.: el componente decide cómo mostrarlo
       return throwError(() => error);
     }),
   );

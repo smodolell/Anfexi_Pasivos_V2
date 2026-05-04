@@ -1,8 +1,6 @@
 import {
   Component,
   Input,
-  OnInit,
-  OnDestroy,
   OnChanges,
   SimpleChanges,
   ViewChild,
@@ -11,9 +9,12 @@ import {
   signal,
   computed,
   ChangeDetectionStrategy,
+  DestroyRef,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Subject, EMPTY, switchMap, timeout, catchError } from 'rxjs';
 import { ContratosService } from 'src/app/core/api/services/contratos.service';
 import { InfoGeneralContratoPasivoDto } from 'src/app/core/api/models/infoGeneralContratoPasivoDto';
 import { PagoItemDto } from 'src/app/core/api/models/pagoItemDto';
@@ -26,6 +27,14 @@ import { TableColumn, TableAction, TableActionEvent } from '@shared/components/g
 
 export type TabActivaAmortizacion = 'tabla' | 'movimientos' | 'pagos';
 
+interface BsModal {
+  show(): void;
+  hide(): void;
+  dispose(): void;
+}
+
+declare const bootstrap: { Modal: new (el: HTMLElement) => BsModal };
+
 @Component({
   selector: 'app-contrato-amortizacion-pagos',
   standalone: true,
@@ -33,33 +42,29 @@ export type TabActivaAmortizacion = 'tabla' | 'movimientos' | 'pagos';
   templateUrl: './contrato-amortizacion-pagos.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ContratoAmortizacionPagosComponent implements OnInit, OnChanges, OnDestroy {
+export class ContratoAmortizacionPagosComponent implements OnChanges {
   @Input() contrato: InfoGeneralContratoPasivoDto | null = null;
 
-  @ViewChild('detalleModalEl')     detalleModalEl!: ElementRef<HTMLElement>;
+  @ViewChild('detalleModalEl') detalleModalEl!: ElementRef<HTMLElement>;
   @ViewChild('detallePagoModalEl') detallePagoModalEl!: ElementRef<HTMLElement>;
 
   private readonly service = inject(ContratosService);
-  private bsModalDetalle?:     any;
-  private bsModalDetallePago?: any;
+  private readonly destroyRef = inject(DestroyRef);
 
-  // Datos
-  pagos         = signal<PagoItemDto[]>([]);
-  movimientos   = signal<MovimientoItemDto[]>([]);
+  private bsModalDetalle?: BsModal;
+  private bsModalDetallePago?: BsModal;
+
+  pagos = signal<PagoItemDto[]>([]);
+  movimientos = signal<MovimientoItemDto[]>([]);
   tablaAmortiza = signal<TablaAmortizaItemDto[]>([]);
 
-  // Estado
-  isLoadingTabla       = signal(false);
-  isLoadingDetalle     = signal(false);
+  isLoadingTabla = signal(false);
+  isLoadingDetalle = signal(false);
   isLoadingDetallePago = signal(false);
 
-  // Modal detalle movimiento
   detalleMovimiento = signal<DetallePagoMovimientoDto[]>([]);
-
-  // Modal detalle pago
   detallePago = signal<DetalleMovimientoPagoDto[]>([]);
 
-  // Tabs
   activeTab = signal<TabActivaAmortizacion>('tabla');
   tipoTabla = signal<number>(1);
   tiposTabla = [
@@ -69,18 +74,20 @@ export class ContratoAmortizacionPagosComponent implements OnInit, OnChanges, On
 
   private idContrato = 0;
 
-  // ── Columnas ────────────────────────────────────────────────────────────────
+  private readonly loadTabla$ = new Subject<number>();
+  private readonly loadDetalleMovimiento$ = new Subject<number>();
+  private readonly loadDetallePago$ = new Subject<number>();
 
   readonly columnasPagos: TableColumn[] = [
-    { key: 'idPago',             header: 'ID Pago' },
-    { key: 'tipoPago',           header: 'Tipo Pago' },
-    { key: 'cuentaBancaria',     header: 'Cuenta Bancaria' },
-    { key: 'fecPagoValor',       header: 'Fec. Valor',     type: 'date' },
-    { key: 'fecPagoRegistro',    header: 'Fec. Registro',  type: 'date' },
-    { key: 'montoPago',          header: 'Monto Pago',     type: 'currency' },
-    { key: 'montoAplicado',      header: 'Monto Aplicado', type: 'currency' },
-    { key: 'montoAplicadoOtros', header: 'Otros',          type: 'currency' },
-    { key: 'saldoPago',          header: 'Saldo',          type: 'currency' },
+    { key: 'idPago', header: 'ID Pago' },
+    { key: 'tipoPago', header: 'Tipo Pago' },
+    { key: 'cuentaBancaria', header: 'Cuenta Bancaria' },
+    { key: 'fecPagoValor', header: 'Fec. Valor', type: 'date' },
+    { key: 'fecPagoRegistro', header: 'Fec. Registro', type: 'date' },
+    { key: 'montoPago', header: 'Monto Pago', type: 'currency' },
+    { key: 'montoAplicado', header: 'Monto Aplicado', type: 'currency' },
+    { key: 'montoAplicadoOtros', header: 'Otros', type: 'currency' },
+    { key: 'saldoPago', header: 'Saldo', type: 'currency' },
   ];
 
   readonly actionsPagos: TableAction[] = [
@@ -88,16 +95,16 @@ export class ContratoAmortizacionPagosComponent implements OnInit, OnChanges, On
   ];
 
   readonly columnasMovimientos: TableColumn[] = [
-    { key: 'noPago',       header: 'No. Pago' },
-    { key: 'descripcion',  header: 'Descripción' },
-    { key: 'fecMovimiento',header: 'Fecha',         type: 'date' },
-    { key: 'capital',      header: 'Capital',       type: 'currency' },
-    { key: 'interes',      header: 'Interés',       type: 'currency' },
-    { key: 'iva',          header: 'IVA',           type: 'currency' },
-    { key: 'total',        header: 'Total',         type: 'currency' },
+    { key: 'noPago', header: 'No. Pago' },
+    { key: 'descripcion', header: 'Descripción' },
+    { key: 'fecMovimiento', header: 'Fecha', type: 'date' },
+    { key: 'capital', header: 'Capital', type: 'currency' },
+    { key: 'interes', header: 'Interés', type: 'currency' },
+    { key: 'iva', header: 'IVA', type: 'currency' },
+    { key: 'total', header: 'Total', type: 'currency' },
     { key: 'saldoCapital', header: 'Saldo Capital', type: 'currency' },
-    { key: 'saldoTotal',   header: 'Saldo Total',   type: 'currency' },
-    { key: 'esRenta',      header: 'Renta',         type: 'boolean' },
+    { key: 'saldoTotal', header: 'Saldo Total', type: 'currency' },
+    { key: 'esRenta', header: 'Renta', type: 'boolean' },
   ];
 
   readonly actionsMovimientos: TableAction[] = [
@@ -111,36 +118,92 @@ export class ContratoAmortizacionPagosComponent implements OnInit, OnChanges, On
   ];
 
   readonly columnasTablaAmortiza: TableColumn[] = [
-    { key: 'noPago',         header: 'No. Pago' },
-    { key: 'fecInicial',     header: 'Fec. Inicial',     type: 'date' },
+    { key: 'noPago', header: 'No. Pago' },
+    { key: 'fecInicial', header: 'Fec. Inicial', type: 'date' },
     { key: 'fecVencimiento', header: 'Fec. Vencimiento', type: 'date' },
-    { key: 'saldoInicial',   header: 'Saldo Inicial',    type: 'currency' },
-    { key: 'capital',        header: 'Capital',          type: 'currency' },
-    { key: 'interes',        header: 'Interés',          type: 'currency' },
-    { key: 'seguro',         header: 'Seguro',           type: 'currency' },
-    { key: 'iva',            header: 'IVA',              type: 'currency' },
-    { key: 'total',          header: 'Total',            type: 'currency' },
-    { key: 'procesado',      header: 'Procesado',        type: 'boolean' },
+    { key: 'saldoInicial', header: 'Saldo Inicial', type: 'currency' },
+    { key: 'capital', header: 'Capital', type: 'currency' },
+    { key: 'interes', header: 'Interés', type: 'currency' },
+    { key: 'seguro', header: 'Seguro', type: 'currency' },
+    { key: 'iva', header: 'IVA', type: 'currency' },
+    { key: 'total', header: 'Total', type: 'currency' },
+    { key: 'procesado', header: 'Procesado', type: 'boolean' },
   ];
 
-  // ── Computed ─────────────────────────────────────────────────────────────────
+  readonly detalleFilas = computed(() => this.detalleMovimiento().filter((d) => d.idPago !== -1));
+  readonly detalleTotales = computed(() => this.detalleMovimiento().find((d) => d.idPago === -1));
 
-  readonly detalleFilas   = computed(() => this.detalleMovimiento().filter(d => d.idPago !== -1));
-  readonly detalleTotales = computed(() => this.detalleMovimiento().find(d => d.idPago === -1));
+  readonly detallePagoFilas = computed(() => this.detallePago().filter((d) => d.idMovimiento !== -1));
+  readonly detallePagoTotales = computed(() => this.detallePago().find((d) => d.idMovimiento === -1));
 
-  readonly detallePagoFilas   = computed(() => this.detallePago().filter(d => d.idMovimiento !== -1));
-  readonly detallePagoTotales = computed(() => this.detallePago().find(d => d.idMovimiento === -1));
+  constructor() {
+    this.wireLoadTabla();
+    this.wireLoadDetalleMovimiento();
+    this.wireLoadDetallePago();
 
-  // ── Lifecycle ────────────────────────────────────────────────────────────────
-
-  ngOnInit(): void {
-    this.cargarDatosDesdeInput();
+    this.destroyRef.onDestroy(() => {
+      this.bsModalDetalle?.dispose();
+      this.bsModalDetallePago?.dispose();
+    });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['contrato']) {
       this.cargarDatosDesdeInput();
     }
+  }
+
+  setTab(tab: TabActivaAmortizacion): void {
+    this.activeTab.set(tab);
+    if (tab === 'tabla' && this.tablaAmortiza().length === 0) {
+      this.loadTabla$.next(this.tipoTabla());
+    }
+  }
+
+  loadTabla(): void {
+    if (!this.idContrato) return;
+    this.loadTabla$.next(this.tipoTabla());
+  }
+
+  onTipoTablaChange(): void {
+    this.tablaAmortiza.set([]);
+    this.loadTabla$.next(this.tipoTabla());
+  }
+
+  onActionMovimiento(event: TableActionEvent<MovimientoItemDto>): void {
+    if (event.action === 'detalle' && event.row.idMovimiento && event.row.idMovimiento > 0) {
+      this.abrirDetalleMovimiento(event.row.idMovimiento);
+    }
+  }
+
+  abrirDetalleMovimiento(idMovimiento: number): void {
+    this.detalleMovimiento.set([]);
+    this.isLoadingDetalle.set(true);
+    this.bsModalDetalle = new bootstrap.Modal(this.detalleModalEl.nativeElement);
+    this.bsModalDetalle.show();
+    this.loadDetalleMovimiento$.next(idMovimiento);
+  }
+
+  cerrarDetalleMovimiento(): void {
+    this.bsModalDetalle?.hide();
+  }
+
+  onActionPago(event: TableActionEvent<PagoItemDto>): void {
+    if (event.action === 'detalle') {
+      this.abrirDetallePago(event.row.idPago!);
+    }
+  }
+
+  abrirDetallePago(idPago: number): void {
+    this.detallePago.set([]);
+    this.isLoadingDetallePago.set(true);
+    this.bsModalDetallePago = new bootstrap.Modal(this.detallePagoModalEl.nativeElement);
+    this.bsModalDetallePago.show();
+    this.loadDetallePago$.next(idPago);
+  }
+
+  cerrarDetallePago(): void {
+    this.bsModalDetallePago?.hide();
   }
 
   private cargarDatosDesdeInput(): void {
@@ -153,96 +216,59 @@ export class ContratoAmortizacionPagosComponent implements OnInit, OnChanges, On
     this.tipoTabla.set(1);
   }
 
-  // ── Tabs ─────────────────────────────────────────────────────────────────────
-
-  setTab(tab: TabActivaAmortizacion): void {
-    this.activeTab.set(tab);
-    if (tab === 'tabla' && this.tablaAmortiza().length === 0) {
-      this.loadTabla();
-    }
-  }
-
-  loadTabla(): void {
-    if (!this.idContrato) return;
-    this.isLoadingTabla.set(true);
-    this.service.getTablaAmortizacionByTipo(this.idContrato, this.tipoTabla()).subscribe({
-      next: (res) => {
-        this.tablaAmortiza.set(res.data ?? []);
-        this.isLoadingTabla.set(false);
-      },
-      error: () => {
-        this.isLoadingTabla.set(false);
-      },
+  private wireLoadTabla(): void {
+    this.loadTabla$.pipe(
+      switchMap((tipo) => {
+        if (!this.idContrato) return EMPTY;
+        this.isLoadingTabla.set(true);
+        return this.service.getTablaAmortizacionByTipo(this.idContrato, tipo).pipe(
+          timeout(30_000),
+          catchError(() => {
+            this.isLoadingTabla.set(false);
+            return EMPTY;
+          }),
+        );
+      }),
+      takeUntilDestroyed(this.destroyRef),
+    ).subscribe((res) => {
+      this.tablaAmortiza.set(res.data ?? []);
+      this.isLoadingTabla.set(false);
     });
   }
 
-  onTipoTablaChange(): void {
-    this.tablaAmortiza.set([]);
-    this.loadTabla();
-  }
-
-  // ── Acciones Movimientos ─────────────────────────────────────────────────────
-
-  onActionMovimiento(event: TableActionEvent<MovimientoItemDto>): void {
-    if (event.action === 'detalle' && event.row.idMovimiento && event.row.idMovimiento > 0) {
-      this.abrirDetalleMovimiento(event.row.idMovimiento);
-    }
-  }
-
-  abrirDetalleMovimiento(idMovimiento: number): void {
-    this.detalleMovimiento.set([]);
-    this.isLoadingDetalle.set(true);
-    this.bsModalDetalle = new (globalThis as any).bootstrap.Modal(this.detalleModalEl.nativeElement);
-    this.bsModalDetalle.show();
-
-    this.service.getMovimientoDetalle(idMovimiento).subscribe({
-      next: (res) => {
-        this.detalleMovimiento.set(res.data?.detalle ?? []);
-        this.isLoadingDetalle.set(false);
-      },
-      error: () => {
-        this.isLoadingDetalle.set(false);
-      },
+  private wireLoadDetalleMovimiento(): void {
+    this.loadDetalleMovimiento$.pipe(
+      switchMap((idMovimiento) =>
+        this.service.getMovimientoDetalle(idMovimiento).pipe(
+          timeout(30_000),
+          catchError(() => {
+            this.isLoadingDetalle.set(false);
+            return EMPTY;
+          }),
+        ),
+      ),
+      takeUntilDestroyed(this.destroyRef),
+    ).subscribe((res) => {
+      this.detalleMovimiento.set(res.data?.detalle ?? []);
+      this.isLoadingDetalle.set(false);
     });
   }
 
-  cerrarDetalleMovimiento(): void {
-    this.bsModalDetalle?.hide();
-  }
-
-  // ── Acciones Pagos ───────────────────────────────────────────────────────────
-
-  onActionPago(event: TableActionEvent<PagoItemDto>): void {
-    if (event.action === 'detalle') {
-      this.abrirDetallePago(event.row.idPago!);
-    }
-  }
-
-  abrirDetallePago(idPago: number): void {
-    this.detallePago.set([]);
-    this.isLoadingDetallePago.set(true);
-    this.bsModalDetallePago = new (globalThis as any).bootstrap.Modal(this.detallePagoModalEl.nativeElement);
-    this.bsModalDetallePago.show();
-
-    this.service.getPagoDetalle(idPago).subscribe({
-      next: (res) => {
-        this.detallePago.set(res.data?.detalle ?? []);
-        this.isLoadingDetallePago.set(false);
-      },
-      error: () => {
-        this.isLoadingDetallePago.set(false);
-      },
+  private wireLoadDetallePago(): void {
+    this.loadDetallePago$.pipe(
+      switchMap((idPago) =>
+        this.service.getPagoDetalle(idPago).pipe(
+          timeout(30_000),
+          catchError(() => {
+            this.isLoadingDetallePago.set(false);
+            return EMPTY;
+          }),
+        ),
+      ),
+      takeUntilDestroyed(this.destroyRef),
+    ).subscribe((res) => {
+      this.detallePago.set(res.data?.detalle ?? []);
+      this.isLoadingDetallePago.set(false);
     });
-  }
-
-  cerrarDetallePago(): void {
-    this.bsModalDetallePago?.hide();
-  }
-
-  // ── Destroy ──────────────────────────────────────────────────────────────────
-
-  ngOnDestroy(): void {
-    this.bsModalDetalle?.dispose();
-    this.bsModalDetallePago?.dispose();
   }
 }

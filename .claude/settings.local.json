@@ -62,7 +62,16 @@
       "Bash(Get-ChildItem -Path \"e:\\\\profuturo\\\\pasivos\\\\Anfexi_Pasivos_V2\" -Recurse -Filter \"*.service.ts\")",
       "Bash(Select-Object -ExpandProperty FullName)",
       "Bash(Get-ChildItem -Directory)",
-      "Bash(Select-Object Name)"
+      "Bash(Select-Object Name)",
+      "Bash(Get-ChildItem -Path \"e:\\\\profuturo\\\\pasivos\\\\Anfexi_Pasivos_V2\" -Recurse -Force)",
+      "Bash(Select-Object -First 50)",
+      "Bash(Format-Table FullName)",
+      "Bash(Get-ChildItem -Path \"e:\\\\profuturo\\\\pasivos\\\\Anfexi_Pasivos_V2\\\\src\\\\Anfx.Pasivos.Frontend\\\\src\" -Recurse -Directory)",
+      "Bash(Sort-Object)",
+      "PowerShell(Get-ChildItem -Path \"e:\\\\profuturo\\\\pasivos\\\\Anfexi_Pasivos_V2\\\\src\\\\Anfx.Pasivos.Frontend\\\\src\" -Recurse -File | Where-Object {$_.Extension -in @\\('.ts', '.html', '.scss'\\)} | Group-Object -Property Extension | Select-Object Name, Count)",
+      "Bash(Get-ChildItem -Path \"e:\\\\profuturo\\\\pasivos\\\\Anfexi_Pasivos_V2\\\\src\\\\Anfx.Pasivos.Frontend\\\\src\\\\app\\\\pages\\\\operaciones\" -Recurse -Filter \"*contratos-pasivos*\")",
+      "Bash(Select-Object FullName)",
+      "Bash(npx tsc *)"
     ]
   }
 }

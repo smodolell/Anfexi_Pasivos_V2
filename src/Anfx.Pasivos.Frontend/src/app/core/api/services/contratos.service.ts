@@ -519,7 +519,7 @@ export class ContratosService extends BaseService {
      * Obtiene los contratos asignados a un contrato pasivo
      * Retorna la lista de contratos activos asignados a un contrato pasivo específico
      * @endpoint get /api/contratos/{idContratoPasivo}/contratos-asignados
-     * @param idContratoPasivo 
+     * @param idContratoPasivo
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      * @param options additional options
@@ -1306,7 +1306,7 @@ export class ContratosService extends BaseService {
             }
         }
 
-        let localVarPath = `/contratos/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: "int32"})}`;
+        const localVarPath = `/contratos/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: "int32"})}`;
         const { basePath, withCredentials } = this.configuration;
         return this.httpClient.request<ApiResponseDto>('put', `${basePath}${localVarPath}`,
             {

@@ -58,7 +58,7 @@
                 <td>
                   @if (item.logParameters) {
                     <small class="text-muted" title="{{ item.logParameters }}">
-                      {{ item.logParameters | slice:0:60 }}{{ (item.logParameters?.length ?? 0) > 60 ? '...' : '' }}
+                      {{ item.logParameters | slice:0:60 }}{{ (item?.logParameters?.length ?? 0) > 60 ? '...' : '' }}
                     </small>
                   } @else {
                     <span class="text-muted">—</span>
