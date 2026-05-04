@@ -1,4 +1,5 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -18,6 +19,7 @@ import { CardInfoComponent } from '@shared/components/card/card-info.component';
   templateUrl: './contratos-pasivos-list.component.html',
 })
 export class ContratosPasivosListComponent implements OnInit {
+  private readonly destroyRef    = inject(DestroyRef);
   private readonly selectSvc    = inject(SelectListsService);
   private readonly contratosSvc = inject(ContratosService);
   private readonly utilsService = inject(UtilsService);
@@ -65,7 +67,7 @@ export class ContratosPasivosListComponent implements OnInit {
     this.restaurarFiltros();
     this.load();
 
-    this.form.get('idFondeador')!.valueChanges.subscribe(idFondeador => {
+    this.form.get('idFondeador')!.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(idFondeador => {
       this.form.patchValue({ idLineaCredito: null }, { emitEvent: false });
       this.lineasCredito.set([]);
       if (idFondeador) {

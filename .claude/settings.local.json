@@ -56,7 +56,13 @@
       "Bash(find E:profuturoProfuturo_Alerta_Frontend -name sidebar-nav.component.* -o -name admin-layout.component.*)",
       "Bash(xargs cat:*)",
       "Bash(find e:/profuturo/pasivos/Anfexi_Pasivos_V2/src/Anfx.Pasivos.Frontend/src/app -type f -name *404* -o -name *not-found* -o -name *error*)",
-      "Bash(dotnet build:*)"
+      "Bash(dotnet build:*)",
+      "Bash(Get-ChildItem -Path \"e:\\\\profuturo\\\\pasivos\\\\Anfexi_Pasivos_V2\" -Force)",
+      "Bash(Select-Object Name, FullName)",
+      "Bash(Get-ChildItem -Path \"e:\\\\profuturo\\\\pasivos\\\\Anfexi_Pasivos_V2\" -Recurse -Filter \"*.service.ts\")",
+      "Bash(Select-Object -ExpandProperty FullName)",
+      "Bash(Get-ChildItem -Directory)",
+      "Bash(Select-Object Name)"
     ]
   }
 }
