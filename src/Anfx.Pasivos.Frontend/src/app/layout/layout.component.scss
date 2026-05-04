@@ -5,37 +5,37 @@
 }
 
 .main-header {
-  background: #333;
-  color: white;
-  padding: 1rem;
-  
+  background: var(--color-gray-800);
+  color: var(--color-white);
+  padding: var(--space-4);
+
   nav ul {
     list-style: none;
     display: flex;
-    gap: 2rem;
+    gap: var(--space-8);
     margin: 0;
     padding: 0;
   }
-  
+
   nav a {
-    color: white;
+    color: var(--color-white);
     text-decoration: none;
-    
+
     &:hover {
-      color: #007bff;
-      transition: color 0.3s;
+      color: var(--color-blue-bootstrap);
+      transition: color 0.3s ease;
     }
   }
 }
 
 .main-content {
   flex: 1;
-  padding: 2rem;
+  padding: var(--space-8);
 }
 
 .main-footer {
-  background: #333;
-  color: white;
-  padding: 1rem;
+  background: var(--color-gray-800);
+  color: var(--color-white);
+  padding: var(--space-4);
   text-align: center;
 }

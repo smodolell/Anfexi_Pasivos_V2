@@ -100,8 +100,8 @@ export class CargoAdicionalComponent {
   ];
 
   readonly acciones: TableAction[] = [
-    { id: 'edit', label: 'Editar', icon: 'fa-solid fa-pen-to-square', btnClass: 'btn-action-edit' },
-    { id: 'delete', label: 'Eliminar', icon: 'fa-solid fa-trash-can', btnClass: 'btn-action-delete' },
+    { id: 'edit', label: 'Editar', icon: 'fa-solid fa-pen-to-square', variant: 'edit' },
+    { id: 'delete', label: 'Eliminar', icon: 'fa-solid fa-trash-can', variant: 'delete' },
   ];
 
   form = this.fb.group({

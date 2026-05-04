@@ -46,7 +46,6 @@
   font-size: var(--font-size-sm);
   color: var(--color-text-primary);
 
-  // Encabezado
   thead th {
     background: var(--color-bg-table-head, #f8fafc);
     color: var(--color-text-secondary);
@@ -60,14 +59,12 @@
     user-select: none;
     vertical-align: middle;
 
-    // Columna de acciones
     &.gt-actions-col {
       width: 1%;
       white-space: nowrap;
     }
   }
 
-  // Filas de datos
   tbody tr {
     transition: background var(--transition-fast);
 
@@ -137,8 +134,6 @@
 .gt-actions-cell {
   white-space: nowrap;
 
-  // Los botones usan las clases globales .action-btn .edit-btn/.delete-btn
-  // definidas en admin-layout.component.scss (ViewEncapsulation.None)
   .actions {
     display: flex;
     align-items: center;
@@ -218,7 +213,7 @@
   margin: 0;
 }
 
-// ── Paginación ────────────────────────────────────────────────────────────────
+// ── Paginación gt-* ───────────────────────────────────────────────────────────
 .gt-pagination {
   display: flex;
   align-items: center;
@@ -252,21 +247,240 @@
   font-size: var(--font-size-sm);
 }
 
-// Tamaño compacto de la paginación Bootstrap
-.pagination {
-  .page-link {
-    font-size: var(--font-size-sm);
-    padding: 0.25rem 0.6rem;
-    color: var(--color-primary);
-  }
-
-  .page-item.disabled .page-link {
-    color: var(--color-text-muted);
-  }
-}
-
 // ── Animaciones ───────────────────────────────────────────────────────────────
 @keyframes gt-fade-in {
   from { opacity: 0; transform: translateY(4px); }
   to   { opacity: 1; transform: translateY(0); }
+}
+
+// ── TABLE-LIST — anchos de columnas fijas (legacy) ────────────────────────────
+.table-list > thead > tr > th:first-child,
+.table-list > tbody > tr > td:first-child { width: 40px; }
+
+.table-list > thead > tr > th:last-child,
+.table-list > tbody > tr > td:last-child { width: 70px; }
+
+.table-list > thead > tr > th.col-auto-width,
+.table-list > tbody > tr > td.col-auto-width {
+    width: 1%;
+    white-space: nowrap;
+}
+
+// ── Tabla Bootstrap overrides (legacy) ───────────────────────────────────────
+.table { border-collapse: collapse; }
+
+.table-light > thead {
+    background: linear-gradient(135deg, var(--color-bg-table-alt) 0%, var(--color-bg-table-head) 100%);
+}
+
+.table-light > thead > tr > th {
+    padding: var(--space-4) var(--space-5);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-gray-750);
+    font-size: var(--font-size-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid var(--color-gray-250);
+    white-space: nowrap;
+}
+
+.table tbody tr {
+    transition: var(--transition-base);
+    border-bottom: 1px solid var(--color-border-subtle);
+    animation: fadeIn 0.3s ease;
+}
+
+.table-hover tbody tr:hover {
+    background: var(--color-bg-table-hover);
+    box-shadow: var(--shadow-xs);
+}
+
+.table tbody td {
+    padding: var(--space-4) var(--space-5);
+    color: var(--color-gray-850);
+    font-size: var(--font-size-base);
+}
+
+// ── Table container (legacy) ──────────────────────────────────────────────────
+.table-container {
+    background: var(--color-white);
+    border-radius: var(--border-radius-xl);
+    overflow: hidden;
+    overflow-x: auto;
+    box-shadow: var(--shadow-md);
+}
+
+.table-container table { width: 100%; border-collapse: collapse; margin-bottom: 0; }
+
+.table-container thead {
+    background: linear-gradient(135deg, var(--color-bg-table-alt) 0%, var(--color-bg-table-head) 100%);
+}
+
+.table-container th {
+    padding: var(--space-4) var(--space-5);
+    text-align: left;
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-gray-750);
+    font-size: var(--font-size-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid var(--color-gray-250);
+}
+
+.table-container th:first-child { width: 100px; }
+.table-container th:last-child  { text-align: center; width: 120px; }
+
+.table-container tr {
+    transition: var(--transition-base);
+    border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.table-container tbody tr:hover {
+    background: var(--color-bg-table-hover);
+    box-shadow: var(--shadow-xs);
+}
+
+.table-container td {
+    padding: var(--space-4) var(--space-5);
+    color: var(--color-gray-850);
+    font-size: var(--font-size-base);
+}
+
+.table-container td:last-child { text-align: center; }
+
+.table-footer {
+    padding: var(--space-5);
+    background: var(--color-bg-table-alt);
+    border-top: 1px solid var(--color-gray-250);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 0 0 var(--border-radius-xl) var(--border-radius-xl);
+}
+
+.actions { display: flex; justify-content: center; gap: var(--space-2); }
+
+// ── Variantes de tabla (legacy) ───────────────────────────────────────────────
+.table-header-cotizador tr > th {
+    background-color: var(--color-bg-table-head) !important;
+    color: var(--color-gray-900) !important;
+    font-weight: bold !important;
+}
+
+.table-header-cotizador tr > th:first-child {
+    background-color: #eaf0fc !important;
+    color: var(--color-btn-primary-alt-dark) !important;
+}
+
+.table.table-condensed td,
+.table.table-condensed th {
+    padding: 7px !important;
+}
+
+// ── Paginación Bootstrap override (legacy) ────────────────────────────────────
+.pagination { display: flex; gap: 5px; }
+
+.pagination .page-link,
+.page-btn {
+    padding: var(--space-2) var(--space-3);
+    border: 1px solid var(--color-gray-400);
+    background: var(--color-white);
+    color: var(--color-gray-750);
+    border-radius: var(--border-radius);
+    font-size: var(--font-size-sm);
+    transition: var(--transition-base);
+    cursor: pointer;
+    margin: 0 2px;
+}
+
+.pagination .page-link:hover,
+.page-btn:hover:not(.disabled) {
+    background: var(--color-bg-table-head);
+    border-color: var(--color-gray-550);
+    color: var(--color-gray-850);
+}
+
+.pagination .page-item.active .page-link,
+.page-btn.active {
+    background: linear-gradient(135deg, var(--color-primary-accent), var(--color-primary-medium));
+    color: var(--color-white);
+    border-color: var(--color-primary-accent);
+}
+
+.pagination .page-item.disabled .page-link,
+.page-btn.disabled {
+    background: var(--color-bg-table-alt);
+    color: var(--color-gray-550);
+    border-color: var(--color-gray-250);
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+// ── Controles de búsqueda (legacy) ───────────────────────────────────────────
+.controls-row {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin-bottom: 25px;
+}
+
+.search-group {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    min-width: 300px;
+}
+
+.action-buttons { display: flex; gap: var(--space-3); }
+
+.search-label {
+    display: flex;
+    align-items: center;
+    margin-right: var(--space-3);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-text-input-label);
+}
+
+.search-icon { width: 20px; height: 20px; margin-right: 5px; }
+
+.search-input {
+    flex: 1;
+    padding: var(--space-3) 15px;
+    border: 1px solid var(--color-gray-450);
+    border-radius: var(--border-radius-md);
+    font-size: var(--font-size-base);
+    transition: var(--transition-normal);
+    background: var(--color-bg-surface);
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: var(--color-primary-accent);
+    background: var(--color-white);
+    box-shadow: var(--shadow-focus-primary);
+}
+
+.showing-text {
+    color: var(--color-gray-650);
+    font-size: var(--font-size-base);
+}
+
+// ── Animación fadeIn (usada por filas de tabla) ───────────────────────────────
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+// ── Responsive ────────────────────────────────────────────────────────────────
+@media (max-width: 768px) {
+    .controls-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .search-group    { width: 100%; }
+    .action-buttons  { justify-content: flex-end; }
+    .table-container { overflow-x: auto; }
+    .table-container table { min-width: 600px; }
 }

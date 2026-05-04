@@ -24,9 +24,9 @@ export class LineaCreditoListComponent implements OnInit {
 
   // ── Tabla ────────────────────────────────────────────────────
   actions: TableAction[] = [
-    { id: 'edit',   label: 'Editar',           icon: 'fa-solid fa-pen-to-square', btnClass: 'btn-action-edit'   },
-    { id: 'tipos',  label: 'Tipos de Crédito', icon: 'fa-solid fa-tags',          btnClass: 'btn-action-info'   },
-    { id: 'delete', label: 'Eliminar',         icon: 'fa-solid fa-trash-can',     btnClass: 'btn-action-delete' },
+    { id: 'edit',   label: 'Editar',           icon: 'fa-solid fa-pen-to-square', variant: 'edit'   },
+    { id: 'tipos',  label: 'Tipos de Crédito', icon: 'fa-solid fa-tags',          variant: 'info'   },
+    { id: 'delete', label: 'Eliminar',         icon: 'fa-solid fa-trash-can',     variant: 'delete' },
   ];
 
   columns: TableColumn[] = [

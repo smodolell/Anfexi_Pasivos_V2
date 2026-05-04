@@ -48,8 +48,8 @@ export class ReporteListComponent implements OnInit {
   ];
 
   actions: TableAction[] = [
-    { id: 'edit',   label: 'Editar',   icon: 'fa-solid fa-pen-clip', btnClass: 'btn-action-edit'   },
-    { id: 'delete', label: 'Eliminar', icon: 'fa-solid fa-trash',    btnClass: 'btn-action-delete' },
+    { id: 'edit',   label: 'Editar',   icon: 'fa-solid fa-pen-clip', variant: 'edit'   },
+    { id: 'delete', label: 'Eliminar', icon: 'fa-solid fa-trash',    variant: 'delete' },
   ];
 
   ngOnInit() {
