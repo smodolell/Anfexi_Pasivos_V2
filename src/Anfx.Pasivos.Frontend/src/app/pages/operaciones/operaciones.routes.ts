@@ -63,11 +63,19 @@ export const operacionesRoutes: Routes = [
           ),
       },
       {
-        path: 'contratos-pasivos/view/:id',
+        path: 'contratos-pasivos/view/:contrato',
         data: { title: 'Detalle de Contrato Pasivo' },
         loadComponent: () =>
           import('./contratos-pasivos/contrato-view.component').then(
             (m) => m.ContratoViewComponent
+          ),
+      },
+      {
+        path: 'contratos-pasivos/activar/:id',
+        data: { title: 'Activar Contrato Pasivo' },
+        loadComponent: () =>
+          import('./contratos-pasivos/contrato-activar.component').then(
+            (m) => m.ContratoActivarComponent
           ),
       },
       {

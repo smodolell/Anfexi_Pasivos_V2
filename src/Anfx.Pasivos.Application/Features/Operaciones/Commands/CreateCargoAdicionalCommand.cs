@@ -29,6 +29,11 @@ internal class CreateCargoAdicionalCommandHandler(IApplicationDbContext context,
             _context.PSV_Movimiento.Add(movimiento);
 
             _mapper.Map(model, movimiento);
+            movimiento.SaldoCapital = model.Capital;
+            movimiento.SaldoInteres = model.Interes;
+            movimiento.SaldoIVA = model.IVA;
+            movimiento.SaldoTotal = model.Capital + model.Interes + model.IVA;
+
 
             await _context.SaveChangesAsync(cancellationToken);
 

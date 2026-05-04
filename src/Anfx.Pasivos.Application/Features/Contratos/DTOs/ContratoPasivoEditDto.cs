@@ -27,6 +27,7 @@ public class ContratoPasivoEditDto
     public bool? TipoTasa { get; set; }
 
     public int IdTipoCredito { get; set; }
+    public string TipoCredito { get; set; } = "";
     //public decimal Capital { get; set; }
     //public decimal PorcEnganche { get; set; }
     //public decimal Enganche { get; set; }
@@ -36,8 +37,8 @@ public class ContratoPasivoEditDto
     public int IdMoneda { get; set; }
     public DateTime? FecInicioContrato { get; set; }
     public DateTime FecPrimeraRenta { get; set; }
-    public DateTime FecActivacion { get; set; }
-    public DateTime FecFinContrato { get; set; }
+    public DateTime? FecActivacion { get; set; }
+    public DateTime? FecFinContrato { get; set; }
     public int IdTasa { get; set; }
     public decimal TasaBase { get; set; }
     public decimal PuntosMas { get; set; }
@@ -49,6 +50,8 @@ public class ContratoPasivoEditDto
     public decimal PuntosPorMora { get; set; }
     public decimal FactorMora { get; set; }
     public decimal TasaMora { get; set; }
+
+    public bool? TipoTasaMora { get; set; }
     //public decimal SaldoInsoluto { get; set; }
     //public decimal BallonPayment { get; set; }
     //public decimal PorcBallonPayment { get; set; }

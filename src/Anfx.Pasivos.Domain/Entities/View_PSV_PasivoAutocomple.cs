@@ -1,7 +1,7 @@
 namespace Anfx.Pasivos.Domain.Entities;
 
-public partial class View_PSV_PasivoAutocomple
+public class View_PSV_PasivoAutocomple
 {
-    public string label { get; set; }
-    public string value { get; set; }
+    public string label { get; set; } = string.Empty;
+    public string value { get; set; } = string.Empty;
 }

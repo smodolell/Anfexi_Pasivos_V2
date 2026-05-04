@@ -1,0 +1,81 @@
+<div class="container-fluid mt-4">
+
+  <!-- Breadcrumb -->
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">Operaciones</li>
+      <li class="breadcrumb-item">
+        <a routerLink="/operaciones/contratos-pasivos">Contratos Pasivos</a>
+      </li>
+      <li class="breadcrumb-item active">Activar Contrato</li>
+    </ol>
+  </nav>
+
+  <div class="row justify-content-center mt-4">
+    <div class="col-md-6 col-lg-5">
+
+      <div class="card shadow-sm border-0">
+        <div class="card-header bg-white border-bottom py-3">
+          <h6 class="mb-0 fw-semibold text-primary">
+            <i class="fa-solid fa-bolt me-2"></i>Activar Contrato Pasivo
+          </h6>
+        </div>
+        <div class="card-body p-4">
+
+          <!-- Identificación del contrato -->
+          <div class="mb-4">
+            <p class="fw-semibold mb-1">Contrato Pasivo</p>
+            <span class="badge bg-primary-subtle text-primary fs-6 px-3 py-2">
+              {{ contratoNombre() || '—' }}
+            </span>
+          </div>
+
+          <!-- Advertencia -->
+          <div class="alert alert-warning d-flex align-items-center gap-2 mb-4">
+            <i class="fa-solid fa-triangle-exclamation fa-lg"></i>
+            <span>¿Está seguro de <strong>Activar</strong> este Contrato Pasivo?</span>
+          </div>
+
+          <!-- Formulario -->
+          <form [formGroup]="form" (ngSubmit)="onActivar()">
+
+            <div class="mb-4">
+              <label for="fechaActivacion" class="form-label fw-semibold">
+                Fecha de Activación <span class="text-danger">*</span>
+              </label>
+              <input
+                id="fechaActivacion"
+                type="date"
+                class="form-control"
+                [class.is-invalid]="isInvalid('fechaActivacion')"
+                formControlName="fechaActivacion"
+              />
+              @if (isInvalid('fechaActivacion')) {
+                <div class="invalid-feedback">La Fecha de Activación es requerida.</div>
+              }
+            </div>
+
+            <app-form-errors [errors]="formErrors()" (onClose)="formErrors.set([])" />
+
+            <div class="d-flex gap-2 justify-content-end mt-3">
+              <button type="button" class="btn btn-outline-secondary px-4" (click)="onCancelar()" [disabled]="isSaving()">
+                <i class="fa-solid fa-xmark me-2"></i>Cancelar
+              </button>
+              <button type="submit" class="btn btn-success px-4" [disabled]="isSaving()">
+                @if (isSaving()) {
+                  <span class="spinner-border spinner-border-sm me-2"></span>Activando...
+                } @else {
+                  <i class="fa-solid fa-bolt me-2"></i>Activar Contrato
+                }
+              </button>
+            </div>
+
+          </form>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>

@@ -1,4 +1,5 @@
-﻿using Anfx.Pasivos.Application.Common.Interfaces;
+﻿using Anfx.Pasivos.ApiService.Requests.Catalogos;
+using Anfx.Pasivos.Application.Common.Interfaces;
 using Anfx.Pasivos.Application.Features.Catalogos.Commands;
 using Anfx.Pasivos.Application.Features.Catalogos.DTOs;
 using Anfx.Pasivos.Application.Features.Catalogos.Queries;
@@ -373,6 +374,140 @@ public class Catalogos : EndpointGroupBase
 
         #endregion
 
+        #region TasaFija
+
+        group.MapGet("tasa-fija/{id}", GetTasaFijaById)
+            .WithName("GetTasaFijaById")
+            .WithSummary("Obtiene una tasa fija por ID")
+            .Produces<ApiResponseDto<TasaFijaDto>>(StatusCodes.Status200OK)
+            .Produces<ApiResponseDto>(StatusCodes.Status404NotFound)
+            .Produces<ApiResponseDto>(StatusCodes.Status401Unauthorized)
+            .Produces<ApiResponseDto>(StatusCodes.Status500InternalServerError);
+
+        group.MapGet("tasa-fija/", GetPaginatedTasasFijas)
+            .WithSummary("Obtiene tasas fijas paginadas y filtradas")
+            .Produces<ApiResponseDto<PagedResultDto<TasaFijaListItemDto>>>(StatusCodes.Status200OK)
+            .Produces<ApiResponseDto>(StatusCodes.Status401Unauthorized)
+            .Produces<ApiResponseDto>(StatusCodes.Status500InternalServerError);
+
+        group.MapPost("tasa-fija/", CreateTasaFija)
+            .WithName("CreateTasaFija")
+            .WithSummary("Crea una nueva tasa fija")
+            .Accepts<TasaFijaDto>("application/json")
+            .Produces<int>(StatusCodes.Status201Created)
+            .Produces<ApiResponseDto<int>>(StatusCodes.Status400BadRequest)
+            .Produces<ApiResponseDto<int>>(StatusCodes.Status401Unauthorized)
+            .Produces<ApiResponseDto<int>>(StatusCodes.Status500InternalServerError);
+
+        group.MapPut("tasa-fija/{id}", UpdateTasaFija)
+            .WithName("UpdateTasaFija")
+            .WithSummary("Actualiza una tasa fija")
+            .Accepts<TasaFijaDto>("application/json")
+            .Produces(StatusCodes.Status200OK)
+            .Produces<ApiResponseDto>(StatusCodes.Status404NotFound)
+            .Produces<ApiResponseDto>(StatusCodes.Status400BadRequest)
+            .Produces<ApiResponseDto>(StatusCodes.Status401Unauthorized)
+            .Produces<ApiResponseDto>(StatusCodes.Status500InternalServerError);
+
+        group.MapDelete("tasa-fija/{id}", DeleteTasaFija)
+            .WithName("DeleteTasaFija")
+            .WithSummary("Elimina una tasa fija")
+            .WithDescription("Elimina físicamente una tasa fija del catálogo. Solo permite eliminar tasas que no tengan contratos o líneas de crédito asociados.")
+            .Produces(StatusCodes.Status200OK)
+            .Produces<ApiResponseDto>(StatusCodes.Status404NotFound)
+            .Produces<ApiResponseDto>(StatusCodes.Status400BadRequest)
+            .Produces<ApiResponseDto>(StatusCodes.Status401Unauthorized)
+            .Produces<ApiResponseDto>(StatusCodes.Status500InternalServerError);
+
+        #endregion
+
+        #region TasaVariable
+
+        group.MapGet("tasa-variable/{id}", GetTasaVariableById)
+            .WithName("GetTasaVariableById")
+            .WithSummary("Obtiene una tasa variable por ID con sus valores históricos")
+            .Produces<ApiResponseDto<TasaVariableDetalleDto>>(StatusCodes.Status200OK)
+            .Produces<ApiResponseDto>(StatusCodes.Status404NotFound)
+            .Produces<ApiResponseDto>(StatusCodes.Status401Unauthorized)
+            .Produces<ApiResponseDto>(StatusCodes.Status500InternalServerError);
+
+        group.MapGet("tasa-variable/", GetPaginatedTasasVariables)
+            .WithSummary("Obtiene tasas variables paginadas y filtradas")
+            .Produces<ApiResponseDto<PagedResultDto<TasaVariableListItemDto>>>(StatusCodes.Status200OK)
+            .Produces<ApiResponseDto>(StatusCodes.Status401Unauthorized)
+            .Produces<ApiResponseDto>(StatusCodes.Status500InternalServerError);
+
+        group.MapPost("tasa-variable/", CreateTasaVariable)
+            .WithName("CreateTasaVariable")
+            .WithSummary("Crea una nueva tasa variable")
+            .Accepts<TasaVariableDto>("application/json")
+            .Produces<int>(StatusCodes.Status201Created)
+            .Produces<ApiResponseDto<int>>(StatusCodes.Status400BadRequest)
+            .Produces<ApiResponseDto<int>>(StatusCodes.Status401Unauthorized)
+            .Produces<ApiResponseDto<int>>(StatusCodes.Status500InternalServerError);
+
+        group.MapPut("tasa-variable/{id}", UpdateTasaVariable)
+            .WithName("UpdateTasaVariable")
+            .WithSummary("Actualiza una tasa variable")
+            .Accepts<TasaVariableDto>("application/json")
+            .Produces(StatusCodes.Status200OK)
+            .Produces<ApiResponseDto>(StatusCodes.Status404NotFound)
+            .Produces<ApiResponseDto>(StatusCodes.Status400BadRequest)
+            .Produces<ApiResponseDto>(StatusCodes.Status401Unauthorized)
+            .Produces<ApiResponseDto>(StatusCodes.Status500InternalServerError);
+
+        group.MapDelete("tasa-variable/{id}", DeleteTasaVariable)
+            .WithName("DeleteTasaVariable")
+            .WithSummary("Elimina una tasa variable")
+            .WithDescription("Elimina físicamente una tasa variable y todos sus valores históricos. Solo permite eliminar tasas que no tengan contratos o líneas de crédito asociados.")
+            .Produces(StatusCodes.Status200OK)
+            .Produces<ApiResponseDto>(StatusCodes.Status404NotFound)
+            .Produces<ApiResponseDto>(StatusCodes.Status400BadRequest)
+            .Produces<ApiResponseDto>(StatusCodes.Status401Unauthorized)
+            .Produces<ApiResponseDto>(StatusCodes.Status500InternalServerError);
+
+        // Valores de tasa variable
+        group.MapPost("tasa-variable/{idTasa}/valor", CreateTasaValor)
+            .WithName("CreateTasaValor")
+            .WithSummary("Agrega un nuevo valor histórico a una tasa variable")
+            .Accepts<TasaValorDto>("application/json")
+            .Produces<int>(StatusCodes.Status201Created)
+            .Produces<ApiResponseDto<int>>(StatusCodes.Status400BadRequest)
+            .Produces<ApiResponseDto<int>>(StatusCodes.Status401Unauthorized)
+            .Produces<ApiResponseDto<int>>(StatusCodes.Status500InternalServerError);
+
+        group.MapPut("tasa-valor/{id}", UpdateTasaValor)
+            .WithName("UpdateTasaValor")
+            .WithSummary("Actualiza un valor histórico de una tasa variable")
+            .Accepts<TasaValorDto>("application/json")
+            .Produces(StatusCodes.Status200OK)
+            .Produces<ApiResponseDto>(StatusCodes.Status404NotFound)
+            .Produces<ApiResponseDto>(StatusCodes.Status400BadRequest)
+            .Produces<ApiResponseDto>(StatusCodes.Status401Unauthorized)
+            .Produces<ApiResponseDto>(StatusCodes.Status500InternalServerError);
+
+        group.MapDelete("tasa-valor/{id}", DeleteTasaValor)
+            .WithName("DeleteTasaValor")
+            .WithSummary("Elimina un valor histórico de una tasa variable")
+            .Produces(StatusCodes.Status200OK)
+            .Produces<ApiResponseDto>(StatusCodes.Status404NotFound)
+            .Produces<ApiResponseDto>(StatusCodes.Status401Unauthorized)
+            .Produces<ApiResponseDto>(StatusCodes.Status500InternalServerError);
+
+        #endregion
+
+        #region Tasa
+        group.MapPut("tasa-fija/{id}/toggle-status", ToggleTasaStatus)
+            .WithName("ToggleTasaFijaStatus")
+            .WithSummary("Activa o desactiva una tasa")
+            .WithDescription("Cambia el estado Activo/Inactivo de una tasa. No permite desactivar si tiene contratos o líneas de crédito asociadas.")
+            .Accepts<ToggleTasaStatusRequest>("application/json")
+            .Produces(StatusCodes.Status200OK)
+            .Produces<ApiResponseDto>(StatusCodes.Status404NotFound)
+            .Produces<ApiResponseDto>(StatusCodes.Status400BadRequest)
+            .Produces<ApiResponseDto>(StatusCodes.Status401Unauthorized)
+            .Produces<ApiResponseDto>(StatusCodes.Status500InternalServerError);
+        #endregion
 
     }
 
@@ -919,5 +1054,177 @@ public class Catalogos : EndpointGroupBase
             return result.ToCustomMinimalApiResult();
         }
     }
+    #endregion
+
+    #region TasaFija
+
+    public async Task<IResult> GetTasaFijaById(
+        [FromServices] IQueryMediator queryMediator,
+        [FromRoute] int id)
+    {
+        var result = await queryMediator.QueryAsync(new GetTasaFijaByIdQuery { Id = id });
+        return result.ToCustomMinimalApiResult();
+    }
+
+    public async Task<IResult> GetPaginatedTasasFijas(
+        IQueryMediator queryMediator,
+        [FromQuery] string? q = null,
+        [FromQuery] int page = 1,
+        [FromQuery] int size = 10,
+        [FromQuery] string sortColumn = nameof(TasaFijaListItemDto.Nombre),
+        [FromQuery] bool sortDescending = false,
+        [FromQuery] bool? activa = null)
+    {
+        var query = new GetTasasFijasQuery
+        {
+            SearchText = q,
+            PageSize = size,
+            Page = page,
+            SortColumn = sortColumn,
+            SortDescending = sortDescending,
+            Activa = activa
+        };
+        var result = await queryMediator.QueryAsync(query);
+        return result.ToCustomMinimalApiResult();
+    }
+
+    public async Task<IResult> CreateTasaFija(
+        [FromServices] ICommandMediator commandMediator,
+        [FromBody] TasaFijaDto model)
+    {
+        var command = new CreateTasaFijaCommand { Model = model };
+        var result = await commandMediator.SendAsync(command);
+        return result.ToCustomMinimalApiResult();
+    }
+
+    public async Task<IResult> UpdateTasaFija(
+        [FromServices] ICommandMediator commandMediator,
+        [FromRoute] int id,
+        [FromBody] TasaFijaDto model)
+    {
+        var command = new UpdateTasaFijaCommand { Id = id, Model = model };
+        var result = await commandMediator.SendAsync(command);
+        return result.ToCustomMinimalApiResult();
+    }
+
+    public async Task<IResult> DeleteTasaFija(
+        [FromServices] ICommandMediator commandMediator,
+        [FromRoute] int id)
+    {
+        var command = new DeleteTasaFijaCommand { IdTasa = id };
+        var result = await commandMediator.SendAsync(command);
+        return result.ToCustomMinimalApiResult();
+    }
+
+    #endregion
+
+    #region TasaVariable
+
+    public async Task<IResult> GetTasaVariableById(
+        [FromServices] IQueryMediator queryMediator,
+        [FromRoute] int id)
+    {
+        var result = await queryMediator.QueryAsync(new GetTasaVariableByIdQuery { Id = id });
+        return result.ToCustomMinimalApiResult();
+    }
+
+    public async Task<IResult> GetPaginatedTasasVariables(
+        IQueryMediator queryMediator,
+        [FromQuery] string? q = null,
+        [FromQuery] int page = 1,
+        [FromQuery] int size = 10,
+        [FromQuery] string sortColumn = nameof(TasaVariableListItemDto.Nombre),
+        [FromQuery] bool sortDescending = false,
+        [FromQuery] bool? activa = null)
+    {
+        var query = new GetTasasVariablesQuery
+        {
+            SearchText = q,
+            PageSize = size,
+            Page = page,
+            SortColumn = sortColumn,
+            SortDescending = sortDescending,
+            Activa = activa
+        };
+        var result = await queryMediator.QueryAsync(query);
+        return result.ToCustomMinimalApiResult();
+    }
+
+    public async Task<IResult> CreateTasaVariable(
+        [FromServices] ICommandMediator commandMediator,
+        [FromBody] TasaVariableDto model)
+    {
+        var command = new CreateTasaVariableCommand { Model = model };
+        var result = await commandMediator.SendAsync(command);
+        return result.ToCustomMinimalApiResult();
+    }
+
+    public async Task<IResult> UpdateTasaVariable(
+        [FromServices] ICommandMediator commandMediator,
+        [FromRoute] int id,
+        [FromBody] TasaVariableDto model)
+    {
+        var command = new UpdateTasaVariableCommand { Id = id, Model = model };
+        var result = await commandMediator.SendAsync(command);
+        return result.ToCustomMinimalApiResult();
+    }
+
+    public async Task<IResult> DeleteTasaVariable(
+        [FromServices] ICommandMediator commandMediator,
+        [FromRoute] int id)
+    {
+        var command = new DeleteTasaVariableCommand { IdTasa = id };
+        var result = await commandMediator.SendAsync(command);
+        return result.ToCustomMinimalApiResult();
+    }
+
+    public async Task<IResult> CreateTasaValor(
+        [FromServices] ICommandMediator commandMediator,
+        [FromRoute] int idTasa,
+        [FromBody] TasaValorDto model)
+    {
+        var command = new CreateTasaValorCommand { IdTasa = idTasa, Model = model };
+        var result = await commandMediator.SendAsync(command);
+        return result.ToCustomMinimalApiResult();
+    }
+
+    public async Task<IResult> UpdateTasaValor(
+        [FromServices] ICommandMediator commandMediator,
+        [FromRoute] int id,
+        [FromBody] TasaValorDto model)
+    {
+        var command = new UpdateTasaValorCommand { IdTasaValor = id, Model = model };
+        var result = await commandMediator.SendAsync(command);
+        return result.ToCustomMinimalApiResult();
+    }
+
+    public async Task<IResult> DeleteTasaValor(
+        [FromServices] ICommandMediator commandMediator,
+        [FromRoute] int id)
+    {
+        var command = new DeleteTasaValorCommand { IdTasaValor = id };
+        var result = await commandMediator.SendAsync(command);
+        return result.ToCustomMinimalApiResult();
+    }
+
+
+    #endregion
+
+    #region Tasa
+    public async Task<IResult> ToggleTasaStatus(
+    [FromServices] ICommandMediator commandMediator,
+    [FromRoute] int id,
+    [FromBody] ToggleTasaStatusRequest request)
+    {
+        var command = new ToggleTasaStatusCommand
+        {
+            IdTasa = id,
+            Activar = request.Activar
+        };
+
+        var result = await commandMediator.SendAsync(command);
+        return result.ToCustomMinimalApiResult();
+    }
+
     #endregion
 }

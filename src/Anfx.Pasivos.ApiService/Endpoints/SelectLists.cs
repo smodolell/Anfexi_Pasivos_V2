@@ -66,7 +66,17 @@ public class SelectLists : EndpointGroupBase
             .Produces<ApiResponseDto>(StatusCodes.Status404NotFound)
             .Produces<ApiResponseDto>(StatusCodes.Status500InternalServerError);
 
-        
+        group.MapGet("tipo-movimiento-capturable/", GetTipoMovimientosCapturables)
+          .WithName("GetTipoMovimientosCapturables")
+          .WithSummary("Obtiene los tipo de Movimientos capturables del catalogo")
+          .WithDescription("Retorna una lista de tipo de Movimiento")
+          .Produces<ApiResponseDto<List<SelectItemDto>>>(StatusCodes.Status200OK)
+          .Produces<ApiResponseDto>(StatusCodes.Status400BadRequest)
+          .Produces<ApiResponseDto>(StatusCodes.Status401Unauthorized)
+          .Produces<ApiResponseDto>(StatusCodes.Status404NotFound)
+          .Produces<ApiResponseDto>(StatusCodes.Status500InternalServerError);
+
+
         group.MapGet("tasas/", GetTasas)
             .WithName("GetTasas")
             .WithSummary("Obtiene lista de tasas para select")
@@ -256,6 +266,15 @@ public class SelectLists : EndpointGroupBase
         return result.ToCustomMinimalApiResult();
     }
 
+    public async Task<IResult> GetTipoMovimientosCapturables(
+    [FromServices] IQueryMediator queryMediator,
+    CancellationToken cancellationToken = default)
+    {
+
+        var query = new GetTipoMovimientoSelectListQuery {Capturable = true };
+        var result = await queryMediator.QueryAsync(query, cancellationToken);
+        return result.ToCustomMinimalApiResult();
+    }
     public async Task<IResult> GetTasas(
         [FromServices] IQueryMediator queryMediator,
         [FromQuery] bool? esVariable,
@@ -374,7 +393,7 @@ public class SelectLists : EndpointGroupBase
         [FromRoute] int idTipoTablaAmortiza,
         CancellationToken cancellationToken = default)
     {
-        var query = new GetPeriodicidadTTASelectListQuery
+        var query = new GetPeriodicidadTtaSelectListQuery
         {
             IdTipoTablaAmortiza = idTipoTablaAmortiza
         };

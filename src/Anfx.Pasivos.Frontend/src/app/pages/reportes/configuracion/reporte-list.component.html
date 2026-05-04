@@ -1,0 +1,36 @@
+<div class="card">
+  <div class="card-body">
+    <h1 class="page-title">Configuración de Reportes</h1>
+
+    <app-generic-table
+      [columns]="columns"
+      [items]="items()"
+      [loading]="loading()"
+      [actions]="actions"
+      [totalCount]="totalCount()"
+      [currentPage]="currentPage()"
+      [totalPages]="totalPages()"
+      [pageSize]="pageSize()"
+      [sortColumn]="sortColumn"
+      [sortDirection]="sortDirection"
+      [searchable]="true"
+      [searchPlaceholder]="'Buscar reporte...'"
+      [searchValue]="searchValue"
+      [showNew]="true"
+      [showExport]="false"
+      (searchChanged)="onSearch($event)"
+      (sortChanged)="onSort($event)"
+      (actionCalled)="onAction($event)"
+      (pageNext)="nextPage()"
+      (pagePrev)="prevPage()"
+      (newClicked)="onNuevo()"
+    />
+  </div>
+</div>
+
+<app-confirm-modal
+  #confirmModal
+  [itemName]="reporteToDelete?.nomReporte ?? undefined"
+  (confirmed)="confirmDelete()"
+  (cancelled)="reporteToDelete = null"
+/>

@@ -99,7 +99,7 @@ public class Contratos : EndpointGroupBase
             .WithName("GetContratoById")
             .WithSummary("Obtiene un contrato pasivo por su ID")
             .WithDescription("Retorna la información detallada de un contrato pasivo específico")
-            .Produces<ApiResponseDto<ContratoPasivoDto>>(StatusCodes.Status200OK)
+            .Produces<ApiResponseDto<ContratoPasivoEditDto>>(StatusCodes.Status200OK)
             .Produces<ApiResponseDto>(StatusCodes.Status404NotFound)
             .Produces<ApiResponseDto>(StatusCodes.Status400BadRequest)
             .Produces<ApiResponseDto>(StatusCodes.Status401Unauthorized)
@@ -198,6 +198,15 @@ public class Contratos : EndpointGroupBase
             .Produces<ApiResponseDto>(StatusCodes.Status401Unauthorized)
             .Produces<ApiResponseDto>(StatusCodes.Status500InternalServerError);
 
+        group.MapGet("{idContratoPasivo}/contratos-asignados", GetContratosAsignados)
+            .WithName("GetContratosAsignados")
+            .WithSummary("Obtiene los contratos asignados a un contrato pasivo")
+            .WithDescription("Retorna la lista de contratos activos asignados a un contrato pasivo específico")
+            .Produces<ApiResponseDto<List<ContratosAsignadosDto>>>(StatusCodes.Status200OK)
+            .Produces<ApiResponseDto>(StatusCodes.Status400BadRequest)
+            .Produces<ApiResponseDto>(StatusCodes.Status404NotFound)
+            .Produces<ApiResponseDto>(StatusCodes.Status401Unauthorized)
+            .Produces<ApiResponseDto>(StatusCodes.Status500InternalServerError);
     }
 
     public async Task<IResult> GetInfoGeneral(
@@ -488,6 +497,20 @@ public class Contratos : EndpointGroupBase
         var query = new GetMovimientosByIdContratoQuery
         {
             IdContrato = idContrato
+        };
+
+        var result = await queryMediator.QueryAsync(query, cancellationToken);
+        return result.ToCustomMinimalApiResult();
+    }
+
+    public async Task<IResult> GetContratosAsignados(
+    [FromServices] IQueryMediator queryMediator,
+    [FromRoute] int idContratoPasivo,
+    CancellationToken cancellationToken = default)
+    {
+        var query = new GetContratosAsignadosQuery
+        {
+            IdContratoPasivo = idContratoPasivo
         };
 
         var result = await queryMediator.QueryAsync(query, cancellationToken);

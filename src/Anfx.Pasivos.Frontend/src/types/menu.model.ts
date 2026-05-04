@@ -1,16 +1,17 @@
 export interface MenuChild {
   label:  string;
   route:  string;
-  roles:  string[];
+  roles?: string[];
   icon?:  string;
+  order?: number;
 }
 
 export interface MenuItem {
-  id:           number;
-  label:        string;
-  icon:         string;
-  route?:       string;
-  routePrefix:  string;
-  roles:        string[];
-  children:     MenuChild[];
+  id:        string;
+  label:     string;
+  icon:      string;
+  route?:    string;
+  roles?:    string[];
+  order?:    number;
+  children:  MenuChild[];
 }

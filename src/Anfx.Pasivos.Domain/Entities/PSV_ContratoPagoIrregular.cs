@@ -1,6 +1,6 @@
 namespace Anfx.Pasivos.Domain.Entities;
 
-public partial class PSV_ContratoPagoIrregular
+public class PSV_ContratoPagoIrregular
 {
     public int NoPago { get; set; }
     public int IdContrato { get; set; }
@@ -10,5 +10,5 @@ public partial class PSV_ContratoPagoIrregular
     public bool NoAplicaCapital { get; set; }
     public bool Procesado { get; set; }
 
-    public virtual PSV_Contrato PSV_Contrato { get; set; }
+    public virtual PSV_Contrato PSV_Contrato { get; set; } = null!;
 }

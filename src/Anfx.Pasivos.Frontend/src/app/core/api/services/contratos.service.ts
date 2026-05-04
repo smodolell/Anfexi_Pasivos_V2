@@ -25,13 +25,13 @@ import { AsignarPasivosResponce } from '../models/asignarPasivosResponce';
 // @ts-ignore
 import { AutocompleteResultDtoListApiResponseDto } from '../models/autocompleteResultDtoListApiResponseDto';
 // @ts-ignore
-import { ContratoPasivoDtoApiResponseDto } from '../models/contratoPasivoDtoApiResponseDto';
-// @ts-ignore
 import { ContratoPasivoEditDto } from '../models/contratoPasivoEditDto';
 // @ts-ignore
 import { ContratoPasivoEditDtoApiResponseDto } from '../models/contratoPasivoEditDtoApiResponseDto';
 // @ts-ignore
 import { ContratoPasivoListItemPagedResultDtoApiResponseDto } from '../models/contratoPasivoListItemPagedResultDtoApiResponseDto';
+// @ts-ignore
+import { ContratosAsignadosDtoListApiResponseDto } from '../models/contratosAsignadosDtoListApiResponseDto';
 // @ts-ignore
 import { InfoGeneralContratoPasivoDtoApiResponseDto } from '../models/infoGeneralContratoPasivoDtoApiResponseDto';
 // @ts-ignore
@@ -467,9 +467,9 @@ export class ContratosService extends BaseService {
      * @param reportProgress flag to report request and response progress.
      * @param options additional options
      */
-    public getContratoById(id: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<ContratoPasivoDtoApiResponseDto>;
-    public getContratoById(id: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ContratoPasivoDtoApiResponseDto>>;
-    public getContratoById(id: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ContratoPasivoDtoApiResponseDto>>;
+    public getContratoById(id: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<ContratoPasivoEditDtoApiResponseDto>;
+    public getContratoById(id: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ContratoPasivoEditDtoApiResponseDto>>;
+    public getContratoById(id: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ContratoPasivoEditDtoApiResponseDto>>;
     public getContratoById(id: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling getContratoById.');
@@ -502,7 +502,64 @@ export class ContratosService extends BaseService {
 
         let localVarPath = `/contratos/${this.configuration.encodeParam({name: "id", value: id, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: "int32"})}`;
         const { basePath, withCredentials } = this.configuration;
-        return this.httpClient.request<ContratoPasivoDtoApiResponseDto>('get', `${basePath}${localVarPath}`,
+        return this.httpClient.request<ContratoPasivoEditDtoApiResponseDto>('get', `${basePath}${localVarPath}`,
+            {
+                context: localVarHttpContext,
+                responseType: <any>responseType_,
+                ...(withCredentials ? { withCredentials } : {}),
+                headers: localVarHeaders,
+                observe: observe,
+                ...(localVarTransferCache !== undefined ? { transferCache: localVarTransferCache } : {}),
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * Obtiene los contratos asignados a un contrato pasivo
+     * Retorna la lista de contratos activos asignados a un contrato pasivo específico
+     * @endpoint get /api/contratos/{idContratoPasivo}/contratos-asignados
+     * @param idContratoPasivo 
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     * @param options additional options
+     */
+    public getContratosAsignados(idContratoPasivo: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<ContratosAsignadosDtoListApiResponseDto>;
+    public getContratosAsignados(idContratoPasivo: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<ContratosAsignadosDtoListApiResponseDto>>;
+    public getContratosAsignados(idContratoPasivo: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<ContratosAsignadosDtoListApiResponseDto>>;
+    public getContratosAsignados(idContratoPasivo: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
+        if (idContratoPasivo === null || idContratoPasivo === undefined) {
+            throw new Error('Required parameter idContratoPasivo was null or undefined when calling getContratosAsignados.');
+        }
+
+        let localVarHeaders = this.defaultHeaders;
+
+        const localVarHttpHeaderAcceptSelected: string | undefined = options?.httpHeaderAccept ?? this.configuration.selectHeaderAccept([
+            'application/json'
+        ]);
+        if (localVarHttpHeaderAcceptSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+        }
+
+        const localVarHttpContext: HttpContext = options?.context ?? new HttpContext();
+
+        const localVarTransferCache: boolean = options?.transferCache ?? true;
+
+
+        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        if (localVarHttpHeaderAcceptSelected) {
+            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+                responseType_ = 'text';
+            } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+                responseType_ = 'json';
+            } else {
+                responseType_ = 'blob';
+            }
+        }
+
+        let localVarPath = `/api/contratos/${this.configuration.encodeParam({name: "idContratoPasivo", value: idContratoPasivo, in: "path", style: "simple", explode: false, dataType: "number", dataFormat: "int32"})}/contratos-asignados`;
+        const { basePath, withCredentials } = this.configuration;
+        return this.httpClient.request<ContratosAsignadosDtoListApiResponseDto>('get', `${basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
                 responseType: <any>responseType_,

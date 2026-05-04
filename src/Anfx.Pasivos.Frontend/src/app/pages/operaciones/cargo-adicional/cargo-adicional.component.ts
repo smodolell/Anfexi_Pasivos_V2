@@ -169,7 +169,7 @@ export class CargoAdicionalComponent implements OnInit {
 
   ngOnInit(): void {
     this.layoutService.setTitle('Cargo Adicional Contrato');
-    this.selectSvc.getTipoMovimientos().subscribe({
+    this.selectSvc.getTipoMovimientosCapturables().subscribe({
       next: (res) => this.tiposMovimiento.set(res.data ?? []),
       error: (err) => {
         if (!wasHandledByInterceptor(err)) {
@@ -270,7 +270,6 @@ export class CargoAdicionalComponent implements OnInit {
         {
           descripcion: mov.descripcion ?? '',
           fecMovimiento: mov.fecMovimiento?.substring(0, 10) ?? '',
-          idTipoMovimiento: null,
           capital: mov.capital ?? null,
           interes: mov.interes ?? null,
         },
@@ -279,6 +278,8 @@ export class CargoAdicionalComponent implements OnInit {
       // Sincronizar signals manualmente (emitEvent:false suprime valueChanges)
       this._capital.set(mov.capital ?? 0);
       this._interes.set(mov.interes ?? 0);
+      // Enlazar idTipoMovimiento con emitEvent:true para que dispare la carga de config
+      this.form.get('idTipoMovimiento')!.setValue(mov.idTipoMovimiento ?? null);
       this.mostrarForm.set(true);
     } else if (event.action === 'delete') {
       this.eliminandoMov = mov;

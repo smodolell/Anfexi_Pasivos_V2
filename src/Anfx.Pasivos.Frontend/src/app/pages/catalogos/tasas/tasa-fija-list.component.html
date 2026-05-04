@@ -1,0 +1,42 @@
+@if (!mostrandoFormulario()) {
+  <app-generic-table
+    [columns]="columns"
+    [items]="items()"
+    [loading]="loading()"
+    [actions]="actions"
+    [totalCount]="totalCount()"
+    [currentPage]="currentPage()"
+    [totalPages]="totalPages()"
+    [pageSize]="pageSize()"
+    [sortColumn]="sortColumn"
+    [sortDirection]="sortDirection"
+    [searchable]="true"
+    [searchPlaceholder]="'Buscar tasa fija...'"
+    [searchValue]="searchValue"
+    [showNew]="true"
+    [showExport]="false"
+    (searchChanged)="onSearch($event)"
+    (sortChanged)="onSort($event)"
+    (actionCalled)="onAction($event)"
+    (pageNext)="nextPage()"
+    (pagePrev)="prevPage()"
+    (newClicked)="onNuevo()"
+  />
+}
+
+@if (mostrandoFormulario()) {
+  <app-tasa-fija-form
+    [tasa]="tasaSeleccionada"
+    (guardar)="onGuardar($event)"
+    (cancelar)="onCancelar()"
+  />
+}
+
+<app-confirm-modal
+  #confirmModal
+  title="Confirmar eliminación"
+  message="¿Está seguro que desea eliminar la tasa fija?"
+  [itemName]="tasaAEliminar?.nombre ?? undefined"
+  (confirmed)="confirmarEliminacion()"
+  (cancelled)="cancelarEliminacion()"
+/>

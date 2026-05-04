@@ -17,10 +17,10 @@ public class TasaConfiguration : IEntityTypeConfiguration<Tasa>
             .IsRequired()
             .HasMaxLength(100);
 
-        builder.HasOne(e => e.TipoCredito)
-            .WithMany(e=>e.Tasa)
-            .HasForeignKey(e => e.IdTipoCredito)
-            .OnDelete(DeleteBehavior.Restrict);
+        //builder.HasOne(e => e.TipoCredito)
+        //    .WithMany(e=>e.Tasa)
+        //    .HasForeignKey(e => e.IdTipoCredito)
+        //    .OnDelete(DeleteBehavior.Restrict);
 
  
     }

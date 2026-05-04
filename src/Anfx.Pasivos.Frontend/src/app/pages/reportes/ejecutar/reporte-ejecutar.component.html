@@ -1,0 +1,123 @@
+<div class="container mt-4">
+
+  <app-card
+    title="Ejecutar Reporte"
+    icon="fa-solid fa-play"
+    variant="primary">
+
+    <div class="row g-3 mb-4">
+      <div class="col-md-6">
+        <label for="reporte" class="form-label fw-bold">Seleccionar Reporte *</label>
+        @if (isLoadingReportes()) {
+          <div class="form-control d-flex align-items-center gap-2 text-muted">
+            <span class="spinner-border spinner-border-sm"></span> Cargando...
+          </div>
+        } @else {
+          <select
+            id="reporte"
+            class="form-select"
+            [(ngModel)]="selectedReporteId"
+            (ngModelChange)="onReporteChange()">
+            <option [ngValue]="null">-- Seleccione un reporte --</option>
+            @for (opt of reporteOptions(); track opt.reporteId) {
+              <option [ngValue]="opt.reporteId">{{ opt.nomReporte }}</option>
+            }
+          </select>
+        }
+      </div>
+    </div>
+
+    @if (isLoadingConfig()) {
+      <div class="text-center py-4">
+        <span class="spinner-border text-primary"></span>
+        <p class="mt-2 text-muted">Cargando configuración...</p>
+      </div>
+    }
+
+    @if (parametros().length > 0 && !isLoadingConfig()) {
+      <hr>
+      <h6 class="fw-bold mb-3"><i class="fa-solid fa-sliders me-1"></i> Parámetros del Reporte</h6>
+
+      <div class="row g-3 mb-3">
+        @for (param of parametros(); track param.parametroId; let i = $index) {
+          @if (param.inputId !== INPUT_USUARIO_AUTO) {
+            <div class="col-md-4">
+              <label class="form-label fw-bold">{{ param.display }}</label>
+
+              @if (param.inputId === INPUT_TEXTBOX) {
+                <input
+                  type="text"
+                  class="form-control"
+                  [ngModel]="param.value"
+                  (ngModelChange)="updateParamValue(i, 'value', $event)"
+                  [placeholder]="param.display ?? ''">
+              }
+
+              @if (param.inputId === INPUT_CHECKBOX) {
+                <div class="form-check mt-2">
+                  <input
+                    type="checkbox"
+                    class="form-check-input"
+                    [ngModel]="param.valueBoolean"
+                    (ngModelChange)="updateParamValue(i, 'valueBoolean', $event)">
+                  <label class="form-check-label">{{ param.display }}</label>
+                </div>
+              }
+
+              @if (param.inputId === INPUT_DATEPICKER) {
+                <input
+                  type="date"
+                  class="form-control"
+                  [ngModel]="param.valueDateTime"
+                  (ngModelChange)="updateParamValue(i, 'valueDateTime', $event)">
+              }
+
+              @if (param.inputId === INPUT_DROPDOWN) {
+                <select
+                  class="form-select"
+                  [ngModel]="param.value"
+                  (ngModelChange)="updateParamValue(i, 'value', $event)">
+                  <option value="">-- Seleccione --</option>
+                  @for (item of param.dropDownList ?? []; track item.value) {
+                    <option [value]="item.value">{{ item.text }}</option>
+                  }
+                </select>
+              }
+
+            </div>
+          }
+        }
+      </div>
+    }
+
+    @if (configuracion() && parametros().length === 0 && !isLoadingConfig()) {
+      <p class="text-muted">Este reporte no tiene parámetros adicionales.</p>
+    }
+
+    <div slot="footer" class="d-flex align-items-center justify-content-between">
+      <div class="form-check mb-0">
+        <input
+          type="checkbox"
+          id="guardarHistorial"
+          class="form-check-input"
+          [(ngModel)]="guardarHistorial">
+        <label for="guardarHistorial" class="form-check-label">
+          <i class="fa-solid fa-clock-rotate-left me-1 text-muted"></i> Guardar en historial
+        </label>
+      </div>
+      <button
+        type="button"
+        class="btn btn-primary"
+        [disabled]="!canEjecutar()"
+        (click)="onEjecutar()">
+        @if (isEjecutando()) {
+          <span class="spinner-border spinner-border-sm me-1"></span> Generando...
+        } @else {
+          <i class="fa-solid fa-play me-1"></i> Ejecutar Reporte
+        }
+      </button>
+    </div>
+
+  </app-card>
+
+</div>

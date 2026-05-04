@@ -1,35 +1,14 @@
-import { Injectable } from '@angular/core';
-import { CanActivate, Router, UrlTree } from '@angular/router';
-import { Observable, map, take } from 'rxjs';
+import { inject } from '@angular/core';
+import { CanActivateFn, Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 
-@Injectable({
-  providedIn: 'root'
-})
-export class AdminGuard implements CanActivate {
-  
-  constructor(
-    private authService: AuthService,
-    private router: Router
-  ) {}
+export const adminGuard: CanActivateFn = () => {
+  const auth   = inject(AuthService);
+  const router = inject(Router);
 
-  canActivate(): Observable<boolean | UrlTree> {
-    return this.authService.isAuthenticated$.pipe(
-      take(1),
-      map(isAuthenticated => {
-        if (!isAuthenticated) {
-          // Si no está autenticado, redirigir al login
-          return this.router.createUrlTree(['/auth/login']);
-        }
-        
-        // Si está autenticado, verificar si es admin
-        if (this.authService.isAdmin()) {
-          return true;
-        } else {
-          // Si no es admin, redirigir a la página principal
-          return this.router.createUrlTree(['/home']);
-        }
-      })
-    );
+  if (!auth.isAuthenticated()) {
+    return router.createUrlTree(['/auth/login']);
   }
-}
+
+  return auth.isAdmin() ? true : router.createUrlTree(['/unauthorized']);
+};

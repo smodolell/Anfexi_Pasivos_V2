@@ -1,0 +1,123 @@
+<div class="card">
+  <div class="card-body">
+    <h1 class="page-title">Historial de Reportes</h1>
+
+    <!-- Filtro por reporte -->
+    <div class="row mb-3">
+      <div class="col-md-4">
+        <label class="form-label fw-bold">Filtrar por Reporte</label>
+        <select
+          class="form-select"
+          [(ngModel)]="filtroReporteId"
+          (ngModelChange)="onFiltroChange()">
+          <option [ngValue]="null">Todos los reportes</option>
+          @for (opt of reporteOptions(); track opt.reporteId) {
+            <option [ngValue]="opt.reporteId">{{ opt.nomReporte }}</option>
+          }
+        </select>
+      </div>
+    </div>
+
+    <!-- Tabla de archivos -->
+    @if (isLoading()) {
+      <div class="text-center py-5">
+        <span class="spinner-border text-primary"></span>
+        <p class="mt-2 text-muted">Cargando historial...</p>
+      </div>
+    } @else if (items().length === 0) {
+      <div class="text-center py-5 text-muted">
+        <i class="fa-solid fa-folder-open fa-2x mb-2 d-block"></i>
+        No hay archivos generados.
+      </div>
+    } @else {
+      <div class="table-responsive">
+        <table class="table table-hover align-middle">
+          <thead class="table-light">
+            <tr>
+              <th>Reporte</th>
+              <th>Archivo</th>
+              <th>Formato</th>
+              <th>Fecha Generación</th>
+              <th>Parámetros</th>
+              <th class="text-end">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of items(); track item.id) {
+              <tr>
+                <td>{{ item.nomReporte }}</td>
+                <td>{{ item.nombreArchivo }}</td>
+                <td>
+                  @if (item.extension === '.xlsx' || item.contentType?.includes('spreadsheet')) {
+                    <span class="badge bg-success"><i class="fa-solid fa-file-excel me-1"></i>Excel</span>
+                  } @else {
+                    <span class="badge bg-secondary"><i class="fa-solid fa-file-lines me-1"></i>Texto</span>
+                  }
+                </td>
+                <td>{{ item.fechaCreacion | date:'dd/MM/yyyy HH:mm' }}</td>
+                <td>
+                  @if (item.logParameters) {
+                    <small class="text-muted" title="{{ item.logParameters }}">
+                      {{ item.logParameters | slice:0:60 }}{{ (item.logParameters?.length ?? 0) > 60 ? '...' : '' }}
+                    </small>
+                  } @else {
+                    <span class="text-muted">—</span>
+                  }
+                </td>
+                <td class="text-end">
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-action-edit me-1"
+                    [disabled]="isDownloading() === item.id"
+                    (click)="onDownload(item)"
+                    title="Descargar">
+                    @if (isDownloading() === item.id) {
+                      <span class="spinner-border spinner-border-sm"></span>
+                    } @else {
+                      <i class="fa-solid fa-download"></i>
+                    }
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-action-delete"
+                    (click)="onDelete(item)"
+                    title="Eliminar">
+                    <i class="fa-solid fa-trash"></i>
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Paginación -->
+      @if (totalPages() > 1) {
+        <div class="d-flex align-items-center justify-content-between mt-3">
+          <small class="text-muted">
+            Página {{ currentPage() }} de {{ totalPages() }} | {{ totalCount() }} registros
+          </small>
+          <div class="btn-group btn-group-sm">
+            <button class="btn btn-outline-secondary" [disabled]="currentPage() <= 1" (click)="prevPage()">
+              <i class="fa-solid fa-chevron-left"></i>
+            </button>
+            <button class="btn btn-outline-secondary" disabled>
+              {{ currentPage() }} / {{ totalPages() }}
+            </button>
+            <button class="btn btn-outline-secondary" [disabled]="currentPage() >= totalPages()" (click)="nextPage()">
+              <i class="fa-solid fa-chevron-right"></i>
+            </button>
+          </div>
+        </div>
+      }
+    }
+
+  </div>
+</div>
+
+<app-confirm-modal
+  #confirmModal
+  [itemName]="archivoToDelete?.nombreArchivo ?? undefined"
+  (confirmed)="confirmDelete()"
+  (cancelled)="archivoToDelete = null"
+/>

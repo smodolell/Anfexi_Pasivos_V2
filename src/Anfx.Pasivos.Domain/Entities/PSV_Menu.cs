@@ -2,20 +2,14 @@ namespace Anfx.Pasivos.Domain.Entities;
 
 public partial class PSV_Menu
 {
-    public PSV_Menu()
-    {
-        //this.Rol = new HashSet<Rol>();
-    }
-
     public int ID { get; set; }
-    public string Titulo { get; set; }
-    public string Area { get; set; }
-    public string Controller { get; set; }
-    public string Action { get; set; }
-    public string Icon { get; set; }
+    public string Titulo { get; set; } = string.Empty;
+    public string Area { get; set; } = string.Empty;
+    public string Controller { get; set; } = string.Empty;
+    public string Action { get; set; } = string.Empty;
+    public string Icon { get; set; } = string.Empty;
     public decimal Orden { get; set; }
-    public Nullable<int> ParentID { get; set; }
+    public int? ParentID { get; set; }
     public bool Activo { get; set; }
 
-    //public virtual ICollection<Rol> Rol { get; set; }
 }

@@ -64,17 +64,27 @@
         </div>
 
         <div class="col-md-6">
-          <label for="idTipoMovimiento" class="form-label fw-bold">ID Tipo Movimiento <span class="text-danger">*</span></label>
-          <input type="number" id="idTipoMovimiento" formControlName="idTipoMovimiento" class="form-control"
-            [class.is-invalid]="isInvalid('idTipoMovimiento')" placeholder="ID del tipo de movimiento" />
-          <div class="invalid-feedback">Campo obligatorio.</div>
+          <label for="idTipoMovimiento" class="form-label fw-bold">Tipo Movimiento <span class="text-danger">*</span></label>
+          <select id="idTipoMovimiento" formControlName="idTipoMovimiento" class="form-select"
+            [class.is-invalid]="isInvalid('idTipoMovimiento')">
+            <option [ngValue]="null" disabled>-- Seleccione --</option>
+            @for (t of tiposMovimiento(); track t.value) {
+              <option [ngValue]="t.value">{{ t.text }}</option>
+            }
+          </select>
+          <div class="invalid-feedback">Seleccione un tipo de movimiento.</div>
         </div>
 
         <div class="col-md-6">
-          <label for="idTipoMovimiento_Mora" class="form-label fw-bold">ID Tipo Movimiento Mora <span class="text-danger">*</span></label>
-          <input type="number" id="idTipoMovimiento_Mora" formControlName="idTipoMovimiento_Mora" class="form-control"
-            [class.is-invalid]="isInvalid('idTipoMovimiento_Mora')" placeholder="ID del tipo de movimiento de mora" />
-          <div class="invalid-feedback">Campo obligatorio.</div>
+          <label for="idTipoMovimiento_Mora" class="form-label fw-bold">Tipo Movimiento Mora <span class="text-danger">*</span></label>
+          <select id="idTipoMovimiento_Mora" formControlName="idTipoMovimiento_Mora" class="form-select"
+            [class.is-invalid]="isInvalid('idTipoMovimiento_Mora')">
+            <option [ngValue]="null" disabled>-- Seleccione --</option>
+            @for (t of tiposMovimiento(); track t.value) {
+              <option [ngValue]="t.value">{{ t.text }}</option>
+            }
+          </select>
+          <div class="invalid-feedback">Seleccione un tipo de movimiento de mora.</div>
         </div>
 
       </div>

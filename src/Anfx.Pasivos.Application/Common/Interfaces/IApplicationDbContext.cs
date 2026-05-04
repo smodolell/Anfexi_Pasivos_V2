@@ -14,6 +14,7 @@ public interface IApplicationDbContext
     DbSet<SB_Periodicidad> SB_Periodicidad { get; }
     DbSet<SB_TipoMoneda> SB_TipoMoneda { get; }
     DbSet<Tasa> Tasa { get; }
+    DbSet<TasaValor> TasaValor { get; }
     DbSet<TipoCalculoTasaVariable> TipoCalculoTasaVariable { get; }
     DbSet<TipoGeneracionComprobante> TipoGeneracionComprobante { get; }
     DbSet<TipoMantenimiento> TipoMantenimiento { get; }
@@ -71,6 +72,12 @@ public interface IApplicationDbContext
     DbSet<PSV_TipoTerminacion> PSV_TipoTerminacion { get; }
     DbSet<PSV_Terminacion> PSV_Terminacion { get; }
     DbSet<View_CarteraPasiva_PorVencerV2> View_CarteraPasiva_PorVencerV2 { get; }
+
+
+    DbSet<RSP_Archivo> RSP_Archivo { get; }
+    DbSet<RSP_Input> RSP_Input { get; }
+    DbSet<RSP_Parametro> RSP_Parametro { get; }
+    DbSet<RSP_Reporte> RSP_Reporte { get; }
 
     IApplicationDbContextProcedures Procedures { get; }
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);

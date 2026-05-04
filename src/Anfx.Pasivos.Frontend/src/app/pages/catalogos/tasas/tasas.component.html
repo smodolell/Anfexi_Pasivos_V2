@@ -1,0 +1,33 @@
+<div class="card">
+  <div class="card-body">
+    <h1 class="page-title">Tasas</h1>
+
+    <ul class="nav nav-tabs mb-3">
+      <li class="nav-item">
+        <button
+          class="nav-link"
+          [class.active]="tabActivo() === 'fija'"
+          (click)="setTab('fija')">
+          <i class="fa-solid fa-percent me-2"></i>Tasa Fija
+        </button>
+      </li>
+      <li class="nav-item">
+        <button
+          class="nav-link"
+          [class.active]="tabActivo() === 'variable'"
+          (click)="setTab('variable')">
+          <i class="fa-solid fa-chart-line me-2"></i>Tasa Variable
+        </button>
+      </li>
+    </ul>
+
+    @if (tabActivo() === 'fija') {
+      <app-tasa-fija-list />
+    }
+
+    @if (tabActivo() === 'variable') {
+      <app-tasa-variable-list />
+    }
+
+  </div>
+</div>

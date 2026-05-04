@@ -1,6 +1,6 @@
 import { Component, inject, signal, computed, ViewChild, ElementRef, effect } from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { DecimalPipe } from '@angular/common';
+import { CurrencyPipe, DecimalPipe } from '@angular/common';
 import { forkJoin } from 'rxjs';
 import { OperacionesService } from 'src/app/core/api/services/operaciones.service';
 import { SelectListsService } from 'src/app/core/api/services/selectLists.service';
@@ -19,7 +19,7 @@ import { CardInfoComponent } from '@shared/components/card/card-info.component';
 @Component({
   selector: 'app-caja-manual',
   standalone: true,
-  imports: [FormsModule, ReactiveFormsModule, DecimalPipe, ConfirmModalComponent, ContratoAutocompleteComponent, FormErrorsComponent, CardInfoComponent],
+  imports: [FormsModule, ReactiveFormsModule, CurrencyPipe, DecimalPipe, ConfirmModalComponent, ContratoAutocompleteComponent, FormErrorsComponent, CardInfoComponent],
   templateUrl: './caja-manual.component.html',
 })
 export class CajaManualComponent {

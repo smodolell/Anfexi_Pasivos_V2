@@ -22,6 +22,7 @@ public partial class ApplicationDbContext : DbContext,IApplicationDbContext
     public DbSet<SB_Periodicidad> SB_Periodicidad => Set<SB_Periodicidad>();
     public DbSet<SB_TipoMoneda> SB_TipoMoneda => Set<SB_TipoMoneda>();
     public DbSet<Tasa> Tasa => Set<Tasa>();
+    public DbSet<TasaValor> TasaValor => Set<TasaValor>();
     public DbSet<TipoCalculoTasaVariable> TipoCalculoTasaVariable => Set<TipoCalculoTasaVariable>();
     public DbSet<TipoGeneracionComprobante> TipoGeneracionComprobante => Set<TipoGeneracionComprobante>();
     public DbSet<TipoMantenimiento> TipoMantenimiento => Set<TipoMantenimiento>();
@@ -79,6 +80,14 @@ public partial class ApplicationDbContext : DbContext,IApplicationDbContext
     public DbSet<PSV_TipoTerminacion> PSV_TipoTerminacion => Set<PSV_TipoTerminacion>();
     public DbSet<PSV_Terminacion> PSV_Terminacion => Set<PSV_Terminacion>();
     public DbSet<View_CarteraPasiva_PorVencerV2> View_CarteraPasiva_PorVencerV2 => Set<View_CarteraPasiva_PorVencerV2>();
+
+    public DbSet<RSP_Archivo> RSP_Archivo => Set<RSP_Archivo>();
+
+    public DbSet<RSP_Input> RSP_Input => Set<RSP_Input>();
+
+    public DbSet<RSP_Parametro> RSP_Parametro => Set<RSP_Parametro>();
+
+    public DbSet<RSP_Reporte> RSP_Reporte => Set<RSP_Reporte>();
 
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {

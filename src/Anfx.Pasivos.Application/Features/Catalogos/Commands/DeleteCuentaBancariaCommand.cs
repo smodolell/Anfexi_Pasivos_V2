@@ -52,7 +52,7 @@ internal class DeleteCuentaBancariaCommandHandler : ICommandHandler<DeleteCuenta
         catch (DbUpdateException ex)
         {
             // Capturar errores de integridad referencial
-            return Result.Error("No se puede eliminar la cuenta bancaria porque tiene registros relacionados en otras tablas");
+            return Result.Error("No se puede eliminar la cuenta bancaria porque tiene registros relacionados en otras tablas: "+ex.Message);
         }
         catch (Exception ex)
         {

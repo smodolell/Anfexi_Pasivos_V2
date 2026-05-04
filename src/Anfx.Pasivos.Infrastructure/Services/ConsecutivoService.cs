@@ -1,12 +1,11 @@
 ﻿using Anfx.Pasivos.Application.Common.Interfaces;
+using Anfx.Pasivos.Domain.Entities;
 using Anfx.Pasivos.Infrastructure.Persistence;
-using Anfx.Profuturo.Domain.Entities;
-using Anfx.Profuturo.Sofom.Infrastructure.Persitence;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
 
-namespace Anfx.Profuturo.Sofom.Infrastructure.Services;
+namespace Anfx.Pasivos.Infrastructure.Services;
 
 public class ConsecutivoService : IConsecutivoService
 {

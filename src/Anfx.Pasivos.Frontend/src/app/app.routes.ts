@@ -31,6 +31,11 @@ export const routes: Routes = [
     canActivate: [authGuard],
     loadChildren: () => import('./features/catalogos/catalogos.routes'),
   },
+  {
+    path: 'reportes',
+    canActivate: [authGuard],
+    loadChildren: () => import('./pages/reportes/reportes.routes'),
+  },
 
   {
     path: 'auth',

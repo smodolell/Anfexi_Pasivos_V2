@@ -8,6 +8,19 @@ public class CatalogosMappingConfig : IRegister
 {
     public void Register(TypeAdapterConfig config)
     {
+        config.NewConfig<Tasa, TasaFijaListItemDto>()
+            .Map(o => o.Id, d => d.IdTasa)
+            .Map(o => o.Nombre, d => d.Tasa1);
+
+        config.NewConfig<Tasa, TasaVariableListItemDto>()
+            .Map(o => o.Id, d => d.IdTasa)
+            .Map(o => o.Nombre, d => d.Tasa1)
+            .Map(o => o.UltimoValor, d => d.TasaValors.OrderByDescending(v => v.FecValorTasa).Select(v => v.ValorTasa).FirstOrDefault())
+            .Map(o => o.FecUltimoValor, d => d.TasaValors.OrderByDescending(v => v.FecValorTasa).Select(v => v.FecValorTasa).FirstOrDefault());
+
+        config.NewConfig<TasaValor, TasaValorListItemDto>()
+            .Map(o => o.Id, d => d.IdTasaValor);
+
         config.NewConfig<PSV_TipoCredito, TipoCreditoListItemDto>()
             .Map(o => o.Id, d => d.IdTipoCredito);
 

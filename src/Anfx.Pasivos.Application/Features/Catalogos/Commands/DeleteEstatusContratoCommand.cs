@@ -1,4 +1,6 @@
-﻿public class DeleteEstatusContratoCommand : ICommand<Result>
+﻿namespace Anfx.Pasivos.Application.Features.Catalogos.Commands;
+
+public class DeleteEstatusContratoCommand : ICommand<Result>
 {
     public int IdEstatusContrato { get; set; }
 }

@@ -1,0 +1,212 @@
+================================================================================
+  MAPA DE OBJETOS DE BASE DE DATOS - ANFEXI PASIVOS V2
+  Proyectos: Anfx.Pasivos.Application | Anfx.Pasivos.Domain | Anfx.Pasivos.Infrastructure
+  Generado: 2026-04-08
+================================================================================
+
+--------------------------------------------------------------------------------
+RESUMEN
+--------------------------------------------------------------------------------
+  Tablas             : 56  (16 generales + 40 PSV)
+  Vistas             : 23  (todas con prefijo View_)
+  Procedimientos     : 13  (todos con prefijo usp_)
+  Esquemas usados    : dbo (default), cat (Consecutivo)
+--------------------------------------------------------------------------------
+
+
+================================================================================
+1. TABLAS
+================================================================================
+
+--- Tablas Generales ---
+  Catalogo
+  Colonia
+  Consecutivo                    [esquema: cat.Consecutivo]
+  Contrato
+  Empresa
+  EstatusContrato
+  Genero
+  Menu
+  Rol
+  SB_Periodicidad
+  SB_TipoMoneda
+  Tasa
+  TipoCalculoTasaVariable
+  TipoGeneracionComprobante
+  TipoDireccion
+  TipoMantenimiento
+  TipoMovimiento
+  Usuario
+
+--- Tablas PSV (Pasivos) ---
+  PSV_Archivo
+  PSV_Banco
+  PSV_Bitacora
+  PSV_Contrato
+  PSV_ContratoPagoIrregular
+  PSV_CuentaBancaria
+  PSV_EstatusContrato
+  PSV_Fondeador
+  PSV_LineaCredito
+  PSV_Menu
+  PSV_Movimiento
+  PSV_Pago
+  PSV_Parameter
+  PSV_RelActivoPasivo
+  PSV_RelLineaCreditoContrato
+  PSV_RelLineaCreditoTipoCredito
+  PSV_RelPagoMovimiento
+  PSV_TablaAmortiza
+  PSV_Terminacion
+  PSV_TipoCapitalizacion
+  PSV_TipoCredito
+  PSV_TipoPago
+  PSV_TipoPagoCapital
+  PSV_TipoTablaAmortiza
+  PSV_TipoTablaAmortizaPeriodicidad
+  PSV_TipoTablaAmortizaTipoCapitalizacion
+  PSV_TipoTablaAmortizaTipoPagoCapital
+  PSV_TipoTerminacion
+
+--- Archivos de configuracion (Infrastructure) ---
+  src\Anfx.Pasivos.Infrastructure\Persistence\Configurations\*Configuration.cs
+  src\Anfx.Pasivos.Infrastructure\Persistence\ApplicationDbContext.cs
+  src\Anfx.Pasivos.Application\Common\Interfaces\IApplicationDbContext.cs
+
+
+================================================================================
+2. VISTAS
+================================================================================
+
+  View_Banco
+  View_CarteraActiva_PorVencer
+  View_CarteraActiva_Vencido
+  View_CarteraPasiva_PorVencer
+  View_CarteraPasiva_PorVencerV2
+  View_CarteraPasiva_Vencido
+  View_ContratoPasivo
+  View_ContratosAsignados
+  View_CuentaBancaria
+  View_EstatusContrato
+  View_Fondeador
+  View_LineaCredito
+  View_Menu
+  View_MenuRol
+  View_PSV_PasivoAutocomple
+  View_RelActivoPasivo
+  View_Rol
+  View_TipoCapitalizacion
+  View_TipoCredito
+  View_TipoPago
+  View_TipoPagoCapital
+  View_TipoTablaAmortiza
+
+--- Archivos de configuracion (Infrastructure) ---
+  src\Anfx.Pasivos.Infrastructure\Persistence\Configurations\View_*Configuration.cs
+  src\Anfx.Pasivos.Application\Common\Interfaces\IApplicationDbContext.cs
+
+
+================================================================================
+3. PROCEDIMIENTOS ALMACENADOS
+================================================================================
+
+  Nombre                              Clase Resultado
+  ----------------------------------  -------------------------------------------
+  usp_CarteraActiva_CI                usp_CarteraActiva_CIResult
+  usp_CarteraActivaMensual_CI         usp_CarteraActivaMensual_CIResult
+  usp_CarteraPasivaMensual_CI         usp_CarteraPasivaMensual_CIResult
+  usp_PSV_AnticipoACapital            usp_PSV_AnticipoACapitalResult
+  usp_PSV_AplicaAnticipo_CI           usp_PSV_AplicaAnticipo_CIResult
+  usp_PSV_Liquidacion                 usp_PSV_LiquidacionResult
+  usp_PSV_AnticipoAPlazo              (sin clase resultado dedicada)
+  usp_PSV_CalculaInteres              usp_PSV_CalculaInteresResult
+  usp_PSV_PagarCargos                 usp_PSV_PagarCargosResult
+  usp_PSV_ProcesaMoratorios           usp_PSV_ProcesaMoratoriosResult
+  usp_PSV_ProcesaVencimientos         usp_PSV_ProcesaVencimientosResult
+  usp_PSV_GeneraTablaAmortiza         usp_PSV_GeneraTablaAmortizaResult
+  usp_PSV_ActivarContrato             usp_PSV_ActivarContratoResult
+
+--- Archivos de implementacion ---
+  Interfaz    : src\Anfx.Pasivos.Application\Common\Interfaces\IApplicationDbContextProcedures.cs
+  Implementac : src\Anfx.Pasivos.Infrastructure\Persistence\ApplicationDbContextProcedures.cs
+  Modelos     : src\Anfx.Pasivos.Application\Common\Models\StoredProcedures\
+
+--- Consumidores (Application Features) ---
+  usp_CarteraActiva_CI            -> Features\Reportes\Queries\GetCarteraActivaQuery.cs
+  usp_CarteraActivaMensual_CI     -> Features\Reportes\Queries\GetCarteraActivaMensualQuery.cs
+  usp_CarteraPasivaMensual_CI     -> Features\Reportes\Queries\GetCarteraPasivaQuery.cs
+                                     Features\Reportes\Queries\GetCarteraPasivaMensualQuery.cs
+  usp_PSV_CalculaInteres          -> Features\Contratos\Queries\GetInteresQuery.cs
+  usp_PSV_PagarCargos             -> Features\Operaciones\Commands\CajaConfirmCommand.cs
+  usp_PSV_GeneraTablaAmortiza     -> Features\Contratos\Commands\SaveContratoCommand.cs
+  usp_PSV_AnticipoACapital        -> Features\Operaciones\Commands\AnticipoConfirmCommand.cs
+  usp_PSV_AplicaAnticipo_CI       -> Features\Operaciones\Commands\AnticipoConfirmCommand.cs
+  usp_PSV_Liquidacion             -> Features\Operaciones\Commands\AnticipoConfirmCommand.cs
+  usp_PSV_ProcesaMoratorios       -> Features\Procesos\Commands\ProcesaMoratorioCommand.cs
+  usp_PSV_ProcesaVencimientos     -> Features\Procesos\Commands\ProcesaVencimientoCommand.cs
+  usp_PSV_ActivarContrato         -> Features\Contratos\Commands\ActivarContratoCommand.cs
+
+
+================================================================================
+4. SQL RAW (ExecuteSqlRaw / FromSqlRaw)
+================================================================================
+
+  Archivo: src\Anfx.Pasivos.Infrastructure\Services\ConsecutivoService.cs
+    - cat.Consecutivo
+
+  Archivo: src\Anfx.Pasivos.Infrastructure\Services\DatabaseService.cs
+    - PSV_Movimiento
+    - PSV_Contrato
+    - PSV_TipoCredito
+    - PSV_Pago
+    - PSV_TipoPago
+    - PSV_CuentaBancaria
+    - PSV_RelPagoMovimiento
+    - PSV_TablaAmortiza
+    - PSV_Fondeador
+    - PSV_RelLineaCreditoContrato
+    - TipoMovimiento
+
+  Archivo: src\Anfx.Pasivos.Infrastructure\Persistence\DbContextExtensions.cs
+    (extensiones para soporte de procedimientos almacenados)
+
+
+================================================================================
+5. ENTIDADES DEL DOMINIO (Anfx.Pasivos.Domain)
+================================================================================
+
+  El proyecto Domain define las clases de entidad pero NO mapea directamente
+  a la base de datos. El mapeo se realiza en Infrastructure mediante
+  IEntityTypeConfiguration<T> con ToTable() / ToView().
+
+  Entidades declaradas en: src\Anfx.Pasivos.Domain\Entities\
+
+  Catalogo                    PSV_RelActivoPasivo
+  Colonia                     PSV_RelLineaCreditoContrato
+  Consecutivo                 PSV_RelLineaCreditoTipoCredito
+  Contrato                    PSV_RelPagoMovimiento
+  Empresa                     PSV_TablaAmortiza
+  EstatusContrato             PSV_Terminacion
+  Genero                      PSV_TipoCapitalizacion
+  Menu                        PSV_TipoCredito
+  PSV_Archivo                 PSV_TipoPago
+  PSV_Banco                   PSV_TipoPagoCapital
+  PSV_Bitacora                PSV_TipoTablaAmortiza
+  PSV_Contrato                PSV_TipoTablaAmortizaPeriodicidad
+  PSV_ContratoPagoIrregular   PSV_TipoTablaAmortizaTipoCapitalizacion
+  PSV_CuentaBancaria          PSV_TipoTablaAmortizaTipoPagoCapital
+  PSV_EstatusContrato         PSV_TipoTerminacion
+  PSV_Fondeador               Rol
+  PSV_LineaCredito            SB_Periodicidad
+  PSV_Menu                    SB_TipoMoneda
+  PSV_Movimiento              Tasa
+  PSV_Pago                    TipoCalculoTasaVariable
+  PSV_Parameter               TipoDireccion
+  PSV_RelActivoPasivo         TipoGeneracionComprobante
+                              TipoMantenimiento
+                              TipoMovimiento
+                              Usuario
+
+================================================================================
+FIN DEL ARCHIVO
+================================================================================

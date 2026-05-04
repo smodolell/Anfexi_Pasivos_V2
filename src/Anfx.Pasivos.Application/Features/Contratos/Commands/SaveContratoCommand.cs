@@ -1,4 +1,5 @@
-﻿using Anfx.Pasivos.Application.Features.Contratos.DTOs;
+﻿using Anfx.Pasivos.Application.Common.Models.StoredProcedures;
+using Anfx.Pasivos.Application.Features.Contratos.DTOs;
 namespace Anfx.Pasivos.Application.Features.Contratos.Commands;
 
 public class SaveContratoCommand : ICommand<Result<int>>
@@ -43,16 +44,24 @@ internal class SaveContratoCommandHandler : ICommandHandler<SaveContratoCommand,
 
         try
         {
-            // 2. Obtener entidades relacionadas (siempre necesarias)
+            
             var lineaCredito = await _context.PSV_LineaCredito
                 .SingleAsync(r => r.IdLineaCredito == model.IdLineaCredito, cancellationToken);
 
             var periodicidad = await _context.SB_Periodicidad
-                .SingleAsync(r => r.IdPeriodicidad == model.IdPeriodicidad, cancellationToken);
+                .SingleOrDefaultAsync(r => r.IdPeriodicidad == model.IdPeriodicidad, cancellationToken);
+            if(periodicidad == null)
+            {
+                return Result.Invalid(new ValidationError("Periodicidad no válida"));
+            }
 
             var tipoCredito = await _context.PSV_TipoCredito
-                .SingleAsync(r => r.IdTipoCredito == model.IdTipoCredito, cancellationToken);
+                .SingleOrDefaultAsync(r => r.IdTipoCredito == model.IdTipoCredito, cancellationToken);
 
+            if (tipoCredito == null)
+            {
+                return Result.Invalid(new ValidationError("Tipo de crédito no válido"));
+            }
             // 3. Determinar si es Create o Update
             PSV_Contrato? contrato;
             bool esNuevo = false;
@@ -60,7 +69,7 @@ internal class SaveContratoCommandHandler : ICommandHandler<SaveContratoCommand,
             if (idContrato == 0)
             {
                 // CREATE: Nuevo contrato
-                contrato = new PSV_Contrato();
+                contrato = new PSV_Contrato { VersionTabla = 1};
                 esNuevo = true;
                 _context.PSV_Contrato.Add(contrato);
             }
@@ -91,7 +100,6 @@ internal class SaveContratoCommandHandler : ICommandHandler<SaveContratoCommand,
             // 5. Actualizar línea de crédito (diferente para Create y Update)
             if (esNuevo)
             {
-                // CREATE: Restar todo el capital
                 ActualizarLineaCreditoParaCreacion(lineaCredito, model.CapitalFinanciado);
             }
             else
@@ -108,6 +116,9 @@ internal class SaveContratoCommandHandler : ICommandHandler<SaveContratoCommand,
             // 6. Actualizar contador de tipo de crédito (solo para nuevos)
             if (esNuevo)
             {
+                contrato.FecActivacion = null;
+                contrato.FecFinContrato = null;
+
                 tipoCredito.Contador++;
             }
 
@@ -169,7 +180,7 @@ internal class SaveContratoCommandHandler : ICommandHandler<SaveContratoCommand,
         }
     }
 
-    private void MapContrato(ContratoPasivoEditDto model, PSV_Contrato entity, bool esNuevo)
+    private static void MapContrato(ContratoPasivoEditDto model, PSV_Contrato entity, bool esNuevo)
     {
         // Datos básicos
         entity.IdPeriodicidad = model.IdPeriodicidad;
@@ -182,8 +193,8 @@ internal class SaveContratoCommandHandler : ICommandHandler<SaveContratoCommand,
         entity.Contrato = model.Contrato;
         entity.Capital = model.CapitalFinanciado;
         entity.CapitalFinanciado = model.CapitalFinanciado;
-        //entity.Enganche = model.Enganche;
-        //entity.PorcEnganche = model.PorcEnganche;
+        entity.Enganche = 0;
+        entity.PorcEnganche = 0;
         entity.Plazo = model.Plazo;
         entity.Tasa = model.Tasa;
         entity.TasaBase = model.TasaBase;
@@ -195,15 +206,12 @@ internal class SaveContratoCommandHandler : ICommandHandler<SaveContratoCommand,
         entity.FechaFirmaContrato = model.FechaFirmaContrato;
 
         //// Versión de tabla
-        //if (esNuevo)
-        //{
-        //    entity.VersionTabla = 1;
-        //}
-        //else
-        //{
-        //    entity.VersionTabla++; // Incrementar versión en updates
-        //    entity.FechaUltimaModificacion = DateTime.Now;
-        //}
+        if (esNuevo)
+        {
+            entity.IdEstatusContrato = 1;
+            entity.VersionTabla = 1;
+        }
+        
 
         // Datos adicionales
         entity.PuntosMas = model.PuntosMas;
@@ -213,20 +221,11 @@ internal class SaveContratoCommandHandler : ICommandHandler<SaveContratoCommand,
         entity.PuntosMasMora = model.PuntosMasMora;
         entity.PuntosPorMora = model.PuntosPorMora;
         entity.FactorMora = model.FactorMora;
-        //entity.SaldoInsoluto = model.SaldoInsoluto;
-        //entity.BallonPayment = model.BallonPayment;
-        //entity.PorcBallonPayment = model.PorcBallonPayment;
-        //entity.ValorResidual = model.ValorResidual;
-        //entity.PorcValorResidual = model.PorcValorResidual;
-        //entity.DepositoEnGarantia = model.DepositoEnGarantia;
-        //entity.OpcionDeCompra = model.OpcionDeCompra;
-        //entity.PorcOpcionDeCompra = model.PorcOpcionDeCompra;
         entity.TasaIva = model.TasaIva;
         entity.IdTipoCalculoTasaVariable = model.IdTipoCalculoTasaVariable;
         entity.NroRentasDepositoGarantia = model.NroRentasDepositoGarantia;
         entity.IdTipoMantenimiento = model.IdTipoMantenimiento;
         entity.TasaMensual = model.TasaMensual;
-        entity.FechaCierre = model.FechaCierre;
         entity.TasaEsVariable = model.TasaEsVariable;
         entity.IdFondeador = model.IdFondeador;
         entity.FactorFIRA = model.FactorFIRA;
@@ -234,7 +233,7 @@ internal class SaveContratoCommandHandler : ICommandHandler<SaveContratoCommand,
         entity.NoPagosIrregulares = model.NoPagosIrregulares;
     }
 
-    private void ActualizarLineaCreditoParaCreacion(PSV_LineaCredito lineaCredito, decimal capitalFinanciado)
+    private static void ActualizarLineaCreditoParaCreacion(PSV_LineaCredito lineaCredito, decimal capitalFinanciado)
     {
         lineaCredito.MontoDisponible -= capitalFinanciado;
         lineaCredito.MontoDispuesto += capitalFinanciado;
@@ -242,7 +241,7 @@ internal class SaveContratoCommandHandler : ICommandHandler<SaveContratoCommand,
         lineaCredito.FechaUltimaDisposicion = DateTime.Now;
     }
 
-    private void ActualizarLineaCreditoParaActualizacion(PSV_LineaCredito lineaCredito, decimal diferenciaCapital)
+    private static void ActualizarLineaCreditoParaActualizacion(PSV_LineaCredito lineaCredito, decimal diferenciaCapital)
     {
         if (diferenciaCapital != 0)
         {
@@ -306,7 +305,8 @@ internal class SaveContratoCommandHandler : ICommandHandler<SaveContratoCommand,
         try
         {
             // Llamar al procedimiento almacenado
-            await _context.Procedures.usp_PSV_GeneraTablaAmortizaAsync(idContrato, true);
+            var returnValueParameter = new OutputParameter<int>();
+            await _context.Procedures.usp_PSV_GeneraTablaAmortizaAsync(idContrato, true, returnValueParameter,cancellationToken);
         }
         catch (Exception ex)
         {
@@ -315,7 +315,7 @@ internal class SaveContratoCommandHandler : ICommandHandler<SaveContratoCommand,
         }
     }
 
-    private bool EsTablaIrregular(ContratoPasivoEditDto model)
+    private static bool EsTablaIrregular(ContratoPasivoEditDto model)
     {
         return new[] { 3, 4 }.Contains(model.IdTipoTablaAmortiza) &&
                model.IdTipoPagoCapital == 2;

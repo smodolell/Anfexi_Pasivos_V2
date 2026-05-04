@@ -1,0 +1,132 @@
+<div class="container mt-4">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a routerLink="/reportes/configuracion">Reportes</a></li>
+      <li class="breadcrumb-item">
+        <a [routerLink]="['/reportes/configuracion/edit', reporteId()]">Editar Reporte</a>
+      </li>
+      <li class="breadcrumb-item active">Editar Parámetro</li>
+    </ol>
+  </nav>
+
+  <app-card
+    title="Editar Parámetro"
+    icon="fa-solid fa-sliders"
+    variant="warning">
+
+    <form id="parametroFormEl" [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="row g-3">
+
+        <div class="col-md-6">
+          <label for="nomParametro" class="form-label fw-bold">Nombre del Parámetro (SP) *</label>
+          <input
+            type="text"
+            id="nomParametro"
+            formControlName="nomParametro"
+            class="form-control"
+            readonly>
+          <small class="text-muted">Nombre exacto del parámetro en el stored procedure.</small>
+        </div>
+
+        <div class="col-md-6">
+          <label for="display" class="form-label fw-bold">Etiqueta (Display) *</label>
+          <input
+            type="text"
+            id="display"
+            formControlName="display"
+            class="form-control"
+            [class.is-invalid]="isInvalid('display')"
+            placeholder="Ej: Fecha de Inicio">
+          <div class="invalid-feedback">La etiqueta es obligatoria.</div>
+          <small class="text-muted">Texto mostrado al usuario al ejecutar el reporte.</small>
+        </div>
+
+        <div class="col-md-4">
+          <label for="inputId" class="form-label fw-bold">Tipo de Input *</label>
+          <select
+            id="inputId"
+            formControlName="inputId"
+            class="form-select"
+            [class.is-invalid]="isInvalid('inputId')">
+            @for (opt of inputOptions; track opt.value) {
+              <option [value]="opt.value">{{ opt.label }}</option>
+            }
+          </select>
+          <div class="invalid-feedback">Seleccione un tipo de input.</div>
+        </div>
+
+        <div class="col-md-4">
+          <label for="tipoDato" class="form-label fw-bold">Tipo de Dato</label>
+          <input
+            type="text"
+            id="tipoDato"
+            formControlName="tipoDato"
+            class="form-control"
+            readonly>
+          <small class="text-muted">Tipo de dato SQL del parámetro.</small>
+        </div>
+
+        <div class="col-md-4">
+          <label for="order" class="form-label fw-bold">Orden</label>
+          <input
+            type="number"
+            id="order"
+            formControlName="order"
+            class="form-control"
+            min="0">
+        </div>
+
+        @if (showDropdownFields) {
+          <div class="col-12">
+            <hr>
+            <h6 class="text-muted mb-3"><i class="fa-solid fa-table me-1"></i> Configuración de Lista Desplegable</h6>
+          </div>
+
+          <div class="col-md-4">
+            <label for="tablaRef" class="form-label fw-bold">Tabla de Referencia</label>
+            <input
+              type="text"
+              id="tablaRef"
+              formControlName="tablaRef"
+              class="form-control"
+              placeholder="Ej: Catalogos.TipoCredito">
+          </div>
+
+          <div class="col-md-4">
+            <label for="columnaValor" class="form-label fw-bold">Columna de Valor</label>
+            <input
+              type="text"
+              id="columnaValor"
+              formControlName="columnaValor"
+              class="form-control"
+              placeholder="Ej: Id">
+          </div>
+
+          <div class="col-md-4">
+            <label for="columnaTexto" class="form-label fw-bold">Columna de Texto</label>
+            <input
+              type="text"
+              id="columnaTexto"
+              formControlName="columnaTexto"
+              class="form-control"
+              placeholder="Ej: Nombre">
+          </div>
+        }
+
+      </div>
+    </form>
+
+    <div slot="footer" class="d-flex justify-content-end gap-2">
+      <a [routerLink]="['/reportes/configuracion/edit', reporteId()]" class="btn btn-outline-secondary">
+        <i class="fa fa-times me-1"></i> Cancelar
+      </a>
+      <button type="submit" form="parametroFormEl" class="btn btn-warning" [disabled]="form.invalid || isLoading()">
+        @if (isLoading()) {
+          <span class="spinner-border spinner-border-sm me-1"></span>
+        }
+        <i class="fa fa-save me-1"></i> Guardar Parámetro
+      </button>
+    </div>
+
+  </app-card>
+</div>

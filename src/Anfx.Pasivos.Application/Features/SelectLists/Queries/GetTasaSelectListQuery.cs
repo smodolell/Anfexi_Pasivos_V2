@@ -18,10 +18,11 @@ internal class GetTasaSelectListQueryHandler : IQueryHandler<GetTasaSelectListQu
     public async Task<Result<List<SelectItemDto>>> HandleAsync(GetTasaSelectListQuery message, CancellationToken cancellationToken = default)
     {
         var items = await _context.Tasa
-            .Where(w => w.EsVariable == message.EsVariable)
+            .Where(w => w.EsVariable == message.EsVariable && w.Activo)
             .Select(f => new SelectItemDto
             {
                 Value = f.IdTasa,
+                ValueDecimal = f.ValorTasa ?? 0,
                 Text = f.Tasa1
             }).ToListAsync();
 

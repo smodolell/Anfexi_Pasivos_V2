@@ -63,12 +63,7 @@ internal class GetContratosQueryHandler(IApplicationDbContext context, IPaginato
             message.IdLineaCredito,
             message.SearchText
         );
-        var query = _context.View_ContratoPasivo.AsQueryable();
-
-        foreach (var whereExpression in spec.WhereExpressions)
-        {
-            query = query.Where(whereExpression.Filter);
-        }
+        var query = _context.View_ContratoPasivo.WithSpecification(spec);
 
         var sortedQuery = _sorter.ApplySort(query, message.SortColumn, message.SortDescending);
 

@@ -34,7 +34,7 @@ internal class AsignarPasivosCommandHandler(IApplicationDbContext context, IUnit
             {
                 foreach (var item in message.ListaContratos)
                 {
-                    var asociado = _context.PSV_RelActivoPasivo.FirstOrDefault(f => f.IdContratoActivo == item 
+                    var asociado = await _context.PSV_RelActivoPasivo.FirstOrDefaultAsync(f => f.IdContratoActivo == item 
                     && f.IdContratoPasivo != message.IdContratoPasivo);
 
                     if (asociado == null)

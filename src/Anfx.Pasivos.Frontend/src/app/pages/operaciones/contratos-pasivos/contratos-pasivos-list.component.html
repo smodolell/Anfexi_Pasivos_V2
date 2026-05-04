@@ -179,23 +179,39 @@
                 </td>
                 <td class="text-end">{{ item.capital | currency: 'MXN' : 'symbol-narrow' : '1.2-2' }}</td>
                 <td class="text-center">
-                  @if (item.idEstatusContrato === 1) {
+                  <div class="d-flex gap-1 justify-content-center">
+                    @if (item.idEstatusContrato === 1) {
+                      <button
+                        type="button"
+                        class="btn btn-sm btn-outline-primary"
+                        title="Editar contrato"
+                        (click)="onEditar(item)">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                      </button>
+                      <button
+                        type="button"
+                        class="btn btn-sm btn-success"
+                        title="Activar contrato"
+                        (click)="onActivar(item)">
+                        <i class="fa-solid fa-bolt"></i>
+                      </button>
+                    } @else {
+                      <button
+                        type="button"
+                        class="btn btn-sm btn-outline-secondary"
+                        title="Ver contrato"
+                        (click)="onVer(item)">
+                        <i class="fa-solid fa-eye"></i>
+                      </button>
+                    }
                     <button
                       type="button"
-                      class="btn btn-sm btn-outline-primary"
-                      title="Editar contrato"
-                      (click)="onEditar(item)">
-                      <i class="fa-solid fa-pen-to-square"></i>
+                      class="btn btn-sm btn-outline-info"
+                      title="Ver contratos asignados"
+                      (click)="onVerAsignados(item)">
+                      <i class="fa-solid fa-link"></i>
                     </button>
-                  } @else {
-                    <button
-                      type="button"
-                      class="btn btn-sm btn-outline-secondary"
-                      title="Ver contrato"
-                      (click)="onVer(item)">
-                      <i class="fa-solid fa-eye"></i>
-                    </button>
-                  }
+                  </div>
                 </td>
               </tr>
             }
@@ -228,5 +244,63 @@
       }
     </div>
   </app-card-info>
+
+  <!-- ── Contratos asignados al pasivo ──────────────────────────── -->
+  @if (pasivoSeleccionado()) {
+    @let pasivo = pasivoSeleccionado()!;
+    <app-card-info
+      [title]="'Contratos Asociados al Pasivo [ ' + pasivo.contrato + ' ]'"
+      icon="fa-solid fa-link"
+      variant="primary"
+      wrapperClass="mt-4"
+      bodyPadding="none"
+      [badge]="contratosAsignados().length > 0 ? contratosAsignados().length : null">
+
+      <div class="d-flex justify-content-end p-2 border-bottom">
+        <button type="button" class="btn btn-sm btn-outline-secondary" (click)="onCerrarAsignados()">
+          <i class="fa-solid fa-xmark me-1"></i>Cerrar
+        </button>
+      </div>
+
+      @if (loadingAsignados()) {
+        <div class="text-center py-5">
+          <span class="spinner-border text-primary"></span>
+          <p class="mt-2 text-muted small">Cargando contratos asignados...</p>
+        </div>
+      } @else if (contratosAsignados().length === 0) {
+        <div class="text-center text-muted py-5">
+          <i class="fa-solid fa-link-slash fa-2x mb-2"></i>
+          <p class="mb-0">No se encontraron contratos asignados para este pasivo</p>
+        </div>
+      } @else {
+        <div class="table-responsive">
+          <table class="table table-hover mb-0">
+            <thead class="table-light">
+              <tr>
+                <th>Contrato</th>
+                <th>Tipo de Crédito</th>
+                <th class="text-end">Capital</th>
+                <th>Fec. Activación</th>
+                <th>Fec. Asignación</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (c of contratosAsignados(); track c.idContrato) {
+                <tr>
+                  <td class="fw-semibold">{{ c.contrato || '—' }}</td>
+                  <td>{{ c.tipoCredito || '—' }}</td>
+                  <td class="text-end">
+                    {{ c.capital != null ? (c.capital | currency: 'MXN' : 'symbol-narrow' : '1.2-2') : '—' }}
+                  </td>
+                  <td>{{ c.fecActivacion ? (c.fecActivacion | date: 'dd/MM/yyyy') : '—' }}</td>
+                  <td>{{ c.fechaAsignacion ? (c.fechaAsignacion | date: 'dd/MM/yyyy') : '—' }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </app-card-info>
+  }
 
 </div>
