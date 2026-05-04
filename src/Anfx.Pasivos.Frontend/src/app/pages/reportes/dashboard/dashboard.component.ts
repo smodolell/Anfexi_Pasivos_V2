@@ -15,12 +15,13 @@ import { CarteraMensualDto } from '@api/models/carteraMensualDto';
 import { CarteraDto } from '@api/models/carteraDto';
 import { LayoutService } from '@services/layout.service';
 import { UtilsService }  from '@services/utils.service';
-import { CardInfoComponent } from 'src/app/shared/components/card/card-info.component';
+import { StatCardComponent, StatCardColor, StatCardData } from 'src/app/shared/components/stat-card/stat-card.component';
+import { AppCardComponent } from 'src/app/shared/components/app-card/app-card.component';
 
 @Component({
   selector: 'app-dashboard-reportes',
   standalone: true,
-  imports: [CommonModule, FormsModule, HighchartsChartComponent, CardInfoComponent],
+  imports: [CommonModule, FormsModule, HighchartsChartComponent, StatCardComponent, AppCardComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css',
 })
@@ -95,6 +96,45 @@ export class DashboardComponent implements OnInit {
   barChartActivaOptions: HighchartsOptions = {};
   barChartPasivaOptions: HighchartsOptions = {};
   relationChartOptions:  HighchartsOptions = {};
+
+  // ── KPI Stats (resumen del dashboard response) ────────────────
+  private dashboardData = signal<DashboardResponse | null>(null);
+
+  readonly capitalActivo = computed(() => this.dashboardData()?.activos?.capital ?? 0);
+  readonly interesActivo = computed(() => this.dashboardData()?.activos?.interes ?? 0);
+  readonly capitalPasivo = computed(() => this.dashboardData()?.pasivos?.capital ?? 0);
+  readonly interesPasivo = computed(() => this.dashboardData()?.pasivos?.interes ?? 0);
+
+  readonly stats = computed((): StatCardData[] => [
+    {
+      label:    'Capital Activo',
+      value:    this.formatMXN(this.capitalActivo()),
+      sublabel: 'Cartera Activa',
+      icon:     'fa-solid fa-arrow-trend-up',
+      color:    'primary' as StatCardColor,
+    },
+    {
+      label:    'Interés Activo',
+      value:    this.formatMXN(this.interesActivo()),
+      sublabel: 'Cartera Activa',
+      icon:     'fa-solid fa-percent',
+      color:    'success' as StatCardColor,
+    },
+    {
+      label:    'Capital Pasivo',
+      value:    this.formatMXN(this.capitalPasivo()),
+      sublabel: 'Cartera Pasiva',
+      icon:     'fa-solid fa-arrow-trend-down',
+      color:    'warning' as StatCardColor,
+    },
+    {
+      label:    'Interés Pasivo',
+      value:    this.formatMXN(this.interesPasivo()),
+      sublabel: 'Cartera Pasiva',
+      icon:     'fa-solid fa-percent',
+      color:    'info' as StatCardColor,
+    },
+  ]);
 
 
   constructor() {
@@ -261,6 +301,7 @@ export class DashboardComponent implements OnInit {
   }
 
   private buildCharts(data: DashboardResponse) {
+    this.dashboardData.set(data);
     this.pieChartActivaOptions = this.buildPieChart('Cartera Activa',  data.activos!);
     this.pieChartPasivaOptions = this.buildPieChart('Cartera Pasiva',  data.pasivos!);
     this.barChartActivaOptions = this.buildBarChart('Evolución Mensual — Activo', data.activosMensual ?? []);
@@ -378,7 +419,7 @@ export class DashboardComponent implements OnInit {
 
   // ── Helpers ───────────────────────────────────────────────────
 
-  private formatMXN(value: number): string {
+  formatMXN(value: number): string {
     return new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' }).format(value);
   }
 }

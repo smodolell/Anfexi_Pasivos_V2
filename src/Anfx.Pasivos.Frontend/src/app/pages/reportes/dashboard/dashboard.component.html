@@ -1,112 +1,138 @@
-<div class="container-fluid mt-4">
+<div class="container-fluid dash-root">
 
-  <!-- ── FILTROS ──────────────────────────────────────────────── -->
-  <div class="card mb-4 shadow-sm">
-    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-      <h5 class="mb-0"><i class="fa-solid fa-filter me-2"></i>Filtros</h5>
-      <button class="btn btn-sm btn-outline-light" (click)="limpiarFiltros()" [disabled]="isBusy()">
-        <i class="fa-solid fa-xmark me-1"></i> Limpiar
+  <!-- ══════════════════════════════════════════════════════════
+       FILTROS DE CONSULTA
+       ══════════════════════════════════════════════════════════ -->
+  <app-card
+    title="Filtros de Consulta"
+    icon="fa-solid fa-sliders"
+    subtitle="Monitor de Cartera Pasiva"
+    class="mb-4">
+
+    <div header-actions>
+      <button class="dash-btn-clear"
+              (click)="limpiarFiltros()"
+              [disabled]="isBusy()">
+        <i class="fa-solid fa-rotate-left me-1"></i>Limpiar
       </button>
     </div>
-    <div class="card-body">
-      <div class="row g-3">
 
-        <div class="col-md-3">
-          <label class="form-label" for="sel-fondeador">Fondeador</label>
-          <select id="sel-fondeador" class="form-select"
-            [ngModel]="selectedFondeador()"
-            (ngModelChange)="selectedFondeador.set($event)"
-            [disabled]="isBusy()">
-            <option [value]="undefined">— Todos —</option>
-            @for (item of fondeadores(); track item.value) {
-              <option [value]="item.value">{{ item.text }}</option>
-            }
-          </select>
-        </div>
+    <div class="dash-filters-grid">
 
-        <div class="col-md-3">
-          <label class="form-label" for="sel-contrato-pasivo">Contrato Pasivo</label>
-          <select id="sel-contrato-pasivo" class="form-select"
-            [ngModel]="selectedContratoPasivo()"
-            (ngModelChange)="selectedContratoPasivo.set($event)"
-            [disabled]="isBusy() || !selectedFondeador()">
-            <option [value]="undefined">— Todos —</option>
-            @for (item of contratosPasivos(); track item.value) {
-              <option [value]="item.value">{{ item.text }}</option>
-            }
-          </select>
-          @if (!selectedFondeador()) {
-            <small class="text-muted">Seleccione un fondeador primero</small>
+      <div class="dash-filter-field">
+        <label class="form-label" for="sel-fondeador">Fondeador</label>
+        <select id="sel-fondeador" class="form-select"
+          [ngModel]="selectedFondeador()"
+          (ngModelChange)="selectedFondeador.set($event)"
+          [disabled]="isBusy()">
+          <option [value]="undefined">— Todos —</option>
+          @for (item of fondeadores(); track item.value) {
+            <option [value]="item.value">{{ item.text }}</option>
           }
-        </div>
-
-        <div class="col-md-3">
-          <label class="form-label" for="sel-contrato-activo">Contrato Activo</label>
-          <select id="sel-contrato-activo" class="form-select"
-            [ngModel]="selectedContratoActivo()"
-            (ngModelChange)="selectedContratoActivo.set($event)"
-            [disabled]="isBusy() || !selectedContratoPasivo()">
-            <option [value]="undefined">— Todos —</option>
-            @for (item of contratosActivos(); track item.value) {
-              <option [value]="item.value">{{ item.text }}</option>
-            }
-          </select>
-          @if (!selectedContratoPasivo()) {
-            <small class="text-muted">Seleccione un contrato pasivo primero</small>
-          }
-        </div>
-
-        <div class="col-md-3">
-          <label class="form-label" for="sel-saldo">Saldos</label>
-          <select id="sel-saldo" class="form-select"
-            [ngModel]="selectedSaldo()"
-            (ngModelChange)="selectedSaldo.set($event)"
-            [disabled]="isBusy()">
-            <option [value]="undefined">— Todos —</option>
-            @for (option of saldosOptions; track option.value) {
-              <option [value]="option.value">{{ option.label }}</option>
-            }
-          </select>
-        </div>
-
+        </select>
       </div>
 
-      <div class="row mt-4">
-        <div class="col-12 d-flex gap-2 align-items-center">
-
-          <button class="btn btn-primary" (click)="obtenerDetalle()" [disabled]="isBusy()">
-            @if (isLoadingActiva() || isLoadingPasiva()) {
-              <span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>Cargando...
-            } @else {
-              <i class="fa-solid fa-table-list me-1"></i> Obtener detalle
-            }
-          </button>
-
-          <button class="btn btn-success" (click)="mostrarGraficos()" [disabled]="isBusy()">
-            @if (isLoading()) {
-              <span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>Cargando...
-            } @else {
-              <i class="fa-solid fa-chart-column me-1"></i> Gráficos
-            }
-          </button>
-
-        </div>
+      <div class="dash-filter-field">
+        <label class="form-label" for="sel-contrato-pasivo">Contrato Pasivo</label>
+        <select id="sel-contrato-pasivo" class="form-select"
+          [ngModel]="selectedContratoPasivo()"
+          (ngModelChange)="selectedContratoPasivo.set($event)"
+          [disabled]="isBusy() || !selectedFondeador()">
+          <option [value]="undefined">— Todos —</option>
+          @for (item of contratosPasivos(); track item.value) {
+            <option [value]="item.value">{{ item.text }}</option>
+          }
+        </select>
+        @if (!selectedFondeador()) {
+          <small class="dash-hint">Seleccione un fondeador primero</small>
+        }
       </div>
+
+      <div class="dash-filter-field">
+        <label class="form-label" for="sel-contrato-activo">Contrato Activo</label>
+        <select id="sel-contrato-activo" class="form-select"
+          [ngModel]="selectedContratoActivo()"
+          (ngModelChange)="selectedContratoActivo.set($event)"
+          [disabled]="isBusy() || !selectedContratoPasivo()">
+          <option [value]="undefined">— Todos —</option>
+          @for (item of contratosActivos(); track item.value) {
+            <option [value]="item.value">{{ item.text }}</option>
+          }
+        </select>
+        @if (!selectedContratoPasivo()) {
+          <small class="dash-hint">Seleccione un contrato pasivo primero</small>
+        }
+      </div>
+
+      <div class="dash-filter-field">
+        <label class="form-label" for="sel-saldo">Saldos</label>
+        <select id="sel-saldo" class="form-select"
+          [ngModel]="selectedSaldo()"
+          (ngModelChange)="selectedSaldo.set($event)"
+          [disabled]="isBusy()">
+          <option [value]="undefined">— Todos —</option>
+          @for (option of saldosOptions; track option.value) {
+            <option [value]="option.value">{{ option.label }}</option>
+          }
+        </select>
+      </div>
+
     </div>
-  </div>
 
-  <!-- ── TABLAS ─────────────────────────────────────────────── -->
+    <div class="dash-actions-row">
+      <button class="btn btn-primary" (click)="obtenerDetalle()" [disabled]="isBusy()">
+        @if (isLoadingActiva() || isLoadingPasiva()) {
+          <span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>Cargando...
+        } @else {
+          <i class="fa-solid fa-table-list me-2"></i>Obtener detalle
+        }
+      </button>
+      <button class="btn btn-success" (click)="mostrarGraficos()" [disabled]="isBusy()">
+        @if (isLoading()) {
+          <span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>Cargando...
+        } @else {
+          <i class="fa-solid fa-chart-pie me-2"></i>Ver gráficos
+        }
+      </button>
+    </div>
+
+  </app-card>
+
+
+  <!-- ══════════════════════════════════════════════════════════
+       KPI STATS — visible solo cuando hay datos de gráficas
+       ══════════════════════════════════════════════════════════ -->
+  @if (showCharts()) {
+    <div class="dash-stats-grid mb-4">
+      @for (s of stats(); track s.label) {
+        <app-stat-card
+          [label]="s.label"
+          [value]="s.value"
+          [icon]="s.icon"
+          [color]="s.color"
+          [sublabel]="s.sublabel">
+        </app-stat-card>
+      }
+    </div>
+  }
+
+
+  <!-- ══════════════════════════════════════════════════════════
+       TABLAS DE CARTERA
+       ══════════════════════════════════════════════════════════ -->
   @if (showTables()) {
-    <div class="row">
+    <div class="row g-4 mb-4">
 
       <!-- Cartera Activa -->
       <div class="col-md-6">
-        <div class="card mb-4 shadow-sm">
-          <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
-            <h5 class="mb-0"><i class="fa-solid fa-arrow-trend-up me-2"></i>Cartera Activa Por Vencer</h5>
-            <span class="badge bg-white text-info">{{ totalActiva() }} registros</span>
-          </div>
-          <div class="card-body p-0" style="position: relative; min-height: 120px;">
+        <app-card
+          title="Cartera Activa Por Vencer"
+          icon="fa-solid fa-arrow-trend-up"
+          bodyPadding="none"
+          [badge]="totalActiva() > 0 ? totalActiva() + ' registros' : null"
+          class="h-100">
+
+          <div style="position: relative; min-height: 120px;">
             @if (isLoadingActiva()) {
               <div class="chart-loading-overlay">
                 <div class="spinner-border text-primary" aria-hidden="true"></div>
@@ -114,7 +140,7 @@
             }
             <div class="table-responsive">
               <table class="table table-hover mb-0">
-                <thead class="table-light">
+                <thead>
                   <tr>
                     <th>Contrato</th>
                     <th>Vencimiento</th>
@@ -153,8 +179,9 @@
               </table>
             </div>
           </div>
+
           @if (totalPagesActiva() > 1) {
-            <div class="card-footer d-flex justify-content-between align-items-center py-2">
+            <div footer class="dash-pagination">
               <small class="text-muted">Página {{ pageActiva }} de {{ totalPagesActiva() }}</small>
               <div class="btn-group btn-group-sm">
                 <button class="btn btn-outline-secondary"
@@ -170,17 +197,21 @@
               </div>
             </div>
           }
-        </div>
+
+        </app-card>
       </div>
 
       <!-- Cartera Pasiva -->
       <div class="col-md-6">
-        <div class="card mb-4 shadow-sm">
-          <div class="card-header bg-warning text-white d-flex justify-content-between align-items-center">
-            <h5 class="mb-0"><i class="fa-solid fa-arrow-trend-down me-2"></i>Cartera Pasiva Por Vencer</h5>
-            <span class="badge bg-white text-warning">{{ totalPasiva() }} registros</span>
-          </div>
-          <div class="card-body p-0" style="position: relative; min-height: 120px;">
+        <app-card
+          title="Cartera Pasiva Por Vencer"
+          icon="fa-solid fa-arrow-trend-down"
+          variant="warning"
+          bodyPadding="none"
+          [badge]="totalPasiva() > 0 ? totalPasiva() + ' registros' : null"
+          class="h-100">
+
+          <div style="position: relative; min-height: 120px;">
             @if (isLoadingPasiva()) {
               <div class="chart-loading-overlay">
                 <div class="spinner-border text-warning" aria-hidden="true"></div>
@@ -188,7 +219,7 @@
             }
             <div class="table-responsive">
               <table class="table table-hover mb-0">
-                <thead class="table-light">
+                <thead>
                   <tr>
                     <th>Contrato</th>
                     <th>Vencimiento</th>
@@ -227,8 +258,9 @@
               </table>
             </div>
           </div>
+
           @if (totalPagesPasiva() > 1) {
-            <div class="card-footer d-flex justify-content-between align-items-center py-2">
+            <div footer class="dash-pagination">
               <small class="text-muted">Página {{ pagePasiva }} de {{ totalPagesPasiva() }}</small>
               <div class="btn-group btn-group-sm">
                 <button class="btn btn-outline-secondary"
@@ -244,113 +276,77 @@
               </div>
             </div>
           }
-        </div>
+
+        </app-card>
       </div>
 
     </div>
   }
 
-  <!-- ── Skeleton mientras cargan gráficas ─────────────────── -->
+
+  <!-- ══════════════════════════════════════════════════════════
+       SKELETON — mientras carga el dashboard
+       ══════════════════════════════════════════════════════════ -->
   @if (isLoading()) {
-    <div class="row">
-      @for (_ of [1,2,3,4]; track $index) {
-        <div class="col-md-6 mb-4">
-          <div class="card shadow-sm">
-            <div class="card-body d-flex align-items-center justify-content-center" style="min-height: 420px;">
-              <div class="text-center text-muted">
-                <div class="spinner-border text-primary mb-2" aria-hidden="true"></div>
-                <p class="small mb-0">Consultando y procesando datos...</p>
-              </div>
-            </div>
+    <div class="dash-skeleton-grid">
+      @for (_ of [1, 2, 3, 4]; track $index) {
+        <div class="dash-skeleton-card">
+          <div class="dash-skeleton-pulse">
+            <div class="spinner-border" aria-hidden="true"></div>
+            <p class="small mb-0">Procesando datos...</p>
           </div>
         </div>
       }
-      <div class="col-12 mb-4">
-        <div class="card shadow-sm">
-          <div class="card-body d-flex align-items-center justify-content-center" style="min-height: 420px;">
-            <div class="text-center text-muted">
-              <div class="spinner-border text-primary mb-2" aria-hidden="true"></div>
-              <p class="small mb-0">Consultando y procesando datos...</p>
-            </div>
-          </div>
+      <div class="dash-skeleton-card dash-skeleton-full">
+        <div class="dash-skeleton-pulse">
+          <div class="spinner-border" aria-hidden="true"></div>
+          <p class="small mb-0">Procesando datos...</p>
         </div>
       </div>
     </div>
   }
 
-  <!-- ── GRÁFICOS ───────────────────────────────────────────── -->
+
+  <!-- ══════════════════════════════════════════════════════════
+       GRÁFICOS
+       ══════════════════════════════════════════════════════════ -->
   @if (showCharts()) {
-    <div class="row">
-      <div class="col-md-6">
+    <div class="dash-charts-grid">
 
-        <!-- Pie: Cartera Activa -->
-        <app-card-info title="Información de procesamiento" variant="light-blue">
-          <highcharts-chart
+      <app-card title="Distribución Cartera Activa" icon="fa-solid fa-chart-pie">
+        <highcharts-chart
           [options]="pieChartActivaOptions"
-          style="width: 100%; height: 400px; display: block">
+          style="width: 100%; height: 380px; display: block">
         </highcharts-chart>
-      </app-card-info>
+      </app-card>
 
-    </div>
-      <!-- Pie: Cartera Pasiva -->
-      <div class="col-md-6 mb-4">
-        <div class="card shadow-sm h-100">
-          <div class="card-header bg-info text-white">
-            <h5 class="mb-0"><i class="fa-solid fa-chart-pie me-2"></i>Distribución Cartera Pasiva</h5>
-          </div>
-          <div class="card-body">
-            <highcharts-chart
-              [options]="pieChartPasivaOptions"
-              style="width: 100%; height: 400px; display: block">
-            </highcharts-chart>
-          </div>
-        </div>
-      </div>
+      <app-card title="Distribución Cartera Pasiva" icon="fa-solid fa-chart-pie" variant="info">
+        <highcharts-chart
+          [options]="pieChartPasivaOptions"
+          style="width: 100%; height: 380px; display: block">
+        </highcharts-chart>
+      </app-card>
 
-      <!-- Barras: Evolución Activo -->
-      <div class="col-md-6 mb-4">
-        <div class="card shadow-sm h-100">
-          <div class="card-header bg-success text-white">
-            <h5 class="mb-0"><i class="fa-solid fa-chart-bar me-2"></i>Evolución Cartera Activa</h5>
-          </div>
-          <div class="card-body">
-            <highcharts-chart
-              [options]="barChartActivaOptions"
-              style="width: 100%; height: 400px; display: block">
-            </highcharts-chart>
-          </div>
-        </div>
-      </div>
+      <app-card title="Evolución Mensual — Activo" icon="fa-solid fa-chart-bar" variant="success">
+        <highcharts-chart
+          [options]="barChartActivaOptions"
+          style="width: 100%; height: 380px; display: block">
+        </highcharts-chart>
+      </app-card>
 
-      <!-- Barras: Evolución Pasivo -->
-      <div class="col-md-6 mb-4">
-        <div class="card shadow-sm h-100">
-          <div class="card-header bg-warning text-white">
-            <h5 class="mb-0"><i class="fa-solid fa-chart-bar me-2"></i>Evolución Cartera Pasiva</h5>
-          </div>
-          <div class="card-body">
-            <highcharts-chart
-              [options]="barChartPasivaOptions"
-              style="width: 100%; height: 400px; display: block">
-            </highcharts-chart>
-          </div>
-        </div>
-      </div>
+      <app-card title="Evolución Mensual — Pasivo" icon="fa-solid fa-chart-bar" variant="warning">
+        <highcharts-chart
+          [options]="barChartPasivaOptions"
+          style="width: 100%; height: 380px; display: block">
+        </highcharts-chart>
+      </app-card>
 
-      <!-- Barras horizontales: Relación Activo vs Pasivo -->
-      <div class="col-12 mb-4">
-        <div class="card shadow-sm">
-          <div class="card-header bg-primary text-white">
-            <h5 class="mb-0"><i class="fa-solid fa-scale-balanced me-2"></i>Relación Activo vs Pasivo</h5>
-          </div>
-          <div class="card-body">
-            <highcharts-chart
-              [options]="relationChartOptions"
-              style="width: 100%; height: 400px; display: block">
-            </highcharts-chart>
-          </div>
-        </div>
-      </div>
+      <app-card title="Relación Activo vs Pasivo" icon="fa-solid fa-scale-balanced" variant="dark" class="dash-chart-full">
+        <highcharts-chart
+          [options]="relationChartOptions"
+          style="width: 100%; height: 380px; display: block">
+        </highcharts-chart>
+      </app-card>
 
     </div>
   }

@@ -10,12 +10,12 @@ import { ContratoPasivoListItem } from 'src/app/core/api/models/contratoPasivoLi
 import { ContratosAsignadosDto } from 'src/app/core/api/models/contratosAsignadosDto';
 import { wasHandledByInterceptor } from '../../../interceptors/auth.interceptor';
 import { UtilsService } from '@services/utils.service';
-import { CardInfoComponent } from '@shared/components/card/card-info.component';
+import { AppCardComponent } from '@shared/components/app-card/app-card.component';
 
 @Component({
   selector: 'app-contratos-pasivos-list',
   standalone: true,
-  imports: [ReactiveFormsModule, CurrencyPipe, DatePipe, CardInfoComponent],
+  imports: [ReactiveFormsModule, CurrencyPipe, DatePipe, AppCardComponent],
   templateUrl: './contratos-pasivos-list.component.html',
 })
 export class ContratosPasivosListComponent implements OnInit {
