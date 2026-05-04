@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { inject } from '@angular/core';
-import { API_CATALOGO_URL } from '../../api.config';
+import { API_BASE_URL } from '../../api.config';
 import { ApiResultDto } from '../../../types/apiresult.dto';
 import { ColoniaDto, ColoniaPageQueryDto, CreateColoniaDto, UpdateColoniaDto, ColoniaComponentDto } from '../../../types/catalogos/colonia.dto';
 import { SelectItemDto } from '../../../types/selectitem.dto';
@@ -10,7 +10,8 @@ import { BaseCatalogService } from '../base-catalog.service';
 
 @Injectable({ providedIn: 'root' })
 export class ColoniaService extends BaseCatalogService<ColoniaDto, ColoniaDto, CreateColoniaDto, UpdateColoniaDto> {
-    protected readonly baseUrl  = inject(API_CATALOGO_URL);
+  //   protected readonly baseUrl = inject(API_BASE_URL);
+  // protected readonly http = inject(HttpClient);
     protected readonly resource = 'colonias';
 
     // ── Métodos específicos de colonias ──────────────────────────

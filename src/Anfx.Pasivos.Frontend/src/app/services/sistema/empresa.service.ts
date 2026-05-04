@@ -1,7 +1,7 @@
-import { Injectable, Inject } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { API_SISTEMA_URL } from '../../api.config';
+import { API_BASE_URL } from '../../api.config';
 import { PagedResultDto } from '../../../types/paged-result.dto';
 import { ApiResultDto } from '../../../types/apiresult.dto';
 import { EmpresaDto, EmpresaPageQueryDto, CreateEmpresaDto, UpdateEmpresaDto, TipoDireccionItemDto } from '../../../types/sistema/empresa.dto';
@@ -9,10 +9,11 @@ import { EmpresaDto, EmpresaPageQueryDto, CreateEmpresaDto, UpdateEmpresaDto, Ti
 @Injectable({ providedIn: 'root' })
 export class EmpresaService {
   private readonly resource = 'sistema/empresa';
+  protected readonly baseUrl = inject(API_BASE_URL);
 
   constructor(
+    // eslint-disable-next-line @angular-eslint/prefer-inject
     private http: HttpClient,
-    @Inject(API_SISTEMA_URL) private readonly baseUrl: string
   ) {}
 
   getAll(params?: EmpresaPageQueryDto): Observable<ApiResultDto<PagedResultDto<EmpresaDto>>> {

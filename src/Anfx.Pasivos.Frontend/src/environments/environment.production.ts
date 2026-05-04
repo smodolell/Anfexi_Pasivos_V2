@@ -1,13 +1,9 @@
-export const environment = {
+import { Environment } from './environment.interface';
+
+export const environment: Environment = {
   production: true,
-  apiBaseUrl:      'http://172.22.147.81/APIPASIVOS',
-  apiAuthUrl:      'http://172.22.147.81/APIPASIVOS/api',
-  apiCatalogoUrl:  'http://172.22.147.81/APIPASIVOS/api',
-  apiSistemaUrl:   'http://172.22.147.81/APIPASIVOS/api',
-  apiCotizadorUrl: 'http://172.22.147.81/APIPASIVOS/api',
+  apiUrl:     'http://172.22.147.81/ApiPasivos/api',
   menuApiUrl: 'assets/menu.json',
-  // ── App metadata ────────────────────────────────────────────
-  appName:    'Pasivos',
-  appVersion: '0.0.1',         // sincronizar con package.json al hacer release
+  app: { name: 'Pasivos', version: '0.0.1' },
   company:    'ANFEXI TECHNOLOGIES',
 };

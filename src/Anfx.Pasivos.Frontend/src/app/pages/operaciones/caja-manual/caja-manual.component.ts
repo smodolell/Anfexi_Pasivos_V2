@@ -1,7 +1,8 @@
-import { Component, inject, signal, computed, ViewChild, ElementRef, effect } from '@angular/core';
+import { Component, inject, signal, computed, ViewChild, ElementRef, effect, DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CurrencyPipe, DecimalPipe } from '@angular/common';
-import { forkJoin } from 'rxjs';
+import { Subject, EMPTY, forkJoin, of, exhaustMap, switchMap, map, timeout, catchError, tap, filter } from 'rxjs';
 import { OperacionesService } from 'src/app/core/api/services/operaciones.service';
 import { SelectListsService } from 'src/app/core/api/services/selectLists.service';
 import { AutocompleteResultDto } from 'src/app/core/api/models/autocompleteResultDto';
@@ -13,8 +14,13 @@ import { UtilsService } from '@services/utils.service';
 import { ContratoAutocompleteComponent } from '@shared/components/contrato-autocomplete/contrato-autocomplete.component';
 import { ConfirmModalComponent } from '@shared/components/confirm-modal/confirm-modal.component';
 import { FormErrorsComponent } from '@shared/components/form-errors/form-error.component';
-import { ErrorHandlerService }  from '@services/error.services';
+import { ErrorHandlerService } from '@services/error.services';
 import { CardInfoComponent } from '@shared/components/card/card-info.component';
+
+interface CargaResult {
+  caja: CajaDto;
+  cuentas: SelectItemDto[];
+}
 
 @Component({
   selector: 'app-caja-manual',
@@ -28,28 +34,28 @@ export class CajaManualComponent {
   private readonly utilsService = inject(UtilsService);
   private readonly fb = inject(FormBuilder);
   private readonly errorSvc = inject(ErrorHandlerService);
+  private readonly destroyRef = inject(DestroyRef);
 
   @ViewChild('selectAllCb') selectAllCb!: ElementRef<HTMLInputElement>;
   @ViewChild('confirmModal') confirmModal!: ConfirmModalComponent;
 
-  // ── Catálogos ────────────────────────────────────────────────
   tiposPago = signal<SelectItemDto[]>([]);
   bancos = signal<SelectItemDto[]>([]);
   cuentasBancarias = signal<SelectItemDto[]>([]);
   cargandoCuentas = signal(false);
 
-  // ── Estado búsqueda ──────────────────────────────────────────
   contratoBusqueda = signal<string>('');
   buscando = signal(false);
   erroresBusqueda = signal<string[]>([]);
 
-  // ── Datos cargados ───────────────────────────────────────────
   datosCaja = signal<CajaDto | null>(null);
   movimientos = signal<MovimientoPagoItem[]>([]);
   guardando = signal(false);
   erroresConfirmacion = signal<string[]>([]);
 
-  // ── Computed ─────────────────────────────────────────────────
+  private readonly buscar$ = new Subject<string>();
+  private readonly pago$ = new Subject<CajaDto>();
+
   totalSeleccionados = computed(() => this.movimientos().filter((m) => m.seleccionado).length);
 
   allSelected = computed(
@@ -66,7 +72,6 @@ export class CajaManualComponent {
       .reduce((sum, m) => sum + (m.saldoTotal ?? 0), 0),
   );
 
-  // ── Formulario ───────────────────────────────────────────────
   form = this.fb.group({
     idTipoPago: [null as number | null, Validators.required],
     idBanco: [null as number | null, Validators.required],
@@ -82,31 +87,9 @@ export class CajaManualComponent {
       }
     });
 
-    // Cuando cambia el banco → cargar cuentas bancarias de ese banco
-    this.form.get('idBanco')!.valueChanges.subscribe((idBanco) => {
-      this.cuentasBancarias.set([]);
-      this.form.get('idCuentaBancaria')!.setValue(null, { emitEvent: false });
-
-      if (idBanco) {
-        this.cargandoCuentas.set(true);
-        this.selectSvc.getCuentaBancariaByBancoIdSelectList(idBanco).subscribe({
-          next: (res) => {
-            this.cuentasBancarias.set(res.data ?? []);
-            this.cargandoCuentas.set(false);
-          },
-          error: (err: unknown) => {
-            this.cargandoCuentas.set(false);
-            if (!wasHandledByInterceptor(err)) {
-              this.utilsService.showNotification(
-                'Error',
-                'Error al cargar cuentas bancarias',
-                'error',
-              );
-            }
-          },
-        });
-      }
-    });
+    this.wireBancoValueChanges();
+    this.wireBuscar();
+    this.wirePago();
   }
 
   get mostrarFormulario(): boolean {
@@ -118,44 +101,12 @@ export class CajaManualComponent {
     return !!(ctrl && ctrl.invalid && (ctrl.dirty || ctrl.touched));
   }
 
-  // ── Búsqueda ─────────────────────────────────────────────────
-
   onContratoSelected(item: AutocompleteResultDto): void {
     const contrato = item.label?.trim();
     if (!contrato) return;
-
     this.contratoBusqueda.set(contrato);
-    this.buscando.set(true);
-    this.erroresBusqueda.set([]);
-    this.datosCaja.set(null);
-    this.movimientos.set([]);
-    this.form.reset();
-    this.cuentasBancarias.set([]);
-
-    const catalogosYaCargados = this.tiposPago().length > 0;
-
-    if (catalogosYaCargados) {
-      this.operacionesSvc.getCajaByContrato(contrato).subscribe({
-        next: (res) => this.handleCajaResponse(res),
-        error: (err) => this.handleBuscarError(err),
-      });
-    } else {
-      forkJoin({
-        caja: this.operacionesSvc.getCajaByContrato(contrato),
-        tipoPago: this.selectSvc.getTipoPagos(),
-        bancos: this.selectSvc.getBancosSelectList(),
-      }).subscribe({
-        next: ({ caja, tipoPago, bancos }) => {
-          this.tiposPago.set(tipoPago.data ?? []);
-          this.bancos.set(bancos.data ?? []);
-          this.handleCajaResponse(caja);
-        },
-        error: (err) => this.handleBuscarError(err),
-      });
-    }
+    this.buscar$.next(contrato);
   }
-
-  // ── Selección de movimientos ─────────────────────────────────
 
   toggleSelectAll(checked: boolean): void {
     this.movimientos.update((items) => items.map((m) => ({ ...m, seleccionado: checked })));
@@ -167,23 +118,17 @@ export class CajaManualComponent {
     );
   }
 
-  // ── Confirmar (abre modal) ────────────────────────────────────
-
   onConfirmar(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
     }
-
     if (this.totalSeleccionados() === 0) {
       this.utilsService.showNotification('Aviso', 'Seleccione al menos un movimiento', 'warning');
       return;
     }
-
     this.confirmModal.show();
   }
-
-  // ── Ejecutar pago (tras confirmación) ────────────────────────
 
   ejecutarPago(): void {
     this.confirmModal.hide();
@@ -209,74 +154,127 @@ export class CajaManualComponent {
 
     this.guardando.set(true);
     this.erroresConfirmacion.set([]);
-    this.operacionesSvc.confirmarPagoCaja(dto).subscribe({
-      next: (res) => {
-        this.guardando.set(false);
-        const msg = res?.message ?? 'Pago de caja procesado correctamente';
-        this.utilsService.showNotification('Éxito', msg, 'success');
-        this.recargarContrato();
+    this.pago$.next(dto);
+  }
+
+  private wireBancoValueChanges(): void {
+    this.form.get('idBanco')!.valueChanges.pipe(
+      tap(() => {
+        this.cuentasBancarias.set([]);
+        this.form.get('idCuentaBancaria')!.setValue(null, { emitEvent: false });
+      }),
+      filter((idBanco): idBanco is number => !!idBanco),
+      tap(() => this.cargandoCuentas.set(true)),
+      switchMap((idBanco) =>
+        this.selectSvc.getCuentaBancariaByBancoIdSelectList(idBanco).pipe(
+          timeout(30_000),
+          catchError((err: unknown) => {
+            this.cargandoCuentas.set(false);
+            if (!wasHandledByInterceptor(err)) {
+              this.utilsService.showNotification('Error', 'Error al cargar cuentas bancarias', 'error');
+            }
+            return EMPTY;
+          }),
+        ),
+      ),
+      takeUntilDestroyed(this.destroyRef),
+    ).subscribe((res) => {
+      this.cuentasBancarias.set(res.data ?? []);
+      this.cargandoCuentas.set(false);
+    });
+  }
+
+  private wireBuscar(): void {
+    this.buscar$.pipe(
+      tap(() => {
+        this.buscando.set(true);
+        this.erroresBusqueda.set([]);
+        this.datosCaja.set(null);
+        this.movimientos.set([]);
+        this.form.reset();
+        this.cuentasBancarias.set([]);
+      }),
+      switchMap((contrato) => this.buildCargaStream(contrato)),
+      takeUntilDestroyed(this.destroyRef),
+    ).subscribe({
+      next: ({ caja, cuentas }) => {
+        this.buscando.set(false);
+        this.datosCaja.set(caja);
+        this.movimientos.set(caja.movimientos ?? []);
+        this.form.patchValue(
+          {
+            idTipoPago: caja.idTipoPago || null,
+            idBanco: caja.idBanco || null,
+            fechaPago: caja.fechaPago?.substring(0, 10) ?? '',
+            referencia: caja.referencia ?? null,
+          },
+          { emitEvent: false },
+        );
+        if (cuentas.length > 0) {
+          this.cuentasBancarias.set(cuentas);
+          this.form.get('idCuentaBancaria')!.setValue(caja.idCuentaBancaria ?? null, { emitEvent: false });
+        }
       },
       error: (err: unknown) => {
-        this.guardando.set(false);
+        this.buscando.set(false);
         if (!wasHandledByInterceptor(err)) {
-          this.erroresConfirmacion.set(this.errorSvc.parseError(err));
+          this.erroresBusqueda.set(this.errorSvc.parseError(err));
         }
       },
     });
   }
 
-  // ── Private ──────────────────────────────────────────────────
+  private wirePago(): void {
+    this.pago$.pipe(
+      exhaustMap((dto) =>
+        this.operacionesSvc.confirmarPagoCaja(dto).pipe(
+          timeout(30_000),
+          catchError((err: unknown) => {
+            this.guardando.set(false);
+            if (!wasHandledByInterceptor(err)) {
+              this.erroresConfirmacion.set(this.errorSvc.parseError(err));
+            }
+            return EMPTY;
+          }),
+        ),
+      ),
+      takeUntilDestroyed(this.destroyRef),
+    ).subscribe((res) => {
+      this.guardando.set(false);
+      const msg = res?.message ?? 'Pago de caja procesado correctamente';
+      this.utilsService.showNotification('Éxito', msg, 'success');
+      this.buscar$.next(this.contratoBusqueda());
+    });
+  }
 
-  private recargarContrato(): void {
-    const contrato = this.contratoBusqueda().trim();
-    if (!contrato) return;
+  private buildCargaStream(contrato: string) {
+    const caja$ = this.operacionesSvc.getCajaByContrato(contrato).pipe(timeout(30_000));
 
-    this.movimientos.set([]);
-    this.cuentasBancarias.set([]);
-    this.form.reset();
+    const base$ = this.tiposPago().length > 0
+      ? caja$.pipe(map((res) => res.data!))
+      : forkJoin({
+          caja: caja$,
+          tipoPago: this.selectSvc.getTipoPagos().pipe(timeout(30_000)),
+          bancos: this.selectSvc.getBancosSelectList().pipe(timeout(30_000)),
+        }).pipe(
+          tap(({ tipoPago, bancos }) => {
+            this.tiposPago.set(tipoPago.data ?? []);
+            this.bancos.set(bancos.data ?? []);
+          }),
+          map(({ caja }) => caja.data!),
+        );
 
-    this.operacionesSvc.getCajaByContrato(contrato).subscribe({
-      next: (res) => this.handleCajaResponse(res),
-      error: (err: unknown) => {
-        if (!wasHandledByInterceptor(err)) {
-           this.erroresBusqueda.set(this.errorSvc.parseError(err));
-          this.utilsService.showNotification('Error', 'Error al recargar el contrato', 'error');
+    return base$.pipe(
+      switchMap((caja) => {
+        if (caja.idBanco && caja.idCuentaBancaria) {
+          return this.selectSvc.getCuentaBancariaByBancoIdSelectList(caja.idBanco).pipe(
+            timeout(30_000),
+            map((res): CargaResult => ({ caja, cuentas: res.data ?? [] })),
+            catchError(() => of<CargaResult>({ caja, cuentas: [] })),
+          );
         }
-      },
-    });
-  }
-
-  private handleCajaResponse(res: { data?: CajaDto }): void {
-    this.buscando.set(false);
-    this.datosCaja.set(res.data!);
-    this.movimientos.set(res.data!.movimientos ?? []);
-    this.poblarFormulario(res.data!);
-  }
-
-  private handleBuscarError(err: unknown): void {
-    this.buscando.set(false);
-    if (!wasHandledByInterceptor(err)) {
-      this.erroresBusqueda.set(this.errorSvc.parseError(err));
-    }
-  }
-
-  private poblarFormulario(d: CajaDto): void {
-    this.form.patchValue({
-      idTipoPago: d.idTipoPago || null,
-      idBanco: d.idBanco || null,
-      fechaPago: d.fechaPago?.substring(0, 10) ?? '',
-      referencia: d.referencia ?? null,
-    });
-    // idCuentaBancaria se setea después de que se carguen las cuentas del banco
-    if (d.idBanco && d.idCuentaBancaria) {
-      this.selectSvc.getCuentaBancariaByBancoIdSelectList(d.idBanco).subscribe({
-        next: (res) => {
-          this.cuentasBancarias.set(res.data ?? []);
-          this.form
-            .get('idCuentaBancaria')!
-            .setValue(d.idCuentaBancaria ?? null, { emitEvent: false });
-        },
-      });
-    }
+        return of<CargaResult>({ caja, cuentas: [] });
+      }),
+    );
   }
 }

@@ -14,4 +14,16 @@ export class CacheUtil<T> {
 
     return entry.data;
   }
+
+  set(key: string, data: T): void {
+    this.cache.set(key, { data, expiry: Date.now() + this.ttl });
+  }
+
+  delete(key: string): void {
+    this.cache.delete(key);
+  }
+
+  clear(): void {
+    this.cache.clear();
+  }
 }

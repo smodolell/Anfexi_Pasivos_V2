@@ -1,8 +1,19 @@
 import { Injectable, Inject, isDevMode } from '@angular/core';
-import { BehaviorSubject, ReplaySubject, firstValueFrom } from 'rxjs';
+import {
+  BehaviorSubject,
+  Observable,
+  TimeoutError,
+  catchError,
+  finalize,
+  firstValueFrom,
+  map,
+  of,
+  shareReplay,
+  timeout,
+} from 'rxjs';
 import { Router } from '@angular/router';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { API_AUTH_URL } from '../api.config';
+import { API_BASE_URL } from '../api.config';
 
 export interface User {
   id: number;
@@ -23,33 +34,41 @@ export type ApiLoginResponse = { token: string; user: User; message?: string; er
 
 /** Segundos antes de expirar en los que se lanza el refresh proactivo */
 const REFRESH_BEFORE_EXPIRY_S = 60;
+const HTTP_TIMEOUT_MS = 30_000;
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   // ── Estado ────────────────────────────────────────────────
-  private currentUserSubject = new BehaviorSubject<User | null>(null);
-  private isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
+  private readonly currentUserSubject = new BehaviorSubject<User | null>(null);
+  private readonly isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
 
   readonly currentUser$ = this.currentUserSubject.asObservable();
   readonly isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
 
-  // ── Token en memoria (también persiste en storage para restaurar sesión al recargar)
+  // ── Token en memoria ──────────────────────────────────────
   private _token: string | null = null;
 
-  // ── Refresh proactivo ─────────────────────────────────────
+  // ── Refresh (single-flight) ───────────────────────────────
   private refreshTimer: ReturnType<typeof setTimeout> | null = null;
-  private refreshInProgress = false;
-  private readonly refreshQueue = new ReplaySubject<boolean>(1);
+
+  /**
+   * Cuando es distinto de null hay un HTTP de refresh en vuelo.
+   * Todos los callers concurrentes reciben la MISMA referencia y comparten
+   * el único request gracias a shareReplay(1).
+   *
+   * finalize() se coloca ANTES de shareReplay para que se ejecute exactamente
+   * una vez —cuando el HTTP completa o falla— y no una vez por suscriptor.
+   */
+  private refreshInFlight$: Observable<boolean> | null = null;
 
   // ── Cross-tab logout ──────────────────────────────────────
   private storageListenerRegistered = false;
-  /** Clave usada SOLO para señalizar logout entre pestañas (no guarda el token) */
   private static readonly SESSION_KEY = 'pf_session';
 
   constructor(
     private readonly router: Router,
     private readonly http: HttpClient,
-    @Inject(API_AUTH_URL) private readonly apiBaseUrl: string,
+    @Inject(API_BASE_URL) private readonly apiBaseUrl: string,
   ) {
     this.checkStoredAuth();
     this.setupStorageListener();
@@ -60,24 +79,25 @@ export class AuthService {
   async login(credentials: LoginCredentials): Promise<LoginResult> {
     try {
       const res = await firstValueFrom(
-        this.http.post<ApiLoginResponse>(`${this.apiBaseUrl}/auth/login`, credentials),
+        this.http
+          .post<ApiLoginResponse>(`${this.apiBaseUrl}/auth/login`, credentials)
+          .pipe(timeout(HTTP_TIMEOUT_MS)),
       );
 
-      this._token = res.token;
-      this.currentUserSubject.next(res.user);
-      this.isAuthenticatedSubject.next(true);
-
-      // Persiste SOLO el usuario (no el token) para restaurar UI entre recargas
       const storage = credentials.recuerdame ? localStorage : sessionStorage;
-      storage.setItem('pf_token', res.token);
-      storage.setItem('currentUser', JSON.stringify(res.user));
-      // Señal de sesión activa para cross-tab sync
+      this.commitSession(res.token, res.user, storage);
       localStorage.setItem(AuthService.SESSION_KEY, '1');
-
       this.scheduleProactiveRefresh();
 
       return { success: true, message: res.message ?? 'Login exitoso', user: res.user };
     } catch (err) {
+      if (err instanceof TimeoutError) {
+        return {
+          success: false,
+          message: 'La solicitud tardó demasiado. Intente nuevamente.',
+          errors: [],
+        };
+      }
       const error = err as HttpErrorResponse;
       const message =
         error.status === 0
@@ -99,19 +119,26 @@ export class AuthService {
   isAuthenticated(): boolean {
     return this.isAuthenticatedSubject.value;
   }
+
   getCurrentUser(): User | null {
     return this.currentUserSubject.value;
   }
+
   isAdmin(): boolean {
     const role = this.currentUserSubject.value?.role;
     return role === 'Admin' || role === 'Webmaster';
   }
+
   hasRole(role: string): boolean {
     return this.currentUserSubject.value?.role === role;
   }
 
   async requestPasswordRecovery(email: string): Promise<void> {
-    await firstValueFrom(this.http.post(`${this.apiBaseUrl}/auth/recovery`, { email }));
+    await firstValueFrom(
+      this.http
+        .post(`${this.apiBaseUrl}/auth/recovery`, { email })
+        .pipe(timeout(HTTP_TIMEOUT_MS)),
+    );
   }
 
   // ── Token ─────────────────────────────────────────────────
@@ -138,9 +165,53 @@ export class AuthService {
 
   async checkAuthentication(): Promise<boolean> {
     if (this._token && !this.isTokenExpired()) return this.isAuthenticated();
-    // Token expirado o ausente en memoria → limpiar
     this.clearAuth();
     return false;
+  }
+
+  // ── Refresh (single-flight) ───────────────────────────────
+
+  /**
+   * Inicia o reutiliza el refresh HTTP en curso.
+   *
+   * Primera llamada: crea el Observable, lo asigna a refreshInFlight$ y lo retorna.
+   * Llamadas concurrentes: devuelven la misma referencia; shareReplay(1) distribuye
+   * el resultado a todos los suscriptores sin lanzar un segundo HTTP.
+   *
+   * Emite true si el refresh fue exitoso; false si falló (sesión cerrada internamente).
+   * El interceptor usa switchMap sobre este Observable para reintentar la request.
+   */
+  refreshToken(): Observable<boolean> {
+    if (this.refreshInFlight$) {
+      return this.refreshInFlight$;
+    }
+
+    this.refreshInFlight$ = this.http
+      .post<ApiLoginResponse>(`${this.apiBaseUrl}/auth/refresh`, {})
+      .pipe(
+        timeout(HTTP_TIMEOUT_MS),
+        map((res) => {
+          this.commitTokenRefresh(res.token);
+          return true;
+        }),
+        catchError(() => {
+          if (isDevMode()) console.warn('[AuthService] Refresh fallido — cerrando sesión');
+          this.clearAuth();
+          this.router.navigate(['/auth/login']);
+          return of(false);
+        }),
+        // finalize ANTES de shareReplay: se ejecuta una sola vez cuando la fuente
+        // HTTP completa, no una vez por suscriptor al desuscribirse.
+        finalize(() => {
+          this.refreshInFlight$ = null;
+        }),
+        // refCount: false (default en shareReplay(1)) mantiene la suscripción
+        // interna activa aunque un caller se desuscriba antes de que otros terminen,
+        // garantizando que todos reciban el resultado aunque lleguen tarde.
+        shareReplay(1),
+      );
+
+    return this.refreshInFlight$;
   }
 
   // ── Refresh proactivo ─────────────────────────────────────
@@ -156,38 +227,22 @@ export class AuthService {
 
       const msUntilRefresh =
         (payload.exp - Math.floor(Date.now() / 1000) - REFRESH_BEFORE_EXPIRY_S) * 1000;
+
       if (msUntilRefresh <= 0) {
-        this.performRefresh();
+        void firstValueFrom(this.refreshToken());
         return;
       }
 
-      this.refreshTimer = setTimeout(() => this.performRefresh(), msUntilRefresh);
-      if (isDevMode())
+      this.refreshTimer = setTimeout(
+        () => void firstValueFrom(this.refreshToken()),
+        msUntilRefresh,
+      );
+
+      if (isDevMode()) {
         console.log(`[AuthService] Refresh en ${Math.round(msUntilRefresh / 1000)}s`);
+      }
     } catch {
       /* token inválido, no programar */
-    }
-  }
-
-  private async performRefresh(): Promise<void> {
-    if (this.refreshInProgress) {
-      await firstValueFrom(this.refreshQueue);
-      return;
-    }
-    this.refreshInProgress = true;
-    try {
-      const res = await firstValueFrom(
-        this.http.post<ApiLoginResponse>(`${this.apiBaseUrl}/auth/refresh`, {}),
-      );
-      this._token = res.token;
-      this.scheduleProactiveRefresh();
-      this.refreshQueue.next(true);
-    } catch {
-      if (isDevMode()) console.warn('[AuthService] Refresh fallido — cerrando sesión');
-      this.logout();
-      this.refreshQueue.next(false);
-    } finally {
-      this.refreshInProgress = false;
     }
   }
 
@@ -196,6 +251,27 @@ export class AuthService {
       clearTimeout(this.refreshTimer);
       this.refreshTimer = null;
     }
+  }
+
+  // ── Sesión ────────────────────────────────────────────────
+
+  private commitSession(token: string, user: User, storage: Storage): void {
+    this._token = token;
+    storage.setItem('pf_token', token);
+    storage.setItem('currentUser', JSON.stringify(user));
+    this.currentUserSubject.next(user);
+    this.isAuthenticatedSubject.next(true);
+  }
+
+  /**
+   * Actualiza el token en memoria Y en el mismo storage donde vive la sesión activa,
+   * evitando el estado inconsistente de token nuevo en memoria pero obsoleto en storage.
+   */
+  private commitTokenRefresh(token: string): void {
+    this._token = token;
+    const storage = sessionStorage.getItem('pf_token') ? sessionStorage : localStorage;
+    storage.setItem('pf_token', token);
+    this.scheduleProactiveRefresh();
   }
 
   private checkStoredAuth(): void {
@@ -231,8 +307,7 @@ export class AuthService {
     if (this.storageListenerRegistered) return;
     this.storageListenerRegistered = true;
 
-    globalThis.addEventListener('storage', (event) => {
-      // Otra pestaña hizo logout → sincronizar
+    globalThis.addEventListener('storage', (event: StorageEvent) => {
       if (event.key === AuthService.SESSION_KEY && event.newValue === null) {
         this._token = null;
         this.cancelRefreshTimer();

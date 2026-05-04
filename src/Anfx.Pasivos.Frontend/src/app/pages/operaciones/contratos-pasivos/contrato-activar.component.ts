@@ -1,6 +1,8 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal, DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { EMPTY, Subject, exhaustMap, timeout, catchError } from 'rxjs';
 import { ContratosService } from 'src/app/core/api/services/contratos.service';
 import { wasHandledByInterceptor } from '../../../interceptors/auth.interceptor';
 import { UtilsService } from '@services/utils.service';
@@ -14,19 +16,52 @@ import { FormErrorsComponent } from '@shared/components/form-errors/form-error.c
 })
 export class ContratoActivarComponent implements OnInit {
   private readonly contratosSvc = inject(ContratosService);
-  private readonly utilsSvc     = inject(UtilsService);
-  private readonly router       = inject(Router);
-  private readonly route        = inject(ActivatedRoute);
-  private readonly fb           = inject(FormBuilder);
+  private readonly utilsSvc = inject(UtilsService);
+  private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
+  private readonly fb = inject(FormBuilder);
+  private readonly destroyRef = inject(DestroyRef);
 
-  contratoId    = signal<number>(0);
+  contratoId = signal<number>(0);
   contratoNombre = signal<string>('');
-  isSaving      = signal(false);
-  formErrors    = signal<string[]>([]);
+  isSaving = signal(false);
+  formErrors = signal<string[]>([]);
 
   form = this.fb.group({
     fechaActivacion: [new Date().toISOString().substring(0, 10), Validators.required],
   });
+
+  private readonly activar$ = new Subject<void>();
+
+  constructor() {
+    this.activar$.pipe(
+      exhaustMap(() => {
+        const { fechaActivacion } = this.form.getRawValue();
+        return this.contratosSvc.activarContrato(this.contratoId(), { fechaActivacion: fechaActivacion! }).pipe(
+          timeout(30_000),
+          catchError((err: unknown) => {
+            this.isSaving.set(false);
+            if (!wasHandledByInterceptor(err)) {
+              const e = err as { error?: { message?: string; errors?: string[] } };
+              const msg = e.error?.message ?? e.error?.errors?.[0] ?? 'Error al activar el contrato';
+              this.formErrors.set([msg]);
+            }
+            return EMPTY;
+          }),
+        );
+      }),
+      takeUntilDestroyed(this.destroyRef),
+    ).subscribe((res) => {
+      this.isSaving.set(false);
+      if (res.success === false) {
+        const r = res as { success: boolean; errors?: string[]; message?: string };
+        this.formErrors.set([r.errors?.[0] ?? r.message ?? 'Error al activar el contrato']);
+      } else {
+        this.utilsSvc.showNotification('Éxito', 'Contrato activado correctamente', 'success');
+        this.router.navigate(['/operaciones/contratos-pasivos']);
+      }
+    });
+  }
 
   ngOnInit(): void {
     this.contratoId.set(+this.route.snapshot.params['id']);
@@ -44,32 +79,9 @@ export class ContratoActivarComponent implements OnInit {
       this.formErrors.set(['La Fecha de Activación es requerida.']);
       return;
     }
-
     this.formErrors.set([]);
     this.isSaving.set(true);
-
-    const { fechaActivacion } = this.form.getRawValue();
-
-    this.contratosSvc.activarContrato(this.contratoId(), { fechaActivacion: fechaActivacion! }).subscribe({
-      next: (res: any) => {
-        this.isSaving.set(false);
-        if (res.success === false) {
-          const msg = res.errors?.[0] ?? res.message ?? 'Error al activar el contrato';
-          this.formErrors.set([msg]);
-        } else {
-          this.utilsSvc.showNotification('Éxito', 'Contrato activado correctamente', 'success');
-          this.router.navigate(['/operaciones/contratos-pasivos']);
-        }
-      },
-      error: (err: unknown) => {
-        this.isSaving.set(false);
-        if (!wasHandledByInterceptor(err)) {
-          const e = err as any;
-          const msg = e?.error?.message ?? e?.error?.errors?.[0] ?? 'Error al activar el contrato';
-          this.formErrors.set([msg]);
-        }
-      },
-    });
+    this.activar$.next();
   }
 
   onCancelar(): void {

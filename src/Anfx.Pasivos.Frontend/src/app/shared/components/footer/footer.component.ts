@@ -8,7 +8,7 @@ import { environment } from '../../../../environments/environment';
 })
 export class FooterComponent {
   readonly company    = environment.company;
-  readonly appName    = environment.appName;
-  readonly appVersion = environment.appVersion;
+  readonly appName    = environment.app.name;
+  readonly appVersion = environment.app.version;
   readonly year       = new Date().getFullYear();
 }

@@ -2,6 +2,9 @@
   "permissions": {
     "additionalDirectories": [
       "E:\\profuturo\\pasivos\\Anfexi_Pasivos_V2"
+    ],
+    "allow": [
+      "Bash(sqlcmd -S 34.197.192.17 -d pasivos_demo_qa -U jjimenez -P ixoXx1bVXVYJ1svNOb1uBH -Q ':*)"
     ]
   }
 }

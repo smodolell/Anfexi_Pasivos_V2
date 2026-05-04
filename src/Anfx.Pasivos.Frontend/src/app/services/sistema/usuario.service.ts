@@ -1,7 +1,7 @@
-import { Injectable, Inject } from '@angular/core';
+import { Injectable, Inject, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { API_SISTEMA_URL } from '../../api.config';
+import { API_BASE_URL } from '../../api.config';
 import { PagedResultDto } from '../../../types/paged-result.dto';
 import { ApiResultDto } from '../../../types/apiresult.dto';
 import {
@@ -16,11 +16,8 @@ import {
 @Injectable({ providedIn: 'root' })
 export class UsuarioService {
   private readonly resource = 'sistema/usuarios';
-
-  constructor(
-    private readonly http: HttpClient,
-    @Inject(API_SISTEMA_URL) private readonly baseUrl: string,
-  ) {}
+  protected readonly baseUrl = inject(API_BASE_URL);
+  protected readonly http = inject(HttpClient);
 
   getAll(params?: UsuarioPageQueryDto): Observable<ApiResultDto<PagedResultDto<UsuarioItemDto>>> {
     let httpParams = new HttpParams();

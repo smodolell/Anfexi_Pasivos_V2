@@ -1,4 +1,5 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { SelectListsService } from 'src/app/core/api/services/selectLists.service';
@@ -14,6 +15,7 @@ import { UtilsService } from '@services/utils.service';
   templateUrl: './nuevo-contrato.component.html',
 })
 export class NuevoContratoComponent implements OnInit {
+  private readonly destroyRef    = inject(DestroyRef);
   private readonly selectSvc    = inject(SelectListsService);
   private readonly contratosSvc = inject(ContratosService);
   private readonly utilsSvc     = inject(UtilsService);
@@ -34,7 +36,7 @@ export class NuevoContratoComponent implements OnInit {
   ngOnInit(): void {
     this.cargarFondeadores();
 
-    this.form.get('idFondeador')!.valueChanges.subscribe(idFondeador => {
+    this.form.get('idFondeador')!.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(idFondeador => {
       this.form.patchValue({ idLineaCredito: null }, { emitEvent: false });
       this.lineasCredito.set([]);
       if (idFondeador) {
